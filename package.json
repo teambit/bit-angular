@@ -1,0 +1,11 @@
+{
+  "name": "bit-angular",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "scripts": {
+    "ic": "bit install && bit compile",
+    "init": "npm run ic && npm run ic"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

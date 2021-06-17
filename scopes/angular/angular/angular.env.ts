@@ -1,0 +1,204 @@
+import { join } from 'path';
+import { BuildTask } from '@teambit/builder';
+import { Compiler, CompilerMain, CompilerOptions } from '@teambit/compiler';
+import {
+  BuilderEnv,
+  DependenciesEnv,
+  DevEnv,
+  EnvDescriptor,
+  LinterEnv,
+  TesterEnv
+} from '@teambit/envs';
+import { ESLintMain } from '@teambit/eslint';
+import { JestMain } from '@teambit/jest';
+import { Linter } from '@teambit/linter';
+import { NgPackagrMain } from '@teambit/ng-packagr';
+import { PkgMain } from '@teambit/pkg';
+import { Tester, TesterMain } from '@teambit/tester';
+import { TsCompilerOptionsWithoutTsConfig, TypescriptMain } from '@teambit/typescript';
+import { WebpackConfigTransformer, WebpackMain } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
+import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
+import * as jestM from 'jest';
+import { TsConfigSourceFile } from 'typescript';
+import { CompositionsMain } from '@teambit/compositions';
+import { PreviewMain } from '@teambit/preview';
+import { AngularVersionAdapter } from './angular-version-adapter';
+import { AngularAspect } from './angular.aspect';
+import { AngularDevServer } from './angular.dev-server';
+import { AngularMainConfig } from './angular.main.runtime';
+import { eslintConfig } from './eslint/eslintrc';
+// import previewConfigFactory from './webpack/webpack.config.preview';
+
+/**
+ * a component environment built for [Angular](https://angular.io).
+ */
+export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
+  name = 'Angular';
+  icon = 'https://static.bit.dev/extensions-icons/angular.svg';
+  adapter!: AngularVersionAdapter;
+
+  constructor(
+    private config: AngularMainConfig,
+    private jestAspect: JestMain,
+    private tsAspect: TypescriptMain,
+    private compiler: CompilerMain,
+    private webpack: WebpackMain,
+    private workspace: Workspace,
+    private pkg: PkgMain,
+    private tester: TesterMain,
+    private eslint: ESLintMain,
+    private ngPackagrAspect: NgPackagrMain,
+    private compositions: CompositionsMain,
+    private preview: PreviewMain
+  ) {}
+
+  /**
+   * Returns the Environment descriptor
+   * Required for any task
+   */
+  async __getDescriptor(): Promise<EnvDescriptor> {
+    return {
+      type: 'angular',
+    };
+  }
+
+  /**
+   * Load the adapter with the correct implementation based on the selection version of Angular
+   */
+  async useVersion(version = 12) {
+    switch (version) {
+      case 11:
+        const AngularV11 = (await import("@teambit/angular-v11")).default;
+        this.adapter = new AngularV11();
+        break;
+      case 12:
+      default:
+        const AngularV12 = (await import("@teambit/angular-v12")).default;
+        this.adapter = new AngularV12();
+    }
+  }
+
+  private createNgPackgrCompiler(tsconfig?: TsConfigSourceFile, compilerOptions: Partial<CompilerOptions> = {}) {
+    return this.ngPackagrAspect.createCompiler(this.adapter.ngPackagr, tsconfig, {
+      ...compilerOptions,
+    });
+  }
+
+  getCompiler(tsconfig?: TsConfigSourceFile, compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}) {
+    return this.createNgPackgrCompiler(tsconfig, compilerOptions);
+  }
+
+  private getCompilerTask(
+    tsconfig?: TsConfigSourceFile,
+    compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
+  ) {
+    return this.compiler.createTask('NgPackagrCompiler', this.getCompiler(tsconfig, compilerOptions));
+  }
+
+  /**
+   * Returns the component build pipeline
+   * Required for `bit build`
+   */
+  getBuildPipe(
+    tsconfig?: TsConfigSourceFile,
+    compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
+  ): BuildTask[] {
+    return [this.getCompilerTask(tsconfig, compilerOptions)];
+  }
+
+  /**
+   * Returns a paths to a function which mounts a given component to DOM
+   * Required for `bit build`
+   */
+  getMounter() {
+    return ''; // require.resolve('./mount');
+  }
+
+  /**
+   * Returns the path to a file containing a function `linkModules` that will handle previews (compositions & overviews).
+   * See function `generateLink`.
+   * Defaults to preview.preview.runtime
+   * Required for `bit start` & `bit build`
+   */
+  getLinkModulesPath() {
+    return ''; //require.resolve('./angular.preview.runtime');
+  }
+
+  /**
+   * Returns a path to a docs template.
+   * Required for `bit build`
+   */
+  getDocsTemplate() {
+    // return require.resolve('./docs');
+    return ''; // TODO(ocombe)
+  }
+
+  /**
+   * Returns a bundler for the preview.
+   * Required for `bit build` & `build start`
+   */
+  async getBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
+    // throw new Error('done');
+    // const defaultConfig = previewConfigFactory(path);
+    // const defaultTransformer: WebpackConfigTransformer = (configMutator) => {
+    //   return configMutator.merge([defaultConfig]);
+    // };
+    //
+    // return this.webpack.createBundler(context, [defaultTransformer, ...transformers]);
+    return null as any;
+  }
+
+  /**
+   * Returns and configures the component linter.
+   * Required for `bit lint`
+   */
+  getLinter(): Linter {
+    return this.eslint.createLinter({
+      config: eslintConfig,
+      // resolve all plugins from the angular environment.
+      pluginPath: __dirname,
+    });
+  }
+
+  /**
+   * Returns a tester
+   * Required for `bit start` & `bit test`
+   */
+  getTester(jestConfigPath: string, jestModule = jestM): Tester {
+    // TODO(ocombe)
+    const config = jestConfigPath || require.resolve('./jest/jest.config');
+    return this.jestAspect.createTester(config, jestModule);
+  }
+
+  /**
+   * Required for `bit start`
+   */
+  getDevEnvId(id?: string) {
+    if (typeof id !== 'string') return AngularAspect.id;
+    return id || AngularAspect.id;
+  }
+
+  /**
+   * Returns and configures the dev server.
+   * Required for `bit start`
+   */
+  async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
+    // const moduleMap = this.compositions.getPreviewFiles(context.components).filter((value) => value.length !== 0);
+    //
+    // const compiler: Compiler = context.env.getCompiler(context);
+    // const paths = moduleMap.map((files) => {
+    //   return files.map((file) => compiler.getDistPathBySrcPath(file.relative));
+    // });
+
+    return new AngularDevServer(this.workspace, this.webpack, this.adapter).createDevServer(context, transformers);
+  }
+
+  /**
+   * Returns the list of dependencies
+   * Required for any task
+   */
+  async getDependencies() {
+    return this.adapter.dependencies;
+  }
+}

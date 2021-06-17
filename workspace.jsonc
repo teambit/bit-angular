@@ -1,0 +1,99 @@
+/**
+ * this is the main configuration file of your bit workspace.
+ * for full documentation, please see: https://harmony-docs.bit.dev/workspace/configurations
+ **/{
+  "$schema": "https://static.bit.dev/teambit/schemas/schema.json",
+  /**
+   * main configuration of the Bit workspace.
+   **/
+  "teambit.workspace/workspace": {
+    /**
+     * the name of the component workspace. used for development purposes.
+     **/
+    "name": "Angular testing",
+    /**
+     * set the icon to be shown on the Bit server.
+     **/
+    "icon": "https://static.bit.dev/bit-logo.svg",
+    /**
+     * default directory for all components in workspace.
+     **/
+    "defaultDirectory": "{scope}/{name}",
+    /**
+     * default scope for all components in workspace.
+     **/
+    "defaultScope": "angular-scope"
+  },
+  /**
+   * main configuration for component dependency resolution.
+   **/
+  "teambit.dependencies/dependency-resolver": {
+    /**
+     * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
+     */
+    "packageManager": "teambit.dependencies/pnpm",
+    "policy": {
+      "dependencies": {
+        "@teambit/legacy": "^1.0.91"
+      },
+      "devDependencies": {
+        "eslint-config-airbnb-typescript": {
+          "version": "5.1.0",
+          "preserve": true
+        }
+      }
+    },
+    "packageManagerArgs": [],
+    "devFilePatterns": [
+      "**/*.spec.ts"
+    ],
+    "strictPeerDependencies": true
+  },
+  "teambit.generator/generator": {
+    "aspects": [
+      "teambit.angular/angular"
+    ]
+  },
+  "teambit.angular/angular": {
+    "angularVersion": 12
+  },
+  /**
+   * workspace variants allow to set different subsets of configuration for components in your workspace.
+   * this is extremely useful for upgrading, aligning and building components with a
+   * new set of dependencies.
+   **/
+  "teambit.workspace/variants": {
+    "scopes/angular": {
+      "defaultScope": "teambit.angular",
+      "teambit.harmony/aspect": {},
+      "teambit.pkg/pkg": {
+        "packageManagerPublishArgs": [
+          "--access public"
+        ],
+        "packageJson": {
+          "name": "@teambit/{name}",
+          "private": false,
+          "engines": {
+            "node": ">=12.15.0"
+          }
+        }
+      }
+    },
+    "angular-scope/angular-testing": {
+      "teambit.angular/angular": {}
+    },
+    /**
+     * "*" is a special rule which applied on all components in the workspace.
+     **/
+    "*": {
+      //      "teambit.angular/angular": {}
+      //      "teambit.react/react": {}
+    }
+  },
+  /**
+   * disable previews for now because we don't have a bundler yet
+   **/
+  //  "teambit.preview/preview": {
+  //    "disabled": false
+  //  }
+}

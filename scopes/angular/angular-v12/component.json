@@ -1,0 +1,43 @@
+{
+  "componentId": {
+    "name": "angular-v12"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "devDependencies": {
+          "@angular-devkit/architect": "~0.1200.0",
+          "@angular-devkit/build-angular": "^12.0.0",
+          "@angular-devkit/build-webpack": "~0.1200.0",
+          "@angular-devkit/core": "^12.0.0",
+          "@angular-devkit/schematics": "^12.0.0",
+          "@angular/cli": "^12.0.0",
+          "@angular/common": "^12.0.0",
+          "@angular/compiler": "^12.0.0",
+          "@angular/compiler-cli": "^12.0.0",
+          "@angular/core": "^12.0.0",
+          "@angular/platform-browser": "^12.0.0",
+          "@angular/platform-browser-dynamic": "^12.0.0",
+          "@ngtools/webpack": "^12.0.0",
+          "@teambit/legacy": "^1.0.91",
+          "@types/jasmine": "~3.6.0",
+          "@types/node": "^12.11.1",
+          "jasmine-core": "~3.6.0",
+          "rxjs": "~6.6.3",
+          "ng-packagr": "^12.0.0",
+          "tslib": "^2.0.0",
+          "ts-node": "~8.3.0",
+          "typescript": "~4.2.4",
+          "webpack": "5.38.1",
+          "webpack-dev-middleware": "4.1.0",
+          "webpack-dev-server": "4.0.0-beta.2",
+          "webpack-hot-middleware": "2.25.0",
+          "webpack-manifest-plugin": "3.1.1",
+          "webpack-merge": "5.7.3",
+          "zone.js": "~0.11.3"
+        }
+      }
+    }
+  }
+}

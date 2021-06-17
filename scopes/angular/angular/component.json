@@ -1,0 +1,25 @@
+{
+  "componentId": {
+    "name": "angular"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "devDependencies": {
+          "@teambit/harmony": "^0.2.11",
+          "@teambit/legacy": "^1.0.91",
+          "buffer": "6.0.3",
+          "events": "3.3.0",
+          "fs-extra": "9.1.0",
+          "identity-obj-proxy": "3.0.0",
+          "jest": "26.6.3",
+          "jest-environment-jsdom": "27.0.3",
+          "pino-pretty": "5.0.2",
+          "process": "0.11.10",
+          "react-dev-utils": "10.2.1"
+        }
+      }
+    }
+  }
+}

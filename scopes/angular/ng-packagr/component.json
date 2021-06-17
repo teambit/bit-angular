@@ -1,0 +1,19 @@
+{
+  "componentId": {
+    "name": "ng-packagr"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "devDependencies": {
+          "@teambit/harmony": "^0.2.11",
+          "@teambit/legacy": "^1.0.91"
+        },
+        "peerDependencies": {
+          "ng-packagr": ">=9.0.0"
+        }
+      }
+    }
+  }
+}
