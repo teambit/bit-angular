@@ -3,14 +3,14 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
-// import { LazyLoadComponent } from './lazy-load/lazy-load.component';
-// import { LazyLoadDirective } from './lazy-load/lazy-load.directive';
+import { LazyLoadComponent } from './lazy-load/lazy-load.component';
+import { LazyLoadDirective } from './lazy-load/lazy-load.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
-    // LazyLoadDirective,
-    // LazyLoadComponent
+    LazyLoadDirective,
+    LazyLoadComponent
   ],
   imports: [
     CommonModule,
@@ -19,5 +19,4 @@ import { AppComponent } from './app.component';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule {
-}
+export class AppModule {}

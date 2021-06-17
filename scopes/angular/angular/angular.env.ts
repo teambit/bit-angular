@@ -1,6 +1,7 @@
-import { join } from 'path';
 import { BuildTask } from '@teambit/builder';
-import { Compiler, CompilerMain, CompilerOptions } from '@teambit/compiler';
+import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
+import { CompilerMain, CompilerOptions } from '@teambit/compiler';
+import { CompositionsMain } from '@teambit/compositions';
 import {
   BuilderEnv,
   DependenciesEnv,
@@ -18,17 +19,13 @@ import { Tester, TesterMain } from '@teambit/tester';
 import { TsCompilerOptionsWithoutTsConfig, TypescriptMain } from '@teambit/typescript';
 import { WebpackConfigTransformer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import * as jestM from 'jest';
 import { TsConfigSourceFile } from 'typescript';
-import { CompositionsMain } from '@teambit/compositions';
-import { PreviewMain } from '@teambit/preview';
 import { AngularVersionAdapter } from './angular-version-adapter';
 import { AngularAspect } from './angular.aspect';
 import { AngularDevServer } from './angular.dev-server';
 import { AngularMainConfig } from './angular.main.runtime';
 import { eslintConfig } from './eslint/eslintrc';
-// import previewConfigFactory from './webpack/webpack.config.preview';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -49,8 +46,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
     private tester: TesterMain,
     private eslint: ESLintMain,
     private ngPackagrAspect: NgPackagrMain,
-    private compositions: CompositionsMain,
-    private preview: PreviewMain
+    private compositions: CompositionsMain
   ) {}
 
   /**
@@ -112,17 +108,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit build`
    */
   getMounter() {
-    return ''; // require.resolve('./mount');
-  }
-
-  /**
-   * Returns the path to a file containing a function `linkModules` that will handle previews (compositions & overviews).
-   * See function `generateLink`.
-   * Defaults to preview.preview.runtime
-   * Required for `bit start` & `bit build`
-   */
-  getLinkModulesPath() {
-    return ''; //require.resolve('./angular.preview.runtime');
+    return require.resolve('./app/src/mount');
   }
 
   /**
@@ -130,8 +116,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit build`
    */
   getDocsTemplate() {
-    // return require.resolve('./docs');
-    return ''; // TODO(ocombe)
+    return require.resolve('./angular.preview.runtime');
   }
 
   /**
@@ -184,14 +169,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit start`
    */
   async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    // const moduleMap = this.compositions.getPreviewFiles(context.components).filter((value) => value.length !== 0);
-    //
-    // const compiler: Compiler = context.env.getCompiler(context);
-    // const paths = moduleMap.map((files) => {
-    //   return files.map((file) => compiler.getDistPathBySrcPath(file.relative));
-    // });
-
-    return new AngularDevServer(this.workspace, this.webpack, this.adapter).createDevServer(context, transformers);
+    return new AngularDevServer(this.workspace, this.webpack, this.adapter, this.compositions).createDevServer(context, transformers);
   }
 
   /**

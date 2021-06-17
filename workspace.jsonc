@@ -89,7 +89,7 @@
       //      "teambit.angular/angular": {}
       //      "teambit.react/react": {}
     }
-  },
+  }
   /**
    * disable previews for now because we don't have a bundler yet
    **/

@@ -1,18 +1,17 @@
-import { MainRuntime } from '@teambit/cli';
-import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
-import { ESLintAspect, ESLintMain } from '@teambit/eslint';
-import { EnvsAspect, EnvsMain } from '@teambit/envs';
-import { JestAspect, JestMain } from '@teambit/jest';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
+import { MainRuntime } from '@teambit/cli';
+import { CompilerAspect, CompilerMain } from '@teambit/compiler';
+import CompositionsAspect, { CompositionsMain } from '@teambit/compositions';
+import { EnvsAspect, EnvsMain } from '@teambit/envs';
+import { ESLintAspect, ESLintMain } from '@teambit/eslint';
+import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
+import { JestAspect, JestMain } from '@teambit/jest';
+import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
 import { PkgAspect, PkgMain } from '@teambit/pkg';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import TesterAspect, { TesterMain } from '@teambit/tester';
 import { TypescriptAspect, TypescriptMain } from '@teambit/typescript';
 import { WebpackAspect, WebpackMain } from '@teambit/webpack';
-import { CompilerAspect, CompilerMain } from '@teambit/compiler';
-import TesterAspect, { TesterMain } from '@teambit/tester';
-import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
-import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
-import PreviewAspect, { PreviewMain } from '@teambit/preview';
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { AngularAspect } from './angular.aspect';
 import { AngularEnv } from './angular.env';
 import { componentTemplates } from './angular.templates';
@@ -43,8 +42,7 @@ type AngularDeps = [
   ApplicationMain,
   GeneratorMain,
   NgPackagrMain,
-  CompositionsMain,
-  PreviewMain
+  CompositionsMain
 ];
 
 export class AngularMain {
@@ -62,23 +60,11 @@ export class AngularMain {
     ApplicationAspect,
     GeneratorAspect,
     NgPackagrAspect,
-    CompositionsAspect,
-    PreviewAspect
+    CompositionsAspect
   ];
   static runtime = MainRuntime;
 
-  constructor(
-    /**
-     * an instance of the Angular env.
-     */
-    readonly angularEnv: AngularEnv
-  ) {}
-
-  /**
-   * override the env's dev server and preview webpack configurations.
-   * Replaces both overrideDevServerConfig and overridePreviewConfig
-   */
-  // useWebpack = this.react.useWebpack.bind(this.react);
+  constructor(readonly angularEnv: AngularEnv) {}
 
   static async provider([
     envs,
@@ -93,8 +79,7 @@ export class AngularMain {
     application,
     generator,
     ngPackagr,
-    compositions,
-    preview
+    compositions
   ]: AngularDeps, config: AngularMainConfig) {
     const angularEnv = new AngularEnv(
       config,
@@ -107,8 +92,7 @@ export class AngularMain {
       tester,
       eslint,
       ngPackagr,
-      compositions,
-      preview
+      compositions
     );
     await angularEnv.useVersion(config.angularVersion);
     const angularMain = new AngularMain(angularEnv);

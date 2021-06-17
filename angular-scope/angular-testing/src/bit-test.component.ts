@@ -1,17 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { BitTestService } from './compositions/bit-test.service';
 
 @Component({
   selector: 'bit-test',
   template: `
-      <p>
-      bit-test works!
-      </p>
-        `,
-  styles: [
-  ]
+      <p>bit-test component works!</p>
+      <small>{{ service.content }}</small>
+        `
 })
-export class BitTestComponent implements OnInit {
-  constructor() {}
-
-  ngOnInit(): void {}
+export class BitTestComponent {
+  constructor(public service: BitTestService) {}
 }

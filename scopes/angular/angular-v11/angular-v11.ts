@@ -21,7 +21,8 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularVersionAdapter, webpack4ConfigFactory } from '@teambit/angular';
+import { AngularVersionAdapter } from '@teambit/angular';
+import { webpack4ConfigFactory } from './webpack4.dev.config';
 import { DevServerContext } from '@teambit/bundler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
@@ -138,7 +139,7 @@ export class AngularV11 implements AngularVersionAdapter {
     return webpackConfig;
   }
 
-  async getDevWebpackConfig(context: DevServerContext, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer> {
+  async getDevWebpackConfig(context: DevServerContext, tsconfigPath: string, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
       baseHref: path.posix.join(context.rootPath, context.publicPath),
@@ -147,7 +148,7 @@ export class AngularV11 implements AngularVersionAdapter {
       index: "src/index.html",
       main: "src/main.ts",
       polyfills: "src/polyfills.ts",
-      tsConfig: 'tsconfig.app.json',
+      tsConfig: tsconfigPath,
       assets: [
         "src/favicon.ico",
         "src/assets"
@@ -165,7 +166,7 @@ export class AngularV11 implements AngularVersionAdapter {
       sourceMap: true,
       showCircularDependencies: true,
       // inlineStyleLanguage: InlineStyleLanguage.Scss,
-      watch: true, // TODO: doesn't work
+      watch: false, // TODO: doesn't work
       // deployUrl: undefined,
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
@@ -246,7 +247,6 @@ export class AngularV11 implements AngularVersionAdapter {
     }
 
     if (setup === 'serve' && browserOptions.index) {
-      context.generateIndex = false;
       const { scripts = [], styles = [] } = browserOptions;
       const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
       const entrypoints = generateEntryPoints({ scripts, styles });

@@ -48,5 +48,5 @@ export interface AngularVersionAdapter {
   /**
    * Get the default Angular webpack config.
    */
-  getDevWebpackConfig(context: DevServerContext, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer>): Promise<WebpackConfigWithDevServer>;
+  getDevWebpackConfig(context: DevServerContext, tsConfigPath: string, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer>): Promise<WebpackConfigWithDevServer>;
 }

@@ -22,7 +22,8 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularVersionAdapter, webpack5ConfigFactory } from '@teambit/angular';
+import { AngularVersionAdapter } from '@teambit/angular';
+import { webpack5ConfigFactory } from './webpack5.dev.config';
 import { DevServerContext } from '@teambit/bundler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
@@ -140,7 +141,7 @@ export class AngularV12 implements AngularVersionAdapter {
     return webpackConfig;
   }
 
-  async getDevWebpackConfig(context: DevServerContext, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer> {
+  async getDevWebpackConfig(context: DevServerContext, tsconfigPath: string, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
       baseHref: path.posix.join(context.rootPath, context.publicPath),
@@ -149,7 +150,7 @@ export class AngularV12 implements AngularVersionAdapter {
       index: "src/index.html",
       main: "src/main.ts",
       polyfills: "src/polyfills.ts",
-      tsConfig: 'tsconfig.app.json',
+      tsConfig: tsconfigPath,
       assets: [
         "src/favicon.ico",
         "src/assets"
@@ -210,6 +211,9 @@ export class AngularV12 implements AngularVersionAdapter {
       {}
     );
 
+    // Add bit generated files to the list of entries
+    (webpackConfig as any).entry.bit = context.entry;
+
     // @ts-ignore
     if (extraOptions.liveReload && !extraOptions.hmr) {
       // This is needed because we cannot use the inline option directly in the config
@@ -247,7 +251,6 @@ export class AngularV12 implements AngularVersionAdapter {
     }
 
     if (setup === 'serve' && browserOptions.index) {
-      context.generateIndex = false;
       const { scripts = [], styles = [] } = browserOptions;
       const { options: compilerOptions } = readTsconfig(browserOptions.tsConfig, workspaceRoot);
       const target = compilerOptions.target || ts.ScriptTarget.ES5;
