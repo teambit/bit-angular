@@ -150,10 +150,9 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Returns a tester
    * Required for `bit start` & `bit test`
    */
-  getTester(jestConfigPath: string, jestModule = jestM): Tester {
-    // TODO(ocombe)
+  getTester(jestConfigPath: string): Tester {
     const config = jestConfigPath || require.resolve('./jest/jest.config');
-    return this.jestAspect.createTester(config, jestModule);
+    return this.jestAspect.createTester(config, jestM);
   }
 
   /**
