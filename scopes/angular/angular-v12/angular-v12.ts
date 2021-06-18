@@ -173,7 +173,7 @@ export class AngularV12 implements AngularVersionAdapter {
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
     };
-    const workspaceRoot = path.resolve(require.resolve('@teambit/angular'), '../../app');
+    const workspaceRoot = path.resolve(require.resolve('@teambit/angular'), '../../preview');
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');
     const sourceRoot = normalize('src');

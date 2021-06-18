@@ -57,7 +57,7 @@ export class AngularDevServer {
    */
   writeTsconfig(context: DevServerContext) {
     const compositionsFilesPaths = new Set<string>();
-    const appPath = resolve(require.resolve('@teambit/angular'), '../../app/');
+    const appPath = resolve(require.resolve('@teambit/angular'), '../../preview/');
     const dirPath = join(this.tempFolder, context.id);
     if (!existsSync(dirPath)) mkdirSync(dirPath, { recursive: true });
 

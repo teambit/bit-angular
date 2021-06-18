@@ -108,7 +108,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit build`
    */
   getMounter() {
-    return require.resolve('./app/src/mount');
+    return require.resolve('./preview/src/mount');
   }
 
   /**
@@ -116,7 +116,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit build`
    */
   getDocsTemplate() {
-    return require.resolve('./angular.preview.runtime');
+    return require.resolve('./preview/src/docs');
   }
 
   /**

@@ -1,8 +1,8 @@
-import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppComponent } from './app.component';
+import { DocsModule } from './docs/docs.module';
 import { LazyLoadComponent } from './lazy-load/lazy-load.component';
 import { LazyLoadDirective } from './lazy-load/lazy-load.directive';
 
@@ -13,8 +13,8 @@ import { LazyLoadDirective } from './lazy-load/lazy-load.directive';
     LazyLoadComponent
   ],
   imports: [
-    CommonModule,
-    BrowserModule
+    BrowserModule,
+    DocsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,14 +1,16 @@
 import {
+  ChangeDetectorRef,
   Component,
   ComponentFactoryResolver,
+  ComponentRef,
   Injector,
   OnDestroy,
   OnInit,
   Type,
   ViewChild,
-  ɵNgModuleDef,
-  ChangeDetectorRef
+  ɵNgModuleDef
 } from '@angular/core';
+import { DocsComponent } from '../docs/docs.component';
 import { LazyLoadDirective } from './lazy-load.directive';
 
 @Component({
@@ -19,36 +21,48 @@ import { LazyLoadDirective } from './lazy-load.directive';
 })
 export class LazyLoadComponent implements OnInit, OnDestroy {
   @ViewChild(LazyLoadDirective, { static: true }) lazyLoad!: LazyLoadDirective;
-  constructor(private cfr: ComponentFactoryResolver, private injector: Injector, private cdr: ChangeDetectorRef) {}
+
+  constructor(private cfr: ComponentFactoryResolver, private injector: Injector, private cdr: ChangeDetectorRef) {
+  }
 
   /**
    * Unwrap a value which might be behind a closure (for forward declaration reasons).
    */
-  private maybeUnwrapFn<T>(value: T|(() => T)): T {
+  private maybeUnwrapFn<T>(value: T | (() => T)): T {
     return value instanceof Function ? value() : value;
   }
 
-  private insertComponent(components: Type<any>[]) {
+  private insertComponent(components: Type<any>[]): ComponentRef<any>[] {
     this.lazyLoad.viewContainerRef.clear();
+    const cmpRefs: ComponentRef<any>[] = [];
     components.forEach(component => {
       const componentFactory = this.cfr.resolveComponentFactory(component);
-      this.lazyLoad.viewContainerRef.createComponent(componentFactory);
+      cmpRefs.push(this.lazyLoad.viewContainerRef.createComponent(componentFactory));
     });
     this.cdr.detectChanges();
+    return cmpRefs;
   }
 
-  private insertModule(module: Type<any>) {
+  private insertModule(module: Type<any>): void {
     const moduleProps = Reflect.get(module, 'ɵmod') as ɵNgModuleDef<any>;
-    this.insertComponent(this.maybeUnwrapFn(moduleProps.bootstrap))
+    this.insertComponent(this.maybeUnwrapFn(moduleProps.bootstrap));
+  }
+
+  private insertDocs(template: string) {
+    const cmpRefs = this.insertComponent([DocsComponent]);
+    const docsCmp = cmpRefs[0].instance as DocsComponent;
+    docsCmp.template = template;
   }
 
   ngOnInit(): void {
     window.onComponentLoad$.subscribe(component => this.insertComponent([component]));
     window.onModuleLoad$.subscribe(module => this.insertModule(module));
+    window.onDocsLoad$.subscribe(template => this.insertDocs(template));
   }
 
   ngOnDestroy(): void {
     window.onComponentLoad$.unsubscribe();
     window.onModuleLoad$.unsubscribe();
+    window.onDocsLoad$.unsubscribe();
   }
 }

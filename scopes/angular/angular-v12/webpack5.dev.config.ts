@@ -6,6 +6,10 @@ import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
+import RemarkAutolink from 'remark-autolink-headings';
+import RemarkFrontmatter from 'remark-frontmatter';
+import RemarkHTML from 'remark-html';
+import RemarkPrism from 'remark-prism';
 import { ProvidePlugin } from 'webpack';
 
 const clientHost = process.env.WDS_SOCKET_HOST;
@@ -142,6 +146,28 @@ export function webpack5ConfigFactory(devServerID: string, workspaceDir: string,
       fallback: fallbacks as any
     },
 
+    module: {
+      rules: [
+        {
+          test: /\.md$/,
+          use: [
+            {
+              loader: "html-loader",
+            },
+            {
+              loader: "remark-loader",
+              options: {
+                removeFrontMatter: false,
+                remarkOptions: {
+                  plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
+                },
+              }
+            },
+          ]
+        }
+      ]
+    },
+
     plugins: [
       new ProvidePlugin({
         process: require.resolve('process/browser'),
@@ -150,9 +176,7 @@ export function webpack5ConfigFactory(devServerID: string, workspaceDir: string,
 
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID }
-      }),
-
-      // new DefinePlugin(globalDefinitions)
+      })
     ]
   };
 

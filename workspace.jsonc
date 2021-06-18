@@ -34,7 +34,9 @@
     "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
-        "@teambit/legacy": "^1.0.91"
+        "@teambit/legacy": "^1.0.91",
+        // used for "pubsub"
+        "react": "17.0.2"
       },
       "devDependencies": {
         "eslint-config-airbnb-typescript": {

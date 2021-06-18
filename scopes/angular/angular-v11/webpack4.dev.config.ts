@@ -6,7 +6,10 @@ import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
-import { DefinePlugin } from 'webpack';
+import RemarkAutolink from 'remark-autolink-headings';
+import RemarkFrontmatter from 'remark-frontmatter';
+import RemarkHTML from 'remark-html';
+import RemarkPrism from 'remark-prism';
 
 const sockHost = process.env.WDS_SOCKET_HOST;
 const sockPath = process.env.WDS_SOCKET_PATH; // default: '/sockjs-node'
@@ -127,12 +130,32 @@ export function webpack4ConfigFactory(devServerID: string, workspaceDir: string,
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md']
     },
 
+    module: {
+      rules: [
+        {
+          test: /\.md$/,
+          use: [
+            {
+              loader: "html-loader",
+            },
+            {
+              loader: "remark-loader",
+              options: {
+                removeFrontMatter: false,
+                remarkOptions: {
+                  plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
+                },
+              }
+            },
+          ]
+        }
+      ]
+    },
+
     plugins: [
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID }
-      }),
-
-      // new DefinePlugin(globalDefinitions) as any
+      })
     ]
   };
 }
