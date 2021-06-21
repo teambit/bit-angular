@@ -13,11 +13,11 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/angular/angular"
     },
-    "eslint-config-bit-angular": {
+    "angular-eslint-config": {
         "scope": "",
         "version": "",
-        "mainFile": "index.js",
-        "rootDir": "scopes/angular/eslint-config-bit-angular"
+        "mainFile": "index.ts",
+        "rootDir": "scopes/angular/eslint-config"
     },
     "ng-packagr": {
         "scope": "",

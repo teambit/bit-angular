@@ -1,41 +1,23 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  settings: {
-    react: {
-      version: 'detect',
-    },
-    'import/resolver': {
-      node: {
-        extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
-  },
+  ignorePatterns: ["node_modules/"],
   parserOptions: {
-    project: require.resolve('./tsconfig.json'),
-    // createDefaultProgram: true,
-    ecmaFeatures: {
-      jsx: true, // Allows for the parsing of JSX
-    },
+    createDefaultProgram: true,
+    project: require.resolve('./tsconfig.json')
+  },
+  env: {
+    browser: true,
+    node: true,
+    mocha: true,
+    es6: true,
+    jest: true
   },
   extends: [
-    'airbnb-typescript/base',
-    // 'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:@typescript-eslint/recommended',
-    // 'plugin:eslint-comments/recommended',
-    'plugin:promise/recommended',
-    'plugin:react/recommended',
-    // 'plugin:unicorn/recommended',
-    // 'plugin:mocha/recommended',
-    'prettier',
-    'prettier/@typescript-eslint',
+    "plugin:markdown/recommended"
   ],
   plugins: [
     '@typescript-eslint',
-    // 'eslint-comments',
-    'promise',
-    // 'simple-import-sort',
-    // 'mocha',
-    // 'unicorn'
   ],
   rules: {
     complexity: ['error', { max: 25 }],
@@ -46,6 +28,7 @@ module.exports = {
       { functions: false, classes: true, variables: true, typedefs: true },
     ],
     '@typescript-eslint/return-await': 'error',
+    'no-return-await': 'off',
     '@typescript-eslint/no-misused-promises': 'error',
     '@typescript-eslint/no-floating-promises': 'error',
     '@typescript-eslint/explicit-module-boundary-types': 'off',
@@ -113,19 +96,5 @@ module.exports = {
 
     // ERRORS OF plugin:react/recommended
     'react/no-unescaped-entities': 'off',
-  },
-  // return the no-cycle once "import type" is working
-  // overrides: [
-  //   {
-  //     files: ['src/extensions/**/*.ts'],
-  //     rules: {
-  //       'import/no-cycle': ['error']
-  //     }
-  //   }
-  // ],
-  env: {
-    browser: true,
-    node: true,
-    mocha: true,
-  },
+  }
 };

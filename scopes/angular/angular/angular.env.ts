@@ -25,7 +25,7 @@ import { AngularVersionAdapter } from './angular-version-adapter';
 import { AngularAspect } from './angular.aspect';
 import { AngularDevServer } from './angular.dev-server';
 import { AngularMainConfig } from './angular.main.runtime';
-import { eslintConfig } from './eslint/eslintrc';
+import { eslintConfig } from '@teambit/angular-eslint-config';
 
 /**
  * a component environment built for [Angular](https://angular.io).
