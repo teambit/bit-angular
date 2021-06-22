@@ -23,7 +23,6 @@ import {
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { AngularVersionAdapter } from '@teambit/angular';
-import { webpack5ConfigFactory } from './webpack5.dev.config';
 import { DevServerContext } from '@teambit/bundler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
@@ -31,8 +30,9 @@ import { WebpackConfigWithDevServer } from '@teambit/webpack';
 import { ngPackagr } from 'ng-packagr';
 import path from 'path';
 import * as ts from 'typescript';
-import webpack, { Configuration } from 'webpack';
+import { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
+import { webpack5ConfigFactory } from './webpack5.dev.config';
 
 export class AngularV12 implements AngularVersionAdapter {
   get dependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject> {
@@ -62,7 +62,9 @@ export class AngularV12 implements AngularVersionAdapter {
   }
 
   get webpack() {
-    return webpack;
+    const buildAngular = require.resolve('@angular-devkit/build-angular');
+    const webpackPath = require.resolve('webpack', {paths: [buildAngular]});
+    return require(webpackPath);
   }
 
   get webpackDevServer() {

@@ -20,13 +20,13 @@ export class AngularPreview {
     };
   }
 
-  static runtime = PreviewRuntime;
+  static runtime: any = PreviewRuntime;
 
   static slots = [Slot.withType<Provider>()];
 
-  static dependencies = [PreviewAspect];
+  static dependencies: any = [PreviewAspect];
 
-  static async provider([preview]: [PreviewPreview], config, [providerSlot]: [ProviderSlot]) {
+  static async provider([preview]: [PreviewPreview], config: any, [providerSlot]: [ProviderSlot]) {
     const angularPreview = new AngularPreview(preview, providerSlot);
 
     // angularPreview.registerProvider([HighlighterProvider]);

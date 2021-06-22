@@ -29,7 +29,7 @@ import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer } from '@teambit/webpack';
 import { ngPackagr } from 'ng-packagr';
 import path from 'path';
-import webpack, { Configuration } from 'webpack';
+import { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
 
 export class AngularV11 implements AngularVersionAdapter {
@@ -60,7 +60,9 @@ export class AngularV11 implements AngularVersionAdapter {
   }
 
   get webpack() {
-    return webpack;
+    const buildAngular = require.resolve('@angular-devkit/build-angular');
+    const webpackPath = require.resolve('webpack', {paths: [buildAngular]});
+    return require(webpackPath);
   }
 
   get webpackDevServer() {

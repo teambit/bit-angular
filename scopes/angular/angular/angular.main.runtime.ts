@@ -47,7 +47,7 @@ type AngularDeps = [
 
 export class AngularMain {
   static slots = [];
-  static dependencies = [
+  static dependencies: any = [
     EnvsAspect,
     JestAspect,
     TypescriptAspect,
@@ -62,7 +62,7 @@ export class AngularMain {
     NgPackagrAspect,
     CompositionsAspect
   ];
-  static runtime = MainRuntime;
+  static runtime: any = MainRuntime;
 
   constructor(readonly angularEnv: AngularEnv) {}
 
