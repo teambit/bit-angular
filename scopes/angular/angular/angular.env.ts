@@ -23,7 +23,7 @@ import * as jestM from 'jest';
 import { TsConfigSourceFile } from 'typescript';
 import { AngularVersionAdapter } from './angular-version-adapter';
 import { AngularAspect } from './angular.aspect';
-import { AngularDevServer } from './angular.dev-server';
+import { AngularWebpack } from './angular.webpack';
 import { AngularMainConfig } from './angular.main.runtime';
 import { eslintConfig } from '@teambit/angular-eslint-config';
 
@@ -65,12 +65,12 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
   async useVersion(version = 12) {
     switch (version) {
       case 11:
-        const AngularV11 = (await import("@teambit/angular-v11")).default;
+        const AngularV11 = require("@teambit/angular-v11").default;
         this.adapter = new AngularV11();
         break;
       case 12:
       default:
-        const AngularV12 = (await import("@teambit/angular-v12")).default;
+        const AngularV12 = require("@teambit/angular-v12").default;
         this.adapter = new AngularV12();
     }
   }
@@ -124,14 +124,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit build` & `build start`
    */
   async getBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
-    // throw new Error('done');
-    // const defaultConfig = previewConfigFactory(path);
-    // const defaultTransformer: WebpackConfigTransformer = (configMutator) => {
-    //   return configMutator.merge([defaultConfig]);
-    // };
-    //
-    // return this.webpack.createBundler(context, [defaultTransformer, ...transformers]);
-    return null as any;
+    return new AngularWebpack(this.workspace, this.webpack, this.adapter, this.compositions).createBundler(context, transformers);
   }
 
   /**
@@ -168,7 +161,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit start`
    */
   async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    return new AngularDevServer(this.workspace, this.webpack, this.adapter, this.compositions).createDevServer(context, transformers);
+    return new AngularWebpack(this.workspace, this.webpack, this.adapter, this.compositions).createDevServer(context, transformers);
   }
 
   /**

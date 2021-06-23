@@ -52,6 +52,7 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
     const cmpRefs = this.insertComponent([DocsComponent]);
     const docsCmp = cmpRefs[0].instance as DocsComponent;
     docsCmp.template = template;
+    this.cdr.detectChanges();
   }
 
   ngOnInit(): void {

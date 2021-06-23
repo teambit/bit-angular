@@ -1,6 +1,6 @@
 import { DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { getCompilerConfig } from '@angular-devkit/build-angular/src/browser';
-import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import { Schema as BrowserBuilderSchema, OutputHashing } from '@angular-devkit/build-angular/src/browser/schema';
 import {
   BuildBrowserFeatures,
   normalizeBrowserSchema,
@@ -21,9 +21,10 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularVersionAdapter } from '@teambit/angular';
-import { webpack4ConfigFactory } from './webpack4.dev.config';
-import { DevServerContext } from '@teambit/bundler';
+import { AngularVersionAdapter, WebpackSetup } from '@teambit/angular';
+import { webpack4ServeConfigFactory } from './webpack4.serve.config';
+import { webpack4BuildConfigFactory } from './webpack4.build.config';
+import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer } from '@teambit/webpack';
@@ -60,6 +61,8 @@ export class AngularV11 implements AngularVersionAdapter {
   }
 
   get webpack() {
+    // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
+    // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
     const webpackPath = require.resolve('webpack', {paths: [buildAngular]});
     return require(webpackPath);
@@ -69,8 +72,12 @@ export class AngularV11 implements AngularVersionAdapter {
     return WsDevServer;
   }
 
-  get webpackConfigFactory() {
-    return webpack4ConfigFactory;
+  get webpackServeConfigFactory() {
+    return webpack4ServeConfigFactory;
+  }
+
+  get webpackBuildConfigFactory() {
+    return webpack4BuildConfigFactory;
   }
 
   /**
@@ -141,12 +148,12 @@ export class AngularV11 implements AngularVersionAdapter {
     return webpackConfig;
   }
 
-  async getDevWebpackConfig(context: DevServerContext, tsconfigPath: string, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer> {
+  async getWebpackConfig(context: DevServerContext | BundlerContext, entryFiles: string[], tsconfigPath: string, workspaceRoot: string, logger: Logger, setup: WebpackSetup, extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
-      baseHref: path.posix.join(context.rootPath, context.publicPath),
+      baseHref: './',
       preserveSymlinks: true,
-      outputPath: 'public', // doesn't seem to matter ?
+      outputPath: 'public', // doesn't matter because it will be deleted from the config
       index: "src/index.html",
       main: "src/main.ts",
       polyfills: "src/polyfills.ts",
@@ -161,20 +168,19 @@ export class AngularV11 implements AngularVersionAdapter {
       scripts: [],
       vendorChunk: true,
       namedChunks: true,
-      optimization: false,
-      buildOptimizer: false,
+      optimization: setup === WebpackSetup.Build,
+      buildOptimizer: setup === WebpackSetup.Build,
       aot: true,
       deleteOutputPath: true,
-      sourceMap: true,
-      showCircularDependencies: true,
+      sourceMap: setup === WebpackSetup.Serve,
+      outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
       // inlineStyleLanguage: InlineStyleLanguage.Scss,
-      watch: false, // TODO: doesn't work
+      watch: setup === WebpackSetup.Serve,
       // deployUrl: undefined,
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
     };
 
-    const workspaceRoot = path.resolve(require.resolve('@teambit/angular'), '../../preview');
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');
     const sourceRoot = normalize('src');
@@ -201,7 +207,7 @@ export class AngularV11 implements AngularVersionAdapter {
       getSystemPath(sourceRoot),
       normalizedOptions,
       (wco: BrowserWebpackConfigOptions) => [
-        setup === 'serve' ? getDevServerConfig(wco) : {},
+        setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
         getCommonConfig(wco),
         getBrowserConfig(wco),
         getStylesConfig(wco), // TODO
@@ -211,6 +217,9 @@ export class AngularV11 implements AngularVersionAdapter {
       loggerApi,
       {}
     );
+
+    // Add bit generated files to the list of entries
+    (webpackConfig as any).entry.bit = entryFiles;
 
     // @ts-ignore
     if (extraOptions.liveReload && !extraOptions.hmr) {
@@ -248,7 +257,7 @@ export class AngularV11 implements AngularVersionAdapter {
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }
 
-    if (setup === 'serve' && browserOptions.index) {
+    if (setup === WebpackSetup.Serve && browserOptions.index) {
       const { scripts = [], styles = [] } = browserOptions;
       const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
       const entrypoints = generateEntryPoints({ scripts, styles });

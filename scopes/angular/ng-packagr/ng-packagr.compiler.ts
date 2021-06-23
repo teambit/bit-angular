@@ -131,7 +131,7 @@ export class NgPackagrCompiler implements Compiler {
               dataToPersist.addFile(file);
             }
           });
-          dataToPersist.addBasePath(this.workspace.path);
+          dataToPersist.addBasePath(join(capsule.path, this.distDir));
           await dataToPersist.persistAllToFS();
         }
 
@@ -147,10 +147,11 @@ export class NgPackagrCompiler implements Compiler {
 
   /**
    * given a source file, return its parallel in the dists. e.g. index.ts => dist/index.js
+   * used by `bit build`
    */
   getDistPathBySrcPath(srcPath: string): string {
-    const fileWithJSExtIfNeeded = this.replaceFileExtToJs(srcPath);
-    return join(this.distDir, fileWithJSExtIfNeeded);
+    // we use the typescript compiler, so we just need to return the typescript src file path
+    return srcPath;
   }
 
   /**

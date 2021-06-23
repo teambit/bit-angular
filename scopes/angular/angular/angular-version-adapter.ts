@@ -1,10 +1,10 @@
 import { ParsedConfiguration } from '@angular/compiler-cli';
-import { DevServerContext } from '@teambit/bundler';
+import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
 import { PubsubMain } from '@teambit/pubsub';
 import { WebpackConfigWithDevServer } from '@teambit/webpack';
-import webpack from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import WsDevServer from 'webpack-dev-server';
 
 export interface NgPackagr {
@@ -30,6 +30,11 @@ export interface NgPackagr {
   build(): Promise<void>;
 }
 
+export enum WebpackSetup {
+  Serve = 'serve',
+  Build = 'build'
+}
+
 export interface AngularVersionAdapter {
   /**
    * List of dependencies
@@ -43,10 +48,11 @@ export interface AngularVersionAdapter {
 
   webpackDevServer: Partial<typeof WsDevServer>;
 
-  webpackConfigFactory: (devServerID: string, workspaceDir: string, entryFiles: string[], publicRoot: string, publicPath: string, pubsub: PubsubMain, globalDefinitions?: Record<string, any>) => WebpackConfigWithDevServer
+  webpackServeConfigFactory: (devServerID: string, workspaceDir: string, entryFiles: string[], publicRoot: string, publicPath: string, pubsub: PubsubMain) => WebpackConfigWithDevServer
+  webpackBuildConfigFactory: (entryFiles: string[], rootPath: string) => Configuration
 
   /**
    * Get the default Angular webpack config.
    */
-  getDevWebpackConfig(context: DevServerContext, tsConfigPath: string, logger: Logger, setup: 'serve' | 'build', extraOptions: Partial<WebpackConfigWithDevServer>): Promise<WebpackConfigWithDevServer>;
+  getWebpackConfig(context: DevServerContext | BundlerContext, entryFiles: string[], tsConfigPath: string, rootPath: string, logger: Logger, setup: WebpackSetup, extraOptions: Partial<WebpackConfigWithDevServer>): Promise<WebpackConfigWithDevServer | Configuration>;
 }
