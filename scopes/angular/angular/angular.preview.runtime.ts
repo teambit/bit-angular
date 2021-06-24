@@ -2,7 +2,6 @@ import { Type } from '@angular/core';
 import { SlotRegistry, Slot } from '@teambit/harmony';
 import PreviewAspect, { PreviewPreview, PreviewRuntime } from '@teambit/preview';
 // import { HighlighterProvider } from '@teambit/react.ui.highlighter-provider';
-import { AngularAspect } from './angular.aspect';
 
 export type Provider = Type<any>;
 export type ProviderSlot = SlotRegistry<Provider[]>;
@@ -37,7 +36,5 @@ export class AngularPreview {
     return angularPreview;
   }
 }
-
-AngularAspect.addRuntime(AngularPreview);
 
 export default AngularPreview;

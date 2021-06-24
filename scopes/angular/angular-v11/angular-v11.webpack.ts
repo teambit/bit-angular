@@ -1,13 +1,12 @@
 import { DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { getCompilerConfig } from '@angular-devkit/build-angular/src/browser';
-import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import { Schema as BrowserBuilderSchema, OutputHashing } from '@angular-devkit/build-angular/src/browser/schema';
 import {
   BuildBrowserFeatures,
   normalizeBrowserSchema,
   normalizeOptimization
 } from '@angular-devkit/build-angular/src/utils';
 import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
-import { readTsconfig } from '@angular-devkit/build-angular/src/utils/read-tsconfig';
 import {
   BrowserWebpackConfigOptions,
   generateWebpackConfig,
@@ -22,123 +21,100 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularVersionAdapter, WebpackSetup } from '@teambit/angular';
+import { AngularWebpack, WebpackSetup } from '@teambit/angular';
+import { Workspace } from '@teambit/workspace';
+import { CompositionsMain } from '@teambit/compositions';
+import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
+import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
-import { WebpackConfigWithDevServer } from '@teambit/webpack';
+import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { ngPackagr } from 'ng-packagr';
 import path from 'path';
-import * as ts from 'typescript';
-import { Configuration } from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
-import { webpack5BuildConfigFactory } from './webpack5.build.config';
-import { webpack5DevConfigFactory } from './webpack5.serve.config';
-import { OutputHashing } from '.pnpm/registry.npmjs.org/@angular-devkit/build-angular@12.0.5_f35124f303859d75a04c27a8bd335202/node_modules/@angular-devkit/build-angular/src/server/schema';
+import { AngularV11Aspect } from './angular-v11.aspect';
 
-export class AngularV12 implements AngularVersionAdapter {
-  get dependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject> {
-    return {
-      dependencies: {
-        '@angular/common': '-',
-        '@angular/core': '-',
-        'tslib': '^2.0.0',
-        'rxjs': '-',
-        'zone.js': '-'
-      },
-      devDependencies: {
-        typescript: '-'
-      },
-      peerDependencies: {
-        '@angular/common': '^12.0.0',
-        '@angular/core': '^12.0.0',
-        'rxjs': '^6.0.0',
-        'zone.js': '^0.11.0',
-        'typescript': '~4.2.4'
-      }
-    };
-  }
+export class AngularV11Webpack extends AngularWebpack {
+  webpackDevServer = WsDevServer;
+  webpackServeConfigFactory = webpack4ServeConfigFactory;
+  webpackBuildConfigFactory = webpack4BuildConfigFactory;
+  webpack: typeof webpack;
 
-  get ngPackagr() {
-    return ngPackagr();
-  }
-
-  get webpack() {
+  constructor(workspace: Workspace, webpackMain: WebpackMain, compositions: CompositionsMain) {
+    super(workspace, webpackMain, compositions, AngularV11Aspect);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
     const webpackPath = require.resolve('webpack', {paths: [buildAngular]});
-    return require(webpackPath);
-  }
-
-  get webpackDevServer() {
-    return WsDevServer;
-  }
-
-  get webpackServeConfigFactory() {
-    return webpack5DevConfigFactory;
-  }
-
-  get webpackBuildConfigFactory() {
-    return webpack5BuildConfigFactory;
+    this.webpack = require(webpackPath);
   }
 
   /**
    * Migrate options from webpack-dev-server 3 to 4
    */
-  private migrateConfiguration(webpackConfig: any): Configuration {
-    /**
-     * Removed logLevel in favor of built-in logger
-     * see https://webpack.js.org/configuration/other-options/#infrastructurelogginglevel
-     */
-    delete webpackConfig.devServer.logLevel;
-
+  private migrateConfiguration(webpackConfig: Configuration): Configuration {
+    // /**
+    //  * Removed logLevel in favor of built-in logger
+    //  * see https://webpack.js.org/configuration/other-options/#infrastructurelogginglevel
+    //  */
+    // // @ts-ignore
+    // delete webpackConfig.devServer.logLevel;
+    //
     /**
      * Removed contentBase in favor of the static option
      */
+    // @ts-ignore
     delete webpackConfig.devServer.contentBase;
-
-    /**
-     * Removed publicPath in favor of the dev option
-     */
-    delete webpackConfig.devServer.publicPath;
-
-    /**
-     * Moved overlay to client option
-     */
-    webpackConfig.devServer.client = webpackConfig.devServer.client || {};
-    webpackConfig.devServer.client.overlay = webpackConfig.devServer.overlay;
-    delete webpackConfig.devServer.overlay;
-
-    /**
-     * Removed in favor of the static option
-     */
-    delete webpackConfig.devServer.watchOptions;
-
-    /**
-     * Moved sockPath to client option path
-     */
-    webpackConfig.devServer.client.path = webpackConfig.devServer.sockPath;
-    delete webpackConfig.devServer.sockPath;
-
-    /**
-     * Removed stats in favor of the stats options from webpack
-     */
-    delete webpackConfig.devServer.stats;
-
-    /**
-     * Removed watch to avoid "DEP_WEBPACK_WATCH_WITHOUT_CALLBACK" warning
-      */
-    delete webpackConfig.watch;
-
-    /**
-     * Cleaning up undefined values
-     */
-    Object.keys(webpackConfig.devServer).forEach(option => {
-      if (typeof webpackConfig.devServer[option] === 'undefined') {
-        delete webpackConfig.devServer[option];
-      }
-    })
+    //
+    // /**
+    //  * Removed publicPath in favor of the dev option
+    //  */
+    // // @ts-ignore
+    // delete webpackConfig.devServer.publicPath;
+    //
+    // /**
+    //  * Moved overlay to client option
+    //  */
+    // // @ts-ignore
+    // webpackConfig.devServer.client = webpackConfig.devServer.client || {};
+    // // @ts-ignore
+    // webpackConfig.devServer.client.overlay = webpackConfig.devServer.overlay;
+    // // @ts-ignore
+    // delete webpackConfig.devServer.overlay;
+    //
+    // /**
+    //  * Removed in favor of the static option
+    //  */
+    // // @ts-ignore
+    // delete webpackConfig.devServer.watchOptions;
+    //
+    // /**
+    //  * Moved sockPath to client option path
+    //  */
+    // // @ts-ignore
+    // webpackConfig.devServer.client.path = webpackConfig.devServer.sockPath;
+    // // @ts-ignore
+    // delete webpackConfig.devServer.sockPath;
+    //
+    // /**
+    //  * Removed stats in favor of the stats options from webpack
+    //  */
+    // // @ts-ignore
+    // delete webpackConfig.devServer.stats;
+    //
+    // /**
+    //  * Cleaning up undefined values
+    //  */
+    // // @ts-ignore
+    // Object.keys(webpackConfig.devServer).forEach(option => {
+    //   // @ts-ignore
+    //   if (typeof webpackConfig.devServer[option] === 'undefined') {
+    //     // @ts-ignore
+    //     delete webpackConfig.devServer[option];
+    //   }
+    // })
 
     return webpackConfig;
   }
@@ -163,19 +139,19 @@ export class AngularV12 implements AngularVersionAdapter {
       scripts: [],
       vendorChunk: true,
       namedChunks: true,
-      optimization: false,//setup === WebpackSetup.Build,
-      buildOptimizer: false,//setup === WebpackSetup.Build,
+      optimization: setup === WebpackSetup.Build,
+      buildOptimizer: setup === WebpackSetup.Build,
       aot: true,
       deleteOutputPath: true,
       sourceMap: setup === WebpackSetup.Serve,
       outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
       // inlineStyleLanguage: InlineStyleLanguage.Scss,
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony']
       // deployUrl: undefined,
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
     };
+
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');
     const sourceRoot = normalize('src');
@@ -196,7 +172,7 @@ export class AngularV12 implements AngularVersionAdapter {
       log: logger.console
     } as any as logging.LoggerApi;
 
-    let webpackConfig: Configuration = await generateWebpackConfig(
+    const webpackConfig: any = await generateWebpackConfig(
       getSystemPath(normalizedWorkspaceRoot),
       getSystemPath(projectRoot),
       getSystemPath(sourceRoot),
@@ -213,6 +189,9 @@ export class AngularV12 implements AngularVersionAdapter {
       {}
     );
 
+    // Add bit generated files to the list of entries
+    webpackConfig.entry.bit = entryFiles;
+
     // @ts-ignore
     if (extraOptions.liveReload && !extraOptions.hmr) {
       // This is needed because we cannot use the inline option directly in the config
@@ -225,7 +204,7 @@ export class AngularV12 implements AngularVersionAdapter {
       });
 
       // Remove live-reload code from all entrypoints but not main.
-      // Otherwise, this will break SuppressExtractedTextChunksWebpackPlugin because
+      // Otherwise this will break SuppressExtractedTextChunksWebpackPlugin because
       // 'addDevServerEntrypoints' adds additional entry-points to all entries.
       if (webpackConfig.entry && typeof webpackConfig.entry === 'object' && !Array.isArray(webpackConfig.entry) && webpackConfig.entry.main) {
         for (const [key, value] of Object.entries(webpackConfig.entry)) {
@@ -249,18 +228,10 @@ export class AngularV12 implements AngularVersionAdapter {
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }
 
-    // Add bit generated files to the list of entries
-    (webpackConfig as any).entry.main.unshift(...entryFiles);
-
-    // if (setup === WebpackSetup.Serve && browserOptions.index) {
+    if (setup === WebpackSetup.Serve && browserOptions.index) {
       const { scripts = [], styles = [] } = browserOptions;
-      // const { options: compilerOptions } = readTsconfig(browserOptions.tsConfig, workspaceRoot);
-      // const target = compilerOptions.target || ts.ScriptTarget.ES5;
       const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
       const entrypoints = generateEntryPoints({ scripts, styles });
-      // const moduleEntrypoints = buildBrowserFeatures.isDifferentialLoadingNeeded(target)
-      //   ? generateEntryPoints({ scripts: [], styles })
-      //   : [];
       const normalizedIndex = normalize(browserOptions.index as string);
       const normalizedOptimization = normalizeOptimization(browserOptions.optimization);
       if (!webpackConfig.plugins) {
@@ -282,17 +253,10 @@ export class AngularV12 implements AngularVersionAdapter {
           lang: 'en-US' // TODO(ocombe) support locale
         })
       );
-    // } else {
-      // TODO use IndexHtmlGenerator
-    // }
-
-    delete webpackConfig?.output?.path;
-    webpackConfig.stats = 'errors-only';
-
-    if (setup === WebpackSetup.Serve) {
-      webpackConfig = this.migrateConfiguration(webpackConfig);
     }
 
-    return webpackConfig;
+    webpackConfig.stats = 'errors-only';
+
+    return this.migrateConfiguration(webpackConfig) as WebpackConfigWithDevServer;
   }
 }

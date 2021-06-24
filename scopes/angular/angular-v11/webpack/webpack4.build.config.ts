@@ -5,7 +5,8 @@ import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 
-export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
+// TODO(ocombe): this is webpack 5 build config, not webpack 4
+export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
   const config = {
     mode: 'production',
     // Stop compilation early in production

@@ -1,19 +1,42 @@
+import { ParsedConfiguration } from '@angular/compiler-cli';
 import { BuildContext, BuiltTaskResult, ComponentResult } from '@teambit/builder';
 import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
 import DataToPersist from '@teambit/legacy/dist/consumer/component/sources/data-to-persist';
+import removeFilesAndEmptyDirsRecursively
+  from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
-import { extname, join, resolve, posix } from 'path';
-import removeFilesAndEmptyDirsRecursively
-  from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
-import { TsConfigSourceFile } from 'typescript';
-import { NgPackagr } from '@teambit/angular';
+import { extname, join, posix, resolve } from 'path';
 
+import { TsConfigSourceFile } from 'typescript';
 import { NgPackagrOptions } from './ng-packagr-options';
+
+export interface NgPackagr {
+  /**
+   * Sets the path to the user's "ng-package" file (either `package.json`, `ng-package.json`, or `ng-package.js`)
+   *
+   * @param project File path
+   * @return Self instance for fluent API
+   */
+  forProject(project: string): NgPackagr;
+  /**
+   * Overwrites the default TypeScript configuration.
+   *
+   * @param defaultValues A tsconfig providing default values to the compilation.
+   * @return Self instance for fluent API
+   */
+  withTsConfig(defaultValues: ParsedConfiguration | string): NgPackagr;
+  /**
+   * Builds the project by kick-starting the 'build' transform over an (initially) empty `BuildGraph``
+   *
+   * @return A promisified result of the transformation pipeline.
+   */
+  build(): Promise<void>;
+}
 
 export class NgPackagrCompiler implements Compiler {
   displayName = 'NgPackagr compiler';

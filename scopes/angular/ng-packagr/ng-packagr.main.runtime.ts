@@ -5,8 +5,7 @@ import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { TsConfigSourceFile } from 'typescript';
 import { NgPackagrOptions } from './ng-packagr-options';
 import { NgPackagrAspect } from './ng-packagr.aspect';
-import { NgPackagrCompiler } from './ng-packagr.compiler';
-import { NgPackagr } from '@teambit/angular';
+import { NgPackagr, NgPackagrCompiler } from './ng-packagr.compiler';
 
 type NgPackagerMain = [LoggerMain, Workspace];
 

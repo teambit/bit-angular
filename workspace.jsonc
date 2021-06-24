@@ -53,11 +53,8 @@
   },
   "teambit.generator/generator": {
     "aspects": [
-      "teambit.angular/angular"
+      "teambit.angular/angular-v12"
     ]
-  },
-  "teambit.angular/angular": {
-    "angularVersion": 12
   },
   /**
    * workspace variants allow to set different subsets of configuration for components in your workspace.
@@ -82,13 +79,13 @@
       }
     },
     "angular-scope/angular-testing": {
-      "teambit.angular/angular": {}
+      "teambit.angular/angular-v12": {}
     },
     /**
      * "*" is a special rule which applied on all components in the workspace.
      **/
     "*": {
-      //      "teambit.angular/angular": {}
+      //      "teambit.angular/angular-v12": {}
       //      "teambit.react/react": {}
     }
   }

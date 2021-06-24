@@ -1,6 +1,7 @@
 import { DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { getCompilerConfig } from '@angular-devkit/build-angular/src/browser';
-import { Schema as BrowserBuilderSchema, OutputHashing } from '@angular-devkit/build-angular/src/browser/schema';
+import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import { OutputHashing } from '@angular-devkit/build-angular/src/server/schema';
 import {
   BuildBrowserFeatures,
   normalizeBrowserSchema,
@@ -21,129 +22,90 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularVersionAdapter, WebpackSetup } from '@teambit/angular';
-import { webpack4ServeConfigFactory } from './webpack4.serve.config';
-import { webpack4BuildConfigFactory } from './webpack4.build.config';
+import { WebpackSetup, AngularWebpack } from '@teambit/angular';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
-import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
+import { CompositionsMain } from '@teambit/compositions';
 import { Logger } from '@teambit/logger';
-import { WebpackConfigWithDevServer } from '@teambit/webpack';
-import { ngPackagr } from 'ng-packagr';
+import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
 import path from 'path';
-import { Configuration } from 'webpack';
+import webpack, { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
+import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
+import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
+import { AngularV12Aspect } from './angular-v12.aspect';
 
-export class AngularV11 implements AngularVersionAdapter {
-  get dependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject> {
-    return {
-      dependencies: {
-        '@angular/common': '-',
-        '@angular/core': '-',
-        'tslib': '^2.0.0',
-        'rxjs': '-',
-        'zone.js': '-',
-      },
-      devDependencies: {
-        typescript: '-',
-      },
-      peerDependencies: {
-        '@angular/common': '^11.0.0',
-        '@angular/core': '^11.0.0',
-        'rxjs': '^6.0.0',
-        'zone.js': '^0.11.0',
-        'typescript': '~4.1.0',
-      },
-    };
-  }
+export class AngularV12Webpack extends AngularWebpack {
+  webpackDevServer = WsDevServer;
+  webpackServeConfigFactory = webpack5ServeConfigFactory;
+  webpackBuildConfigFactory = webpack5BuildConfigFactory;
+  webpack: typeof webpack;
 
-  get ngPackagr() {
-    return ngPackagr();
-  }
-
-  get webpack() {
+  constructor(workspace: Workspace, webpackMain: WebpackMain, compositions: CompositionsMain) {
+    super(workspace, webpackMain, compositions, AngularV12Aspect);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
     const webpackPath = require.resolve('webpack', {paths: [buildAngular]});
-    return require(webpackPath);
-  }
-
-  get webpackDevServer() {
-    return WsDevServer;
-  }
-
-  get webpackServeConfigFactory() {
-    return webpack4ServeConfigFactory;
-  }
-
-  get webpackBuildConfigFactory() {
-    return webpack4BuildConfigFactory;
+    this.webpack = require(webpackPath);
   }
 
   /**
    * Migrate options from webpack-dev-server 3 to 4
    */
-  private migrateConfiguration(webpackConfig: Configuration): Configuration {
-    // /**
-    //  * Removed logLevel in favor of built-in logger
-    //  * see https://webpack.js.org/configuration/other-options/#infrastructurelogginglevel
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.logLevel;
-    //
+  private migrateConfiguration(webpackConfig: any): Configuration {
+    /**
+     * Removed logLevel in favor of built-in logger
+     * see https://webpack.js.org/configuration/other-options/#infrastructurelogginglevel
+     */
+    delete webpackConfig.devServer.logLevel;
+
     /**
      * Removed contentBase in favor of the static option
      */
-    // @ts-ignore
     delete webpackConfig.devServer.contentBase;
-    //
-    // /**
-    //  * Removed publicPath in favor of the dev option
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.publicPath;
-    //
-    // /**
-    //  * Moved overlay to client option
-    //  */
-    // // @ts-ignore
-    // webpackConfig.devServer.client = webpackConfig.devServer.client || {};
-    // // @ts-ignore
-    // webpackConfig.devServer.client.overlay = webpackConfig.devServer.overlay;
-    // // @ts-ignore
-    // delete webpackConfig.devServer.overlay;
-    //
-    // /**
-    //  * Removed in favor of the static option
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.watchOptions;
-    //
-    // /**
-    //  * Moved sockPath to client option path
-    //  */
-    // // @ts-ignore
-    // webpackConfig.devServer.client.path = webpackConfig.devServer.sockPath;
-    // // @ts-ignore
-    // delete webpackConfig.devServer.sockPath;
-    //
-    // /**
-    //  * Removed stats in favor of the stats options from webpack
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.stats;
-    //
-    // /**
-    //  * Cleaning up undefined values
-    //  */
-    // // @ts-ignore
-    // Object.keys(webpackConfig.devServer).forEach(option => {
-    //   // @ts-ignore
-    //   if (typeof webpackConfig.devServer[option] === 'undefined') {
-    //     // @ts-ignore
-    //     delete webpackConfig.devServer[option];
-    //   }
-    // })
+
+    /**
+     * Removed publicPath in favor of the dev option
+     */
+    delete webpackConfig.devServer.publicPath;
+
+    /**
+     * Moved overlay to client option
+     */
+    webpackConfig.devServer.client = webpackConfig.devServer.client || {};
+    webpackConfig.devServer.client.overlay = webpackConfig.devServer.overlay;
+    delete webpackConfig.devServer.overlay;
+
+    /**
+     * Removed in favor of the static option
+     */
+    delete webpackConfig.devServer.watchOptions;
+
+    /**
+     * Moved sockPath to client option path
+     */
+    webpackConfig.devServer.client.path = webpackConfig.devServer.sockPath;
+    delete webpackConfig.devServer.sockPath;
+
+    /**
+     * Removed stats in favor of the stats options from webpack
+     */
+    delete webpackConfig.devServer.stats;
+
+    /**
+     * Removed watch to avoid "DEP_WEBPACK_WATCH_WITHOUT_CALLBACK" warning
+     */
+    delete webpackConfig.watch;
+
+    /**
+     * Cleaning up undefined values
+     */
+    Object.keys(webpackConfig.devServer).forEach(option => {
+      if (typeof webpackConfig.devServer[option] === 'undefined') {
+        delete webpackConfig.devServer[option];
+      }
+    })
 
     return webpackConfig;
   }
@@ -176,11 +138,11 @@ export class AngularV11 implements AngularVersionAdapter {
       outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
       // inlineStyleLanguage: InlineStyleLanguage.Scss,
       watch: setup === WebpackSetup.Serve,
+      allowedCommonJsDependencies: ['@teambit/harmony']
       // deployUrl: undefined,
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
     };
-
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');
     const sourceRoot = normalize('src');
@@ -201,7 +163,7 @@ export class AngularV11 implements AngularVersionAdapter {
       log: logger.console
     } as any as logging.LoggerApi;
 
-    const webpackConfig: Configuration = await generateWebpackConfig(
+    let webpackConfig: any = await generateWebpackConfig(
       getSystemPath(normalizedWorkspaceRoot),
       getSystemPath(projectRoot),
       getSystemPath(sourceRoot),
@@ -218,9 +180,6 @@ export class AngularV11 implements AngularVersionAdapter {
       {}
     );
 
-    // Add bit generated files to the list of entries
-    (webpackConfig as any).entry.bit = entryFiles;
-
     // @ts-ignore
     if (extraOptions.liveReload && !extraOptions.hmr) {
       // This is needed because we cannot use the inline option directly in the config
@@ -233,7 +192,7 @@ export class AngularV11 implements AngularVersionAdapter {
       });
 
       // Remove live-reload code from all entrypoints but not main.
-      // Otherwise this will break SuppressExtractedTextChunksWebpackPlugin because
+      // Otherwise, this will break SuppressExtractedTextChunksWebpackPlugin because
       // 'addDevServerEntrypoints' adds additional entry-points to all entries.
       if (webpackConfig.entry && typeof webpackConfig.entry === 'object' && !Array.isArray(webpackConfig.entry) && webpackConfig.entry.main) {
         for (const [key, value] of Object.entries(webpackConfig.entry)) {
@@ -257,35 +216,47 @@ export class AngularV11 implements AngularVersionAdapter {
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }
 
-    if (setup === WebpackSetup.Serve && browserOptions.index) {
-      const { scripts = [], styles = [] } = browserOptions;
-      const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
-      const entrypoints = generateEntryPoints({ scripts, styles });
-      const normalizedIndex = normalize(browserOptions.index as string);
-      const normalizedOptimization = normalizeOptimization(browserOptions.optimization);
-      if (!webpackConfig.plugins) {
-        webpackConfig.plugins = [];
-      }
-      webpackConfig.plugins.push(
-        new IndexHtmlWebpackPlugin({
-          indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
-          outputPath: getIndexOutputFile(normalizedIndex),
-          baseHref: browserOptions.baseHref || '/',
-          entrypoints,
-          moduleEntrypoints: [],
-          noModuleEntrypoints: ['polyfills-es5'],
-          deployUrl: browserOptions.deployUrl,
-          sri: browserOptions.subresourceIntegrity,
-          optimization: normalizedOptimization,
-          WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
-          crossOrigin: browserOptions.crossOrigin,
-          lang: 'en-US' // TODO(ocombe) support locale
-        })
-      );
-    }
+    // Add bit generated files to the list of entries
+    webpackConfig.entry.main.unshift(...entryFiles);
 
+    // if (setup === WebpackSetup.Serve && browserOptions.index) {
+    const { scripts = [], styles = [] } = browserOptions;
+    // const { options: compilerOptions } = readTsconfig(browserOptions.tsConfig, workspaceRoot);
+    // const target = compilerOptions.target || ts.ScriptTarget.ES5;
+    const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
+    const entrypoints = generateEntryPoints({ scripts, styles });
+    // const moduleEntrypoints = buildBrowserFeatures.isDifferentialLoadingNeeded(target)
+    //   ? generateEntryPoints({ scripts: [], styles })
+    //   : [];
+    const normalizedIndex = normalize(browserOptions.index as string);
+    const normalizedOptimization = normalizeOptimization(browserOptions.optimization);
+    if (!webpackConfig.plugins) {
+      webpackConfig.plugins = [];
+    }
+    webpackConfig.plugins.push(
+      new IndexHtmlWebpackPlugin({
+        indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
+        outputPath: getIndexOutputFile(normalizedIndex),
+        baseHref: browserOptions.baseHref || '/',
+        entrypoints,
+        moduleEntrypoints: [],
+        noModuleEntrypoints: ['polyfills-es5'],
+        deployUrl: browserOptions.deployUrl,
+        sri: browserOptions.subresourceIntegrity,
+        optimization: normalizedOptimization,
+        WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
+        crossOrigin: browserOptions.crossOrigin,
+        lang: 'en-US' // TODO(ocombe) support locale
+      })
+    );
+
+    delete webpackConfig?.output?.path;
     webpackConfig.stats = 'errors-only';
 
-    return this.migrateConfiguration(webpackConfig) as WebpackConfigWithDevServer;
+    if (setup === WebpackSetup.Serve) {
+      webpackConfig = this.migrateConfiguration(webpackConfig);
+    }
+
+    return webpackConfig;
   }
 }

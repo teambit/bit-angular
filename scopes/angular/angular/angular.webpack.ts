@@ -2,6 +2,10 @@ import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@t
 import { ComponentID } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
+import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
+import { Logger } from '@teambit/logger';
+import { Aspect } from '@teambit/harmony';
+import { PubsubMain } from '@teambit/pubsub';
 import {
   runTransformersWithContext,
   WebpackBundler,
@@ -13,25 +17,33 @@ import {
   WebpackMain
 } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
 import objectHash from 'object-hash';
 import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
-import { Configuration } from 'webpack';
-import { AngularVersionAdapter, WebpackSetup } from './angular-version-adapter';
-import { AngularAspect } from './angular.aspect';
+import webpack, { Configuration } from 'webpack';
+import WsDevServer from 'webpack-dev-server';
 
-const DEFAULT_TEMP_DIR = join(CACHE_ROOT, AngularAspect.id);
+export enum WebpackSetup {
+  Serve = 'serve',
+  Build = 'build'
+}
 
-export class AngularWebpack {
+export abstract class AngularWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
 
-  constructor(private workspace: Workspace, private webpackMain: WebpackMain, private adapter: AngularVersionAdapter, private compositions: CompositionsMain) {
-    this.tempFolder = workspace?.getTempDir(AngularAspect.id) || DEFAULT_TEMP_DIR;
+  constructor(private workspace: Workspace, private webpackMain: WebpackMain, private compositions: CompositionsMain, angularAspect: Aspect) {
+    this.tempFolder = workspace?.getTempDir(angularAspect.id) || join(CACHE_ROOT, angularAspect.id);
   }
+
+  /** Abstract functions & properties specific to the adapter **/
+  abstract getWebpackConfig(context: DevServerContext | BundlerContext, entryFiles: string[], tsConfigPath: string, rootPath: string, logger: Logger, setup: WebpackSetup, extraOptions: Partial<WebpackConfigWithDevServer>): Promise<WebpackConfigWithDevServer | Configuration>;
+  abstract webpack: Partial<typeof webpack>;
+  abstract webpackDevServer: Partial<typeof WsDevServer>;
+  abstract webpackServeConfigFactory: (devServerID: string, workspaceDir: string, entryFiles: string[], publicRoot: string, publicPath: string, pubsub: PubsubMain) => WebpackConfigWithDevServer
+  abstract webpackBuildConfigFactory: (entryFiles: string[], rootPath: string) => Configuration
 
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
@@ -106,16 +118,15 @@ export class AngularWebpack {
     return targetPath;
   }
 
-
   async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
     // TODO(ocombe) find a better way to get the preview root path
     const rootPath = resolve(require.resolve('@teambit/angular'), '../../preview/');
     const tsconfigPath = this.writeTsconfig(context, rootPath);
 
-    const defaultConfig: any = await this.adapter.getWebpackConfig(context, context.entry, tsconfigPath, rootPath, this.webpackMain.logger, WebpackSetup.Serve, {});
+    const defaultConfig: any = await this.getWebpackConfig(context, context.entry, tsconfigPath, rootPath, this.webpackMain.logger, WebpackSetup.Serve, {});
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) => configMutator.merge([defaultConfig]);
 
-    const config = this.adapter.webpackServeConfigFactory(context.id, this.workspace.path, context.entry, context.rootPath, context.publicPath, this.webpackMain.pubsub);
+    const config = this.webpackServeConfigFactory(context.id, this.workspace.path, context.entry, context.rootPath, context.publicPath, this.webpackMain.pubsub);
     const configMutator = new WebpackConfigMutator(config);
 
     const transformerContext: WebpackConfigTransformContext = { mode: 'dev' };
@@ -125,22 +136,22 @@ export class AngularWebpack {
       transformerContext
     );
 
-    return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.adapter.webpack, this.adapter.webpackDevServer);
+    return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack, this.webpackDevServer);
   }
 
   private createPreviewConfig(targets: Target[]): Configuration[] {
     return targets.map((target) => {
-      return this.adapter.webpackBuildConfigFactory(target.entries, target.outputPath);
+      return this.webpackBuildConfigFactory(target.entries, target.outputPath);
     });
   }
 
   async createBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
     const capsules = context.capsuleNetwork.graphCapsules;
-    const angularCapsule = capsules.getCapsule(ComponentID.fromString(AngularAspect.id))
+    const angularCapsule = capsules.getCapsule(ComponentID.fromString('teambit.angular/angular'))
     const rootPath = join(angularCapsule!.path, 'preview');
     const tsconfigPath = this.writeTsconfig(context, rootPath);
 
-    const defaultConfig: any = await this.adapter.getWebpackConfig(context, context.targets.map(target => target.entries).flat(), tsconfigPath, rootPath, this.webpackMain.logger, WebpackSetup.Build, {});
+    const defaultConfig: any = await this.getWebpackConfig(context, context.targets.map(target => target.entries).flat(), tsconfigPath, rootPath, this.webpackMain.logger, WebpackSetup.Build, {});
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) => configMutator.merge([defaultConfig]);
 
     const configs = this.createPreviewConfig(context.targets);

@@ -5,7 +5,7 @@ import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 
-export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
+export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
   const config = {
     mode: 'production',
     // Stop compilation early in production
@@ -64,29 +64,6 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
     },
 
     plugins: [
-      // new HtmlWebpackPlugin(
-      //   Object.assign(
-      //     {},
-      //     {
-      //       inject: true,
-      //       templateContent: html('Preview'),
-      //     },
-      //     {
-      //       minify: {
-      //         removeComments: true,
-      //         collapseWhitespace: true,
-      //         removeRedundantAttributes: true,
-      //         useShortDoctype: true,
-      //         removeEmptyAttributes: true,
-      //         removeStyleLinkTypeAttributes: true,
-      //         keepClosingSlash: true,
-      //         minifyJS: true,
-      //         minifyCSS: true,
-      //         minifyURLs: true,
-      //       },
-      //     }
-      //   )
-      // ),
       new webpack.ProvidePlugin({
         process: require.resolve('process/browser'),
         Buffer: [require.resolve('buffer/'), 'Buffer'],

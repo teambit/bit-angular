@@ -1,7 +1,8 @@
+import { eslintConfig } from '@teambit/angular-eslint-config';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { CompilerMain, CompilerOptions } from '@teambit/compiler';
-import { CompositionsMain } from '@teambit/compositions';
+import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import {
   BuilderEnv,
   DependenciesEnv,
@@ -11,72 +12,43 @@ import {
   TesterEnv
 } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
+import { GeneratorMain } from '@teambit/generator';
 import { JestMain } from '@teambit/jest';
 import { Linter } from '@teambit/linter';
-import { NgPackagrMain } from '@teambit/ng-packagr';
-import { PkgMain } from '@teambit/pkg';
-import { Tester, TesterMain } from '@teambit/tester';
-import { TsCompilerOptionsWithoutTsConfig, TypescriptMain } from '@teambit/typescript';
-import { WebpackConfigTransformer, WebpackMain } from '@teambit/webpack';
-import { Workspace } from '@teambit/workspace';
+import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
+import { Tester } from '@teambit/tester';
+import { TsCompilerOptionsWithoutTsConfig } from '@teambit/typescript';
+import { WebpackConfigTransformer } from '@teambit/webpack';
 import * as jestM from 'jest';
 import { TsConfigSourceFile } from 'typescript';
-import { AngularVersionAdapter } from './angular-version-adapter';
-import { AngularAspect } from './angular.aspect';
+import { componentTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
-import { AngularMainConfig } from './angular.main.runtime';
-import { eslintConfig } from '@teambit/angular-eslint-config';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
-  name = 'Angular';
+export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-  adapter!: AngularVersionAdapter;
 
   constructor(
-    private config: AngularMainConfig,
-    private jestAspect: JestMain,
-    private tsAspect: TypescriptMain,
-    private compiler: CompilerMain,
-    private webpack: WebpackMain,
-    private workspace: Workspace,
-    private pkg: PkgMain,
-    private tester: TesterMain,
-    private eslint: ESLintMain,
-    private ngPackagrAspect: NgPackagrMain,
-    private compositions: CompositionsMain
-  ) {}
-
-  /**
-   * Returns the Environment descriptor
-   * Required for any task
-   */
-  async __getDescriptor(): Promise<EnvDescriptor> {
-    return {
-      type: 'angular',
-    };
+    protected jestAspect: JestMain,
+    protected compiler: CompilerMain,
+    protected eslint: ESLintMain,
+    protected ngPackagrAspect: NgPackagrMain,
+    generator: GeneratorMain
+  ) {
+    generator.registerComponentTemplate(componentTemplates);
   }
 
-  /**
-   * Load the adapter with the correct implementation based on the selection version of Angular
-   */
-  async useVersion(version = 12) {
-    switch (version) {
-      case 11:
-        const AngularV11 = require("@teambit/angular-v11").default;
-        this.adapter = new AngularV11();
-        break;
-      case 12:
-      default:
-        const AngularV12 = require("@teambit/angular-v12").default;
-        this.adapter = new AngularV12();
-    }
-  }
+  /** Abstract functions & properties specific to the adapter **/
+  abstract name: string;
+  abstract ngPackagr: NgPackagr;
+  abstract angularWebpack: AngularWebpack;
+  abstract __getDescriptor(): Promise<EnvDescriptor>;
+  abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
 
   private createNgPackgrCompiler(tsconfig?: TsConfigSourceFile, compilerOptions: Partial<CompilerOptions> = {}) {
-    return this.ngPackagrAspect.createCompiler(this.adapter.ngPackagr, tsconfig, {
+    return this.ngPackagrAspect.createCompiler(this.ngPackagr, tsconfig, {
       ...compilerOptions,
     });
   }
@@ -124,7 +96,7 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
    * Required for `bit build` & `build start`
    */
   async getBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
-    return new AngularWebpack(this.workspace, this.webpack, this.adapter, this.compositions).createBundler(context, transformers);
+    return this.angularWebpack.createBundler(context, transformers);
   }
 
   /**
@@ -149,26 +121,10 @@ export class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEn
   }
 
   /**
-   * Required for `bit start`
-   */
-  getDevEnvId(id?: string) {
-    if (typeof id !== 'string') return AngularAspect.id;
-    return id || AngularAspect.id;
-  }
-
-  /**
    * Returns and configures the dev server.
    * Required for `bit start`
    */
   async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    return new AngularWebpack(this.workspace, this.webpack, this.adapter, this.compositions).createDevServer(context, transformers);
-  }
-
-  /**
-   * Returns the list of dependencies
-   * Required for any task
-   */
-  async getDependencies() {
-    return this.adapter.dependencies;
+    return this.angularWebpack.createDevServer(context, transformers);
   }
 }
