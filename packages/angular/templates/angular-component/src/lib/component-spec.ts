@@ -1,6 +1,6 @@
-import { ComponentContext } from '@teambit/generator';
+import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const componentSpecFile = (context: ComponentContext) => {
+export const componentSpecFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
 
   return {

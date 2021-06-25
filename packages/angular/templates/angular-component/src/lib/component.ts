@@ -1,6 +1,6 @@
-import { ComponentContext } from '@teambit/generator';
+import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const componentFile = (context: ComponentContext) => {
+export const componentFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/${name}.component.ts`,

@@ -1,14 +1,15 @@
-import { ComponentTemplate, ComponentContext } from '@teambit/generator';
+import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { componentFile } from './src/lib/component';
-import { moduleFile } from './src/lib/module';
-import { docsFile } from './src/lib/docs';
 import { componentSpecFile } from './src/lib/component-spec';
+import { compositionFile } from './src/lib/composition';
+import { docsFile } from './src/lib/docs';
+import { moduleFile } from './src/lib/module';
 import { publicApiFile } from './src/public-api';
 
 export const angularModule: ComponentTemplate = {
   name: 'ng-lib',
   description: 'a generic Angular library',
-  hidden: true, // TODO(ocombe): remove this before release
+  hidden: false,
 
   generateFiles(context: ComponentContext) {
     return [
@@ -17,6 +18,7 @@ export const angularModule: ComponentTemplate = {
       moduleFile(context),
       docsFile(context),
       componentSpecFile(context),
+      compositionFile(context),
     ];
   },
 };

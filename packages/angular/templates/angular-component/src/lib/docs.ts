@@ -1,30 +1,34 @@
-import { ComponentContext } from '@teambit/generator';
+import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const docsFile = (context: ComponentContext) => {
+export const docsFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
 
   return {
-    relativePath: `src/${name}.docs.mdx`,
+    relativePath: `src/${name}.docs.md`,
     content: `---
 labels: ['angular', 'typescript', '${name}']
 description: 'A \`${name}\` component.'
 ---
 
-import { ${Name}Component } from './${name}.component';
+# ${Name} documentation
 
-${Name} example:
+Import \`${Name}Module\` into your application:
 
-A simple \`${name}\` component with some text
+\`\`\`ts
+import { ${Name}Module } from './${name}.module';
 
-Code Snippet:
-\`\`\`js
-<${name} text="hello from ${Name}" />
+// add it to your module imports
+@NgModule({
+  imports: [
+    ${Name}Module
+  ]
+})
+export class AppModule {}
 \`\`\`
 
-
-Live Playground:
-\`\`\`js live
-<${name} text="hello from ${Name}" />
+Use \`${Name}Component\` in your templates :
+\`\`\`html
+<${name}></${name}>
 \`\`\`
 `,
   };

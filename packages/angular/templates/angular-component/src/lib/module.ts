@@ -1,6 +1,6 @@
-import { ComponentContext } from '@teambit/generator';
+import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const moduleFile = (context: ComponentContext) => {
+export const moduleFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
 
   return {
@@ -12,8 +12,7 @@ import { ${Name}Component } from './${name}.component';
   declarations: [
     ${Name}Component
   ],
-  imports: [
-  ],
+  imports: [],
   exports: [
     ${Name}Component
   ]
