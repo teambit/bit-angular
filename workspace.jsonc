@@ -10,7 +10,7 @@
     /**
      * the name of the component workspace. used for development purposes.
      **/
-    "name": "Angular testing",
+    "name": "Bit Angular",
     /**
      * set the icon to be shown on the Bit server.
      **/
@@ -22,7 +22,7 @@
     /**
      * default scope for all components in workspace.
      **/
-    "defaultScope": "angular-scope"
+    "defaultScope": "examples"
   },
   /**
    * main configuration for component dependency resolution.
@@ -62,7 +62,7 @@
    * new set of dependencies.
    **/
   "teambit.workspace/variants": {
-    "scopes/angular": {
+    "packages": {
       "defaultScope": "teambit.angular",
       "teambit.harmony/aspect": {},
       "teambit.pkg/pkg": {
@@ -78,7 +78,7 @@
         }
       }
     },
-    "angular-scope/angular-testing": {
+    "examples/demo-app": {
       "teambit.angular/angular-v12": {}
     },
     /**
