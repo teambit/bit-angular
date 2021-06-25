@@ -60,7 +60,7 @@ export class AngularV12Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        'tslib': '^2.0.0',
+        'tslib': '^2.2.0',
         'rxjs': '-',
         'zone.js': '-'
       },
@@ -68,11 +68,11 @@ export class AngularV12Env extends AngularEnv {
         typescript: '-'
       },
       peerDependencies: {
-        '@angular/common': '^12.0.0',
-        '@angular/core': '^12.0.0',
-        'rxjs': '^6.0.0',
-        'zone.js': '^0.11.0',
-        'typescript': '~4.2.4'
+        '@angular/common': '~12.1.0',
+        '@angular/core': '~12.1.0',
+        'rxjs': '^6.6.7',
+        'zone.js': '~0.11.4',
+        'typescript': '~4.3.2'
       }
     };
   }

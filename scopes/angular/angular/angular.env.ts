@@ -69,7 +69,7 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
    * Required for `bit build`
    */
   getBuildPipe(
-    tsconfig?: TsConfigSourceFile,
+    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
     compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
   ): BuildTask[] {
     return [this.getCompilerTask(tsconfig, compilerOptions)];

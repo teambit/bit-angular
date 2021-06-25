@@ -68,11 +68,11 @@ export class AngularV11Env extends AngularEnv {
         typescript: '-',
       },
       peerDependencies: {
-        '@angular/common': '^11.0.0',
-        '@angular/core': '^11.0.0',
-        'rxjs': '^6.0.0',
+        '@angular/common': '~11.2.14',
+        '@angular/core': '~11.2.14',
+        'rxjs': '^6.6.3',
         'zone.js': '^0.11.0',
-        'typescript': '~4.1.0',
+        'typescript': '~4.1.5',
       },
     };
   }

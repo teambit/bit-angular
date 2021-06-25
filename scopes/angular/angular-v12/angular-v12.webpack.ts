@@ -1,5 +1,4 @@
 import { DevServerBuilderOptions } from '@angular-devkit/build-angular';
-import { getCompilerConfig } from '@angular-devkit/build-angular/src/browser';
 import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { OutputHashing } from '@angular-devkit/build-angular/src/server/schema';
 import {
@@ -18,7 +17,8 @@ import {
   getCommonConfig,
   getDevServerConfig,
   getStatsConfig,
-  getStylesConfig
+  getStylesConfig,
+  getTypeScriptConfig
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
@@ -174,7 +174,7 @@ export class AngularV12Webpack extends AngularWebpack {
         getBrowserConfig(wco),
         getStylesConfig(wco), // TODO
         getStatsConfig(wco),
-        getCompilerConfig(wco),
+        getTypeScriptConfig(wco),
       ],
       loggerApi,
       {}
@@ -250,6 +250,7 @@ export class AngularV12Webpack extends AngularWebpack {
       })
     );
 
+    // don't use the output path from angular
     delete webpackConfig?.output?.path;
     webpackConfig.stats = 'errors-only';
 

@@ -166,6 +166,6 @@ export abstract class AngularWebpack {
       return afterMutation.raw;
     });
 
-    return new WebpackBundler(context.targets, mutatedConfigs, this.webpackMain.logger);
+    return new WebpackBundler(context.targets, mutatedConfigs, this.webpackMain.logger, this.webpack);
   }
 }
