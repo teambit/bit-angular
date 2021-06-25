@@ -78,7 +78,7 @@
         }
       }
     },
-    "examples/demo-app": {
+    "examples/demo-lib": {
       "teambit.angular/angular-v12": {}
     },
     /**

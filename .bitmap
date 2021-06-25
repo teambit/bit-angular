@@ -25,11 +25,11 @@
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
-    "demo-app": {
+    "demo-lib": {
         "scope": "",
         "version": "",
         "mainFile": "public-api.ts",
-        "rootDir": "examples/demo-app"
+        "rootDir": "examples/demo-lib"
     },
     "ng-packagr": {
         "scope": "",
