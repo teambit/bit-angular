@@ -27,10 +27,8 @@ import { CompositionsMain } from '@teambit/compositions';
 import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
 import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
-import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
-import { ngPackagr } from 'ng-packagr';
 import path from 'path';
 import webpack, { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
@@ -122,7 +120,7 @@ export class AngularV11Webpack extends AngularWebpack {
   async getWebpackConfig(context: DevServerContext | BundlerContext, entryFiles: string[], tsconfigPath: string, workspaceRoot: string, logger: Logger, setup: WebpackSetup, extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
-      baseHref: './',
+      baseHref: path.posix.join('/', context.rootPath!, context.publicPath!),
       preserveSymlinks: true,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
       index: "src/index.html",
@@ -190,7 +188,7 @@ export class AngularV11Webpack extends AngularWebpack {
     );
 
     // Add bit generated files to the list of entries
-    webpackConfig.entry.bit = entryFiles;
+    webpackConfig.entry.main.unshift(...entryFiles);
 
     // @ts-ignore
     if (extraOptions.liveReload && !extraOptions.hmr) {
@@ -255,8 +253,14 @@ export class AngularV11Webpack extends AngularWebpack {
       );
     }
 
+    // don't use the output path from angular
+    delete webpackConfig?.output?.path;
     webpackConfig.stats = 'errors-only';
 
-    return this.migrateConfiguration(webpackConfig) as WebpackConfigWithDevServer;
+    if (setup === WebpackSetup.Serve) {
+      return this.migrateConfiguration(webpackConfig);
+    }
+
+    return webpackConfig;
   }
 }

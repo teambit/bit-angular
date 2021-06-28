@@ -27,7 +27,7 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
   // Required for babel-preset-react-app
   process.env.NODE_ENV = 'development';
 
-  const publicDirectory = `${publicRoot}/${publicPath}`;
+  const publicDirectory = path.posix.join(publicRoot, publicPath);
 
   return {
     // Environment mode
@@ -51,7 +51,7 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
 
       path: resolveWorkspacePath(publicDirectory),
 
-      publicPath: `${publicRoot}/`,
+      // publicPath: `/${publicRoot}/`,
 
       // @ts-ignore
       futureEmitAssets: true,
@@ -68,7 +68,7 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
 
     devServer: {
       quiet: true,
-      stats: 'none',
+      stats: 'errors-only',
 
       // Serve index.html as the base
       contentBase: resolveWorkspacePath(publicDirectory),
@@ -125,11 +125,15 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
       },
 
       // Public path is root of content base
-      publicPath: publicRoot
+      publicPath: path.join('/', publicRoot)
     },
 
     resolve: {
-      extensions: ['.ts', '.tsx', '.js', '.mdx', '.md']
+      extensions: ['.mjs', '.ts', '.tsx', '.js', '.mdx', '.md'],
+
+      alias: {
+        path: require.resolve('path-browserify')
+      }
     },
 
     module: {
