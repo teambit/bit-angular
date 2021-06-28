@@ -112,7 +112,7 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit compile`
    */
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
-    return this.ngPackagrCompilation(params.componentDir, params.distDir);
+    return this.ngPackagrCompilation(params.componentDir, params.outputDir);
   }
 
   private getArtifactDefinition() {

@@ -59,10 +59,11 @@ export abstract class AngularWebpack {
     ];
     tsconfigJSON.config.include = [
       posix.join(pAppPath, 'src/app/**/*.ts'),
-      ...includePaths
+      ...includePaths.map(path => posix.join(path, '**/*.ts'))
     ];
     tsconfigJSON.config.exclude = [
-      posix.join(pAppPath, '**/*.spec.ts')
+      posix.join(pAppPath, '**/*.spec.ts'),
+      ...includePaths.map(path => posix.join(path, '**/*.spec.ts'))
     ];
 
     return JSON.stringify(tsconfigJSON.config, undefined, 2);
@@ -76,13 +77,13 @@ export abstract class AngularWebpack {
    * write a link to load custom modules dynamically.
    */
   writeTsconfig(context: DevServerContext | BundlerContext, rootSpace: string): string {
-    const compositionsFilesPaths = new Set<string>();
+    const componentsFilePaths = new Set<string>();
     const dirPath = join(this.tempFolder, context.id);
     if (!existsSync(dirPath)) mkdirSync(dirPath, { recursive: true });
 
     // get the list of files for existing component compositions to include into the compilation
     context.components.forEach(component => {
-      let componentFiles: string[];
+      let outputPath: string;
 
       if (this.isBuildContext(context)) {
         const capsules = context.capsuleNetwork.graphCapsules;
@@ -90,22 +91,16 @@ export abstract class AngularWebpack {
         if (!capsule) {
           throw new Error(`No capsule found for ${component.id} in network graph`);
         }
-        componentFiles = capsule.getAllFilesPaths().map((filePath: string) => join(capsule.path, filePath));
+        outputPath = join(capsule.path, 'src');
       } else {
-        componentFiles = component.filesystem.files.map(file => file.path);
+        outputPath = join(this.workspace.getComponentPackagePath(component), 'src');
       }
 
-      this.compositions.readCompositions(component).forEach(composition => {
-        if (composition.filepath) {
-          const filePath = componentFiles.find(filePath => filePath.indexOf(composition.filepath!) !== -1);
-          if (filePath) {
-            compositionsFilesPaths.add(pathNormalizeToLinux(filePath));
-          }
-        }
-      });
+      componentsFilePaths.add(pathNormalizeToLinux(outputPath));
     });
 
-    const content = this.generateTsConfig(rootSpace, Array.from(compositionsFilesPaths));
+
+    const content = this.generateTsConfig(rootSpace, Array.from(componentsFilePaths));
     const hash = objectHash(content);
     const targetPath = join(dirPath, `__tsconfig-${this.timestamp}.json`);
 

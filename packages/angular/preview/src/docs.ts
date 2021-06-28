@@ -1,6 +1,5 @@
 import { RenderingContext } from '@teambit/preview';
 import { Type } from '@angular/core';
-// import { AngularAspect } from '../../angular.aspect';
 import { ReplaySubject } from 'rxjs';
 
 export type DocsFile = {
@@ -18,6 +17,6 @@ export default function docsRoot(
 ) {
   // const angularRenderingContext = context.get(AngularAspect.id);
   if (docs) {
-    window.onDocsLoad$.next(docs.default);
+    window.onDocsLoad$.next(docs.default || docs as string);
   }
 }

@@ -255,7 +255,7 @@ export class AngularV12Webpack extends AngularWebpack {
     webpackConfig.stats = 'errors-only';
 
     if (setup === WebpackSetup.Serve) {
-      webpackConfig = this.migrateConfiguration(webpackConfig);
+      return this.migrateConfiguration(webpackConfig);
     }
 
     return webpackConfig;
