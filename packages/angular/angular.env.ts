@@ -42,6 +42,7 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;
   abstract ngPackagr: NgPackagr;
+  abstract readDefaultTsConfig: (filename?: string) => any;
   abstract angularWebpack: AngularWebpack;
   abstract __getDescriptor(): Promise<EnvDescriptor>;
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
@@ -50,7 +51,7 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
     tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
     compilerOptions: Partial<CompilerOptions> = {}
   ) {
-    return this.ngPackagrAspect.createCompiler(this.ngPackagr, tsconfig, {
+    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsconfig, {
       ...compilerOptions,
     });
   }

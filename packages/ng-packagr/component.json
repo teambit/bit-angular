@@ -7,8 +7,7 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "devDependencies": {
-          "@teambit/harmony": "^0.2.11",
-          "@teambit/legacy": "^1.0.91"
+          "@teambit/harmony": "^0.2.11"
         },
         "peerDependencies": {
           "ng-packagr": ">=9.0.0"

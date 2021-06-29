@@ -6,27 +6,25 @@
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
-        "devDependencies": {
-          "@teambit/harmony": "^0.2.11",
-          "@teambit/legacy": "^1.0.91",
-          "@types/dompurify": "^2.2.2",
-          "@types/fs-extra": "~9.0.7",
-          "@types/jest": "~26.0.23",
-          "@types/object-hash": "~2.1.0",
-          "@types/trusted-types": "~2.0.1",
-          "buffer": "6.0.3",
-          "dompurify": "^2.2.9",
-          "events": "3.3.0",
-          "fs-extra": "9.1.0",
-          "identity-obj-proxy": "3.0.0",
-          "jest": "~27.0.4",
-          "jest-message-util": "~27.0.2",
-          "jest-preset-angular": "~9.0.4",
-          "jest-watcher": "~27.0.2",
-          "object-hash": "~2.1.1",
-          "pino-pretty": "5.0.2",
-          "process": "0.11.10",
-          "react-dev-utils": "10.2.1"
+        "dependencies": {
+          "@angular/core": "-",
+          "@angular/platform-browser": "-",
+          "@angular/platform-browser-dynamic": "-",
+          "rxjs": "-",
+          "typescript": "-",
+          "webpack": "-",
+          "webpack-dev-server": "-",
+          "zone.js": "-"
+        },
+        "peerDependencies": {
+          "@angular/core": ">= 9.0.0",
+          "@angular/platform-browser": ">= 9.0.0",
+          "@angular/platform-browser-dynamic": ">= 9.0.0",
+          "rxjs": ">= 6.6.3",
+          "typescript": ">= 4.1.5",
+          "webpack": ">= 4.44.2",
+          "webpack-dev-server": ">= 3.11.2",
+          "zone.js": "~0.11.3"
         }
       }
     }

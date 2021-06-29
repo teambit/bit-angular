@@ -1,6 +1,6 @@
 import { ParsedConfiguration } from '@angular/compiler-cli';
 import { BuildContext, BuiltTaskResult, ComponentResult } from '@teambit/builder';
-import { Compiler, TranspileComponentParams } from '@teambit/compiler';
+import { Compiler, CompilerOptions, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
@@ -9,11 +9,16 @@ import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
-import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
 import { extname, join, posix, resolve } from 'path';
 
 import { TsConfigSourceFile } from 'typescript';
-import { NgPackagrOptions } from './ng-packagr-options';
+
+export type NgPackagrOptions = {
+  /**
+   * Overwrite tsconfig allowJs option
+   */
+  allowJs?: boolean;
+} & Partial<CompilerOptions>;
 
 export interface NgPackagr {
   /**
@@ -50,6 +55,7 @@ export class NgPackagrCompiler implements Compiler {
     private ngPackagr: NgPackagr,
     private logger: Logger,
     private workspace: Workspace,
+    private readDefaultTsConfig: (filename?: string) => any,
     // TODO(ocombe): use this to support custom tsConfig
     private tsConfig?: TsConfigSourceFile,
     private options: NgPackagrOptions = {}
@@ -77,7 +83,7 @@ export class NgPackagrCompiler implements Compiler {
     let ngPackage = this.ngPackagr;
 
     if (this.options.allowJs) {
-      const parsedTsConfig = readDefaultTsConfig();
+      const parsedTsConfig = this.readDefaultTsConfig();
       parsedTsConfig.options.allowJs = true;
       ngPackage = ngPackage.withTsConfig(parsedTsConfig);
     }

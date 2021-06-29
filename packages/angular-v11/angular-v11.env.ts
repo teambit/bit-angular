@@ -4,13 +4,14 @@ import { CompositionsMain } from '@teambit/compositions';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
-import { NgPackagrMain } from '@teambit/ng-packagr';
+import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { ngPackagr } from 'ng-packagr';
 import { GeneratorMain } from '@teambit/generator';
 import { AngularV11Aspect } from './angular-v11.aspect';
 import { AngularV11Webpack } from './angular-v11.webpack';
+import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -18,7 +19,8 @@ import { AngularV11Webpack } from './angular-v11.webpack';
 export class AngularV11Env extends AngularEnv {
   name = 'Angular-v11';
   angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.compositions);
-  ngPackagr = ngPackagr();
+  ngPackagr = ngPackagr() as NgPackagr;
+  readDefaultTsConfig = readDefaultTsConfig;
 
   constructor(
     jestAspect: JestMain,
