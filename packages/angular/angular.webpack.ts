@@ -142,8 +142,7 @@ export abstract class AngularWebpack {
 
   async createBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
     const capsules = context.capsuleNetwork.graphCapsules;
-    const angularCapsule = capsules.getCapsule(ComponentID.fromString('teambit.angular/angular'))
-    const rootPath = join(angularCapsule!.path, 'preview');
+    const rootPath = capsules.getAllCapsuleDirs().find(path => path.match('teambit.angular_angular@'))!;
     const tsconfigPath = this.writeTsconfig(context, rootPath);
 
     const defaultConfig: any = await this.getWebpackConfig(context, context.targets.map(target => target.entries).flat(), tsconfigPath, rootPath, this.webpackMain.logger, WebpackSetup.Build, {});
