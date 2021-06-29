@@ -30,9 +30,7 @@ Bit Angular is a development environment for Bit Harmony.
 
 ### How to Start?
 
-To get started follow the [quick-start guide](https://harmony-docs.bit.dev/getting-started/installing-bit) or try the official [Bit for React tutorial](https://harmony-docs.bit.dev/tutorials/react/create-and-consume-components).
-
-Install [Bit Version Manager](https://harmony-docs.bit.dev/getting-started/installing-bit):
+To get started install [Bit Version Manager](https://harmony-docs.bit.dev/getting-started/installing-bit):
 
 ```bash
 npm i -g @teambit/bvm
