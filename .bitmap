@@ -3,25 +3,25 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "mainFile": "index.ts",
         "rootDir": "packages/angular"
     },
     "angular-eslint-config": {
         "scope": "teambit.angular",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "mainFile": "index.ts",
         "rootDir": "packages/eslint-config"
     },
     "angular-v11": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "0.0.1",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v11"
     },
     "angular-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
@@ -33,7 +33,7 @@
     },
     "ng-packagr": {
         "scope": "teambit.angular",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "mainFile": "index.ts",
         "rootDir": "packages/ng-packagr"
     },
