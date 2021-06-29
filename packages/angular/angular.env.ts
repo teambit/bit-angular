@@ -20,7 +20,6 @@ import { Tester } from '@teambit/tester';
 import { TsCompilerOptionsWithoutTsConfig } from '@teambit/typescript';
 import { WebpackConfigTransformer } from '@teambit/webpack';
 import * as jestM from 'jest';
-import { TsConfigSourceFile } from 'typescript';
 import { componentTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 
@@ -47,18 +46,24 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
   abstract __getDescriptor(): Promise<EnvDescriptor>;
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
 
-  private createNgPackgrCompiler(tsconfig?: TsConfigSourceFile, compilerOptions: Partial<CompilerOptions> = {}) {
+  private createNgPackgrCompiler(
+    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
+    compilerOptions: Partial<CompilerOptions> = {}
+  ) {
     return this.ngPackagrAspect.createCompiler(this.ngPackagr, tsconfig, {
       ...compilerOptions,
     });
   }
 
-  getCompiler(tsconfig?: TsConfigSourceFile, compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}) {
+  getCompiler(
+    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
+    compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
+  ) {
     return this.createNgPackgrCompiler(tsconfig, compilerOptions);
   }
 
   private getCompilerTask(
-    tsconfig?: TsConfigSourceFile,
+    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
     compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
   ) {
     return this.compiler.createTask('NgPackagrCompiler', this.getCompiler(tsconfig, compilerOptions));
