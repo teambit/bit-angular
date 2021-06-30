@@ -23,6 +23,8 @@
           "@angular/platform-browser": "~12.1.0",
           "@angular/platform-browser-dynamic": "~12.1.0",
           "@ngtools/webpack": "~12.1.0",
+          "@teambit/harmony": "^0.2.11",
+          "@teambit/legacy": "^1.0.91",
           "html-loader": "~2.1.2",
           "ng-packagr": "~12.1.0",
           "remark": "~13.0.0",

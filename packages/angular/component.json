@@ -7,6 +7,8 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
+          "@teambit/harmony": "^0.2.11",
+          "@teambit/legacy": "^1.0.91",
           "@angular/core": "-",
           "@angular/platform-browser": "-",
           "@angular/platform-browser-dynamic": "-",

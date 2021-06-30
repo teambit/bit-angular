@@ -23,6 +23,8 @@
           "@angular/platform-browser": "~11.2.14",
           "@angular/platform-browser-dynamic": "~11.2.14",
           "@ngtools/webpack": "~11.2.13",
+          "@teambit/harmony": "^0.2.11",
+          "@teambit/legacy": "^1.0.91",
           "ng-packagr": "~11.2.4",
           "remark": "~13.0.0",
           "remark-autolink-headings": "~6.0.1",
