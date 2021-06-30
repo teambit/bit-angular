@@ -26,7 +26,8 @@ import { ${Name}Module } from './${name}.module';
 export class AppModule {}
 \`\`\`
 
-Use \`${Name}Component\` in your templates :
+Use \`${Name}Component\` in your templates:
+
 \`\`\`html
 <${name}></${name}>
 \`\`\`
