@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 env:
-  BIT_TOKEN: ${{ secrets.BIT_TOKEN }}
+  BIT_CONFIG_USER_TOKEN: ${{ secrets.BIT_TOKEN }}
 
 jobs:
   build:
@@ -23,12 +23,7 @@ jobs:
     steps:
       - name: Bit config
         run: |
-          bit config set interactive false
-          bit config set analytics_reporting false
-          bit config set anonymous_reporting false
-          bit config set user.token ${{ env.BIT_TOKEN }}
           bit config set no_warnings true
-          bit config set error_reporting true
           bit config set user.name symphony_backend
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
