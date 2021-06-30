@@ -1,0 +1,69 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the master branch
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  BIT_TOKEN: ${{ secrets.BIT_TOKEN }}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: docker://bitcli/bit:latest
+    steps:
+      - name: Bit config
+        run: |
+          bit config set interactive false
+          bit config set analytics_reporting false
+          bit config set anonymous_reporting false
+          bit config set user.token ${{ env.BIT_TOKEN }}
+          bit config set no_warnings true
+          bit config set error_reporting true
+          bit config set user.name symphony_backend
+
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Config registry
+        run: |  
+          npm config set @bit:registry https://node.bit.dev
+          npm config set @teambit:registry https://node.bit.dev
+
+      - name: Config npm
+        run: npm config set always-auth=true && npm config set //node.bit.dev/:_authToken\=${{ env.BIT_TOKEN }} && npm config list
+
+      - name: Install dependencies
+        run: bit install
+
+      # Compile the aspects
+      - name: Bit compile aspects
+        run: bit compile ng-packagr angular-eslint-config angular angular-v11 angular-v12
+
+      # Run bit link to regenerate the package.json of the example component
+      - name: Bit link
+        run: bit link
+
+      # Compile the example component
+      - name: Bit compile example
+        run: bit compile demo-lib
+
+      - name: Bit test
+        run: bit test
+
+      - name: Bit build
+        run: bit build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: debug-log
+          path: ~/Library/Caches/Bit/logs
