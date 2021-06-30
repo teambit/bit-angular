@@ -61,4 +61,4 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: debug-log
-          path: ~/Library/Caches/Bit/logs
+          path: $HOME/Library/Caches/Bit/logs
