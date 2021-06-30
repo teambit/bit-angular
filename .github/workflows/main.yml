@@ -23,8 +23,8 @@ jobs:
     steps:
       - name: Bit config
         run: |
-          bit config set no_warnings true
-          bit config set user.name symphony_backend
+          bit config set anonymous_reporting false
+          bit config set user.name angular-github-actions
 
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
