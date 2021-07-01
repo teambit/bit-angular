@@ -10,6 +10,7 @@
           "@angular/core": "-",
           "@angular/platform-browser": "-",
           "@angular/platform-browser-dynamic": "-",
+          "@types/trusted-types": "~2.0.1",
           "rxjs": "-",
           "typescript": "-",
           "webpack": "-",

@@ -42,7 +42,6 @@
         "@types/jest": "~26.0.23",
         "@types/node": "~12.11.1",
         "@types/object-hash": "~2.1.0",
-        "@types/trusted-types": "~2.0.1",
         "buffer": "6.0.3",
         "dompurify": "^2.2.9",
         "eslint-config-airbnb-typescript": {
