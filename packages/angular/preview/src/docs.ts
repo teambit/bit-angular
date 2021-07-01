@@ -17,6 +17,6 @@ export default function docsRoot(
 ) {
   // const angularRenderingContext = context.get(AngularAspect.id);
   if (docs) {
-    window.onDocsLoad$.next(docs.default || docs as string);
+    window.onDocsLoad$.next(docs.default || (docs as string));
   }
 }

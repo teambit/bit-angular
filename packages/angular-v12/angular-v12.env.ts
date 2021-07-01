@@ -30,7 +30,7 @@ export class AngularV12Env extends AngularEnv {
     generator: GeneratorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace,
-    private compositions: CompositionsMain,
+    private compositions: CompositionsMain
   ) {
     super(jestAspect, compiler, eslint, ngPackagrAspect, generator);
   }
@@ -41,7 +41,7 @@ export class AngularV12Env extends AngularEnv {
    */
   async __getDescriptor(): Promise<EnvDescriptor> {
     return {
-      type: 'angular-v12'
+      type: 'angular-v12',
     };
   }
 
@@ -62,22 +62,22 @@ export class AngularV12Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        'tslib': '^2.2.0',
-        'rxjs': '-',
-        'zone.js': '-'
+        tslib: '^2.2.0',
+        rxjs: '-',
+        'zone.js': '-',
       },
       devDependencies: {
-        typescript: '-'
+        typescript: '-',
       },
       peerDependencies: {
         '@angular/common': '~12.1.0',
         '@angular/core': '~12.1.0',
-        "@angular/platform-browser": "~12.1.0",
-        "@angular/platform-browser-dynamic": "~12.1.0",
-        'rxjs': '^6.6.7',
+        '@angular/platform-browser': '~12.1.0',
+        '@angular/platform-browser-dynamic': '~12.1.0',
+        rxjs: '^6.6.7',
         'zone.js': '~0.11.4',
-        'typescript': '~4.3.2'
-      }
+        typescript: '~4.3.2',
+      },
     };
   }
 }

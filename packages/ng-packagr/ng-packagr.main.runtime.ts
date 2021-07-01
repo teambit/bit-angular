@@ -15,8 +15,21 @@ export class NgPackagrMain {
 
   constructor(private logger: Logger, private workspace: Workspace) {}
 
-  createCompiler(ngPackagr: NgPackagr, readDefaultTsConfig: (filename?: string) => any, tsConfig?: TsConfigSourceFile, options: NgPackagrOptions = {}): Compiler {
-    return new NgPackagrCompiler(NgPackagrAspect.id, ngPackagr, this.logger, this.workspace, readDefaultTsConfig, tsConfig, options);
+  createCompiler(
+    ngPackagr: NgPackagr,
+    readDefaultTsConfig: (filename?: string) => any,
+    tsConfig?: TsConfigSourceFile,
+    options: NgPackagrOptions = {}
+  ): Compiler {
+    return new NgPackagrCompiler(
+      NgPackagrAspect.id,
+      ngPackagr,
+      this.logger,
+      this.workspace,
+      readDefaultTsConfig,
+      tsConfig,
+      options
+    );
   }
 
   static async provider([loggerExt, workspace]: NgPackagerMain) {

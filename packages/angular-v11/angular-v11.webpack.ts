@@ -4,20 +4,20 @@ import { Schema as BrowserBuilderSchema, OutputHashing } from '@angular-devkit/b
 import {
   BuildBrowserFeatures,
   normalizeBrowserSchema,
-  normalizeOptimization
+  normalizeOptimization,
 } from '@angular-devkit/build-angular/src/utils';
 import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
 import {
   BrowserWebpackConfigOptions,
   generateWebpackConfig,
-  getIndexOutputFile
+  getIndexOutputFile,
 } from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
 import {
   getBrowserConfig,
   getCommonConfig,
   getDevServerConfig,
   getStatsConfig,
-  getStylesConfig
+  getStylesConfig,
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
@@ -45,7 +45,7 @@ export class AngularV11Webpack extends AngularWebpack {
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
-    const webpackPath = require.resolve('webpack', {paths: [buildAngular]});
+    const webpackPath = require.resolve('webpack', { paths: [buildAngular] });
     this.webpack = require(webpackPath);
   }
 
@@ -117,23 +117,26 @@ export class AngularV11Webpack extends AngularWebpack {
     return webpackConfig;
   }
 
-  async getWebpackConfig(context: DevServerContext | BundlerContext, entryFiles: string[], tsconfigPath: string, workspaceRoot: string, logger: Logger, setup: WebpackSetup, extraOptions: Partial<WebpackConfigWithDevServer> = {}): Promise<WebpackConfigWithDevServer | Configuration> {
+  async getWebpackConfig(
+    context: DevServerContext | BundlerContext,
+    entryFiles: string[],
+    tsconfigPath: string,
+    workspaceRoot: string,
+    logger: Logger,
+    setup: WebpackSetup,
+    extraOptions: Partial<WebpackConfigWithDevServer> = {}
+  ): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
       baseHref: path.posix.join('/', context.rootPath!, context.publicPath!),
       preserveSymlinks: true,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
-      index: "src/index.html",
-      main: "src/main.ts",
-      polyfills: "src/polyfills.ts",
+      index: 'src/index.html',
+      main: 'src/main.ts',
+      polyfills: 'src/polyfills.ts',
       tsConfig: tsconfigPath,
-      assets: [
-        "src/favicon.ico",
-        "src/assets"
-      ],
-      styles: [
-        "src/styles.scss"
-      ],
+      assets: ['src/favicon.ico', 'src/assets'],
+      styles: ['src/styles.scss'],
       scripts: [],
       vendorChunk: true,
       namedChunks: true,
@@ -154,20 +157,15 @@ export class AngularV11Webpack extends AngularWebpack {
     const projectRoot = normalize('');
     const sourceRoot = normalize('src');
 
-    const normalizedOptions = normalizeBrowserSchema(
-      normalizedWorkspaceRoot,
-      projectRoot,
-      sourceRoot,
-      {
-        ...browserOptions,
-        ...extraOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>
-      }
-    );
+    const normalizedOptions = normalizeBrowserSchema(normalizedWorkspaceRoot, projectRoot, sourceRoot, {
+      ...browserOptions,
+      ...(extraOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
+    });
 
     const loggerApi = {
       createChild: () => logger as any,
       ...logger,
-      log: logger.console
+      log: logger.console,
     } as any as logging.LoggerApi;
 
     const webpackConfig: any = await generateWebpackConfig(
@@ -198,20 +196,25 @@ export class AngularV11Webpack extends AngularWebpack {
       // tslint:disable-next-line: no-any
       addDevServerEntrypoints(webpackConfig as any, {
         ...(webpackConfig as any).devServer,
-        inline: true
+        inline: true,
       });
 
       // Remove live-reload code from all entrypoints but not main.
       // Otherwise this will break SuppressExtractedTextChunksWebpackPlugin because
       // 'addDevServerEntrypoints' adds additional entry-points to all entries.
-      if (webpackConfig.entry && typeof webpackConfig.entry === 'object' && !Array.isArray(webpackConfig.entry) && webpackConfig.entry.main) {
+      if (
+        webpackConfig.entry &&
+        typeof webpackConfig.entry === 'object' &&
+        !Array.isArray(webpackConfig.entry) &&
+        webpackConfig.entry.main
+      ) {
         for (const [key, value] of Object.entries(webpackConfig.entry)) {
           if (key === 'main' || !Array.isArray(value)) {
             // eslint-disable-next-line no-continue
             continue;
           }
 
-          const webpackClientScriptIndex = value.findIndex(x => x.includes('webpack-dev-server/client/index.js'));
+          const webpackClientScriptIndex = value.findIndex((x) => x.includes('webpack-dev-server/client/index.js'));
           if (webpackClientScriptIndex >= 0) {
             // Remove the webpack-dev-server/client script from array.
             value.splice(webpackClientScriptIndex, 1);
@@ -248,7 +251,7 @@ export class AngularV11Webpack extends AngularWebpack {
           optimization: normalizedOptimization,
           WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
           crossOrigin: browserOptions.crossOrigin,
-          lang: 'en-US' // TODO(ocombe) support locale
+          lang: 'en-US', // TODO(ocombe) support locale
         })
       );
     }

@@ -21,7 +21,7 @@ type AngularV11Deps = [
   WebpackMain,
   Workspace,
   CompositionsMain,
-  EnvsMain,
+  EnvsMain
 ];
 
 export class AngularV11Main {
@@ -60,7 +60,7 @@ export class AngularV11Main {
       generator,
       webpack,
       workspace,
-      compositions,
+      compositions
     );
     const angularV11Main = new AngularV11Main(angularV11Env);
     envs.registerEnv(angularV11Env);

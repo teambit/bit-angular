@@ -7,16 +7,9 @@ import { LazyLoadComponent } from './lazy-load/lazy-load.component';
 import { LazyLoadDirective } from './lazy-load/lazy-load.directive';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    LazyLoadDirective,
-    LazyLoadComponent
-  ],
-  imports: [
-    BrowserModule,
-    DocsModule
-  ],
+  declarations: [AppComponent, LazyLoadDirective, LazyLoadComponent],
+  imports: [BrowserModule, DocsModule],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
 export class AppModule {}

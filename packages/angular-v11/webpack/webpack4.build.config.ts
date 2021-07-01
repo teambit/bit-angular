@@ -17,7 +17,7 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
 
     node: {
       // @ts-ignore
-      fs: 'empty'
+      fs: 'empty',
     },
 
     output: {
@@ -46,8 +46,8 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
       extensions: ['.mjs', '.ts', '.tsx', '.js', '.mdx', '.md'],
 
       alias: {
-        path: require.resolve('path-browserify')
-      }
+        path: require.resolve('path-browserify'),
+      },
     },
 
     module: {
@@ -56,21 +56,21 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
           test: /\.md$/,
           use: [
             {
-              loader: "html-loader",
+              loader: 'html-loader',
             },
             {
-              loader: "remark-loader",
+              loader: 'remark-loader',
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
                   plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
                 },
-              }
+              },
             },
-          ]
-        }
-      ]
-    }
+          ],
+        },
+      ],
+    },
   };
 
   return config as Configuration;

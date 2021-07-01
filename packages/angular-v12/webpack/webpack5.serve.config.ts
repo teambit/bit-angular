@@ -19,7 +19,14 @@ const port = process.env.WDS_SOCKET_PORT;
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 
-export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: string, entryFiles: string[], publicRoot: string, publicPath: string, pubsub: PubsubMain): WebpackConfigWithDevServer {
+export function webpack5ServeConfigFactory(
+  devServerID: string,
+  workspaceDir: string,
+  entryFiles: string[],
+  publicRoot: string,
+  publicPath: string,
+  pubsub: PubsubMain
+): WebpackConfigWithDevServer {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
 
   // Host
@@ -50,7 +57,7 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: info => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath))
+      devtoolModuleFilenameTemplate: (info) => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath)),
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
@@ -59,7 +66,7 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
     },
 
     infrastructureLogging: {
-      level: 'error'
+      level: 'error',
     },
 
     stats: 'errors-only',
@@ -79,8 +86,8 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
           serveIndex: true,
           // Can be:
           // watch: {} (options for the `watch` option you can find https://github.com/paulmillr/chokidar)
-          watch: true
-        }
+          watch: true,
+        },
       ],
 
       // Enable compression
@@ -99,7 +106,7 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
 
       historyApiFallback: {
         disableDotRule: true,
-        index: resolveWorkspacePath(publicDirectory)
+        index: resolveWorkspacePath(publicDirectory),
       },
 
       client: {
@@ -107,7 +114,7 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
         overlay: false,
         host: clientHost,
         path: clientPath,
-        port
+        port,
       },
 
       onBeforeSetupMiddleware(app, server) {
@@ -133,18 +140,18 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
 
       dev: {
         // Public path is root of content base
-        publicPath: path.join('/', publicRoot)
-      }
+        publicPath: path.join('/', publicRoot),
+      },
     },
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
       alias: {
         process: require.resolve('process/browser'),
-        buffer: require.resolve('buffer/')
+        buffer: require.resolve('buffer/'),
       },
 
-      fallback: fallbacks as any
+      fallback: fallbacks as any,
     },
 
     module: {
@@ -153,32 +160,32 @@ export function webpack5ServeConfigFactory(devServerID: string, workspaceDir: st
           test: /\.md$/,
           use: [
             {
-              loader: "html-loader",
+              loader: 'html-loader',
             },
             {
-              loader: "remark-loader",
+              loader: 'remark-loader',
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
                   plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
                 },
-              }
+              },
             },
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     },
 
     plugins: [
       new ProvidePlugin({
         process: require.resolve('process/browser'),
-        Buffer: [require.resolve('buffer/'), 'Buffer']
+        Buffer: [require.resolve('buffer/'), 'Buffer'],
       }),
 
       new WebpackBitReporterPlugin({
-        options: { pubsub, devServerID }
-      })
-    ]
+        options: { pubsub, devServerID },
+      }),
+    ],
   };
 
   return config as WebpackConfigWithDevServer;

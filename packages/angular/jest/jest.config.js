@@ -6,7 +6,7 @@ module.exports = {
   testPathIgnorePatterns: ['<rootDir>/.*/e2e/'],
   globals: {
     'ts-jest': {
-      tsconfig: require.resolve('./tsconfig.spec.json')
+      tsconfig: require.resolve('./tsconfig.spec.json'),
     },
-  }
+  },
 };

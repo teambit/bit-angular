@@ -10,11 +10,13 @@ window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
  * to apply custom logic for component DOM mounting.
  */
 export default (composition: any, previewContext: RenderingContext) => {
-  if(Reflect.get(composition, 'ɵcmp')) {
+  if (Reflect.get(composition, 'ɵcmp')) {
     window.onComponentLoad$.next(composition);
-  } else if(Reflect.get(composition, 'ɵmod')) {
+  } else if (Reflect.get(composition, 'ɵmod')) {
     window.onModuleLoad$.next(composition);
   } else {
-    console.info(`Unknown type of composition for ${composition}, the Angular aspect only supports components and modules`);
+    console.info(
+      `Unknown type of composition for ${composition}, the Angular aspect only supports components and modules`
+    );
   }
 };

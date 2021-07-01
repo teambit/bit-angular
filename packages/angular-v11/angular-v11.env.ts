@@ -30,7 +30,7 @@ export class AngularV11Env extends AngularEnv {
     generator: GeneratorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace,
-    private compositions: CompositionsMain,
+    private compositions: CompositionsMain
   ) {
     super(jestAspect, compiler, eslint, ngPackagrAspect, generator);
   }
@@ -41,7 +41,7 @@ export class AngularV11Env extends AngularEnv {
    */
   async __getDescriptor(): Promise<EnvDescriptor> {
     return {
-      type: 'angular-v11'
+      type: 'angular-v11',
     };
   }
 
@@ -62,8 +62,8 @@ export class AngularV11Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        'tslib': '^2.0.0',
-        'rxjs': '-',
+        tslib: '^2.0.0',
+        rxjs: '-',
         'zone.js': '-',
       },
       devDependencies: {
@@ -72,9 +72,9 @@ export class AngularV11Env extends AngularEnv {
       peerDependencies: {
         '@angular/common': '~11.2.14',
         '@angular/core': '~11.2.14',
-        'rxjs': '^6.6.3',
+        rxjs: '^6.6.3',
         'zone.js': '^0.11.0',
-        'typescript': '~4.1.5',
+        typescript: '~4.1.5',
       },
     };
   }

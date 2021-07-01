@@ -1,1 +1,1 @@
-export * from './eslintrc'
+export * from './eslintrc';

@@ -47,20 +47,20 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
           test: /\.md$/,
           use: [
             {
-              loader: "html-loader",
+              loader: 'html-loader',
             },
             {
-              loader: "remark-loader",
+              loader: 'remark-loader',
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
                   plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
                 },
-              }
+              },
             },
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     },
 
     plugins: [

@@ -18,7 +18,14 @@ const sockPort = process.env.WDS_SOCKET_PORT;
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 
-export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: string, entryFiles: string[], publicRoot: string, publicPath: string, pubsub: PubsubMain): WebpackConfigWithDevServer {
+export function webpack4ServeConfigFactory(
+  devServerID: string,
+  workspaceDir: string,
+  entryFiles: string[],
+  publicRoot: string,
+  publicPath: string,
+  pubsub: PubsubMain
+): WebpackConfigWithDevServer {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
 
   // Host
@@ -40,7 +47,7 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
 
     node: {
       // @ts-ignore
-      fs: 'empty'
+      fs: 'empty',
     },
 
     output: {
@@ -59,11 +66,11 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: info => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath)),
+      devtoolModuleFilenameTemplate: (info) => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath)),
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
-      globalObject: 'this'
+      globalObject: 'this',
     },
 
     devServer: {
@@ -96,7 +103,7 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
 
       historyApiFallback: {
         disableDotRule: true,
-        index: resolveWorkspacePath(publicDirectory)
+        index: resolveWorkspacePath(publicDirectory),
       },
 
       sockHost,
@@ -125,15 +132,15 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
       },
 
       // Public path is root of content base
-      publicPath: path.join('/', publicRoot)
+      publicPath: path.join('/', publicRoot),
     },
 
     resolve: {
       extensions: ['.mjs', '.ts', '.tsx', '.js', '.mdx', '.md'],
 
       alias: {
-        path: require.resolve('path-browserify')
-      }
+        path: require.resolve('path-browserify'),
+      },
     },
 
     module: {
@@ -142,26 +149,26 @@ export function webpack4ServeConfigFactory(devServerID: string, workspaceDir: st
           test: /\.md$/,
           use: [
             {
-              loader: "html-loader",
+              loader: 'html-loader',
             },
             {
-              loader: "remark-loader",
+              loader: 'remark-loader',
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
                   plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
                 },
-              }
+              },
             },
-          ]
-        }
-      ]
+          ],
+        },
+      ],
     },
 
     plugins: [
       new WebpackBitReporterPlugin({
-        options: { pubsub, devServerID }
-      })
-    ]
+        options: { pubsub, devServerID },
+      }),
+    ],
   };
 }

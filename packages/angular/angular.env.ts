@@ -3,14 +3,7 @@ import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
-import {
-  BuilderEnv,
-  DependenciesEnv,
-  DevEnv,
-  EnvDescriptor,
-  LinterEnv,
-  TesterEnv
-} from '@teambit/envs';
+import { BuilderEnv, DependenciesEnv, DevEnv, EnvDescriptor, LinterEnv, TesterEnv } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { JestMain } from '@teambit/jest';

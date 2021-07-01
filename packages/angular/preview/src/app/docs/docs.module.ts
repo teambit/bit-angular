@@ -5,7 +5,6 @@ import { SafeHtmlPipe } from './safe-html.pipe';
 
 @NgModule({
   declarations: [SafeHtmlPipe, DocsComponent],
-  exports: [BrowserModule, SafeHtmlPipe, DocsComponent]
+  exports: [BrowserModule, SafeHtmlPipe, DocsComponent],
 })
-export class DocsModule {
-}
+export class DocsModule {}

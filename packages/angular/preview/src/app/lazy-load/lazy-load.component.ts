@@ -8,22 +8,19 @@ import {
   OnInit,
   Type,
   ViewChild,
-  ɵNgModuleDef
+  ɵNgModuleDef,
 } from '@angular/core';
 import { DocsComponent } from '../docs/docs.component';
 import { LazyLoadDirective } from './lazy-load.directive';
 
 @Component({
   selector: 'app-lazy-load',
-  template: `
-    <ng-template lazyLoad></ng-template>
-  `
+  template: ` <ng-template lazyLoad></ng-template> `,
 })
 export class LazyLoadComponent implements OnInit, OnDestroy {
   @ViewChild(LazyLoadDirective, { static: true }) lazyLoad!: LazyLoadDirective;
 
-  constructor(private cfr: ComponentFactoryResolver, private injector: Injector, private cdr: ChangeDetectorRef) {
-  }
+  constructor(private cfr: ComponentFactoryResolver, private injector: Injector, private cdr: ChangeDetectorRef) {}
 
   /**
    * Unwrap a value which might be behind a closure (for forward declaration reasons).
@@ -35,7 +32,7 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
   private insertComponent(components: Type<any>[]): ComponentRef<any>[] {
     this.lazyLoad.viewContainerRef.clear();
     const cmpRefs: ComponentRef<any>[] = [];
-    components.forEach(component => {
+    components.forEach((component) => {
       const componentFactory = this.cfr.resolveComponentFactory(component);
       cmpRefs.push(this.lazyLoad.viewContainerRef.createComponent(componentFactory));
     });
@@ -56,9 +53,9 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    window.onComponentLoad$.subscribe(component => this.insertComponent([component]));
-    window.onModuleLoad$.subscribe(module => this.insertModule(module));
-    window.onDocsLoad$.subscribe(template => this.insertDocs(template));
+    window.onComponentLoad$.subscribe((component) => this.insertComponent([component]));
+    window.onModuleLoad$.subscribe((module) => this.insertModule(module));
+    window.onDocsLoad$.subscribe((template) => this.insertDocs(template));
   }
 
   ngOnDestroy(): void {
