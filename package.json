@@ -1,0 +1,26 @@
+{
+  "name": "bit-angular",
+  "version": "1.0.0",
+  "description": "<h1 align=\"center\">Bit Angular</h1> <p align=\"center\">   <img src=\"https://storage.googleapis.com/static.bit.dev/harmony-docs/readme-logo%20(2).png\"/> </p>",
+  "main": ".eslintrc.js",
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "format": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md|mdx)\" --write",
+    "format:check": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md)\" --check"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/teambit/bit-angular.git"
+  },
+  "keywords": [],
+  "author": "teambit",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/teambit/bit-angular/issues"
+  },
+  "homepage": "https://github.com/teambit/bit-angular#readme"
+}
