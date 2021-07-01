@@ -1,5 +1,5 @@
 import webpack, { Configuration } from 'webpack';
-import { fallbacks } from '@teambit/webpack';
+import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
@@ -32,10 +32,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     },
 
     resolve: {
-      alias: {
-        process: require.resolve('process/browser'),
-        buffer: require.resolve('buffer/'),
-      },
+      alias: fallbacksAliases,
 
       // @ts-ignore
       fallback: fallbacks,
@@ -64,10 +61,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     },
 
     plugins: [
-      new webpack.ProvidePlugin({
-        process: require.resolve('process/browser'),
-        Buffer: [require.resolve('buffer/'), 'Buffer'],
-      }),
+      new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
     ],
   };
 

@@ -1,5 +1,4 @@
 import webpack, { Configuration } from 'webpack';
-import { fallbacks } from '@teambit/webpack';
 import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';

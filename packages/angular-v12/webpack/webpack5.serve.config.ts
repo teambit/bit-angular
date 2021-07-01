@@ -1,5 +1,11 @@
 import { PubsubMain } from '@teambit/pubsub';
-import { fallbacks, WebpackBitReporterPlugin, WebpackConfigWithDevServer } from '@teambit/webpack';
+import {
+  fallbacks,
+  WebpackBitReporterPlugin,
+  WebpackConfigWithDevServer,
+  fallbacksAliases,
+  fallbacksProvidePluginConfig,
+} from '@teambit/webpack';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import path from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
@@ -146,11 +152,7 @@ export function webpack5ServeConfigFactory(
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
-      alias: {
-        process: require.resolve('process/browser'),
-        buffer: require.resolve('buffer/'),
-      },
-
+      alias: fallbacksAliases,
       fallback: fallbacks as any,
     },
 
@@ -177,10 +179,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
-      new ProvidePlugin({
-        process: require.resolve('process/browser'),
-        Buffer: [require.resolve('buffer/'), 'Buffer'],
-      }),
+      new ProvidePlugin(fallbacksProvidePluginConfig),
 
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },
