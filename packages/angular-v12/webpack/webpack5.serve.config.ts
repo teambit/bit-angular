@@ -152,7 +152,13 @@ export function webpack5ServeConfigFactory(
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
-      alias: fallbacksAliases,
+      alias: {
+        ...fallbacksAliases,
+        '@angular/core': require.resolve('@angular/core/__ivy_ngcc__/fesm2015/core.js'),
+        '@angular/common': require.resolve('@angular/common/__ivy_ngcc__/fesm2015/common.js'),
+        '@angular/platform-browser': require.resolve('@angular/platform-browser/__ivy_ngcc__/fesm2015/platform-browser.js'),
+        '@angular/platform-browser-dynamic': require.resolve('@angular/platform-browser-dynamic/__ivy_ngcc__/fesm2015/platform-browser-dynamic.js'),
+      },
       fallback: { ...fallbacks, events: require.resolve('events/') } as any,
     },
 

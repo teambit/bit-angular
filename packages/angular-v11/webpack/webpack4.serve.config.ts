@@ -1,5 +1,9 @@
 import { PubsubMain } from '@teambit/pubsub';
-import { WebpackBitReporterPlugin, WebpackConfigWithDevServer } from '@teambit/webpack';
+import {
+  fallbacksAliases,
+  WebpackBitReporterPlugin,
+  WebpackConfigWithDevServer
+} from '@teambit/webpack';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import path from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
@@ -139,8 +143,13 @@ export function webpack4ServeConfigFactory(
       extensions: ['.mjs', '.ts', '.tsx', '.js', '.mdx', '.md'],
 
       alias: {
+        ...fallbacksAliases,
         path: require.resolve('path-browserify'),
-      },
+        '@angular/core': require.resolve('@angular/core/__ivy_ngcc__/fesm2015/core.js'),
+        '@angular/common': require.resolve('@angular/common/__ivy_ngcc__/fesm2015/common.js'),
+        '@angular/platform-browser': require.resolve('@angular/platform-browser/__ivy_ngcc__/fesm2015/platform-browser.js'),
+        '@angular/platform-browser-dynamic': require.resolve('@angular/platform-browser-dynamic/__ivy_ngcc__/fesm2015/platform-browser-dynamic.js'),
+      }
     },
 
     module: {

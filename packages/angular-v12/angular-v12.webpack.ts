@@ -141,7 +141,7 @@ export class AngularV12Webpack extends AngularWebpack {
       outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
       // inlineStyleLanguage: InlineStyleLanguage.Scss,
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony'],
+      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql'],
       // deployUrl: undefined,
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
