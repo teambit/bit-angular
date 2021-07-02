@@ -3,7 +3,7 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "0.0.5",
+        "version": "0.0.6",
         "mainFile": "index.ts",
         "rootDir": "packages/angular"
     },
@@ -15,13 +15,13 @@
     },
     "angular-v11": {
         "scope": "teambit.angular",
-        "version": "0.0.4",
+        "version": "0.0.6",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v11"
     },
     "angular-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.6",
+        "version": "0.0.8",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
