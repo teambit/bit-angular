@@ -153,7 +153,7 @@ export function webpack5ServeConfigFactory(
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
       alias: fallbacksAliases,
-      fallback: fallbacks as any,
+      fallback: { ...fallbacks, events: require.resolve('events/') } as any,
     },
 
     module: {

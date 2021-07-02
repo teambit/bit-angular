@@ -11,6 +11,7 @@
           "@angular/platform-browser": "-",
           "@angular/platform-browser-dynamic": "-",
           "@types/trusted-types": "~2.0.1",
+          "events": "3.3.0",
           "rxjs": "-",
           "typescript": "-",
           "webpack": "-",
