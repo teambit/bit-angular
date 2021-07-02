@@ -85,7 +85,7 @@ bit install
 Create a bit component:
 
 ```bash
-bit create ng-lib ui/button
+bit create ng-lib ui/my-button
 ```
 
 Start the dev server
