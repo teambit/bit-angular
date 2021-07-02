@@ -11,6 +11,7 @@
           "@angular/platform-browser": "-",
           "@angular/platform-browser-dynamic": "-",
           "@types/trusted-types": "~2.0.1",
+          "enhanced-resolve": "5.8.2",
           "events": "3.3.0",
           "jest": "~27.0.4",
           "jest-message-util": "~27.0.2",

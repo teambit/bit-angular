@@ -1,10 +1,11 @@
+import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   fallbacksAliases,
   WebpackBitReporterPlugin,
   WebpackConfigWithDevServer
 } from '@teambit/webpack';
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import path from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
 import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
@@ -144,12 +145,10 @@ export function webpack4ServeConfigFactory(
 
       alias: {
         ...fallbacksAliases,
-        path: require.resolve('path-browserify'),
-        '@angular/core': require.resolve('@angular/core/__ivy_ngcc__/fesm2015/core.js'),
-        '@angular/common': require.resolve('@angular/common/__ivy_ngcc__/fesm2015/common.js'),
-        '@angular/platform-browser': require.resolve('@angular/platform-browser/__ivy_ngcc__/fesm2015/platform-browser.js'),
-        '@angular/platform-browser-dynamic': require.resolve('@angular/platform-browser-dynamic/__ivy_ngcc__/fesm2015/platform-browser-dynamic.js'),
-      }
+        path: require.resolve('path-browserify')
+      },
+
+      plugins: [new AngularModulesResolverPlugin()]
     },
 
     module: {

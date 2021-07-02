@@ -1,13 +1,14 @@
+import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   fallbacks,
-  WebpackBitReporterPlugin,
-  WebpackConfigWithDevServer,
   fallbacksAliases,
   fallbacksProvidePluginConfig,
+  WebpackBitReporterPlugin,
+  WebpackConfigWithDevServer
 } from '@teambit/webpack';
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
-import path from 'path';
+import { join, posix, resolve } from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
 import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
@@ -33,7 +34,7 @@ export function webpack5ServeConfigFactory(
   publicPath: string,
   pubsub: PubsubMain
 ): WebpackConfigWithDevServer {
-  const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
+  const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
   // Host
   const host = process.env.HOST || 'localhost';
@@ -41,7 +42,7 @@ export function webpack5ServeConfigFactory(
   // Required for babel-preset-react-app
   process.env.NODE_ENV = 'development';
 
-  const publicDirectory = path.posix.join(publicRoot, publicPath);
+  const publicDirectory = posix.join(publicRoot, publicPath);
 
   const config = {
     // Environment mode
@@ -63,7 +64,7 @@ export function webpack5ServeConfigFactory(
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: (info) => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath)),
+      devtoolModuleFilenameTemplate: (info) => pathNormalizeToLinux(resolve(info.absoluteResourcePath)),
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
@@ -146,20 +147,15 @@ export function webpack5ServeConfigFactory(
 
       dev: {
         // Public path is root of content base
-        publicPath: path.join('/', publicRoot),
+        publicPath: join('/', publicRoot),
       },
     },
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
-      alias: {
-        ...fallbacksAliases,
-        '@angular/core': require.resolve('@angular/core/__ivy_ngcc__/fesm2015/core.js'),
-        '@angular/common': require.resolve('@angular/common/__ivy_ngcc__/fesm2015/common.js'),
-        '@angular/platform-browser': require.resolve('@angular/platform-browser/__ivy_ngcc__/fesm2015/platform-browser.js'),
-        '@angular/platform-browser-dynamic': require.resolve('@angular/platform-browser-dynamic/__ivy_ngcc__/fesm2015/platform-browser-dynamic.js'),
-      },
+      alias: fallbacksAliases,
       fallback: { ...fallbacks, events: require.resolve('events/') } as any,
+      plugins: [new AngularModulesResolverPlugin()]
     },
 
     module: {

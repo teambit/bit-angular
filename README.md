@@ -76,16 +76,16 @@ Then add the following lines in your workspace.jsonc file to apply the Angular d
 }
 ```
 
-Install dependencies:
-
-```bash
-bit install
-```
-
 Create a bit component:
 
 ```bash
 bit create ng-lib ui/my-button
+```
+
+Install dependencies:
+
+```bash
+bit install
 ```
 
 Start the dev server
