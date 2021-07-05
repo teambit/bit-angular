@@ -67,6 +67,10 @@ export class AngularV12Env extends AngularEnv {
         'zone.js': '-',
       },
       devDependencies: {
+        '@angular/compiler': '~12.1.0',
+        '@angular/compiler-cli': '~12.1.0',
+        'jest': '~27.0.4',
+        'jest-preset-angular': '~9.0.4',
         typescript: '-',
       },
       peerDependencies: {

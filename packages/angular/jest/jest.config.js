@@ -9,4 +9,8 @@ module.exports = {
       tsconfig: require.resolve('./tsconfig.spec.json'),
     },
   },
+  moduleNameMapper: {
+    // map angular modules to the root node_modules to avoid duplicated modules
+    "(@angular\/.*)$": "<rootDir>/node_modules/$1"
+  }
 };
