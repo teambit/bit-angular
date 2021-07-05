@@ -12,7 +12,6 @@ import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
 import { TsCompilerOptionsWithoutTsConfig } from '@teambit/typescript';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-import * as jestM from 'jest';
 import { componentTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 
@@ -114,9 +113,9 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
    * Returns a tester
    * Required for `bit start` & `bit test`
    */
-  getTester(jestConfigPath: string): Tester {
+  getTester(jestConfigPath: string, jestModulePath: string): Tester {
     const config = jestConfigPath || require.resolve('./jest/jest.config');
-    return this.jestAspect.createTester(config, jestM);
+    return this.jestAspect.createTester(config, jestModulePath || require.resolve('jest'));
   }
 
   /**
