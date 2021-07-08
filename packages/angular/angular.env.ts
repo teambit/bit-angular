@@ -12,7 +12,7 @@ import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
 import { TsCompilerOptionsWithoutTsConfig } from '@teambit/typescript';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-import { componentTemplates } from './angular.templates';
+import { angularTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 
 /**
@@ -28,7 +28,7 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
     protected ngPackagrAspect: NgPackagrMain,
     generator: GeneratorMain
   ) {
-    generator.registerComponentTemplate(componentTemplates);
+    generator.registerComponentTemplate(angularTemplates);
   }
 
   /** Abstract functions & properties specific to the adapter **/
