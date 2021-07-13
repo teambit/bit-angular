@@ -9,7 +9,6 @@ import { publicApiFile } from './template-files/public-api';
 export const ngLibTemplate: ComponentTemplate = {
   name: 'ng-lib',
   description: 'a generic Angular library',
-  hidden: false,
 
   generateFiles(context: ComponentContext) {
     return [

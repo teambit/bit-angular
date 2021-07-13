@@ -1,10 +1,10 @@
 import { MainRuntime } from '@teambit/cli';
 import { Logger, LoggerAspect, LoggerMain } from '@teambit/logger';
-import { Compiler } from '@teambit/compiler';
+import { Compiler, CompilerOptions } from '@teambit/compiler';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
-import { TsConfigSourceFile } from 'typescript';
+import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { NgPackagrAspect } from './ng-packagr.aspect';
-import { NgPackagr, NgPackagrCompiler, NgPackagrOptions } from './ng-packagr.compiler';
+import { NgPackagr, NgPackagrCompiler } from './ng-packagr.compiler';
 
 type NgPackagerMain = [LoggerMain, Workspace];
 
@@ -18,8 +18,8 @@ export class NgPackagrMain {
   createCompiler(
     ngPackagr: NgPackagr,
     readDefaultTsConfig: (filename?: string) => any,
-    tsConfig?: TsConfigSourceFile,
-    options: NgPackagrOptions = {}
+    tsCompilerOptions?: TsCompilerOptions,
+    bitCompilerOptions?: Partial<CompilerOptions>
   ): Compiler {
     return new NgPackagrCompiler(
       NgPackagrAspect.id,
@@ -27,8 +27,8 @@ export class NgPackagrMain {
       this.logger,
       this.workspace,
       readDefaultTsConfig,
-      tsConfig,
-      options
+      tsCompilerOptions,
+      bitCompilerOptions
     );
   }
 

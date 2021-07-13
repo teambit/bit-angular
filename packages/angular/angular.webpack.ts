@@ -1,5 +1,4 @@
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
-import { ComponentID } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';

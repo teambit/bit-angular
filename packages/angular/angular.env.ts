@@ -3,22 +3,30 @@ import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
-import { BuilderEnv, DependenciesEnv, DevEnv, EnvDescriptor, LinterEnv, TesterEnv } from '@teambit/envs';
+import {
+  BuilderEnv,
+  CompilerEnv,
+  DependenciesEnv,
+  DevEnv,
+  EnvDescriptor,
+  LinterEnv,
+  TesterEnv
+} from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { JestMain } from '@teambit/jest';
 import { Linter } from '@teambit/linter';
 import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
-import { TsCompilerOptionsWithoutTsConfig } from '@teambit/typescript';
 import { WebpackConfigTransformer } from '@teambit/webpack';
+import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { angularTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
+export abstract class AngularEnv implements CompilerEnv, LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
 
   constructor(
@@ -39,38 +47,22 @@ export abstract class AngularEnv implements BuilderEnv, LinterEnv, DependenciesE
   abstract __getDescriptor(): Promise<EnvDescriptor>;
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
 
-  private createNgPackgrCompiler(
-    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
-    compilerOptions: Partial<CompilerOptions> = {}
-  ) {
-    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsconfig, {
-      ...compilerOptions,
-    });
+  private createNgPackgrCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
+    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions);
   }
 
-  getCompiler(
-    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
-    compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
-  ) {
-    return this.createNgPackgrCompiler(tsconfig, compilerOptions);
-  }
-
-  private getCompilerTask(
-    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
-    compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
-  ) {
-    return this.compiler.createTask('NgPackagrCompiler', this.getCompiler(tsconfig, compilerOptions));
+  getCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
+    return this.createNgPackgrCompiler(tsCompilerOptions, bitCompilerOptions);
   }
 
   /**
    * Returns the component build pipeline
    * Required for `bit build`
    */
-  getBuildPipe(
-    tsconfig?: any, // any instead of TsConfigSourceFile because we don't use the same ts version
-    compilerOptions: Partial<TsCompilerOptionsWithoutTsConfig> = {}
-  ): BuildTask[] {
-    return [this.getCompilerTask(tsconfig, compilerOptions)];
+  getBuildPipe(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): BuildTask[] {
+    const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions);
+    const compilerTask = this.compiler.createTask('NgPackagrCompiler', compiler);
+    return [compilerTask];
   }
 
   /**
