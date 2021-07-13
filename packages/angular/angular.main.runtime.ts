@@ -5,7 +5,7 @@ import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs
 import { ESLintAspect, ESLintMain } from '@teambit/eslint';
 import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
 import { JestAspect, JestMain } from '@teambit/jest';
-import { MainRuntime } from '@teambit/legacy/dist/scopes/harmony/cli';
+import { MainRuntime } from '@teambit/cli';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackAspect, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';

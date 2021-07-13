@@ -4,8 +4,6 @@ import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/b
 import { CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import {
-  BuilderEnv,
-  CompilerEnv,
   DependenciesEnv,
   DevEnv,
   EnvDescriptor,
@@ -26,7 +24,7 @@ import { AngularWebpack } from './angular.webpack';
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export abstract class AngularEnv implements CompilerEnv, LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
+export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
 
   constructor(

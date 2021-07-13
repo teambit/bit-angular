@@ -6,7 +6,6 @@ import { extensionFile } from './files/extension';
 export const ngEnvTemplate: ComponentTemplate = {
   name: 'ng-env',
   description: 'customize the base Angular env with your configs and tools',
-  aspect: true,
   generateFiles: (context: ComponentContext) => {
     return [
       {
