@@ -1,23 +1,17 @@
+import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { eslintConfig } from '@teambit/angular-eslint-config';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
-import {
-  DependenciesEnv,
-  DevEnv,
-  EnvDescriptor,
-  LinterEnv,
-  TesterEnv
-} from '@teambit/envs';
-import { ESLintMain } from '@teambit/eslint';
+import { DependenciesEnv, DevEnv, EnvDescriptor, LinterEnv, TesterEnv } from '@teambit/envs';
+import { EslintConfigTransformer, ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { JestMain } from '@teambit/jest';
-import { Linter } from '@teambit/linter';
+import { Linter, LinterContext } from '@teambit/linter';
 import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { angularTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 
@@ -91,12 +85,12 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
    * Returns and configures the component linter.
    * Required for `bit lint`
    */
-  getLinter(): Linter {
-    return this.eslint.createLinter({
+  getLinter(context: LinterContext, transformers: EslintConfigTransformer[] = []): Linter {
+    return this.eslint.createLinter(context, {
       config: eslintConfig,
       // resolve all plugins from the angular environment.
       pluginPath: __dirname,
-    });
+    }, transformers);
   }
 
   /**
