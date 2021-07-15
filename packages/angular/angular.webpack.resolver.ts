@@ -1,8 +1,10 @@
 import { Resolver } from 'enhanced-resolve';
+import { existsSync } from 'fs';
 import { dirname } from 'path';
+
 const getInnerRequest = require('enhanced-resolve/lib/getInnerRequest');
 
-const regex = /^@angular\/([^\/]*)$/;
+const regex = /^@angular\/(.*)$/;
 
 /**
  * This webpack plugin resolves Angular packages to the capsule node_modules in order to avoid getting errors with
@@ -43,6 +45,9 @@ export class AngularModulesResolverPlugin {
         if (match) {
           // resolve to the folder containing package.json (root of the module)
           const alias = dirname(require.resolve(`${originalRequest}/package.json`));
+          if (!existsSync(alias)) {
+            return callback();
+          }
           const obj = { ...request, request: alias };
           const msg = `aliased with mapping "${match[0]}": "${alias}"`;
           return resolver.doResolve(target, obj, msg, resolveContext, (err: any, result: any) => {
