@@ -1,9 +1,10 @@
-import webpack, { Configuration } from 'webpack';
+import { AngularModulesResolverPlugin } from '@teambit/angular';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
+import webpack, { Configuration } from 'webpack';
 
 export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
   const config = {
@@ -33,9 +34,8 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
 
     resolve: {
       alias: fallbacksAliases,
-
-      // @ts-ignore
       fallback: fallbacks,
+      plugins: [new AngularModulesResolverPlugin()]
     },
 
     module: {

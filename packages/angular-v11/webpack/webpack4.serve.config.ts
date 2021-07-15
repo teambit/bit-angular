@@ -142,12 +142,10 @@ export function webpack4ServeConfigFactory(
 
     resolve: {
       extensions: ['.mjs', '.ts', '.tsx', '.js', '.mdx', '.md'],
-
       alias: {
         ...fallbacksAliases,
         path: require.resolve('path-browserify')
       },
-
       plugins: [new AngularModulesResolverPlugin()]
     },
 

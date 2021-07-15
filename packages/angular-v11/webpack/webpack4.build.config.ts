@@ -1,8 +1,9 @@
-import webpack, { Configuration } from 'webpack';
+import { AngularModulesResolverPlugin } from '@teambit/angular';
 import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
+import { Configuration } from 'webpack';
 
 // TODO(ocombe): this is webpack 5 build config, not webpack 4
 export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
@@ -43,10 +44,10 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
 
     resolve: {
       extensions: ['.mjs', '.ts', '.tsx', '.js', '.mdx', '.md'],
-
       alias: {
         path: require.resolve('path-browserify'),
       },
+      plugins: [new AngularModulesResolverPlugin()]
     },
 
     module: {
