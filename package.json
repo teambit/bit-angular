@@ -2,7 +2,6 @@
   "name": "bit-angular",
   "version": "1.0.0",
   "description": "<h1 align=\"center\">Bit Angular</h1> <p align=\"center\">   <img src=\"https://storage.googleapis.com/static.bit.dev/harmony-docs/readme-logo%20(2).png\"/> </p>",
-  "main": ".eslintrc.js",
   "directories": {
     "example": "examples"
   },

@@ -2,13 +2,11 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   ignorePatterns: ["node_modules/"],
   parserOptions: {
-    createDefaultProgram: true,
-    project: require.resolve('./tsconfig.json')
+    createDefaultProgram: true
   },
   env: {
     browser: true,
     node: true,
-    mocha: true,
     es6: true,
     jest: true
   },
@@ -18,6 +16,15 @@ module.exports = {
   ],
   plugins: [
     '@typescript-eslint',
+  ],
+  overrides: [
+    {
+      files: ['*.ts', '*.js'],
+      parserOptions: {
+        project: require.resolve('./tsconfig.json'),
+        createDefaultProgram: true,
+      }
+    }
   ],
   rules: {
     complexity: ['error', { max: 25 }],
