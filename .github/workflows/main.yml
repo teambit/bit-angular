@@ -39,7 +39,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v12
+        run: bit compile ng-packagr angular-eslint-config angular angular-v12 --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -47,13 +47,13 @@ jobs:
 
       # Compile the example component
       - name: Bit compile example
-        run: bit compile demo-lib-v12
+        run: bit compile demo-lib-v12 --log
 
       - name: Bit test
-        run: bit test
+        run: bit test --log
 
       - name: Bit build
-        run: bit build
+        run: bit build --log
 
       - uses: actions/upload-artifact@v2
         with:
@@ -82,7 +82,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v11
+        run: bit compile ng-packagr angular-eslint-config angular angular-v11 --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -90,13 +90,13 @@ jobs:
 
       # Compile the example component
       - name: Bit compile example
-        run: bit compile demo-lib-v11
+        run: bit compile demo-lib-v11 --log
 
       - name: Bit test
-        run: bit test
+        run: bit test --log
 
       - name: Bit build
-        run: bit build
+        run: bit build --log
 
       - uses: actions/upload-artifact@v2
         with:
