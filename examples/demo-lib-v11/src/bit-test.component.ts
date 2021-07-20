@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { BitTestService } from './compositions/bit-test.service';
+import { BitTestService } from './bit-test.service';
 
 @Component({
   selector: 'bit-test',

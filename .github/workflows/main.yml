@@ -17,7 +17,8 @@ env:
   BIT_TOKEN: ${{ secrets.BIT_TOKEN }}
 
 jobs:
-  build:
+  # Test angular-v12
+  v12:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
@@ -31,14 +32,14 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Add example app
-        run: bit add examples/demo-lib
+        run: bit add examples/demo-lib-v12
 
       - name: Install dependencies
         run: bit install
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v11 angular-v12
+        run: bit compile ng-packagr angular-eslint-config angular angular-v12
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -46,7 +47,50 @@ jobs:
 
       # Compile the example component
       - name: Bit compile example
-        run: bit compile demo-lib
+        run: bit compile demo-lib-v12
+
+      - name: Bit test
+        run: bit test
+
+      - name: Bit build
+        run: bit build
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: debug-log
+          path: $HOME/Library/Caches/Bit/logs
+
+  # Test angular-v11
+  v11:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: docker://bitcli/bit:latest
+    steps:
+      - uses:  teambit/setup-action@v1
+        with:
+          name: angular-github-actions
+          BIT_TOKEN: ${{ env.BIT_TOKEN }}
+
+      - uses: actions/checkout@v2
+
+      - name: Add example app
+        run: bit add examples/demo-lib-v11
+
+      - name: Install dependencies
+        run: bit install
+
+      # Compile the aspects
+      - name: Bit compile aspects
+        run: bit compile ng-packagr angular-eslint-config angular angular-v11
+
+      # Run bit link to regenerate the package.json of the example component
+      - name: Bit link
+        run: bit link
+
+      # Compile the example component
+      - name: Bit compile example
+        run: bit compile demo-lib-v11
 
       - name: Bit test
         run: bit test

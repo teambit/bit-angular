@@ -105,8 +105,11 @@
         }
       }
     },
-    "examples/demo-lib": {
+    "examples/demo-lib-v12": {
       "teambit.angular/angular-v12": {}
+    },
+    "examples/demo-lib-v11": {
+      "teambit.angular/angular-v11": {}
     },
     /**
      * "*" is a special rule which applied on all components in the workspace.
