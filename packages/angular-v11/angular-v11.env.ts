@@ -76,6 +76,8 @@ export class AngularV11Env extends AngularEnv {
       peerDependencies: {
         '@angular/common': '~11.2.14',
         '@angular/core': '~11.2.14',
+        '@angular/platform-browser': '~11.2.14',
+        '@angular/platform-browser-dynamic': '~11.2.14',
         rxjs: '^6.6.3',
         'zone.js': '^0.11.0',
         typescript: '~4.1.5',

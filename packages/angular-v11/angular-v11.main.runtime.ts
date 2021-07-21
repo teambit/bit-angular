@@ -13,7 +13,7 @@ export class AngularV11Main extends AngularMain {
     workspace,
     compositions,
     envs,
-  ]: AngularDeps) {
+  ]: AngularDeps): Promise<AngularMain> {
     const angularV11Env = new AngularV11Env(
       jestAspect,
       compiler,
