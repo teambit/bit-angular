@@ -9,16 +9,16 @@ import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { ngPackagr } from 'ng-packagr';
 import { GeneratorMain } from '@teambit/generator';
-import { AngularV11Aspect } from './angular-v11.aspect';
-import { AngularV11Webpack } from './angular-v11.webpack';
+import { AngularV10Aspect } from './angular-v10.aspect';
+import { AngularV10Webpack } from './angular-v10.webpack';
 import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export class AngularV11Env extends AngularEnv {
-  name = 'Angular-v11';
-  angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.compositions);
+export class AngularV10Env extends AngularEnv {
+  name = 'Angular-v10';
+  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions);
   ngPackagr = ngPackagr() as NgPackagr;
   readDefaultTsConfig = readDefaultTsConfig;
 
@@ -41,7 +41,7 @@ export class AngularV11Env extends AngularEnv {
    */
   async __getDescriptor(): Promise<EnvDescriptor> {
     return {
-      type: 'angular-v11',
+      type: 'angular-v10',
     };
   }
 
@@ -49,8 +49,8 @@ export class AngularV11Env extends AngularEnv {
    * Required for `bit start`
    */
   getDevEnvId(id?: string) {
-    if (typeof id !== 'string') return AngularV11Aspect.id;
-    return id || AngularV11Aspect.id;
+    if (typeof id !== 'string') return AngularV10Aspect.id;
+    return id || AngularV10Aspect.id;
   }
 
   /**
@@ -67,20 +67,20 @@ export class AngularV11Env extends AngularEnv {
         'zone.js': '-',
       },
       devDependencies: {
-        '@angular/compiler': '~11.2.14',
-        '@angular/compiler-cli': '~11.2.14',
+        '@angular/compiler': '~10.2.5',
+        '@angular/compiler-cli': '~10.2.5',
         'jest': '~27.0.4',
         'jest-preset-angular': '~9.0.4',
         typescript: '-',
       },
       peerDependencies: {
-        '@angular/common': '~11.2.14',
-        '@angular/core': '~11.2.14',
-        '@angular/platform-browser': '~11.2.14',
-        '@angular/platform-browser-dynamic': '~11.2.14',
+        '@angular/common': '~10.2.5',
+        '@angular/core': '~10.2.5',
+        '@angular/platform-browser': '~10.2.5',
+        '@angular/platform-browser-dynamic': '~10.2.5',
         rxjs: '^6.6.3',
-        'zone.js': '^0.11.4',
-        typescript: '~4.1.5',
+        'zone.js': '^0.10.3',
+        typescript: '~4.0.2',
       },
     };
   }

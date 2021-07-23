@@ -87,7 +87,7 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
    */
   getLinter(context: LinterContext, transformers: EslintConfigTransformer[] = []): Linter {
     return this.eslint.createLinter(context, {
-      config: eslintConfig,
+      config: eslintConfig as any,
       // resolve all plugins from the angular environment.
       pluginPath: __dirname,
     }, transformers);

@@ -79,12 +79,14 @@
   "teambit.generator/generator": {
     "aspects": [
       "teambit.angular/angular-v12",
-      "teambit.angular/angular-v11"
+      "teambit.angular/angular-v11",
+      "teambit.angular/angular-v10",
     ]
   },
   // Add angular templates to the list
   "teambit.angular/angular-v12": {},
   "teambit.angular/angular-v11": {},
+  "teambit.angular/angular-v10": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a
@@ -112,6 +114,9 @@
     },
     "examples/demo-lib-v11": {
       "teambit.angular/angular-v11": {}
+    },
+    "examples/demo-lib-v10": {
+      "teambit.angular/angular-v10": {}
     },
     /**
      * "*" is a special rule which applied on all components in the workspace.
