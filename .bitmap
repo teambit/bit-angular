@@ -14,7 +14,7 @@
         "rootDir": "packages/eslint-config"
     },
     "angular-v10": {
-        "scope": "teambit.angular",
+        "scope": "",
         "version": "0.0.1",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v10"
@@ -30,6 +30,24 @@
         "version": "0.0.16",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
+    },
+    "demo-lib-v10": {
+        "scope": "",
+        "version": "",
+        "mainFile": "public-api.ts",
+        "rootDir": "examples/demo-lib-v10"
+    },
+    "demo-lib-v11": {
+        "scope": "",
+        "version": "",
+        "mainFile": "public-api.ts",
+        "rootDir": "examples/demo-lib-v11"
+    },
+    "demo-lib-v12": {
+        "scope": "",
+        "version": "",
+        "mainFile": "public-api.ts",
+        "rootDir": "examples/demo-lib-v12"
     },
     "ng-packagr": {
         "scope": "teambit.angular",

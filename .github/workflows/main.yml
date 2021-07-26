@@ -31,15 +31,6 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Remove v11
-        run: bit remove angular-v11 -s -f
-
-      - name: Remove v10
-        run: bit remove angular-v10 -s -f
-
-      - name: Add example app
-        run: bit add examples/demo-lib-v12
-
       - name: Install dependencies
         run: bit install
 
@@ -80,15 +71,6 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Remove v12
-        run: bit remove angular-v12 -s -f
-
-      - name: Remove v10
-        run: bit remove angular-v10 -s -f
-
-      - name: Add example app
-        run: bit add examples/demo-lib-v11
-
       - name: Install dependencies
         run: bit install
 
@@ -128,15 +110,6 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
-
-      - name: Remove v12
-        run: bit remove angular-v12 -s -f
-
-      - name: Remove v11
-        run: bit remove angular-v11 -s -f
-
-      - name: Add example app
-        run: bit add examples/demo-lib-v10
 
       - name: Install dependencies
         run: bit install
