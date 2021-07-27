@@ -27,13 +27,13 @@
     },
     "angular-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.16",
+        "version": "0.0.20",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
     "ng-packagr": {
         "scope": "teambit.angular",
-        "version": "0.0.5",
+        "version": "0.0.6",
         "mainFile": "index.ts",
         "rootDir": "packages/ng-packagr"
     },
