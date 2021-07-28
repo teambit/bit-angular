@@ -35,7 +35,7 @@
     "policy": {
       "dependencies": {
         "@teambit/harmony": "^0.2.11",
-        "@teambit/legacy": "^1.0.91",
+        "@teambit/legacy": "^1.0.129",
         "@types/dompurify": "^2.2.2",
         "@types/fs-extra": "~9.0.7",
         "@types/jasmine": "~3.7.0",

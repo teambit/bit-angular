@@ -3,7 +3,7 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "0.0.14",
+        "version": "0.0.15",
         "mainFile": "index.ts",
         "rootDir": "packages/angular"
     },
@@ -15,25 +15,25 @@
     },
     "angular-v10": {
         "scope": "teambit.angular",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v10"
     },
     "angular-v11": {
         "scope": "teambit.angular",
-        "version": "0.0.14",
+        "version": "0.0.15",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v11"
     },
     "angular-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.20",
+        "version": "0.0.21",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
     "ng-packagr": {
         "scope": "teambit.angular",
-        "version": "0.0.6",
+        "version": "0.0.7",
         "mainFile": "index.ts",
         "rootDir": "packages/ng-packagr"
     },
