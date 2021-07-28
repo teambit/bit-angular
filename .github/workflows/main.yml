@@ -37,6 +37,9 @@ jobs:
       - name: Remove v10
         run: bit remove angular-v10 -s -f
 
+      - name: Remove v9
+        run: bit remove angular-v9 -s -f
+
       - name: Add example app
         run: bit add examples/demo-lib-v12
 
@@ -85,6 +88,9 @@ jobs:
 
       - name: Remove v10
         run: bit remove angular-v10 -s -f
+
+      - name: Remove v9
+        run: bit remove angular-v9 -s -f
 
       - name: Add example app
         run: bit add examples/demo-lib-v11
@@ -135,6 +141,9 @@ jobs:
       - name: Remove v11
         run: bit remove angular-v11 -s -f
 
+      - name: Remove v9
+        run: bit remove angular-v9 -s -f
+
       - name: Add example app
         run: bit add examples/demo-lib-v10
 
@@ -144,6 +153,58 @@ jobs:
       # Compile the aspects
       - name: Bit compile aspects
         run: bit compile ng-packagr angular-eslint-config angular angular-v10 --log
+
+      # Run bit link to regenerate the package.json of the example component
+      - name: Bit link
+        run: bit link
+
+      # Compile the example component
+      - name: Bit compile example
+        run: bit compile demo-lib-v10 --log
+
+      - name: Bit test
+        run: bit test --log
+
+      - name: Bit build
+        run: bit build --log
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: debug-log
+          path: $HOME/Library/Caches/Bit/logs
+
+  # Test angular-v9
+  v9:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: docker://bitcli/bit:latest
+    steps:
+      - uses:  teambit/setup-action@v1
+        with:
+          name: angular-github-actions
+          BIT_TOKEN: ${{ env.BIT_TOKEN }}
+
+      - uses: actions/checkout@v2
+
+      - name: Remove v12
+        run: bit remove angular-v12 -s -f
+
+      - name: Remove v11
+        run: bit remove angular-v11 -s -f
+
+      - name: Remove v10
+        run: bit remove angular-v10 -s -f
+
+      - name: Add example app
+        run: bit add examples/demo-lib-v9
+
+      - name: Install dependencies
+        run: bit install
+
+      # Compile the aspects
+      - name: Bit compile aspects
+        run: bit compile ng-packagr angular-eslint-config angular angular-v9 --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link

@@ -13,6 +13,12 @@
         "mainFile": "index.ts",
         "rootDir": "packages/eslint-config"
     },
+    "angular-v9": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "packages/angular-v9"
+    },
     "angular-v10": {
         "scope": "teambit.angular",
         "version": "0.0.2",
