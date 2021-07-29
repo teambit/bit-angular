@@ -3,43 +3,43 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "0.0.17",
+        "version": "0.0.18",
         "mainFile": "index.ts",
         "rootDir": "packages/angular"
     },
     "angular-eslint-config": {
         "scope": "teambit.angular",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "mainFile": "index.ts",
         "rootDir": "packages/eslint-config"
     },
     "angular-v10": {
         "scope": "teambit.angular",
-        "version": "0.0.4",
+        "version": "0.0.5",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v10"
     },
     "angular-v11": {
         "scope": "teambit.angular",
-        "version": "0.0.17",
+        "version": "0.0.18",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v11"
     },
     "angular-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.23",
+        "version": "0.0.24",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
     "angular-v8": {
         "scope": "teambit.angular",
-        "version": "0.0.1",
+        "version": "0.0.2",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v8"
     },
     "angular-v9": {
         "scope": "teambit.angular",
-        "version": "0.0.2",
+        "version": "0.0.3",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v9"
     },
