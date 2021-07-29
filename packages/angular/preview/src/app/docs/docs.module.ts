@@ -4,6 +4,7 @@ import { DocsComponent } from './docs.component';
 import { SafeHtmlPipe } from './safe-html.pipe';
 
 @NgModule({
+  entryComponents: [DocsComponent],
   declarations: [SafeHtmlPipe, DocsComponent],
   exports: [BrowserModule, SafeHtmlPipe, DocsComponent],
 })

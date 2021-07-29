@@ -1,5 +1,6 @@
 import {
   ChangeDetectorRef,
+  Compiler,
   Component,
   ComponentFactoryResolver,
   ComponentRef,
@@ -8,19 +9,21 @@ import {
   OnInit,
   Type,
   ViewChild,
-  ɵNgModuleDef,
+  ɵNgModuleDef
 } from '@angular/core';
 import { DocsComponent } from '../docs/docs.component';
 import { LazyLoadDirective } from './lazy-load.directive';
 
 @Component({
   selector: 'app-lazy-load',
-  template: ` <ng-template lazyLoad></ng-template> `,
+  template: `
+    <ng-template lazyLoad></ng-template> `
 })
 export class LazyLoadComponent implements OnInit, OnDestroy {
   @ViewChild(LazyLoadDirective, { static: true }) lazyLoad!: LazyLoadDirective;
 
-  constructor(private cfr: ComponentFactoryResolver, private injector: Injector, private cdr: ChangeDetectorRef) {}
+  constructor(private cfr: ComponentFactoryResolver, private cdr: ChangeDetectorRef, private compiler: Compiler, private injector: Injector) {
+  }
 
   /**
    * Unwrap a value which might be behind a closure (for forward declaration reasons).
@@ -29,11 +32,11 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
     return value instanceof Function ? value() : value;
   }
 
-  private insertComponent(components: Type<any>[]): ComponentRef<any>[] {
+  private insertComponent(components: Type<any>[], veCfr?: ComponentFactoryResolver): ComponentRef<any>[] {
     this.lazyLoad.viewContainerRef.clear();
     const cmpRefs: ComponentRef<any>[] = [];
     components.forEach((component) => {
-      const componentFactory = this.cfr.resolveComponentFactory(component);
+      const componentFactory = (veCfr || this.cfr).resolveComponentFactory(component);
       cmpRefs.push(this.lazyLoad.viewContainerRef.createComponent(componentFactory));
     });
     this.cdr.detectChanges();
@@ -42,7 +45,15 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
 
   private insertModule(module: Type<any>): void {
     const moduleProps = Reflect.get(module, 'ɵmod') as ɵNgModuleDef<any>;
-    this.insertComponent(this.maybeUnwrapFn(moduleProps.bootstrap));
+    if (moduleProps) {
+      // we are using ivy & AOT
+      this.insertComponent(this.maybeUnwrapFn(moduleProps.bootstrap));
+    } else {
+      // we are using view engine & JIT
+      const ngModuleFactory = this.compiler.compileModuleSync(module);
+      const moduleRef: any = ngModuleFactory.create(this.injector);
+      this.insertComponent(this.maybeUnwrapFn(moduleRef._bootstrapComponents), moduleRef.componentFactoryResolver);
+    }
   }
 
   private insertDocs(template: string) {

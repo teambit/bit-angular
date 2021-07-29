@@ -12,11 +12,11 @@ window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
 export default (composition: any, previewContext: RenderingContext) => {
   if (Reflect.get(composition, 'ɵcmp')) {
     window.onComponentLoad$.next(composition);
-  } else if (Reflect.get(composition, 'ɵmod')) {
+  } else if (Reflect.get(composition, 'ɵmod') || Reflect.get(composition, 'ngInjectorDef')) {
     window.onModuleLoad$.next(composition);
   } else {
     console.info(
-      `Unknown type of composition for ${composition}, the Angular aspect only supports components and modules`
+      `Unknown type of composition for ${composition}, the Angular aspect only supports modules or components (for v9+)`
     );
   }
 };

@@ -14,8 +14,8 @@
           "@teambit/harmony": "^0.2.11"
         },
         "peerDependencies": {
-          "@angular/compiler-cli": ">= 9.0.0",
-          "ng-packagr": ">=9.0.0"
+          "@angular/compiler-cli": ">= 8.0.0",
+          "ng-packagr": ">=5.0.0"
         }
       }
     }

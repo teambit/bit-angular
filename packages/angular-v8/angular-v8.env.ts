@@ -9,16 +9,16 @@ import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { ngPackagr } from 'ng-packagr';
 import { GeneratorMain } from '@teambit/generator';
-import { AngularV10Aspect } from './angular-v10.aspect';
-import { AngularV10Webpack } from './angular-v10.webpack';
+import { AngularV8Aspect } from './angular-v8.aspect';
+import { AngularV8Webpack } from './angular-v8.webpack';
 import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export class AngularV10Env extends AngularEnv {
-  name = 'Angular-v10';
-  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions);
+export class AngularV8Env extends AngularEnv {
+  name = 'Angular-v8';
+  angularWebpack = new AngularV8Webpack(this.workspace, this.webpackMain, this.compositions);
   ngPackagr = ngPackagr() as NgPackagr;
   readDefaultTsConfig = readDefaultTsConfig;
 
@@ -41,7 +41,7 @@ export class AngularV10Env extends AngularEnv {
    */
   async __getDescriptor(): Promise<EnvDescriptor> {
     return {
-      type: 'angular-v10',
+      type: 'angular-v8',
     };
   }
 
@@ -49,8 +49,8 @@ export class AngularV10Env extends AngularEnv {
    * Required for `bit start`
    */
   getDevEnvId(id?: string) {
-    if (typeof id !== 'string') return AngularV10Aspect.id;
-    return id || AngularV10Aspect.id;
+    if (typeof id !== 'string') return AngularV8Aspect.id;
+    return id || AngularV8Aspect.id;
   }
 
   /**
@@ -62,25 +62,25 @@ export class AngularV10Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        tslib: '^2.0.0',
+        tslib: '^1.10.0',
         rxjs: '-',
         'zone.js': '-',
       },
       devDependencies: {
-        '@angular/compiler': '~10.2.5',
-        '@angular/compiler-cli': '~10.2.5',
+        '@angular/compiler': '~8.2.14',
+        '@angular/compiler-cli': '~8.2.14',
         'jest': '~27.0.4',
         'jest-preset-angular': '~9.0.4',
         typescript: '-',
       },
       peerDependencies: {
-        '@angular/common': '~10.2.5',
-        '@angular/core': '~10.2.5',
-        '@angular/platform-browser': '~10.2.5',
-        '@angular/platform-browser-dynamic': '~10.2.5',
-        rxjs: '^6.6.3',
-        'zone.js': '~0.10.3',
-        typescript: '~4.0.2',
+        '@angular/common': '~8.2.14',
+        '@angular/core': '~8.2.14',
+        '@angular/platform-browser': '~8.2.14',
+        '@angular/platform-browser-dynamic': '~8.2.14',
+        rxjs: '~6.4.0',
+        'zone.js': '~0.9.1',
+        typescript: '~3.5.3',
       },
     };
   }

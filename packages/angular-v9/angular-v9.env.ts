@@ -79,7 +79,7 @@ export class AngularV9Env extends AngularEnv {
         '@angular/platform-browser': '~9.1.13',
         '@angular/platform-browser-dynamic': '~9.1.13',
         rxjs: '^6.6.3',
-        'zone.js': '^0.10.3',
+        'zone.js': '~0.10.3',
         typescript: '~3.8.3',
       },
     };

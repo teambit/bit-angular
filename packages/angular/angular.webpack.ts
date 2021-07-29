@@ -43,6 +43,7 @@ export abstract class AngularWebpack {
   }
 
   /** Abstract functions & properties specific to the adapter **/
+  abstract enableIvy: boolean;
   abstract getWebpackConfig(
     context: DevServerContext | BundlerContext,
     entryFiles: string[],
@@ -72,6 +73,7 @@ export abstract class AngularWebpack {
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile);
     const pAppPath = pathNormalizeToLinux(appPath);
 
+    tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
     tsconfigJSON.config.files = [posix.join(pAppPath, 'src/main.ts'), posix.join(pAppPath, 'src/polyfills.ts')];
     tsconfigJSON.config.include = [
       posix.join(pAppPath, 'src/app/**/*.ts'),

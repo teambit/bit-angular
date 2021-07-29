@@ -36,6 +36,7 @@ import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
 import { AngularV12Aspect } from './angular-v12.aspect';
 
 export class AngularV12Webpack extends AngularWebpack {
+  enableIvy = true;
   webpackDevServer = WsDevServer;
   webpackServeConfigFactory = webpack5ServeConfigFactory;
   webpackBuildConfigFactory = webpack5BuildConfigFactory;

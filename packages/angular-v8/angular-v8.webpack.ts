@@ -1,48 +1,62 @@
+import { BuilderContext } from '@angular-devkit/architect';
 import { DevServerBuilderOptions } from '@angular-devkit/build-angular';
-import { getCompilerConfig } from '@angular-devkit/build-angular/src/browser';
-import { Schema as BrowserBuilderSchema, OutputHashing } from '@angular-devkit/build-angular/src/browser/schema';
-import {
-  BuildBrowserFeatures,
-  normalizeBrowserSchema,
-  normalizeOptimization,
-} from '@angular-devkit/build-angular/src/utils';
-import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
-import {
-  BrowserWebpackConfigOptions,
-  generateWebpackConfig,
-  getIndexOutputFile,
-} from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
 import {
   getBrowserConfig,
   getCommonConfig,
-  getDevServerConfig,
   getStatsConfig,
   getStylesConfig,
-} from '@angular-devkit/build-angular/src/webpack/configs';
-import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
+  getAotConfig,
+  getNonAotConfig
+} from '@angular-devkit/build-angular/src/angular-cli-files/models/webpack-configs';
+import {
+  WebpackConfigOptions
+} from '@angular-devkit/build-angular/src/angular-cli-files/models/build-options';
+import {
+  OutputHashing,
+  Schema as BrowserBuilderSchema
+} from '@angular-devkit/build-angular/src/browser/schema';
+import { buildServerConfig } from '@angular-devkit/build-angular/src/dev-server';
+import { normalizeBrowserSchema, NormalizedBrowserBuilderSchema } from '@angular-devkit/build-angular/src/utils';
+import { generateEntryPoints } from '@angular-devkit/build-angular/src/angular-cli-files/utilities/package-chunk-sort';
+import {
+  generateWebpackConfig,
+  getIndexOutputFile
+} from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
+import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/angular-cli-files/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
+import { NodeJsSyncHost } from '@angular-devkit/core/node';
 import { AngularWebpack, WebpackSetup } from '@teambit/angular';
-import { Workspace } from '@teambit/workspace';
-import { CompositionsMain } from '@teambit/compositions';
-import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
-import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
+import { CompositionsMain } from '@teambit/compositions';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
 import path from 'path';
 import webpack, { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
-import { AngularV11Aspect } from './angular-v11.aspect';
+import { AngularV8Aspect } from './angular-v8.aspect';
+import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
+import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
 
-export class AngularV11Webpack extends AngularWebpack {
-  enableIvy = true;
+function getCompilerConfig(wco: WebpackConfigOptions): webpack.Configuration {
+  if (wco.buildOptions.main || wco.buildOptions.polyfills) {
+    return wco.buildOptions.aot ? getAotConfig(wco) : getNonAotConfig(wco);
+  }
+
+  return {};
+}
+
+type BrowserWebpackConfigOptions = WebpackConfigOptions<NormalizedBrowserBuilderSchema>;
+
+export class AngularV8Webpack extends AngularWebpack {
+  enableIvy = false;
   webpackDevServer = WsDevServer;
   webpackServeConfigFactory = webpack4ServeConfigFactory;
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
   constructor(workspace: Workspace, webpackMain: WebpackMain, compositions: CompositionsMain) {
-    super(workspace, webpackMain, compositions, AngularV11Aspect);
+    super(workspace, webpackMain, compositions, AngularV8Aspect);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
@@ -143,23 +157,24 @@ export class AngularV11Webpack extends AngularWebpack {
       namedChunks: true,
       optimization: setup === WebpackSetup.Build,
       buildOptimizer: setup === WebpackSetup.Build,
-      aot: true,
+      aot: setup === WebpackSetup.Build,
       deleteOutputPath: true,
       sourceMap: setup === WebpackSetup.Serve,
       outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
       // inlineStyleLanguage: InlineStyleLanguage.Scss,
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql'],
+      // allowedCommonJsDependencies: ['@teambit/harmony', 'graphql'],
       // deployUrl: undefined,
       // subresourceIntegrity: undefined,
       // crossOrigin: undefined,
     };
 
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
-    const projectRoot = normalize('');
+    const projectRoot = normalizedWorkspaceRoot;
     const sourceRoot = normalize('src');
 
-    const normalizedOptions = normalizeBrowserSchema(normalizedWorkspaceRoot, projectRoot, sourceRoot, {
+    const host = new NodeJsSyncHost();
+    const normalizedOptions = normalizeBrowserSchema(host, normalizedWorkspaceRoot, projectRoot, sourceRoot, {
       ...browserOptions,
       ...(extraOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
     });
@@ -170,22 +185,34 @@ export class AngularV11Webpack extends AngularWebpack {
       log: logger.console,
     } as any as logging.LoggerApi;
 
-    const webpackConfig: any = await generateWebpackConfig(
+    const webpackConfigArr: any[] = await generateWebpackConfig(
+      {builder: {
+        builderName: 'browser'
+      }} as BuilderContext,
       getSystemPath(normalizedWorkspaceRoot),
       getSystemPath(projectRoot),
       getSystemPath(sourceRoot),
       normalizedOptions,
       (wco: BrowserWebpackConfigOptions) => [
-        setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
         getCommonConfig(wco),
         getBrowserConfig(wco),
         getStylesConfig(wco), // TODO
         getStatsConfig(wco),
         getCompilerConfig(wco),
       ],
-      loggerApi,
-      {}
+      loggerApi
     );
+
+    const webpackConfig = webpackConfigArr[0];
+
+    if(setup === WebpackSetup.Serve) {
+      webpackConfig.devServer = buildServerConfig(
+        normalizedWorkspaceRoot,
+        extraOptions as DevServerBuilderOptions,
+        browserOptions,
+        loggerApi
+      );
+    }
 
     // Add bit generated files to the list of entries
     webpackConfig.entry.main.unshift(...entryFiles);
@@ -233,38 +260,35 @@ export class AngularV11Webpack extends AngularWebpack {
 
     if (setup === WebpackSetup.Serve && browserOptions.index) {
       const { scripts = [], styles = [] } = browserOptions;
-      const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
       const entrypoints = generateEntryPoints({ scripts, styles });
-      const normalizedIndex = normalize(browserOptions.index as string);
-      const normalizedOptimization = normalizeOptimization(browserOptions.optimization);
       if (!webpackConfig.plugins) {
         webpackConfig.plugins = [];
       }
       webpackConfig.plugins.push(
         new IndexHtmlWebpackPlugin({
-          indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
-          outputPath: getIndexOutputFile(normalizedIndex),
+          input: path.resolve(workspaceRoot, browserOptions.index as string),
+          output: getIndexOutputFile(browserOptions),
           baseHref: browserOptions.baseHref || '/',
           entrypoints,
           moduleEntrypoints: [],
           noModuleEntrypoints: ['polyfills-es5'],
           deployUrl: browserOptions.deployUrl,
           sri: browserOptions.subresourceIntegrity,
-          optimization: normalizedOptimization,
-          WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
           crossOrigin: browserOptions.crossOrigin,
-          lang: 'en-US', // TODO(ocombe) support locale
         })
       );
     }
 
+
     // don't use the output path from angular
     delete webpackConfig?.output?.path;
     webpackConfig.stats = 'errors-only';
+    // webpackConfig.context = workspaceRoot;
 
     if (setup === WebpackSetup.Serve) {
       return this.migrateConfiguration(webpackConfig);
     }
+
 
     return webpackConfig;
   }

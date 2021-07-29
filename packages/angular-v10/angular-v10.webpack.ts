@@ -48,6 +48,7 @@ function getCompilerConfig(wco: WebpackConfigOptions): webpack.Configuration {
 }
 
 export class AngularV10Webpack extends AngularWebpack {
+  enableIvy = true;
   webpackDevServer = WsDevServer;
   webpackServeConfigFactory = webpack4ServeConfigFactory;
   webpackBuildConfigFactory = webpack4BuildConfigFactory;

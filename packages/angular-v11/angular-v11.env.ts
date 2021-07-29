@@ -79,7 +79,7 @@ export class AngularV11Env extends AngularEnv {
         '@angular/platform-browser': '~11.2.14',
         '@angular/platform-browser-dynamic': '~11.2.14',
         rxjs: '^6.6.3',
-        'zone.js': '^0.11.4',
+        'zone.js': '~0.11.4',
         typescript: '~4.1.5',
       },
     };
