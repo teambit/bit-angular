@@ -26,7 +26,7 @@ import {
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/angular-cli-files/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
-import { AngularWebpack, WebpackSetup } from '@teambit/angular';
+import { AngularWebpack, optionValue, WebpackSetup } from '@teambit/angular';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { CompositionsMain } from '@teambit/compositions';
 import { Logger } from '@teambit/logger';
@@ -67,66 +67,11 @@ export class AngularV10Webpack extends AngularWebpack {
    * Migrate options from webpack-dev-server 3 to 4
    */
   private migrateConfiguration(webpackConfig: Configuration): Configuration {
-    // /**
-    //  * Removed logLevel in favor of built-in logger
-    //  * see https://webpack.js.org/configuration/other-options/#infrastructurelogginglevel
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.logLevel;
-    //
     /**
      * Removed contentBase in favor of the static option
      */
     // @ts-ignore
     delete webpackConfig.devServer.contentBase;
-    //
-    // /**
-    //  * Removed publicPath in favor of the dev option
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.publicPath;
-    //
-    // /**
-    //  * Moved overlay to client option
-    //  */
-    // // @ts-ignore
-    // webpackConfig.devServer.client = webpackConfig.devServer.client || {};
-    // // @ts-ignore
-    // webpackConfig.devServer.client.overlay = webpackConfig.devServer.overlay;
-    // // @ts-ignore
-    // delete webpackConfig.devServer.overlay;
-    //
-    // /**
-    //  * Removed in favor of the static option
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.watchOptions;
-    //
-    // /**
-    //  * Moved sockPath to client option path
-    //  */
-    // // @ts-ignore
-    // webpackConfig.devServer.client.path = webpackConfig.devServer.sockPath;
-    // // @ts-ignore
-    // delete webpackConfig.devServer.sockPath;
-    //
-    // /**
-    //  * Removed stats in favor of the stats options from webpack
-    //  */
-    // // @ts-ignore
-    // delete webpackConfig.devServer.stats;
-    //
-    // /**
-    //  * Cleaning up undefined values
-    //  */
-    // // @ts-ignore
-    // Object.keys(webpackConfig.devServer).forEach(option => {
-    //   // @ts-ignore
-    //   if (typeof webpackConfig.devServer[option] === 'undefined') {
-    //     // @ts-ignore
-    //     delete webpackConfig.devServer[option];
-    //   }
-    // })
 
     return webpackConfig;
   }
@@ -138,10 +83,12 @@ export class AngularV10Webpack extends AngularWebpack {
     workspaceRoot: string,
     logger: Logger,
     setup: WebpackSetup,
-    extraOptions: Partial<WebpackConfigWithDevServer> = {}
+    webpackOptions: Partial<WebpackConfigWithDevServer> = {},
+    angularOptions: Partial<BrowserBuilderSchema> = {}
   ): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
+      ...angularOptions,
       baseHref: path.posix.join('/', context.rootPath!, context.publicPath!),
       preserveSymlinks: true,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
@@ -149,23 +96,19 @@ export class AngularV10Webpack extends AngularWebpack {
       main: 'src/main.ts',
       polyfills: 'src/polyfills.ts',
       tsConfig: tsconfigPath,
-      assets: ['src/favicon.ico', 'src/assets'],
-      styles: ['src/styles.scss'],
-      scripts: [],
-      vendorChunk: true,
-      namedChunks: true,
-      optimization: setup === WebpackSetup.Build,
-      buildOptimizer: setup === WebpackSetup.Build,
-      aot: true,
-      deleteOutputPath: true,
-      sourceMap: setup === WebpackSetup.Serve,
-      outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
-      // inlineStyleLanguage: InlineStyleLanguage.Scss,
+      assets: ['src/favicon.ico', 'src/assets', ...(angularOptions.assets || [])],
+      styles: ['src/styles.scss', ...(angularOptions.styles || [])],
+      scripts: angularOptions.scripts,
+      vendorChunk: optionValue(angularOptions.vendorChunk, true),
+      namedChunks: optionValue(angularOptions.namedChunks, true),
+      optimization: optionValue(angularOptions.optimization, setup === WebpackSetup.Build),
+      buildOptimizer: optionValue(angularOptions.buildOptimizer, setup === WebpackSetup.Build),
+      aot: optionValue(angularOptions.aot, true),
+      deleteOutputPath: optionValue(angularOptions.deleteOutputPath, true),
+      sourceMap: optionValue(angularOptions.sourceMap, setup === WebpackSetup.Serve),
+      outputHashing: optionValue(angularOptions.outputHashing, setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql'],
-      // deployUrl: undefined,
-      // subresourceIntegrity: undefined,
-      // crossOrigin: undefined,
+      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', ...(angularOptions.allowedCommonJsDependencies || [])],
     };
 
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
@@ -175,7 +118,7 @@ export class AngularV10Webpack extends AngularWebpack {
     const host = new NodeJsSyncHost();
     const normalizedOptions = normalizeBrowserSchema(host, normalizedWorkspaceRoot, projectRoot, sourceRoot, {
       ...browserOptions,
-      ...(extraOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
+      ...(webpackOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
     });
 
     const loggerApi = {
@@ -205,7 +148,7 @@ export class AngularV10Webpack extends AngularWebpack {
     if(setup === WebpackSetup.Serve) {
       webpackConfig.devServer = buildServerConfig(
         normalizedWorkspaceRoot,
-        extraOptions as DevServerBuilderOptions,
+        webpackOptions as DevServerBuilderOptions,
         browserOptions,
         loggerApi
       );
@@ -215,7 +158,7 @@ export class AngularV10Webpack extends AngularWebpack {
     webpackConfig.entry.main.unshift(...entryFiles);
 
     // @ts-ignore
-    if (extraOptions.liveReload && !extraOptions.hmr) {
+    if (webpackOptions.liveReload && !webpackOptions.hmr) {
       // This is needed because we cannot use the inline option directly in the config
       // because of the SuppressExtractedTextChunksWebpackPlugin
       // Consider not using SuppressExtractedTextChunksWebpackPlugin when liveReload is enable.
@@ -250,7 +193,7 @@ export class AngularV10Webpack extends AngularWebpack {
     }
 
     // @ts-ignore
-    if (extraOptions.hmr) {
+    if (webpackOptions.hmr) {
       logger.warn(tags.stripIndents`NOTICE: Hot Module Replacement (HMR) is enabled for the dev server.
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }

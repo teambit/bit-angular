@@ -22,7 +22,7 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { WebpackSetup, AngularWebpack } from '@teambit/angular';
+import { WebpackSetup, AngularWebpack, optionValue } from '@teambit/angular';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { CompositionsMain } from '@teambit/compositions';
 import { Logger } from '@teambit/logger';
@@ -118,10 +118,12 @@ export class AngularV12Webpack extends AngularWebpack {
     workspaceRoot: string,
     logger: Logger,
     setup: WebpackSetup,
-    extraOptions: Partial<WebpackConfigWithDevServer> = {}
+    webpackOptions: Partial<WebpackConfigWithDevServer> = {},
+    angularOptions: Partial<BrowserBuilderSchema> = {}
   ): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json
     const browserOptions: BrowserBuilderSchema = {
+      ...angularOptions,
       baseHref: './',
       preserveSymlinks: true,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
@@ -129,23 +131,19 @@ export class AngularV12Webpack extends AngularWebpack {
       main: 'src/main.ts',
       polyfills: 'src/polyfills.ts',
       tsConfig: tsconfigPath,
-      assets: ['src/favicon.ico', 'src/assets'],
-      styles: ['src/styles.scss'],
-      scripts: [],
-      vendorChunk: true,
-      namedChunks: true,
-      optimization: setup === WebpackSetup.Build,
-      buildOptimizer: setup === WebpackSetup.Build,
-      aot: true,
-      deleteOutputPath: true,
-      sourceMap: setup === WebpackSetup.Serve,
-      outputHashing: setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None,
-      // inlineStyleLanguage: InlineStyleLanguage.Scss,
+      assets: ['src/favicon.ico', 'src/assets', ...(angularOptions.assets || [])],
+      styles: ['src/styles.scss', ...(angularOptions.styles || [])],
+      scripts: angularOptions.scripts,
+      vendorChunk: optionValue(angularOptions.vendorChunk, true),
+      namedChunks: optionValue(angularOptions.namedChunks, true),
+      optimization: optionValue(angularOptions.optimization, setup === WebpackSetup.Build),
+      buildOptimizer: optionValue(angularOptions.buildOptimizer, setup === WebpackSetup.Build),
+      aot: optionValue(angularOptions.aot, true),
+      deleteOutputPath: optionValue(angularOptions.deleteOutputPath, true),
+      sourceMap: optionValue(angularOptions.sourceMap, setup === WebpackSetup.Serve),
+      outputHashing: optionValue(angularOptions.outputHashing, setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql'],
-      // deployUrl: undefined,
-      // subresourceIntegrity: undefined,
-      // crossOrigin: undefined,
+      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', ...(angularOptions.allowedCommonJsDependencies || [])],
     };
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');
@@ -153,7 +151,7 @@ export class AngularV12Webpack extends AngularWebpack {
 
     const normalizedOptions = normalizeBrowserSchema(normalizedWorkspaceRoot, projectRoot, sourceRoot, {
       ...browserOptions,
-      ...(extraOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
+      ...(webpackOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
     });
 
     const loggerApi = {
@@ -180,7 +178,7 @@ export class AngularV12Webpack extends AngularWebpack {
     );
 
     // @ts-ignore
-    if (extraOptions.liveReload && !extraOptions.hmr) {
+    if (webpackOptions.liveReload && !webpackOptions.hmr) {
       // This is needed because we cannot use the inline option directly in the config
       // because of the SuppressExtractedTextChunksWebpackPlugin
       // Consider not using SuppressExtractedTextChunksWebpackPlugin when liveReload is enable.
@@ -215,7 +213,7 @@ export class AngularV12Webpack extends AngularWebpack {
     }
 
     // @ts-ignore
-    if (extraOptions.hmr) {
+    if (webpackOptions.hmr) {
       logger.warn(tags.stripIndents`NOTICE: Hot Module Replacement (HMR) is enabled for the dev server.
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }

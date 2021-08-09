@@ -1,4 +1,5 @@
 import { CompilerOptions as TsCompilerOptions, readConfiguration } from '@angular/compiler-cli';
+import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
@@ -7,8 +8,9 @@ import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
 import { JestAspect, JestMain } from '@teambit/jest';
 import { MainRuntime } from '@teambit/cli';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
-import { WebpackAspect, WebpackMain } from '@teambit/webpack';
+import { WebpackAspect, WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import { Configuration } from 'webpack';
 import { AngularEnv } from './angular.env';
 
 export type AngularDeps = [
@@ -71,5 +73,22 @@ export abstract class AngularMain {
         return this.angularEnv.getBuildPipe(tsCompilerOptions, bitCompilerOptions);
       }
     });
+  }
+
+  /**
+   * Override Angular options for serve (bit start) and build (bit build).
+   * Angular options are the ones you could find in an angular.json file
+   */
+  overrideAngularOptions(serveOpts: Partial<BrowserBuilderSchema>, buildOpts: Partial<BrowserBuilderSchema>) {
+    this.angularEnv.angularWebpack.angularServeOptions = serveOpts;
+    this.angularEnv.angularWebpack.angularBuildOptions = buildOpts;
+  }
+
+  /**
+   * Override Webpack options for serve (bit start) and build (bit build).
+   */
+  overrideWebpackOptions(serveOpts: Partial<WebpackConfigWithDevServer>, buildOpts: Partial<Configuration>) {
+    this.angularEnv.angularWebpack.webpackServeOptions = serveOpts;
+    this.angularEnv.angularWebpack.webpackBuildOptions = buildOpts;
   }
 }

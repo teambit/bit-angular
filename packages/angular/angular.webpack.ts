@@ -1,3 +1,4 @@
+import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
 import { CompositionsMain } from '@teambit/compositions';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
@@ -32,6 +33,10 @@ export abstract class AngularWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
+  webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
+  webpackBuildOptions: Partial<Configuration> = {}
+  angularServeOptions: Partial<BrowserBuilderSchema> = {};
+  angularBuildOptions: Partial<BrowserBuilderSchema> = {};
 
   constructor(
     private workspace: Workspace,
@@ -51,7 +56,8 @@ export abstract class AngularWebpack {
     rootPath: string,
     logger: Logger,
     setup: WebpackSetup,
-    extraOptions: Partial<WebpackConfigWithDevServer>
+    webpackOptions: Partial<WebpackConfigWithDevServer>,
+    angularOptions: Partial<BrowserBuilderSchema>
   ): Promise<WebpackConfigWithDevServer | Configuration>;
   abstract webpack: Partial<typeof webpack>;
   abstract webpackDevServer: Partial<typeof WsDevServer>;
@@ -142,7 +148,8 @@ export abstract class AngularWebpack {
       rootPath,
       this.webpackMain.logger,
       WebpackSetup.Serve,
-      {}
+      this.webpackServeOptions,
+      this.angularServeOptions
     );
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);
@@ -185,7 +192,8 @@ export abstract class AngularWebpack {
       rootPath,
       this.webpackMain.logger,
       WebpackSetup.Build,
-      {}
+      this.webpackBuildOptions as WebpackConfigWithDevServer,
+      this.angularBuildOptions
     );
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);
