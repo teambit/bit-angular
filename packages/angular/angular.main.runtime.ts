@@ -37,7 +37,7 @@ export abstract class AngularMain {
     WebpackAspect,
     WorkspaceAspect,
     CompositionsAspect,
-    EnvsAspect,
+    EnvsAspect
   ];
 
   constructor(private envs: EnvsMain, private angularEnv: AngularEnv) {
@@ -79,16 +79,34 @@ export abstract class AngularMain {
    * Override Angular options for serve (bit start) and build (bit build).
    * Angular options are the ones you could find in an angular.json file
    */
-  overrideAngularOptions(serveOpts: Partial<BrowserBuilderSchema>, buildOpts: Partial<BrowserBuilderSchema>) {
-    this.angularEnv.angularWebpack.angularServeOptions = serveOpts;
-    this.angularEnv.angularWebpack.angularBuildOptions = buildOpts;
+  overrideAngularOptions(angularOpts: Partial<BrowserBuilderSchema>): EnvTransformer;
+  overrideAngularOptions(serveOpts: Partial<BrowserBuilderSchema>, buildOpts: Partial<BrowserBuilderSchema>): EnvTransformer;
+  overrideAngularOptions(serveOpts: Partial<BrowserBuilderSchema>, buildOpts?: Partial<BrowserBuilderSchema>): EnvTransformer {
+    if (typeof buildOpts === 'undefined') {
+      buildOpts = serveOpts;
+    }
+    const angularWebpack = this.angularEnv.angularWebpack;
+    angularWebpack.angularServeOptions = serveOpts;
+    angularWebpack.angularBuildOptions = buildOpts;
+    return this.envs.override({
+      angularWebpack
+    });
   }
 
   /**
    * Override Webpack options for serve (bit start) and build (bit build).
    */
-  overrideWebpackOptions(serveOpts: Partial<WebpackConfigWithDevServer>, buildOpts: Partial<Configuration>) {
-    this.angularEnv.angularWebpack.webpackServeOptions = serveOpts;
-    this.angularEnv.angularWebpack.webpackBuildOptions = buildOpts;
+  overrideWebpackOptions(webpackOpts: Partial<WebpackConfigWithDevServer>): EnvTransformer;
+  overrideWebpackOptions(serveOpts: Partial<WebpackConfigWithDevServer>, buildOpts: Partial<Configuration>): EnvTransformer;
+  overrideWebpackOptions(serveOpts: Partial<WebpackConfigWithDevServer>, buildOpts?: Partial<Configuration>): EnvTransformer {
+    if (typeof buildOpts === 'undefined') {
+      buildOpts = serveOpts as Partial<Configuration>;
+    }
+    const angularWebpack = this.angularEnv.angularWebpack;
+    angularWebpack.webpackServeOptions = serveOpts;
+    angularWebpack.webpackBuildOptions = buildOpts;
+    return this.envs.override({
+      angularWebpack
+    });
   }
 }
