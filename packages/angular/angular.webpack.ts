@@ -23,6 +23,7 @@ import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
 import webpack, { Configuration } from 'webpack';
 import WsDevServer from 'webpack-dev-server';
+import { getNodeModulesPaths } from './webpack-plugins/utils';
 
 export enum WebpackSetup {
   Serve = 'serve',
@@ -33,6 +34,7 @@ export abstract class AngularWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
+  private nodeModulesPaths: string[];
   webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
   webpackBuildOptions: Partial<Configuration> = {}
   angularServeOptions: Partial<BrowserBuilderSchema> = {};
@@ -42,9 +44,11 @@ export abstract class AngularWebpack {
     private workspace: Workspace,
     private webpackMain: WebpackMain,
     private compositions: CompositionsMain,
-    angularAspect: Aspect
+    angularAspect: Aspect,
+    protected scopeAspectsRootDir: string
   ) {
     this.tempFolder = workspace?.getTempDir(angularAspect.id) || join(CACHE_ROOT, angularAspect.id);
+    this.nodeModulesPaths = getNodeModulesPaths(workspace.path, scopeAspectsRootDir);
   }
 
   /** Abstract functions & properties specific to the adapter **/
@@ -67,9 +71,11 @@ export abstract class AngularWebpack {
     entryFiles: string[],
     publicRoot: string,
     publicPath: string,
-    pubsub: PubsubMain
+    pubsub: PubsubMain,
+    nodeModulesPaths: string[],
+    tsconfigPath: string,
   ) => WebpackConfigWithDevServer;
-  abstract webpackBuildConfigFactory: (entryFiles: string[], rootPath: string) => Configuration;
+  abstract webpackBuildConfigFactory: (entryFiles: string[], rootPath: string, nodeModulesPaths: string[]) => Configuration;
 
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
@@ -103,7 +109,9 @@ export abstract class AngularWebpack {
   writeTsconfig(context: DevServerContext | BundlerContext, rootSpace: string): string {
     const componentsFilePaths = new Set<string>();
     const dirPath = join(this.tempFolder, context.id);
-    if (!existsSync(dirPath)) mkdirSync(dirPath, { recursive: true });
+    if (!existsSync(dirPath)) {
+      mkdirSync(dirPath, { recursive: true });
+    }
 
     // get the list of files for existing component compositions to include into the compilation
     context.components.forEach((component) => {
@@ -160,7 +168,9 @@ export abstract class AngularWebpack {
       context.entry,
       context.rootPath,
       context.publicPath,
-      this.webpackMain.pubsub
+      this.webpackMain.pubsub,
+      this.nodeModulesPaths,
+      tsconfigPath,
     );
     const configMutator = new WebpackConfigMutator(config);
 
@@ -176,7 +186,7 @@ export abstract class AngularWebpack {
 
   private createPreviewConfig(targets: Target[]): Configuration[] {
     return targets.map((target) => {
-      return this.webpackBuildConfigFactory(target.entries, target.outputPath);
+      return this.webpackBuildConfigFactory(target.entries, target.outputPath, this.nodeModulesPaths);
     });
   }
 

@@ -42,8 +42,8 @@ export class AngularV12Webpack extends AngularWebpack {
   webpackBuildConfigFactory = webpack5BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace, webpackMain: WebpackMain, compositions: CompositionsMain) {
-    super(workspace, webpackMain, compositions, AngularV12Aspect);
+  constructor(workspace: Workspace, webpackMain: WebpackMain, compositions: CompositionsMain, scopeAspectsRootDir: string) {
+    super(workspace, webpackMain, compositions, AngularV12Aspect, scopeAspectsRootDir);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
@@ -160,7 +160,7 @@ export class AngularV12Webpack extends AngularWebpack {
       log: logger.console,
     } as any as logging.LoggerApi;
 
-    let webpackConfig: any = await generateWebpackConfig(
+    const webpackConfig: any = await generateWebpackConfig(
       getSystemPath(normalizedWorkspaceRoot),
       getSystemPath(projectRoot),
       getSystemPath(sourceRoot),

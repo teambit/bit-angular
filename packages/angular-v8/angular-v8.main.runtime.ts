@@ -13,6 +13,7 @@ export class AngularV8Main extends AngularMain {
     workspace,
     compositions,
     envs,
+    isolator,
   ]: AngularDeps): Promise<AngularMain> {
     const angularV8Env = new AngularV8Env(
       jestAspect,
@@ -20,9 +21,10 @@ export class AngularV8Main extends AngularMain {
       eslint,
       ngPackagr,
       generator,
+      isolator,
       webpack,
       workspace,
-      compositions
+      compositions,
     );
     return new AngularV8Main(envs, angularV8Env);
   }

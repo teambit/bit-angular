@@ -8,6 +8,8 @@ import { DependenciesEnv, DevEnv, EnvDescriptor, LinterEnv, TesterEnv } from '@t
 import { EslintConfigTransformer, ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { JestMain } from '@teambit/jest';
+import { IsolatorMain } from '@teambit/isolator';
+import { Workspace } from '@teambit/workspace';
 import { Linter, LinterContext } from '@teambit/linter';
 import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
@@ -20,15 +22,19 @@ import { AngularWebpack } from './angular.webpack';
  */
 export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
+  scopeAspectsRootDir: string;
 
   constructor(
     protected jestAspect: JestMain,
     protected compiler: CompilerMain,
     protected eslint: ESLintMain,
     protected ngPackagrAspect: NgPackagrMain,
-    generator: GeneratorMain
+    isolator: IsolatorMain,
+    workspace: Workspace,
+    generator: GeneratorMain,
   ) {
     generator.registerComponentTemplate(angularTemplates);
+    this.scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
   }
 
   /** Abstract functions & properties specific to the adapter **/

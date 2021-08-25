@@ -6,7 +6,7 @@ import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 import webpack, { Configuration } from 'webpack';
 
-export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: string): Configuration {
+export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: string, nodeModulesPaths: string[]): Configuration {
   const config = {
     mode: 'production',
     // Stop compilation early in production
@@ -35,7 +35,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     resolve: {
       alias: fallbacksAliases,
       fallback: fallbacks,
-      plugins: [new AngularModulesResolverPlugin()]
+      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
     },
 
     module: {

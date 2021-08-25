@@ -1,4 +1,4 @@
-import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { AngularModulesResolverPlugin, BitAngularPlugin } from '@teambit/angular';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -29,7 +29,9 @@ export function webpack4ServeConfigFactory(
   entryFiles: string[],
   publicRoot: string,
   publicPath: string,
-  pubsub: PubsubMain
+  pubsub: PubsubMain,
+  nodeModulesPaths: string[],
+  tsConfigPath: string,
 ): WebpackConfigWithDevServer {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
 
@@ -146,7 +148,7 @@ export function webpack4ServeConfigFactory(
         ...fallbacksAliases,
         path: require.resolve('path-browserify')
       },
-      plugins: [new AngularModulesResolverPlugin()]
+      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
     },
 
     module: {
@@ -172,6 +174,7 @@ export function webpack4ServeConfigFactory(
     },
 
     plugins: [
+      new BitAngularPlugin(tsConfigPath, nodeModulesPaths),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },
       }),

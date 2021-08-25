@@ -1,4 +1,4 @@
-import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { AngularModulesResolverPlugin, BitAngularPlugin } from '@teambit/angular';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -32,7 +32,9 @@ export function webpack5ServeConfigFactory(
   entryFiles: string[],
   publicRoot: string,
   publicPath: string,
-  pubsub: PubsubMain
+  pubsub: PubsubMain,
+  nodeModulesPaths: string[],
+  tsConfigPath: string,
 ): WebpackConfigWithDevServer {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
@@ -155,7 +157,7 @@ export function webpack5ServeConfigFactory(
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
       alias: fallbacksAliases,
       fallback: { ...fallbacks, events: require.resolve('events/') } as any,
-      plugins: [new AngularModulesResolverPlugin()]
+      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
     },
 
     module: {
@@ -181,8 +183,8 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
+      new BitAngularPlugin(tsConfigPath, nodeModulesPaths),
       new ProvidePlugin(fallbacksProvidePluginConfig),
-
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },
       }),

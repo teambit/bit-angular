@@ -7,6 +7,7 @@ import { ESLintAspect, ESLintMain } from '@teambit/eslint';
 import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
 import { JestAspect, JestMain } from '@teambit/jest';
 import { MainRuntime } from '@teambit/cli';
+import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackAspect, WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
@@ -22,7 +23,8 @@ export type AngularDeps = [
   WebpackMain,
   Workspace,
   CompositionsMain,
-  EnvsMain
+  EnvsMain,
+  IsolatorMain,
 ];
 
 export abstract class AngularMain {
@@ -37,7 +39,8 @@ export abstract class AngularMain {
     WebpackAspect,
     WorkspaceAspect,
     CompositionsAspect,
-    EnvsAspect
+    EnvsAspect,
+    IsolatorAspect,
   ];
 
   constructor(private envs: EnvsMain, private angularEnv: AngularEnv) {

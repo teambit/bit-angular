@@ -4,6 +4,7 @@ import { CompositionsMain } from '@teambit/compositions';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
+import { IsolatorMain } from '@teambit/isolator';
 import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
@@ -18,7 +19,7 @@ import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
  */
 export class AngularV10Env extends AngularEnv {
   name = 'Angular-v10';
-  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions);
+  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions, this.scopeAspectsRootDir);
   ngPackagr = ngPackagr() as NgPackagr;
   readDefaultTsConfig = readDefaultTsConfig;
 
@@ -28,11 +29,12 @@ export class AngularV10Env extends AngularEnv {
     eslint: ESLintMain,
     ngPackagrAspect: NgPackagrMain,
     generator: GeneratorMain,
+    isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace,
-    private compositions: CompositionsMain
+    private compositions: CompositionsMain,
   ) {
-    super(jestAspect, compiler, eslint, ngPackagrAspect, generator);
+    super(jestAspect, compiler, eslint, ngPackagrAspect, isolator, workspace, generator);
   }
 
   /**
