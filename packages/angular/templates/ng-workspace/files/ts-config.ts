@@ -1,11 +1,14 @@
-{
+export const tsConfig = `{
+  /* The options defined in this file will only be used by your IDE, not by Bit */
+
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
 
     /* Basic Options */
     "target": "es5",                                /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
-    "module": "commonjs",                           /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
+    "module": "es2015",                             /* Specify module code generation: 'none', 'commonjs', 'amd', 'system', 'umd', 'es2015', 'es2020', or 'ESNext'. */
     "allowJs": true,                                /* Allow javascript files to be compiled. */
+    // "checkJs": true,                             /* Report errors in .js files. */
 
     /* Strict Type-Checking Options */
     "strict": true,                                 /* Enable all strict type-checking options. */
@@ -38,11 +41,12 @@
     // "allowUmdGlobalAccess": true,                /* Allow accessing UMD globals from modules. */
 
     /* Experimental Options */
-    "experimentalDecorators": true,                /* Enables experimental support for ES7 decorators. */
-    "emitDecoratorMetadata": true,                 /* Enables experimental support for emitting type metadata for decorators. */
+    "experimentalDecorators": true,                 /* Enables experimental support for ES7 decorators. */
+    "emitDecoratorMetadata": true,                  /* Enables experimental support for emitting type metadata for decorators. */
 
     /* Advanced Options */
     "skipLibCheck": true,                           /* Skip type checking of declaration files. */
     "forceConsistentCasingInFileNames": true        /* Disallow inconsistently-cased references to the same file. */
   }
 }
+`;

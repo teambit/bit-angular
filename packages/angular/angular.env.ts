@@ -14,7 +14,7 @@ import { Linter, LinterContext } from '@teambit/linter';
 import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-import { angularTemplates } from './angular.templates';
+import { angularTemplates, workspaceTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 
 /**
@@ -33,8 +33,9 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
     workspace: Workspace,
     generator: GeneratorMain,
   ) {
-    generator.registerComponentTemplate(angularTemplates);
     this.scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
+    generator.registerComponentTemplate(angularTemplates);
+    generator.registerWorkspaceTemplate(workspaceTemplates);
   }
 
   /** Abstract functions & properties specific to the adapter **/
