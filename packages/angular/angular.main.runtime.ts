@@ -21,7 +21,7 @@ export type AngularDeps = [
   NgPackagrMain,
   GeneratorMain,
   WebpackMain,
-  Workspace,
+  Workspace | undefined,
   CompositionsMain,
   EnvsMain,
   IsolatorMain,

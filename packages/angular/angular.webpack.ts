@@ -34,21 +34,25 @@ export abstract class AngularWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
-  private nodeModulesPaths: string[];
+  private nodeModulesPaths: string[] = [];
   webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
   webpackBuildOptions: Partial<Configuration> = {}
   angularServeOptions: Partial<BrowserBuilderSchema> = {};
   angularBuildOptions: Partial<BrowserBuilderSchema> = {};
 
   constructor(
-    private workspace: Workspace,
+    private workspace: Workspace | undefined,
     private webpackMain: WebpackMain,
     private compositions: CompositionsMain,
     angularAspect: Aspect,
     protected scopeAspectsRootDir: string
   ) {
-    this.tempFolder = workspace?.getTempDir(angularAspect.id) || join(CACHE_ROOT, angularAspect.id);
-    this.nodeModulesPaths = getNodeModulesPaths(workspace.path, scopeAspectsRootDir);
+    if (workspace) {
+      this.tempFolder = workspace.getTempDir(angularAspect.id);
+      this.nodeModulesPaths = getNodeModulesPaths(workspace.path, scopeAspectsRootDir);
+    } else {
+      this.tempFolder = join(CACHE_ROOT, angularAspect.id);
+    }
   }
 
   /** Abstract functions & properties specific to the adapter **/
@@ -125,7 +129,7 @@ export abstract class AngularWebpack {
         }
         outputPath = join(capsule.path, 'src');
       } else {
-        outputPath = join(this.workspace.getComponentPackagePath(component), 'src');
+        outputPath = join(this.workspace?.getComponentPackagePath(component) || '', 'src');
       }
 
       componentsFilePaths.add(pathNormalizeToLinux(outputPath));
@@ -164,7 +168,7 @@ export abstract class AngularWebpack {
 
     const config = this.webpackServeConfigFactory(
       context.id,
-      this.workspace.path,
+      this.workspace?.path || '',
       context.entry,
       context.rootPath,
       context.publicPath,

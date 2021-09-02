@@ -22,7 +22,7 @@ import { AngularWebpack } from './angular.webpack';
  */
 export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-  scopeAspectsRootDir: string;
+  scopeAspectsRootDir = '';
 
   constructor(
     protected jestAspect: JestMain,
@@ -30,12 +30,14 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
     protected eslint: ESLintMain,
     protected ngPackagrAspect: NgPackagrMain,
     isolator: IsolatorMain,
-    workspace: Workspace,
+    workspace: Workspace | undefined,
     generator: GeneratorMain,
   ) {
-    this.scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
     generator.registerComponentTemplate(angularTemplates);
     generator.registerWorkspaceTemplate(workspaceTemplates);
+    if (workspace) {
+      this.scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
+    }
   }
 
   /** Abstract functions & properties specific to the adapter **/

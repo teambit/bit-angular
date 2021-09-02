@@ -54,7 +54,7 @@ export class AngularV9Webpack extends AngularWebpack {
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace, webpackMain: WebpackMain, compositions: CompositionsMain, scopeAspectsRootDir: string) {
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, compositions: CompositionsMain, scopeAspectsRootDir: string) {
     super(workspace, webpackMain, compositions, AngularV9Aspect, scopeAspectsRootDir);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
