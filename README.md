@@ -56,7 +56,7 @@ bit init --harmony
 
 To use the Angular environment, you first need to check what is the latest version available:
 ```bash
-npm dist-tag ls @teambit/angular-v12
+bit show teambit.angular/angular-v12 --remote
 ```
 
 Then add the following lines in your workspace.jsonc file to apply the Angular development environment on all components in this workspace (replace `x.x.x` by the latest version available):
