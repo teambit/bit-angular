@@ -61,47 +61,35 @@ export class AngularV12Webpack extends AngularWebpack {
      */
     delete webpackConfig.devServer.logLevel;
 
-    /**
-     * Removed contentBase in favor of the static option
-     */
+    // Removed contentBase in favor of the static option
     delete webpackConfig.devServer.contentBase;
 
-    /**
-     * Removed publicPath in favor of the dev option
-     */
+    // Removed publicPath in favor of the dev option
     delete webpackConfig.devServer.publicPath;
 
-    /**
-     * Moved overlay to client option
-     */
+    // Moved overlay to client option
     webpackConfig.devServer.client = webpackConfig.devServer.client || {};
     webpackConfig.devServer.client.overlay = webpackConfig.devServer.overlay;
     delete webpackConfig.devServer.overlay;
 
-    /**
-     * Removed in favor of the static option
-     */
+    // Removed in favor of the static option
     delete webpackConfig.devServer.watchOptions;
 
-    /**
-     * Moved sockPath to client option path
-     */
-    webpackConfig.devServer.client.path = webpackConfig.devServer.sockPath;
+    // Moved sockPath to client.webSocketURL.pathname option
+    webpackConfig.devServer.client.webSocketURL = webpackConfig.devServer.client.webSocketURL || {};
+    webpackConfig.devServer.client.webSocketURL.pathname = webpackConfig.devServer.sockPath;
     delete webpackConfig.devServer.sockPath;
 
-    /**
-     * Removed stats in favor of the stats options from webpack
-     */
+    // Removed stats in favor of the stats options from webpack
     delete webpackConfig.devServer.stats;
 
-    /**
-     * Removed watch to avoid "DEP_WEBPACK_WATCH_WITHOUT_CALLBACK" warning
-     */
+    // Removed in favor client.webSocketURL options
+    delete webpackConfig.devServer.public;
+
+    // Removed watch to avoid "DEP_WEBPACK_WATCH_WITHOUT_CALLBACK" warning
     delete webpackConfig.watch;
 
-    /**
-     * Cleaning up undefined values
-     */
+    // Cleaning up undefined values
     Object.keys(webpackConfig.devServer).forEach((option) => {
       if (typeof webpackConfig.devServer[option] === 'undefined') {
         delete webpackConfig.devServer[option];

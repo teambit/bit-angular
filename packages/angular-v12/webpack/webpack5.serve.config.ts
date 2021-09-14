@@ -20,10 +20,6 @@ import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 import { ProvidePlugin } from 'webpack';
 
-const clientHost = process.env.WDS_SOCKET_HOST;
-const clientPath = process.env.WDS_SOCKET_PATH; // default is '/sockjs-node';
-const port = process.env.WDS_SOCKET_PORT;
-
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 
 export function webpack5ServeConfigFactory(
@@ -102,10 +98,6 @@ export function webpack5ServeConfigFactory(
       // Enable compression
       compress: true,
 
-      // Use 'ws' instead of 'sockjs-node' on server since we're using native
-      // websockets in `webpackHotDevClient`.
-      transportMode: 'ws',
-
       // Enable hot reloading
       hot: false,
 
@@ -119,35 +111,43 @@ export function webpack5ServeConfigFactory(
       },
 
       client: {
-        needClientEntry: false,
         overlay: false,
-        host: clientHost,
-        path: clientPath,
-        port,
+        // public, sockHost, sockPath, and sockPort options were removed in favor client.webSocketURL option:
+        webSocketURL: {
+          pathname: `_hmr/${devServerID}`,
+          // port automatically matches the website
+        },
       },
 
-      onBeforeSetupMiddleware(app, server) {
+      webSocketServer: {
+        options: {
+          path: `/_hmr/${devServerID}`,
+          // port automatically matches WDS
+        },
+      },
+
+      onBeforeSetupMiddleware(devServer: any) {
         // Keep `evalSourceMapMiddleware` and `errorOverlayMiddleware`
         // middlewares before `redirectServedPath` otherwise will not have any effect
         // This lets us fetch source contents from webpack for the error overlay
-        app.use(evalSourceMapMiddleware(server));
+        devServer.app.use(evalSourceMapMiddleware(devServer));
         // This lets us open files from the runtime error overlay.
-        app.use(errorOverlayMiddleware());
+        devServer.app.use(errorOverlayMiddleware());
       },
 
-      onAfterSetupMiddleware(app) {
+      onAfterSetupMiddleware(devServer: any) {
         // Redirect to `PUBLIC_URL` or `homepage` from `package.json` if url not match
-        app.use(redirectServedPath(publicUrlOrPath));
+        devServer.app.use(redirectServedPath(publicUrlOrPath));
 
         // This service worker file is effectively a 'no-op' that will reset any
         // previous service worker registered for the same host:port combination.
         // We do this in development to avoid hitting the production cache if
         // it used the same host and port.
         // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
-        app.use(noopServiceWorkerMiddleware(publicUrlOrPath));
+        devServer.app.use(noopServiceWorkerMiddleware(publicUrlOrPath));
       },
 
-      dev: {
+      devMiddleware: {
         // Public path is root of content base
         publicPath: join('/', publicRoot),
       },
