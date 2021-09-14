@@ -23,7 +23,6 @@ import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
 import webpack, { Configuration } from 'webpack';
 import WsDevServer from 'webpack-dev-server';
-import { getNodeModulesPaths } from './webpack-plugins/utils';
 
 export enum WebpackSetup {
   Serve = 'serve',
@@ -34,7 +33,6 @@ export abstract class AngularWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
-  private nodeModulesPaths: string[] = [];
   webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
   webpackBuildOptions: Partial<Configuration> = {}
   angularServeOptions: Partial<BrowserBuilderSchema> = {};
@@ -45,11 +43,10 @@ export abstract class AngularWebpack {
     private webpackMain: WebpackMain,
     private compositions: CompositionsMain,
     angularAspect: Aspect,
-    protected scopeAspectsRootDir: string
+    private nodeModulesPaths: string[] = []
   ) {
     if (workspace) {
       this.tempFolder = workspace.getTempDir(angularAspect.id);
-      this.nodeModulesPaths = getNodeModulesPaths(workspace.path, scopeAspectsRootDir);
     } else {
       this.tempFolder = join(CACHE_ROOT, angularAspect.id);
     }

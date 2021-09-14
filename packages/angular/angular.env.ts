@@ -16,13 +16,14 @@ import { Tester } from '@teambit/tester';
 import { WebpackConfigTransformer } from '@teambit/webpack';
 import { angularTemplates, workspaceTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
+import { getNodeModulesPaths } from './webpack-plugins/utils';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
 export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-  scopeAspectsRootDir = '';
+  nodeModulesPaths: string[] = [];
 
   constructor(
     protected jestAspect: JestMain,
@@ -36,7 +37,8 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
     generator.registerComponentTemplate(angularTemplates);
     generator.registerWorkspaceTemplate(workspaceTemplates);
     if (workspace) {
-      this.scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
+      const scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
+      this.nodeModulesPaths = getNodeModulesPaths(workspace.path, scopeAspectsRootDir);
     }
   }
 
@@ -49,7 +51,7 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
 
   private createNgPackgrCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
-    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions);
+    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, this.nodeModulesPaths);
   }
 
   getCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {

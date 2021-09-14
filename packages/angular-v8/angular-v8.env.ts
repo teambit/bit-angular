@@ -19,7 +19,7 @@ import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
  */
 export class AngularV8Env extends AngularEnv {
   name = 'Angular-v8';
-  angularWebpack = new AngularV8Webpack(this.workspace, this.webpackMain, this.compositions, this.scopeAspectsRootDir);
+  angularWebpack = new AngularV8Webpack(this.workspace, this.webpackMain, this.compositions, this.nodeModulesPaths);
   ngPackagr = ngPackagr() as NgPackagr;
   readDefaultTsConfig = readDefaultTsConfig;
 

@@ -19,7 +19,8 @@ export class NgPackagrMain {
     ngPackagr: NgPackagr,
     readDefaultTsConfig: (filename?: string) => any,
     tsCompilerOptions?: TsCompilerOptions,
-    bitCompilerOptions?: Partial<CompilerOptions>
+    bitCompilerOptions?: Partial<CompilerOptions>,
+    nodeModulesPaths: string[] = []
   ): Compiler {
     return new NgPackagrCompiler(
       NgPackagrAspect.id,
@@ -28,7 +29,8 @@ export class NgPackagrMain {
       this.workspace,
       readDefaultTsConfig,
       tsCompilerOptions,
-      bitCompilerOptions
+      bitCompilerOptions,
+      nodeModulesPaths
     );
   }
 

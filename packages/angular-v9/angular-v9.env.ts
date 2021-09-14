@@ -19,7 +19,7 @@ import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
  */
 export class AngularV9Env extends AngularEnv {
   name = 'Angular-v9';
-  angularWebpack = new AngularV9Webpack(this.workspace, this.webpackMain, this.compositions, this.scopeAspectsRootDir);
+  angularWebpack = new AngularV9Webpack(this.workspace, this.webpackMain, this.compositions, this.nodeModulesPaths);
   ngPackagr = ngPackagr() as NgPackagr;
   readDefaultTsConfig = readDefaultTsConfig;
 

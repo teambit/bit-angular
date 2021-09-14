@@ -19,7 +19,7 @@ import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
  */
 export class AngularV12Env extends AngularEnv {
   name = 'Angular-v12';
-  angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.compositions, this.scopeAspectsRootDir);
+  angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.compositions, this.nodeModulesPaths);
   ngPackagr = ngPackagr() as NgPackagr;
   readDefaultTsConfig = readDefaultTsConfig;
 

@@ -50,7 +50,8 @@ export class NgPackagrCompiler implements Compiler {
     private workspace: Workspace,
     private readDefaultTsConfig: (filename?: string) => any,
     private tsCompilerOptions: TsCompilerOptions = {},
-    private bitCompilerOptions: Partial<CompilerOptions> = {}
+    private bitCompilerOptions: Partial<CompilerOptions> = {},
+    private nodeModulesPaths: string[] = []
   ) {
     this.distDir = bitCompilerOptions.distDir || 'dist';
     this.distGlobPatterns = bitCompilerOptions.distGlobPatterns || [`${this.distDir}/**`];
@@ -88,6 +89,10 @@ export class NgPackagrCompiler implements Compiler {
 
     // update package.json
     await packageJson.write();
+
+    // add all node modules paths to TypeScript paths to ensure that it finds all existing dependencies
+    tsCompilerOptions.paths = tsCompilerOptions.paths || {};
+    tsCompilerOptions.paths["*"] = ["*", ...this.nodeModulesPaths.map(path => join(path, '*'))];
 
     const parsedTsConfig = this.readDefaultTsConfig();
     parsedTsConfig.options = {...parsedTsConfig.options, ...tsCompilerOptions};
@@ -164,7 +169,7 @@ export class NgPackagrCompiler implements Compiler {
         try {
           const packageJson = await PackageJsonFile.loadFromCapsuleSync(capsule.path);
           await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, packageJson);
-        } catch (e) {
+        } catch (e: any) {
           currentComponentResult.errors = [e];
         }
 
