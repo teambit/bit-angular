@@ -5,8 +5,7 @@ import {
   fallbacks,
   fallbacksAliases,
   fallbacksProvidePluginConfig,
-  WebpackBitReporterPlugin,
-  WebpackConfigWithDevServer
+  WebpackBitReporterPlugin
 } from '@teambit/webpack';
 import { join, posix, resolve } from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
@@ -31,7 +30,7 @@ export function webpack5ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tsConfigPath: string,
-): WebpackConfigWithDevServer {
+): any {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
   // Host
@@ -191,5 +190,5 @@ export function webpack5ServeConfigFactory(
     ],
   };
 
-  return config as WebpackConfigWithDevServer;
+  return config;
 }

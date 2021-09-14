@@ -3,8 +3,7 @@ import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   fallbacksAliases,
-  WebpackBitReporterPlugin,
-  WebpackConfigWithDevServer
+  WebpackBitReporterPlugin
 } from '@teambit/webpack';
 import path from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
@@ -32,7 +31,7 @@ export function webpack4ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tsConfigPath: string,
-): WebpackConfigWithDevServer {
+): any {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
 
   // Host
