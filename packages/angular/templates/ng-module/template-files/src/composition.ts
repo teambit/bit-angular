@@ -4,7 +4,7 @@ export const compositionFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
 
   return {
-    relativePath: `src/compositions/${name}.composition.ts`,
+    relativePath: `src/${name}.composition.ts`,
     content: `import { Component, NgModule } from '@angular/core';
 import { ${Name}Module } from '../${name}.module';
 

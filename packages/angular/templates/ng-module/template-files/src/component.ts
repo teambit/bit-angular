@@ -4,7 +4,7 @@ export const componentFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/${name}.component.ts`,
-    content: `import { Component, OnInit } from '@angular/core';
+    content: `import { Component } from '@angular/core';
 
 @Component({
   selector: '${name}',
@@ -13,13 +13,10 @@ export const componentFile = (context: ComponentContext): ComponentFile => {
       ${name} works!
       </p>
         \`,
-  styles: [
-  ]
+  styleUrls: ['./${name}.component.scss']
 })
-export class ${Name}Component implements OnInit {
+export class ${Name}Component {
   constructor() {}
-
-  ngOnInit(): void {}
 }
 `,
   };

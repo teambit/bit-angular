@@ -1,7 +1,7 @@
 import { ComponentTemplate, WorkspaceTemplate } from '@teambit/generator';
 import { ngEnvTemplate } from './templates/ng-env';
-import { ngLibTemplate } from './templates/ng-lib';
+import { ngModuleTemplate } from './templates/ng-module';
 import { ngWorkspaceTemplate } from './templates/ng-workspace';
 
-export const angularTemplates: ComponentTemplate[] = [ngLibTemplate, ngEnvTemplate];
+export const angularTemplates: ComponentTemplate[] = [ngModuleTemplate, ngEnvTemplate];
 export const workspaceTemplates: WorkspaceTemplate[] = [ngWorkspaceTemplate];
