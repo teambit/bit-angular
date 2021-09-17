@@ -6,7 +6,7 @@ export const compositionFile = (context: ComponentContext): ComponentFile => {
   return {
     relativePath: `src/${name}.composition.ts`,
     content: `import { Component, NgModule } from '@angular/core';
-import { ${Name}Module } from '../${name}.module';
+import { ${Name}Module } from './${name}.module';
 
 @Component({
   selector: '${name}-composition-cmp',
