@@ -9,10 +9,10 @@ export const componentFile = (context: ComponentContext): ComponentFile => {
 @Component({
   selector: '${name}',
   template: \`
-      <p>
-      ${name} works!
-      </p>
-        \`,
+    <p>
+    ${name} works!
+    </p>
+\`,
   styleUrls: ['./${name}.component.scss']
 })
 export class ${Name}Component {
