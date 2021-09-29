@@ -81,7 +81,7 @@ export abstract class AngularWebpack {
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
    */
-  private generateTsConfig(appPath: string, includePaths: string[]): string {
+  private generateTsConfig(appPath: string, includePaths: string[], excludePaths: string[]): string {
     const tsconfigPath = join(appPath, 'tsconfig.app.json');
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile);
     const pAppPath = pathNormalizeToLinux(appPath);
@@ -94,6 +94,7 @@ export abstract class AngularWebpack {
     ];
     tsconfigJSON.config.exclude = [
       posix.join(pAppPath, '**/*.spec.ts'),
+      ...excludePaths,
       ...includePaths.map((path) => posix.join(path, '**/*.spec.ts')),
     ];
 
@@ -108,7 +109,8 @@ export abstract class AngularWebpack {
    * write a link to load custom modules dynamically.
    */
   writeTsconfig(context: DevServerContext | BundlerContext, rootSpace: string): string {
-    const componentsFilePaths = new Set<string>();
+    const includePaths = new Set<string>();
+    const excludePaths = new Set<string>();
     const dirPath = join(this.tempFolder, context.id);
     if (!existsSync(dirPath)) {
       mkdirSync(dirPath, { recursive: true });
@@ -124,15 +126,17 @@ export abstract class AngularWebpack {
         if (!capsule) {
           throw new Error(`No capsule found for ${component.id} in network graph`);
         }
-        outputPath = join(capsule.path, 'src');
+        outputPath = capsule.path;
       } else {
-        outputPath = join(this.workspace?.getComponentPackagePath(component) || '', 'src');
+        outputPath = this.workspace?.getComponentPackagePath(component) || '';
       }
 
-      componentsFilePaths.add(pathNormalizeToLinux(outputPath));
+      includePaths.add(pathNormalizeToLinux(outputPath));
+      excludePaths.add(pathNormalizeToLinux(join(outputPath, 'dist')));
+      excludePaths.add(pathNormalizeToLinux(join(outputPath, '_src')));
     });
 
-    const content = this.generateTsConfig(rootSpace, Array.from(componentsFilePaths));
+    const content = this.generateTsConfig(rootSpace, Array.from(includePaths), Array.from(excludePaths));
     const hash = objectHash(content);
     const targetPath = join(dirPath, `__tsconfig-${this.timestamp}.json`);
 

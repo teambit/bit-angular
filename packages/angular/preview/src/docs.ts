@@ -9,7 +9,7 @@ export type DocsFile = {
 window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<any>();
 
 export default function docsRoot(
-  Provider: Type<any> | undefined,
+  provider: Type<any> | undefined,
   componentId: string,
   docs: DocsFile | undefined,
   compositionsMap: { [name: string]: Type<any> },
