@@ -186,7 +186,7 @@ export abstract class AngularWebpack {
       transformerContext
     );
 
-    return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack, this.webpackDevServer);
+    return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer);
   }
 
   private createPreviewConfig(targets: Target[]): Configuration[] {
