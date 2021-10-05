@@ -5,23 +5,22 @@ import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
 import { IsolatorMain } from '@teambit/isolator';
-import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
+import { NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { ngPackagr } from 'ng-packagr';
 import { GeneratorMain } from '@teambit/generator';
+import { PkgMain } from '@teambit/pkg';
 import { AngularV10Aspect } from './angular-v10.aspect';
 import { AngularV10Webpack } from './angular-v10.webpack';
-import { readDefaultTsConfig } from 'ng-packagr/lib/ts/tsconfig';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
 export class AngularV10Env extends AngularEnv {
   name = 'Angular-v10';
-  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions, this.nodeModulesPaths);
-  ngPackagr = ngPackagr() as NgPackagr;
-  readDefaultTsConfig = readDefaultTsConfig;
+  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
+  ngPackagr = require.resolve('ng-packagr');
+  readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
 
   constructor(
     jestAspect: JestMain,
@@ -33,6 +32,7 @@ export class AngularV10Env extends AngularEnv {
     private webpackMain: WebpackMain,
     private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
+    private pkg: PkgMain,
   ) {
     super(jestAspect, compiler, eslint, ngPackagrAspect, isolator, workspace, generator);
   }

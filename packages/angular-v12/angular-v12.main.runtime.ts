@@ -14,6 +14,7 @@ export class AngularV12Main extends AngularMain {
     compositions,
     envs,
     isolator,
+    pkg,
   ]: AngularDeps): Promise<AngularMain> {
     const angularV12Env = new AngularV12Env(
       jestAspect,
@@ -25,6 +26,7 @@ export class AngularV12Main extends AngularMain {
       webpack,
       workspace,
       compositions,
+      pkg,
     );
     return new AngularV12Main(envs, angularV12Env);
   }

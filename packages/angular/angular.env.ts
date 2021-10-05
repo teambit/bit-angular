@@ -2,18 +2,25 @@ import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { eslintConfig } from '@teambit/angular-eslint-config';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
-import { CompilerMain, CompilerOptions } from '@teambit/compiler';
+import { Compiler, CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
-import { DependenciesEnv, DevEnv, EnvDescriptor, LinterEnv, TesterEnv } from '@teambit/envs';
+import {
+  CompilerEnv,
+  DependenciesEnv,
+  DevEnv,
+  EnvDescriptor,
+  LinterEnv,
+  TesterEnv
+} from '@teambit/envs';
 import { EslintConfigTransformer, ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
-import { JestMain } from '@teambit/jest';
 import { IsolatorMain } from '@teambit/isolator';
-import { Workspace } from '@teambit/workspace';
+import { JestMain } from '@teambit/jest';
 import { Linter, LinterContext } from '@teambit/linter';
-import { NgPackagr, NgPackagrMain } from '@teambit/ng-packagr';
+import { NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
 import { WebpackConfigTransformer } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
 import { angularTemplates, workspaceTemplates } from './angular.templates';
 import { AngularWebpack } from './angular.webpack';
 import { getNodeModulesPaths } from './webpack-plugins/utils';
@@ -21,7 +28,7 @@ import { getNodeModulesPaths } from './webpack-plugins/utils';
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv {
+export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
   nodeModulesPaths: string[] = [];
 
@@ -44,8 +51,8 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
 
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;
-  abstract ngPackagr: NgPackagr;
-  abstract readDefaultTsConfig: (filename?: string) => any;
+  abstract ngPackagr: string;
+  abstract readDefaultTsConfig: string;
   abstract angularWebpack: AngularWebpack;
   abstract __getDescriptor(): Promise<EnvDescriptor>;
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;

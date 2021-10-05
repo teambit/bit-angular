@@ -22,6 +22,7 @@ import {
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { AngularWebpack, optionValue, WebpackSetup } from '@teambit/angular';
+import { PkgMain } from '@teambit/pkg';
 import { Workspace } from '@teambit/workspace';
 import { CompositionsMain } from '@teambit/compositions';
 import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
@@ -41,8 +42,8 @@ export class AngularV11Webpack extends AngularWebpack {
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, compositions: CompositionsMain, nodeModulesPaths: string[]) {
-    super(workspace, webpackMain, compositions, AngularV11Aspect, nodeModulesPaths);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, compositions: CompositionsMain, pkg: PkgMain, nodeModulesPaths: string[]) {
+    super(workspace, webpackMain, compositions, pkg, AngularV11Aspect, nodeModulesPaths);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
@@ -70,7 +71,7 @@ export class AngularV11Webpack extends AngularWebpack {
     workspaceRoot: string,
     logger: Logger,
     setup: WebpackSetup,
-    webpackOptions: Partial<WebpackConfigWithDevServer> = {},
+    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
     angularOptions: Partial<BrowserBuilderSchema> = {}
   ): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json

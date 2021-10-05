@@ -8,6 +8,8 @@ import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
 import { JestAspect, JestMain } from '@teambit/jest';
 import { MainRuntime } from '@teambit/cli';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
+import { PkgAspect } from '@teambit/pkg';
+import { PkgMain } from '@teambit/pkg';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackAspect, WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
@@ -25,6 +27,7 @@ export type AngularDeps = [
   CompositionsMain,
   EnvsMain,
   IsolatorMain,
+  PkgMain
 ];
 
 export abstract class AngularMain {
@@ -41,6 +44,7 @@ export abstract class AngularMain {
     CompositionsAspect,
     EnvsAspect,
     IsolatorAspect,
+    PkgAspect,
   ];
 
   constructor(private envs: EnvsMain, private angularEnv: AngularEnv) {

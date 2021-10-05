@@ -2,6 +2,7 @@ import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/sr
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
 import { CompositionsMain } from '@teambit/compositions';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
+import { PkgMain } from '@teambit/pkg';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Logger } from '@teambit/logger';
 import { Aspect } from '@teambit/harmony';
@@ -42,6 +43,7 @@ export abstract class AngularWebpack {
     private workspace: Workspace | undefined,
     private webpackMain: WebpackMain,
     private compositions: CompositionsMain,
+    private pkg: PkgMain,
     angularAspect: Aspect,
     private nodeModulesPaths: string[] = []
   ) {
@@ -81,7 +83,7 @@ export abstract class AngularWebpack {
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
    */
-  private generateTsConfig(appPath: string, includePaths: string[], excludePaths: string[]): string {
+  private generateTsConfig(appPath: string, includePaths: string[], excludePaths: string[] = [], tsPaths: {[key: string]: string[]}): string {
     const tsconfigPath = join(appPath, 'tsconfig.app.json');
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile);
     const pAppPath = pathNormalizeToLinux(appPath);
@@ -97,6 +99,7 @@ export abstract class AngularWebpack {
       ...excludePaths,
       ...includePaths.map((path) => posix.join(path, '**/*.spec.ts')),
     ];
+    tsconfigJSON.config.compilerOptions.paths = tsPaths;
 
     return JSON.stringify(tsconfigJSON.config, undefined, 2);
   }
@@ -109,15 +112,15 @@ export abstract class AngularWebpack {
    * write a link to load custom modules dynamically.
    */
   writeTsconfig(context: DevServerContext | BundlerContext, rootSpace: string): string {
+    const tsPaths: {[key: string]: string[]} = {};
     const includePaths = new Set<string>();
-    const excludePaths = new Set<string>();
     const dirPath = join(this.tempFolder, context.id);
     if (!existsSync(dirPath)) {
       mkdirSync(dirPath, { recursive: true });
     }
 
     // get the list of files for existing component compositions to include into the compilation
-    context.components.forEach((component) => {
+    context.components.forEach(component => {
       let outputPath: string;
 
       if (this.isBuildContext(context)) {
@@ -126,17 +129,17 @@ export abstract class AngularWebpack {
         if (!capsule) {
           throw new Error(`No capsule found for ${component.id} in network graph`);
         }
-        outputPath = capsule.path;
+        outputPath = pathNormalizeToLinux(capsule.path);
       } else {
-        outputPath = this.workspace?.getComponentPackagePath(component) || '';
+        outputPath = pathNormalizeToLinux(this.workspace?.componentDir(component.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '');
+        // map the package names to the local component paths for typescript since we don't use node_modules for local components in dev mode
+        tsPaths[`${this.pkg.getPackageName(component)}/*`] = [`${outputPath}/*`];
       }
 
-      includePaths.add(pathNormalizeToLinux(outputPath));
-      excludePaths.add(pathNormalizeToLinux(join(outputPath, 'dist')));
-      excludePaths.add(pathNormalizeToLinux(join(outputPath, '_src')));
+      includePaths.add(outputPath);
     });
 
-    const content = this.generateTsConfig(rootSpace, Array.from(includePaths), Array.from(excludePaths));
+    const content = this.generateTsConfig(rootSpace, Array.from(includePaths), [], tsPaths);
     const hash = objectHash(content);
     const targetPath = join(dirPath, `__tsconfig-${this.timestamp}.json`);
 
