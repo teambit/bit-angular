@@ -77,8 +77,7 @@ export class AngularV12Webpack extends AngularWebpack {
     delete webpackConfig.devServer.watchOptions;
 
     // Moved sockPath to client.webSocketURL.pathname option
-    webpackConfig.devServer.client.webSocketURL = webpackConfig.devServer.client.webSocketURL || {};
-    webpackConfig.devServer.client.webSocketURL.pathname = webpackConfig.devServer.sockPath;
+    // We let webpack handle that now
     delete webpackConfig.devServer.sockPath;
 
     // Removed stats in favor of the stats options from webpack
@@ -89,6 +88,9 @@ export class AngularV12Webpack extends AngularWebpack {
 
     // Removed watch to avoid "DEP_WEBPACK_WATCH_WITHOUT_CALLBACK" warning
     delete webpackConfig.watch;
+
+    // Removed in favor of manual setup entries.
+    delete webpackConfig.devServer.injectClient;
 
     // Cleaning up undefined values
     Object.keys(webpackConfig.devServer).forEach((option) => {
@@ -165,41 +167,6 @@ export class AngularV12Webpack extends AngularWebpack {
       loggerApi,
       {}
     );
-
-    // @ts-ignore
-    if (webpackOptions.liveReload && !webpackOptions.hmr) {
-      // This is needed because we cannot use the inline option directly in the config
-      // because of the SuppressExtractedTextChunksWebpackPlugin
-      // Consider not using SuppressExtractedTextChunksWebpackPlugin when liveReload is enable.
-      // tslint:disable-next-line: no-any
-      addDevServerEntrypoints(webpackConfig as any, {
-        ...(webpackConfig as any).devServer,
-        inline: true,
-      });
-
-      // Remove live-reload code from all entrypoints but not main.
-      // Otherwise, this will break SuppressExtractedTextChunksWebpackPlugin because
-      // 'addDevServerEntrypoints' adds additional entry-points to all entries.
-      if (
-        webpackConfig.entry &&
-        typeof webpackConfig.entry === 'object' &&
-        !Array.isArray(webpackConfig.entry) &&
-        webpackConfig.entry.main
-      ) {
-        for (const [key, value] of Object.entries(webpackConfig.entry)) {
-          if (key === 'main' || !Array.isArray(value)) {
-            // eslint-disable-next-line no-continue
-            continue;
-          }
-
-          const webpackClientScriptIndex = value.findIndex((x) => x.includes('webpack-dev-server/client/index.js'));
-          if (webpackClientScriptIndex >= 0) {
-            // Remove the webpack-dev-server/client script from array.
-            value.splice(webpackClientScriptIndex, 1);
-          }
-        }
-      }
-    }
 
     // @ts-ignore
     if (webpackOptions.hmr) {

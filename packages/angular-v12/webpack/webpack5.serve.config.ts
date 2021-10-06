@@ -90,7 +90,7 @@ export function webpack5ServeConfigFactory(
           serveIndex: true,
           // Can be:
           // watch: {} (options for the `watch` option you can find https://github.com/paulmillr/chokidar)
-          watch: true,
+          watch: false,
         },
       ],
 
@@ -110,12 +110,7 @@ export function webpack5ServeConfigFactory(
       },
 
       client: {
-        overlay: false,
-        // public, sockHost, sockPath, and sockPort options were removed in favor client.webSocketURL option:
-        webSocketURL: {
-          pathname: `_hmr/${devServerID}`,
-          // port automatically matches the website
-        },
+        overlay: false
       },
 
       webSocketServer: {
