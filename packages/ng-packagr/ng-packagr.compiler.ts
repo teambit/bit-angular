@@ -164,7 +164,7 @@ export class NgPackagrCompiler implements Compiler {
    * in node_modules by default
    * used by `bit start`
    */
-  getPreviewComponentPath?(component: Component): string {
+  getPreviewComponentRootPath?(component: Component): string {
     return this.workspace.componentDir(component.id, {ignoreScopeAndVersion: true, ignoreVersion: true}, {relative: true});
   }
 
