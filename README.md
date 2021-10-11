@@ -44,40 +44,18 @@ Install Bit:
 bvm install
 ```
 
-Create a new folder for your workspace
+Create a new workspace
 ```bash
-mkdir <workspace> && cd <workspace>
+bit new ng-workspace <workspace-name> -a teambit.angular/angular-v12
 ```
+You can replace `v12` by the version that you want to use (starting from `v8`).
 
-Initialize a [Bit Harmony workspace](https://harmony-docs.bit.dev/getting-started/initializing-workspace) and then manually configure the environment and install any peer dependencies needed.
+Change directory to the newly created workspace
 ```bash
-bit init --harmony
-```
-
-To use the Angular environment, you first need to check what is the latest version available:
-```bash
-npm dist-tag ls @teambit/angular-v12
-```
-
-Then add the following lines in your workspace.jsonc file to apply the Angular development environment on all components in this workspace (replace `x.x.x` by the latest version available):
-```bash
-"teambit.angular/angular-v12@x.x.x": {},
-"teambit.workspace/variants": {
-  "*": {
-    // Replace `v12` by the version of Angular that you want to use
-    "teambit.angular/angular-v12@x.x.x": { }
-  }
-},
-"teambit.generator/generator": {
-  "aspects": [
-    // Replace `v12` by the version of Angular that you want to use
-    "teambit.angular/angular-v12"
-  ]
-}
+cd <workspace-name>
 ```
 
 Create a bit component:
-
 ```bash
 bit create ng-module ui/my-button
 ```
