@@ -73,20 +73,21 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit compile`
    */
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
-    const bgCompilation = params.origin === CompilationInitiator.PreStart || params.origin === CompilationInitiator.ComponentChanged;
+    if(params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
+      return;
+    }
+    const bgCompilation = params.initiator === CompilationInitiator.ComponentChanged;
     const ngPackagrWorker = this.initiateWorker(!bgCompilation);
     // recreate packageJson from component to make sure that its dependencies are updated with recent code changes
     const packageJson = PackageJsonFile.createFromComponent('', params.component);
     packageJson.workspaceDir = params.outputDir;
     await packageJson.write();
-    if(!bgCompilation) {
-      // disable logger temporarily so that it doesn't mess up with ngPackagr logs
-      this.logger.off();
-    }
     if(bgCompilation) {
       // if it's in the background, we don't wait for the promise to resolve
       void ngPackagrWorker.ngPackagrCompilation(params.componentDir, params.outputDir, stringify(this.tsCompilerOptions));
     } else {
+      // disable logger temporarily so that it doesn't mess up with ngPackagr logs
+      this.logger.off();
       // if it's not in the background, we wait for the promise to resolve
       await ngPackagrWorker.ngPackagrCompilation(params.componentDir, params.outputDir, stringify(this.tsCompilerOptions));
       this.logger.on();
