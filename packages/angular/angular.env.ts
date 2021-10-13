@@ -56,6 +56,8 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   abstract angularWebpack: AngularWebpack;
   abstract __getDescriptor(): Promise<EnvDescriptor>;
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
+  abstract jestConfigPath: string;
+  abstract jestModulePath: string;
 
   private createNgPackgrCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
     return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, this.nodeModulesPaths);
@@ -116,8 +118,8 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
    * Required for `bit start` & `bit test`
    */
   getTester(jestConfigPath: string, jestModulePath: string): Tester {
-    const config = jestConfigPath || require.resolve('./jest/jest.config');
-    return this.jestAspect.createTester(config, jestModulePath || require.resolve('jest'));
+    const config = jestConfigPath || this.jestConfigPath;
+    return this.jestAspect.createTester(config, jestModulePath || this.jestModulePath);
   }
 
   /**

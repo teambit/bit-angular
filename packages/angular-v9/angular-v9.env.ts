@@ -21,6 +21,8 @@ export class AngularV9Env extends AngularEnv {
   angularWebpack = new AngularV9Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
+  jestConfigPath = require.resolve('./jest/jest.config');
+  jestModulePath = require.resolve('jest');
 
   constructor(
     jestAspect: JestMain,
@@ -72,7 +74,7 @@ export class AngularV9Env extends AngularEnv {
         '@angular/compiler': '~9.1.13',
         '@angular/compiler-cli': '~9.1.13',
         'jest': '~27.0.4',
-        'jest-preset-angular': '~9.0.4',
+        'jest-preset-angular': '~9.0.7',
         typescript: '-',
       },
       peerDependencies: {

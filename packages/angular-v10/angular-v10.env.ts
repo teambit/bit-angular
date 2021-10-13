@@ -21,6 +21,8 @@ export class AngularV10Env extends AngularEnv {
   angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
+  jestConfigPath = require.resolve('./jest/jest.config');
+  jestModulePath = require.resolve('jest');
 
   constructor(
     jestAspect: JestMain,
@@ -72,7 +74,7 @@ export class AngularV10Env extends AngularEnv {
         '@angular/compiler': '~10.2.5',
         '@angular/compiler-cli': '~10.2.5',
         'jest': '~27.0.4',
-        'jest-preset-angular': '~9.0.4',
+        'jest-preset-angular': '~10.0.1',
         typescript: '-',
       },
       peerDependencies: {

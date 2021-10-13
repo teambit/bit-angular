@@ -21,6 +21,8 @@ export class AngularV12Env extends AngularEnv {
   angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
+  jestConfigPath = require.resolve('./jest/jest.config');
+  jestModulePath = require.resolve('jest');
 
   constructor(
     jestAspect: JestMain,
@@ -72,7 +74,7 @@ export class AngularV12Env extends AngularEnv {
         '@angular/compiler': '12.1.0',
         '@angular/compiler-cli': '12.1.0',
         'jest': '~27.0.4',
-        'jest-preset-angular': '~9.0.4',
+        'jest-preset-angular': '~10.0.1',
         typescript: '-',
       },
       peerDependencies: {

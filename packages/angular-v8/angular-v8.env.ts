@@ -21,6 +21,8 @@ export class AngularV8Env extends AngularEnv {
   angularWebpack = new AngularV8Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
+  jestConfigPath = require.resolve('./jest/jest.config');
+  jestModulePath = require.resolve('jest');
 
   constructor(
     jestAspect: JestMain,
@@ -71,8 +73,9 @@ export class AngularV8Env extends AngularEnv {
       devDependencies: {
         '@angular/compiler': '~8.2.14',
         '@angular/compiler-cli': '~8.2.14',
-        'jest': '^26.0.0',
+        'jest': '^26.6.3',
         'jest-preset-angular': '~8.4.0',
+        'ts-jest': '^26.0.0',
         typescript: '-',
       },
       peerDependencies: {
