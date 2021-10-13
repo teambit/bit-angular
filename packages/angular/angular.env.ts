@@ -2,7 +2,7 @@ import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { eslintConfig } from '@teambit/angular-eslint-config';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
-import { Compiler, CompilerMain, CompilerOptions } from '@teambit/compiler';
+import { CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { VariantPolicyConfigObject } from '@teambit/dependency-resolver';
 import {
   CompilerEnv,

@@ -1,4 +1,4 @@
-import { AngularDeps, AngularMain, AngularPreview } from '@teambit/angular';
+import { AngularDeps, AngularMain } from '@teambit/angular';
 import { AngularV9Aspect } from './angular-v9.aspect';
 import { AngularV9Env } from './angular-v9.env';
 
@@ -32,5 +32,4 @@ export class AngularV9Main extends AngularMain {
   }
 }
 
-AngularV9Aspect.addRuntime(AngularPreview);
 AngularV9Aspect.addRuntime(AngularV9Main);

@@ -1,4 +1,4 @@
-import { AngularDeps, AngularMain, AngularPreview } from '@teambit/angular';
+import { AngularDeps, AngularMain } from '@teambit/angular';
 import { AngularV8Aspect } from './angular-v8.aspect';
 import { AngularV8Env } from './angular-v8.env';
 
@@ -32,5 +32,4 @@ export class AngularV8Main extends AngularMain {
   }
 }
 
-AngularV8Aspect.addRuntime(AngularPreview);
 AngularV8Aspect.addRuntime(AngularV8Main);

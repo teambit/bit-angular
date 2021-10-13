@@ -1,4 +1,4 @@
-import { AngularDeps, AngularMain, AngularPreview } from '@teambit/angular';
+import { AngularDeps, AngularMain } from '@teambit/angular';
 import { AngularV10Aspect } from './angular-v10.aspect';
 import { AngularV10Env } from './angular-v10.env';
 
@@ -32,5 +32,4 @@ export class AngularV10Main extends AngularMain {
   }
 }
 
-AngularV10Aspect.addRuntime(AngularPreview);
 AngularV10Aspect.addRuntime(AngularV10Main);
