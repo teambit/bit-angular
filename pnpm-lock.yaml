@@ -55,7 +55,7 @@ importers:
       identity-obj-proxy: 3.0.0
       jasmine-core: ~3.7.1
       jest: ^27.2.5
-      jest-preset-angular: ~8.4.0
+      jest-preset-angular: ^10.0.1
       ng-packagr: ~9.1.5
       object-hash: ~2.1.1
       path-browserify: 1.0.1
@@ -127,7 +127,7 @@ importers:
       identity-obj-proxy: registry.npmjs.org/identity-obj-proxy/3.0.0
       jasmine-core: registry.npmjs.org/jasmine-core/3.7.1
       jest: registry.npmjs.org/jest/27.2.5_ts-node@8.3.0
-      jest-preset-angular: registry.npmjs.org/jest-preset-angular/8.4.0_c1b1600cbb315474d8425b1c002f1d3c
+      jest-preset-angular: registry.npmjs.org/jest-preset-angular/10.0.1_ae2f8bbabd6497a1dfbf44c200f88dd1
       ng-packagr: registry.npmjs.org/ng-packagr/9.1.5_8840edfddd6115959cc108c9b6559c54
       object-hash: registry.npmjs.org/object-hash/2.1.1
       path-browserify: registry.npmjs.org/path-browserify/1.0.1
@@ -567,7 +567,7 @@ packages:
       ansi-colors: registry.npmjs.org/ansi-colors/4.1.1
       autoprefixer: registry.npmjs.org/autoprefixer/10.2.4_postcss@8.2.15
       babel-loader: registry.npmjs.org/babel-loader/8.2.2_cb0b35cdd86d43ae111e54bfa48070d7
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       cacache: registry.npmjs.org/cacache/15.0.5
       caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001265
       circular-dependency-plugin: registry.npmjs.org/circular-dependency-plugin/5.2.2_webpack@4.44.2
@@ -2656,7 +2656,7 @@ packages:
       '@babel/compat-data': registry.npmjs.org/@babel/compat-data/7.15.0
       '@babel/core': registry.npmjs.org/@babel/core/7.11.1
       '@babel/helper-validator-option': registry.npmjs.org/@babel/helper-validator-option/7.14.5
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/6.3.0
     dev: false
 
@@ -2672,7 +2672,7 @@ packages:
       '@babel/compat-data': registry.npmjs.org/@babel/compat-data/7.15.0
       '@babel/core': registry.npmjs.org/@babel/core/7.12.10
       '@babel/helper-validator-option': registry.npmjs.org/@babel/helper-validator-option/7.14.5
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/6.3.0
     dev: false
 
@@ -2688,7 +2688,7 @@ packages:
       '@babel/compat-data': registry.npmjs.org/@babel/compat-data/7.15.0
       '@babel/core': registry.npmjs.org/@babel/core/7.14.6
       '@babel/helper-validator-option': registry.npmjs.org/@babel/helper-validator-option/7.14.5
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/6.3.0
     dev: false
 
@@ -2704,7 +2704,7 @@ packages:
       '@babel/compat-data': registry.npmjs.org/@babel/compat-data/7.15.0
       '@babel/core': registry.npmjs.org/@babel/core/7.15.8
       '@babel/helper-validator-option': registry.npmjs.org/@babel/helper-validator-option/7.14.5
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/6.3.0
     dev: false
 
@@ -2720,7 +2720,7 @@ packages:
       '@babel/compat-data': registry.npmjs.org/@babel/compat-data/7.15.0
       '@babel/core': registry.npmjs.org/@babel/core/7.8.7
       '@babel/helper-validator-option': registry.npmjs.org/@babel/helper-validator-option/7.14.5
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/6.3.0
     dev: false
 
@@ -2736,7 +2736,7 @@ packages:
       '@babel/compat-data': registry.npmjs.org/@babel/compat-data/7.15.0
       '@babel/core': registry.npmjs.org/@babel/core/7.9.0
       '@babel/helper-validator-option': registry.npmjs.org/@babel/helper-validator-option/7.14.5
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/6.3.0
     dev: false
 
@@ -8010,6 +8010,7 @@ packages:
       '@types/node': registry.npmjs.org/@types/node/12.20.4
       '@types/yargs': registry.npmjs.org/@types/yargs/15.0.14
       chalk: registry.npmjs.org/chalk/4.1.2
+    dev: true
 
   registry.npmjs.org/@jest/types/27.2.5:
     resolution: {integrity: sha512-nmuM4VuDtCZcY+eTpw+0nvstwReMsjPoj7ZR80/BbixulhLaiX+fbv8oeLW8WZlJMcsGQsTmMKT/iTZu1Uy/lQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/@jest/types/-/types-27.2.5.tgz}
@@ -9049,7 +9050,7 @@ packages:
     version: 7.1.4
     dependencies:
       '@types/minimatch': registry.npmjs.org/@types/minimatch/3.0.5
-      '@types/node': registry.npmjs.org/@types/node/15.14.9
+      '@types/node': registry.npmjs.org/@types/node/16.10.5
     dev: false
 
   registry.npmjs.org/@types/graceful-fs/4.1.5:
@@ -9289,6 +9290,7 @@ packages:
     version: 15.0.14
     dependencies:
       '@types/yargs-parser': registry.npmjs.org/@types/yargs-parser/20.2.1
+    dev: true
 
   registry.npmjs.org/@types/yargs/16.0.4:
     resolution: {integrity: sha512-T8Yc9wt/5LbJyCaLiHPReJa0kApcIgJ7Bn735GjItUfh08Z1pJvu8QZqb9s+mMvKV6WUQRV7K2R46YbjMXTTJw==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/@types/yargs/-/yargs-16.0.4.tgz}
@@ -10648,7 +10650,7 @@ packages:
     version: 4.1.4
     engines: {node: '>= 8.0.0'}
     dependencies:
-      debug: registry.npmjs.org/debug/4.3.2
+      debug: registry.npmjs.org/debug/4.3.1
       depd: registry.npmjs.org/depd/1.1.2
       humanize-ms: registry.npmjs.org/humanize-ms/1.2.1
     transitivePeerDependencies:
@@ -11312,7 +11314,7 @@ packages:
     peerDependencies:
       postcss: ^8.1.0
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001265
       colorette: registry.npmjs.org/colorette/1.4.0
       fraction.js: registry.npmjs.org/fraction.js/4.1.1
@@ -11393,7 +11395,7 @@ packages:
     version: 9.8.8
     hasBin: true
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001265
       normalize-range: registry.npmjs.org/normalize-range/0.1.2
       num2fraction: registry.npmjs.org/num2fraction/1.2.2
@@ -11966,6 +11968,20 @@ packages:
       picocolors: registry.npmjs.org/picocolors/0.2.1
     dev: false
 
+  registry.npmjs.org/browserslist/4.17.4:
+    resolution: {integrity: sha512-Zg7RpbZpIJRW3am9Lyckue7PLytvVxxhJj1CaJVlCWENsGEAOlnlt8X0ZxGRPp7Bt9o8tIRM5SEXy4BCPMJjLQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/browserslist/-/browserslist-4.17.4.tgz}
+    name: browserslist
+    version: 4.17.4
+    engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
+    hasBin: true
+    dependencies:
+      caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001265
+      electron-to-chromium: registry.npmjs.org/electron-to-chromium/1.3.867
+      escalade: registry.npmjs.org/escalade/3.1.1
+      node-releases: registry.npmjs.org/node-releases/2.0.0
+      picocolors: registry.npmjs.org/picocolors/1.0.0
+    dev: false
+
   registry.npmjs.org/bs-logger/0.2.6:
     resolution: {integrity: sha512-pd8DCoxmbgc7hyPKOvxtqNcjYoOsABPQdcCUjGp3d42VR2CX1ORhk2A87oqqu5R1kk+76nsxZupkmyd+MVtCog==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/bs-logger/-/bs-logger-0.2.6.tgz}
     name: bs-logger
@@ -12113,7 +12129,7 @@ packages:
       bluebird: registry.npmjs.org/bluebird/3.7.2
       chownr: registry.npmjs.org/chownr/1.1.4
       figgy-pudding: registry.npmjs.org/figgy-pudding/3.5.2
-      glob: registry.npmjs.org/glob/7.2.0
+      glob: registry.npmjs.org/glob/7.1.6
       graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
       infer-owner: registry.npmjs.org/infer-owner/1.0.4
       lru-cache: registry.npmjs.org/lru-cache/5.1.1
@@ -12342,7 +12358,7 @@ packages:
     name: caniuse-api
     version: 3.0.0
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001265
       lodash.memoize: registry.npmjs.org/lodash.memoize/4.1.2
       lodash.uniq: registry.npmjs.org/lodash.uniq/4.5.0
@@ -13387,7 +13403,7 @@ packages:
     name: core-js-compat
     version: 3.18.3
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       semver: registry.npmjs.org/semver/7.0.0
     dev: false
 
@@ -17014,7 +17030,7 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       array-union: registry.npmjs.org/array-union/1.0.2
-      glob: registry.npmjs.org/glob/7.2.0
+      glob: registry.npmjs.org/glob/7.1.6
       object-assign: registry.npmjs.org/object-assign/4.1.1
       pify: registry.npmjs.org/pify/2.3.0
       pinkie-promise: registry.npmjs.org/pinkie-promise/2.0.1
@@ -17561,7 +17577,7 @@ packages:
     dependencies:
       '@tootallnate/once': registry.npmjs.org/@tootallnate/once/1.1.2
       agent-base: registry.npmjs.org/agent-base/6.0.2
-      debug: registry.npmjs.org/debug/4.3.2
+      debug: registry.npmjs.org/debug/4.3.1
     transitivePeerDependencies:
       - supports-color
     dev: false
@@ -18169,7 +18185,7 @@ packages:
       lodash: registry.npmjs.org/lodash/4.17.21
       mute-stream: registry.npmjs.org/mute-stream/0.0.8
       run-async: registry.npmjs.org/run-async/2.4.1
-      rxjs: registry.npmjs.org/rxjs/6.6.3
+      rxjs: registry.npmjs.org/rxjs/6.6.7
       string-width: registry.npmjs.org/string-width/4.2.3
       strip-ansi: registry.npmjs.org/strip-ansi/6.0.1
       through: registry.npmjs.org/through/2.3.8
@@ -19358,24 +19374,33 @@ packages:
       jest-resolve: registry.npmjs.org/jest-resolve/27.2.5
     dev: false
 
-  registry.npmjs.org/jest-preset-angular/8.4.0_c1b1600cbb315474d8425b1c002f1d3c:
-    resolution: {integrity: sha512-lngQRVVMy2qdzhSzUVTkKFsWC+Z2uMFlJf8J5ZeapNZFsRYW2tjlVqdm+sJOTnVmMVnN7CtDqvRDwlyFTIYD+A==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/jest-preset-angular/-/jest-preset-angular-8.4.0.tgz}
-    id: registry.npmjs.org/jest-preset-angular/8.4.0
+  registry.npmjs.org/jest-preset-angular/10.0.1_ae2f8bbabd6497a1dfbf44c200f88dd1:
+    resolution: {integrity: sha512-+Rxi47jRJTX5BDhB4DqIELCWnJ319vHGI4MGcIVl+AXVXUKXe7zZiy7yC2Pdbs6SNUrwHObWq3yFkSt6jFtEPQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/jest-preset-angular/-/jest-preset-angular-10.0.1.tgz}
+    id: registry.npmjs.org/jest-preset-angular/10.0.1
     name: jest-preset-angular
-    version: 8.4.0
-    engines: {node: '>= 10'}
+    version: 10.0.1
+    engines: {node: ^12.13.0 || ^14.15.0 || >=15.0.0}
     peerDependencies:
-      '@angular/core': '>=2.0.0'
-      '@angular/platform-browser-dynamic': '>=2.0.0'
-      jest: ^26.0.0
+      '@angular/compiler-cli': '>=10.0.0'
+      '@angular/core': '>=10.0.0'
+      '@angular/platform-browser-dynamic': '>=10.0.0'
     dependencies:
+      '@angular/compiler-cli': registry.npmjs.org/@angular/compiler-cli/9.1.13_95578e208dad06710147a46b114c226d
       '@angular/core': registry.npmjs.org/@angular/core/9.1.13_e6bf7f5d41a7a2323beb082ff88093d9
       '@angular/platform-browser-dynamic': registry.npmjs.org/@angular/platform-browser-dynamic/9.1.13_a9ccb1cf5037aa2a9277a33e7380359c
-      jest: registry.npmjs.org/jest/27.2.5_ts-node@8.3.0
-      pretty-format: registry.npmjs.org/pretty-format/26.6.2
-      ts-jest: registry.npmjs.org/ts-jest/26.5.6_jest@27.2.5+typescript@4.3.5
+      jest-environment-jsdom: registry.npmjs.org/jest-environment-jsdom/27.2.5
+      pretty-format: registry.npmjs.org/pretty-format/27.2.5
+      ts-jest: registry.npmjs.org/ts-jest/27.0.5_52195a7f4e99a9cc3f89e3da76818fbb
     transitivePeerDependencies:
+      - '@babel/core'
+      - '@types/jest'
+      - babel-jest
+      - bufferutil
+      - canvas
+      - jest
+      - supports-color
       - typescript
+      - utf-8-validate
     dev: false
 
   registry.npmjs.org/jest-regex-util/27.0.6:
@@ -19530,20 +19555,6 @@ packages:
       semver: registry.npmjs.org/semver/7.3.5
     transitivePeerDependencies:
       - supports-color
-    dev: false
-
-  registry.npmjs.org/jest-util/26.6.2:
-    resolution: {integrity: sha512-MDW0fKfsn0OI7MS7Euz6h8HNDXVQ0gaM9uW6RjfDmd1DAFcaxX9OqIakHIqhbnmF08Cf2DLDG+ulq8YQQ0Lp0Q==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/jest-util/-/jest-util-26.6.2.tgz}
-    name: jest-util
-    version: 26.6.2
-    engines: {node: '>= 10.14.2'}
-    dependencies:
-      '@jest/types': registry.npmjs.org/@jest/types/26.6.2
-      '@types/node': registry.npmjs.org/@types/node/12.20.4
-      chalk: registry.npmjs.org/chalk/4.1.2
-      graceful-fs: registry.npmjs.org/graceful-fs/4.2.8
-      is-ci: registry.npmjs.org/is-ci/2.0.0
-      micromatch: registry.npmjs.org/micromatch/4.0.4
     dev: false
 
   registry.npmjs.org/jest-util/27.2.5:
@@ -21682,7 +21693,7 @@ packages:
       '@rollup/plugin-node-resolve': registry.npmjs.org/@rollup/plugin-node-resolve/13.0.5_rollup@2.58.0
       ajv: registry.npmjs.org/ajv/8.6.3
       ansi-colors: registry.npmjs.org/ansi-colors/4.1.1
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       cacache: registry.npmjs.org/cacache/15.3.0
       chokidar: registry.npmjs.org/chokidar/3.5.2
       commander: registry.npmjs.org/commander/8.2.0
@@ -21917,6 +21928,12 @@ packages:
     resolution: {integrity: sha512-rB1DUFUNAN4Gn9keO2K1efO35IDK7yKHCdCaIMvFO7yUYmmZYeDjnGKle26G4rwj+LKRQpjyUUvMkPglwGCYNQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/node-releases/-/node-releases-1.1.77.tgz}
     name: node-releases
     version: 1.1.77
+    dev: false
+
+  registry.npmjs.org/node-releases/2.0.0:
+    resolution: {integrity: sha512-aA87l0flFYMzCHpTM3DERFSYxc6lv/BltdbRTOMZuxZ0cwZCD3mejE5n9vLhSJCN++/eOqr77G1IO5uXxlQYWA==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/node-releases/-/node-releases-2.0.0.tgz}
+    name: node-releases
+    version: 2.0.0
     dev: false
 
   registry.npmjs.org/node-sass-tilde-importer/1.0.2:
@@ -23398,6 +23415,12 @@ packages:
     version: 0.2.1
     dev: false
 
+  registry.npmjs.org/picocolors/1.0.0:
+    resolution: {integrity: sha512-1fygroTLlHu66zi26VoTDv8yRgm0Fccecssto+MhsZ0D/DGW2sm8E8AjW7NU5VVTRt5GxbeZ5qBuJr+HyLYkjQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/picocolors/-/picocolors-1.0.0.tgz}
+    name: picocolors
+    version: 1.0.0
+    dev: false
+
   registry.npmjs.org/picomatch/2.3.0:
     resolution: {integrity: sha512-lY1Q/PiJGC2zOv/z391WOTD+Z02bCgsFfvxoXXf6h7kv9o+WmsmzYqrAwY63sNgOxE4xEdq0WyUnXfKeBrSvYw==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/picomatch/-/picomatch-2.3.0.tgz}
     name: picomatch
@@ -23722,7 +23745,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-api: registry.npmjs.org/caniuse-api/3.0.0
       colord: registry.npmjs.org/colord/2.8.0
       postcss: registry.npmjs.org/postcss/8.2.15
@@ -23738,7 +23761,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-api: registry.npmjs.org/caniuse-api/3.0.0
       colord: registry.npmjs.org/colord/2.8.0
       postcss: registry.npmjs.org/postcss/8.3.5
@@ -24219,7 +24242,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-api: registry.npmjs.org/caniuse-api/3.0.0
       cssnano-utils: registry.npmjs.org/cssnano-utils/2.0.1_postcss@8.2.15
       postcss: registry.npmjs.org/postcss/8.2.15
@@ -24236,7 +24259,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-api: registry.npmjs.org/caniuse-api/3.0.0
       cssnano-utils: registry.npmjs.org/cssnano-utils/2.0.1_postcss@8.3.5
       postcss: registry.npmjs.org/postcss/8.3.5
@@ -24346,7 +24369,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       alphanum-sort: registry.npmjs.org/alphanum-sort/1.0.2
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       cssnano-utils: registry.npmjs.org/cssnano-utils/2.0.1_postcss@8.2.15
       postcss: registry.npmjs.org/postcss/8.2.15
       postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.1.0
@@ -24363,7 +24386,7 @@ packages:
       postcss: ^8.2.15
     dependencies:
       alphanum-sort: registry.npmjs.org/alphanum-sort/1.0.2
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       cssnano-utils: registry.npmjs.org/cssnano-utils/2.0.1_postcss@8.3.5
       postcss: registry.npmjs.org/postcss/8.3.5
       postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.1.0
@@ -24811,7 +24834,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       postcss: registry.npmjs.org/postcss/8.2.15
       postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.1.0
     dev: false
@@ -24825,7 +24848,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       postcss: registry.npmjs.org/postcss/8.3.5
       postcss-value-parser: registry.npmjs.org/postcss-value-parser/4.1.0
     dev: false
@@ -24981,7 +25004,7 @@ packages:
     engines: {node: '>=6.0.0'}
     dependencies:
       autoprefixer: registry.npmjs.org/autoprefixer/9.8.8
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-lite: registry.npmjs.org/caniuse-lite/1.0.30001265
       css-blank-pseudo: registry.npmjs.org/css-blank-pseudo/0.1.4
       css-has-pseudo: registry.npmjs.org/css-has-pseudo/0.10.0
@@ -25050,7 +25073,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-api: registry.npmjs.org/caniuse-api/3.0.0
       postcss: registry.npmjs.org/postcss/8.2.15
     dev: false
@@ -25064,7 +25087,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       caniuse-api: registry.npmjs.org/caniuse-api/3.0.0
       postcss: registry.npmjs.org/postcss/8.3.5
     dev: false
@@ -25439,6 +25462,7 @@ packages:
       ansi-regex: registry.npmjs.org/ansi-regex/5.0.1
       ansi-styles: registry.npmjs.org/ansi-styles/4.3.0
       react-is: registry.npmjs.org/react-is/17.0.2
+    dev: true
 
   registry.npmjs.org/pretty-format/27.2.5:
     resolution: {integrity: sha512-+nYn2z9GgicO9JiqmY25Xtq8SYfZ/5VCpEU3pppHHNAhd1y+ZXxmNPd1evmNcAd6Hz4iBV2kf0UpGth5A/VJ7g==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/pretty-format/-/pretty-format-27.2.5.tgz}
@@ -26750,7 +26774,7 @@ packages:
     version: 3.0.2
     hasBin: true
     dependencies:
-      glob: registry.npmjs.org/glob/7.1.6
+      glob: registry.npmjs.org/glob/7.2.0
     dev: false
 
   registry.npmjs.org/ripemd160/2.0.2:
@@ -28673,7 +28697,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       postcss: registry.npmjs.org/postcss/8.2.15
       postcss-selector-parser: registry.npmjs.org/postcss-selector-parser/6.0.6
     dev: false
@@ -28687,7 +28711,7 @@ packages:
     peerDependencies:
       postcss: ^8.2.15
     dependencies:
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       postcss: registry.npmjs.org/postcss/8.3.5
       postcss-selector-parser: registry.npmjs.org/postcss-selector-parser/6.0.6
     dev: false
@@ -29311,7 +29335,7 @@ packages:
     dependencies:
       commander: registry.npmjs.org/commander/2.20.3
       source-map: registry.npmjs.org/source-map/0.6.1
-      source-map-support: registry.npmjs.org/source-map-support/0.5.20
+      source-map-support: registry.npmjs.org/source-map-support/0.5.19
     dev: false
 
   registry.npmjs.org/terser/5.3.0:
@@ -29567,26 +29591,35 @@ packages:
     version: 1.0.5
     dev: false
 
-  registry.npmjs.org/ts-jest/26.5.6_jest@27.2.5+typescript@4.3.5:
-    resolution: {integrity: sha512-rua+rCP8DxpA8b4DQD/6X2HQS8Zy/xzViVYfEs2OQu68tkCuKLV0Md8pmX55+W24uRIyAsf/BajRfxOs+R2MKA==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/ts-jest/-/ts-jest-26.5.6.tgz}
-    id: registry.npmjs.org/ts-jest/26.5.6
+  registry.npmjs.org/ts-jest/27.0.5_52195a7f4e99a9cc3f89e3da76818fbb:
+    resolution: {integrity: sha512-lIJApzfTaSSbtlksfFNHkWOzLJuuSm4faFAfo5kvzOiRAuoN4/eKxVJ2zEAho8aecE04qX6K1pAzfH5QHL1/8w==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/ts-jest/-/ts-jest-27.0.5.tgz}
+    id: registry.npmjs.org/ts-jest/27.0.5
     name: ts-jest
-    version: 26.5.6
-    engines: {node: '>= 10'}
+    version: 27.0.5
+    engines: {node: ^10.13.0 || ^12.13.0 || ^14.15.0 || >=15.0.0}
     hasBin: true
     peerDependencies:
-      jest: '>=26 <27'
+      '@babel/core': '>=7.0.0-beta.0 <8'
+      '@types/jest': ^27.0.0
+      babel-jest: '>=27.0.0 <28'
+      jest: ^27.0.0
       typescript: '>=3.8 <5.0'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@types/jest':
+        optional: true
+      babel-jest:
+        optional: true
     dependencies:
+      '@types/jest': registry.npmjs.org/@types/jest/26.0.24
       bs-logger: registry.npmjs.org/bs-logger/0.2.6
-      buffer-from: registry.npmjs.org/buffer-from/1.1.2
       fast-json-stable-stringify: registry.npmjs.org/fast-json-stable-stringify/2.1.0
       jest: registry.npmjs.org/jest/27.2.5_ts-node@8.3.0
-      jest-util: registry.npmjs.org/jest-util/26.6.2
+      jest-util: registry.npmjs.org/jest-util/27.2.5
       json5: registry.npmjs.org/json5/2.2.0
       lodash: registry.npmjs.org/lodash/4.17.21
       make-error: registry.npmjs.org/make-error/1.3.6
-      mkdirp: registry.npmjs.org/mkdirp/1.0.4
       semver: registry.npmjs.org/semver/7.3.5
       typescript: registry.npmjs.org/typescript/4.3.5
       yargs-parser: registry.npmjs.org/yargs-parser/20.2.9
@@ -30717,6 +30750,23 @@ packages:
       webpack-log: registry.npmjs.org/webpack-log/2.0.0
     dev: false
 
+  registry.npmjs.org/webpack-dev-middleware/3.7.2_webpack@5.40.0:
+    resolution: {integrity: sha512-1xC42LxbYoqLNAhV6YzTYacicgMZQTqRd27Sim9wn5hJrX3I5nxYy1SxSd4+gjUFsz1dQFj+yEe6zEVmSkeJjw==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/webpack-dev-middleware/-/webpack-dev-middleware-3.7.2.tgz}
+    id: registry.npmjs.org/webpack-dev-middleware/3.7.2
+    name: webpack-dev-middleware
+    version: 3.7.2
+    engines: {node: '>= 6'}
+    peerDependencies:
+      webpack: ^4.0.0
+    dependencies:
+      memory-fs: registry.npmjs.org/memory-fs/0.4.1
+      mime: registry.npmjs.org/mime/2.5.2
+      mkdirp: registry.npmjs.org/mkdirp/0.5.5
+      range-parser: registry.npmjs.org/range-parser/1.2.1
+      webpack: registry.npmjs.org/webpack/5.40.0
+      webpack-log: registry.npmjs.org/webpack-log/2.0.0
+    dev: false
+
   registry.npmjs.org/webpack-dev-middleware/3.7.3_webpack@4.44.2:
     resolution: {integrity: sha512-djelc/zGiz9nZj/U7PTBi2ViorGJXEWo/3ltkPbDyxCXhhEXkW0ce99falaok4TPj+AsxLiXJR0EBOb0zh9fKQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/webpack-dev-middleware/-/webpack-dev-middleware-3.7.3.tgz}
     id: registry.npmjs.org/webpack-dev-middleware/3.7.3
@@ -30731,23 +30781,6 @@ packages:
       mkdirp: registry.npmjs.org/mkdirp/0.5.5
       range-parser: registry.npmjs.org/range-parser/1.2.1
       webpack: registry.npmjs.org/webpack/4.44.2
-      webpack-log: registry.npmjs.org/webpack-log/2.0.0
-    dev: false
-
-  registry.npmjs.org/webpack-dev-middleware/3.7.3_webpack@5.40.0:
-    resolution: {integrity: sha512-djelc/zGiz9nZj/U7PTBi2ViorGJXEWo/3ltkPbDyxCXhhEXkW0ce99falaok4TPj+AsxLiXJR0EBOb0zh9fKQ==, registry: https://node.bit.dev/, tarball: https://registry.npmjs.org/webpack-dev-middleware/-/webpack-dev-middleware-3.7.3.tgz}
-    id: registry.npmjs.org/webpack-dev-middleware/3.7.3
-    name: webpack-dev-middleware
-    version: 3.7.3
-    engines: {node: '>= 6'}
-    peerDependencies:
-      webpack: ^4.0.0 || ^5.0.0
-    dependencies:
-      memory-fs: registry.npmjs.org/memory-fs/0.4.1
-      mime: registry.npmjs.org/mime/2.5.2
-      mkdirp: registry.npmjs.org/mkdirp/0.5.5
-      range-parser: registry.npmjs.org/range-parser/1.2.1
-      webpack: registry.npmjs.org/webpack/5.40.0
       webpack-log: registry.npmjs.org/webpack-log/2.0.0
     dev: false
 
@@ -30980,7 +31013,7 @@ packages:
       supports-color: registry.npmjs.org/supports-color/6.1.0
       url: registry.npmjs.org/url/0.11.0
       webpack: registry.npmjs.org/webpack/4.44.2
-      webpack-dev-middleware: registry.npmjs.org/webpack-dev-middleware/3.7.3_webpack@4.44.2
+      webpack-dev-middleware: registry.npmjs.org/webpack-dev-middleware/3.7.2_webpack@4.44.2
       webpack-log: registry.npmjs.org/webpack-log/2.0.0
       ws: registry.npmjs.org/ws/6.2.2
       yargs: registry.npmjs.org/yargs/13.3.2
@@ -31030,7 +31063,7 @@ packages:
       supports-color: registry.npmjs.org/supports-color/6.1.0
       url: registry.npmjs.org/url/0.11.0
       webpack: registry.npmjs.org/webpack/5.40.0
-      webpack-dev-middleware: registry.npmjs.org/webpack-dev-middleware/3.7.3_webpack@5.40.0
+      webpack-dev-middleware: registry.npmjs.org/webpack-dev-middleware/3.7.2_webpack@5.40.0
       webpack-log: registry.npmjs.org/webpack-log/2.0.0
       ws: registry.npmjs.org/ws/6.2.2
       yargs: registry.npmjs.org/yargs/13.3.2
@@ -31460,7 +31493,7 @@ packages:
       '@webassemblyjs/wasm-parser': registry.npmjs.org/@webassemblyjs/wasm-parser/1.11.1
       acorn: registry.npmjs.org/acorn/8.5.0
       acorn-import-assertions: registry.npmjs.org/acorn-import-assertions/1.8.0_acorn@8.5.0
-      browserslist: registry.npmjs.org/browserslist/4.17.3
+      browserslist: registry.npmjs.org/browserslist/4.17.4
       chrome-trace-event: registry.npmjs.org/chrome-trace-event/1.0.3
       enhanced-resolve: registry.npmjs.org/enhanced-resolve/5.8.3
       es-module-lexer: registry.npmjs.org/es-module-lexer/0.9.3
