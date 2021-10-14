@@ -27,6 +27,8 @@
           "@angular/router": "12.1.0",
           "@ngtools/webpack": "12.1.0",
           "html-loader": "~2.1.2",
+          "jest": "~27.0.4",
+          "jest-preset-angular": "~10.0.1",
           "ng-packagr": "~12.2.1",
           "react-dev-utils": "10.2.1",
           "remark": "~13.0.0",
