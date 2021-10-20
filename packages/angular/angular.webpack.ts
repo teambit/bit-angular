@@ -133,6 +133,7 @@ export abstract class AngularWebpack {
       } else {
         outputPath = pathNormalizeToLinux(this.workspace?.componentDir(component.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '');
         // map the package names to the local component paths for typescript since we don't use node_modules for local components in dev mode
+        tsPaths[`${this.pkg.getPackageName(component)}`] = [`${outputPath}/public-api.ts`];
         tsPaths[`${this.pkg.getPackageName(component)}/*`] = [`${outputPath}/*`];
       }
 
