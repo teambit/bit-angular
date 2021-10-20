@@ -6,6 +6,7 @@ export class AngularV8Main extends AngularMain {
   static async provider([
     jestAspect,
     compiler,
+    tester,
     eslint,
     ngPackagr,
     generator,
@@ -19,6 +20,7 @@ export class AngularV8Main extends AngularMain {
     const angularV8Env = new AngularV8Env(
       jestAspect,
       compiler,
+      tester,
       eslint,
       ngPackagr,
       generator,

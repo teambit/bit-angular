@@ -5,6 +5,7 @@ import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
 import { IsolatorMain } from '@teambit/isolator';
+import { TesterMain } from '@teambit/tester';
 import { PkgMain } from '@teambit/pkg';
 import { NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackMain } from '@teambit/webpack';
@@ -27,6 +28,7 @@ export class AngularV11Env extends AngularEnv {
   constructor(
     jestAspect: JestMain,
     compiler: CompilerMain,
+    tester: TesterMain,
     eslint: ESLintMain,
     ngPackagrAspect: NgPackagrMain,
     generator: GeneratorMain,
@@ -36,7 +38,7 @@ export class AngularV11Env extends AngularEnv {
     private compositions: CompositionsMain,
     private pkg: PkgMain,
   ) {
-    super(jestAspect, compiler, eslint, ngPackagrAspect, isolator, workspace, generator);
+    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
   }
 
   /**

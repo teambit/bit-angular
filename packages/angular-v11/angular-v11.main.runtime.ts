@@ -6,6 +6,7 @@ export class AngularV11Main extends AngularMain {
   static async provider([
     jestAspect,
     compiler,
+    tester,
     eslint,
     ngPackagr,
     generator,
@@ -19,6 +20,7 @@ export class AngularV11Main extends AngularMain {
     const angularV11Env = new AngularV11Env(
       jestAspect,
       compiler,
+      tester,
       eslint,
       ngPackagr,
       generator,

@@ -16,6 +16,7 @@ import { EslintConfigTransformer, ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
+import { TesterMain } from '@teambit/legacy/dist/scopes/defender/tester';
 import { Linter, LinterContext } from '@teambit/linter';
 import { NgPackagrMain } from '@teambit/ng-packagr';
 import { Tester } from '@teambit/tester';
@@ -35,6 +36,7 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   constructor(
     protected jestAspect: JestMain,
     protected compiler: CompilerMain,
+    private tester: TesterMain,
     protected eslint: ESLintMain,
     protected ngPackagrAspect: NgPackagrMain,
     isolator: IsolatorMain,
@@ -74,7 +76,7 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   getBuildPipe(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): BuildTask[] {
     const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions);
     const compilerTask = this.compiler.createTask('NgPackagrCompiler', compiler);
-    return [compilerTask];
+    return [compilerTask, this.tester.task];
   }
 
   /**

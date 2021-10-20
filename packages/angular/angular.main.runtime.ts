@@ -13,12 +13,14 @@ import { PkgMain } from '@teambit/pkg';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
 import { WebpackAspect, WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import { TesterAspect, TesterMain } from '@teambit/tester';
 import { Configuration } from 'webpack';
 import { AngularEnv } from './angular.env';
 
 export type AngularDeps = [
   JestMain,
   CompilerMain,
+  TesterMain,
   ESLintMain,
   NgPackagrMain,
   GeneratorMain,
@@ -36,6 +38,7 @@ export abstract class AngularMain {
   static dependencies: any = [
     JestAspect,
     CompilerAspect,
+    TesterAspect,
     ESLintAspect,
     NgPackagrAspect,
     GeneratorAspect,
