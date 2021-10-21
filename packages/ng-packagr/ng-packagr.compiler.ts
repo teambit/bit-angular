@@ -11,6 +11,7 @@ import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import { join } from 'path';
 import type { NgPackagrWorker } from './ng-packagr.worker';
+import type { Remote } from 'comlink';
 
 export interface NgPackagr {
   /**
@@ -61,7 +62,7 @@ export class NgPackagrCompiler implements Compiler {
     this.artifactName = bitCompilerOptions.artifactName || 'dist';
   }
 
-  initiateWorker(log: boolean): NgPackagrWorker {
+  initiateWorker(log: boolean): Remote<NgPackagrWorker> {
     const workerApi = this.ngPackagrWorker.initiate(
       log ? { stdout: false, stderr: false, stdin: false } : { stdout: true, stderr: true, stdin: false }
     );

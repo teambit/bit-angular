@@ -11,7 +11,8 @@
           "ng-packagr": "-"
         },
         "devDependencies": {
-          "@teambit/harmony": "^0.2.11"
+          "@teambit/harmony": "^0.2.11",
+          "comlink": "4.3.0"
         },
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0",

@@ -64,8 +64,8 @@ export abstract class AngularWebpack {
     webpackOptions: Partial<WebpackConfigWithDevServer>,
     angularOptions: Partial<BrowserBuilderSchema>
   ): Promise<WebpackConfigWithDevServer | Configuration>;
-  abstract webpack: Partial<typeof webpack>;
-  abstract webpackDevServer: Partial<typeof WsDevServer>;
+  abstract webpack: any;
+  abstract webpackDevServer: any;
   abstract webpackServeConfigFactory: (
     devServerID: string,
     workspaceDir: string,

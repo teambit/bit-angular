@@ -74,6 +74,7 @@ export class AngularV9Env extends AngularEnv {
       devDependencies: {
         '@angular/compiler': '~9.1.13',
         '@angular/compiler-cli': '~9.1.13',
+        '@types/jest': '~27.0.2',
         'jest': '~27.0.4',
         'jest-preset-angular': '~9.0.7',
         'typescript': '-',

@@ -74,6 +74,7 @@ export class AngularV8Env extends AngularEnv {
       devDependencies: {
         '@angular/compiler': '~8.2.14',
         '@angular/compiler-cli': '~8.2.14',
+        '@types/jest': '~25.1.0',
         'jest': '^25.1.0',
         'jest-preset-angular': '~8.2.0',
         'ts-jest': '^25.5.1',

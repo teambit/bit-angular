@@ -74,6 +74,7 @@ export class AngularV12Env extends AngularEnv {
       devDependencies: {
         '@angular/compiler': '12.1.0',
         '@angular/compiler-cli': '12.1.0',
+        '@types/jest': '~27.0.2',
         'jest': '~27.0.4',
         'jest-preset-angular': '~10.0.1',
         'typescript': '-',
