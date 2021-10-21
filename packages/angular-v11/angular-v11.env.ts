@@ -1,6 +1,5 @@
 import { AngularEnv } from '@teambit/angular';
 import { CompilerMain } from '@teambit/compiler';
-import { CompositionsMain } from '@teambit/compositions';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
@@ -19,7 +18,7 @@ import { AngularV11Webpack } from './angular-v11.webpack';
  */
 export class AngularV11Env extends AngularEnv {
   name = 'Angular-v11';
-  angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
+  angularWebpack: AngularV11Webpack;
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
   jestConfigPath = require.resolve('./jest/jest.config');
@@ -35,10 +34,10 @@ export class AngularV11Env extends AngularEnv {
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace | undefined,
-    private compositions: CompositionsMain,
     private pkg: PkgMain,
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
+    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg, this.nodeModulesPaths);
   }
 
   /**
@@ -68,8 +67,8 @@ export class AngularV11Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        tslib: '^2.0.0',
-        rxjs: '-',
+        'tslib': '^2.0.0',
+        'rxjs': '-',
         'zone.js': '-',
       },
       devDependencies: {
@@ -77,16 +76,16 @@ export class AngularV11Env extends AngularEnv {
         '@angular/compiler-cli': '~11.2.14',
         'jest': '~27.0.4',
         'jest-preset-angular': '~10.0.1',
-        typescript: '-',
+        'typescript': '-',
       },
       peerDependencies: {
         '@angular/common': '~11.2.14',
         '@angular/core': '~11.2.14',
         '@angular/platform-browser': '~11.2.14',
         '@angular/platform-browser-dynamic': '~11.2.14',
-        rxjs: '^6.6.3',
+        'rxjs': '^6.6.3',
         'zone.js': '~0.11.4',
-        typescript: '~4.1.5',
+        'typescript': '~4.1.5',
       },
     };
   }

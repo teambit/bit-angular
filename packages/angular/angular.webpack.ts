@@ -1,6 +1,5 @@
 import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
-import { CompositionsMain } from '@teambit/compositions';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { PkgMain } from '@teambit/pkg';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
@@ -42,7 +41,6 @@ export abstract class AngularWebpack {
   constructor(
     private workspace: Workspace | undefined,
     private webpackMain: WebpackMain,
-    private compositions: CompositionsMain,
     private pkg: PkgMain,
     angularAspect: Aspect,
     private nodeModulesPaths: string[] = []
@@ -190,7 +188,7 @@ export abstract class AngularWebpack {
       transformerContext
     );
 
-    return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer);
+    return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer as any);
   }
 
   private createPreviewConfig(targets: Target[]): Configuration[] {

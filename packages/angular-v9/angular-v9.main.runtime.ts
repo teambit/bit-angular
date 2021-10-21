@@ -12,7 +12,6 @@ export class AngularV9Main extends AngularMain {
     generator,
     webpack,
     workspace,
-    compositions,
     envs,
     isolator,
     pkg,
@@ -27,7 +26,6 @@ export class AngularV9Main extends AngularMain {
       isolator,
       webpack,
       workspace,
-      compositions,
       pkg,
     );
     return new AngularV9Main(envs, angularV9Env);

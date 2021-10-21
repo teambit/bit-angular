@@ -5,11 +5,11 @@ import { Component } from '@teambit/component';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
 import DataToPersist from '@teambit/legacy/dist/consumer/component/sources/data-to-persist';
-import { HarmonyWorker } from '@teambit/legacy/dist/scopes/harmony/worker';
+import { HarmonyWorker } from '@teambit/worker';
 import { stringify } from 'flatted';
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
-import { extname, join } from 'path';
+import { join } from 'path';
 import type { NgPackagrWorker } from './ng-packagr.worker';
 
 export interface NgPackagr {
@@ -51,7 +51,7 @@ export class NgPackagrCompiler implements Compiler {
     private workspace: Workspace,
     private readDefaultTsConfig: string,
     private tsCompilerOptions: TsCompilerOptions = {},
-    private bitCompilerOptions: Partial<CompilerOptions> = {},
+    bitCompilerOptions: Partial<CompilerOptions> = {},
     private nodeModulesPaths: string[] = []
   ) {
     this.distDir = bitCompilerOptions.distDir || 'dist';
@@ -174,12 +174,6 @@ export class NgPackagrCompiler implements Compiler {
    */
   isFileSupported(filePath: string): boolean {
     return filePath.endsWith('.ts') || (!!this.tsCompilerOptions.allowJs && filePath.endsWith('.js'));
-  }
-
-  private replaceFileExtToJs(filePath: string): string {
-    if (!this.isFileSupported(filePath)) return filePath;
-    const fileExtension = extname(filePath);
-    return filePath.replace(new RegExp(`${fileExtension}$`), '.js'); // makes sure it's the last occurrence
   }
 
   version(): string {

@@ -1,6 +1,5 @@
 import { AngularEnv } from '@teambit/angular';
 import { CompilerMain } from '@teambit/compiler';
-import { CompositionsMain } from '@teambit/compositions';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
@@ -19,7 +18,7 @@ import { AngularV12Webpack } from './angular-v12.webpack';
  */
 export class AngularV12Env extends AngularEnv {
   name = 'Angular-v12';
-  angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
+  angularWebpack: AngularV12Webpack;
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
   jestConfigPath = require.resolve('./jest/jest.config');
@@ -35,10 +34,10 @@ export class AngularV12Env extends AngularEnv {
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace | undefined,
-    private compositions: CompositionsMain,
     private pkg: PkgMain
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
+    this.angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.pkg, this.nodeModulesPaths);
   }
 
   /**
@@ -68,8 +67,8 @@ export class AngularV12Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        tslib: '^2.2.0',
-        rxjs: '-',
+        'tslib': '^2.2.0',
+        'rxjs': '-',
         'zone.js': '-',
       },
       devDependencies: {
@@ -77,16 +76,16 @@ export class AngularV12Env extends AngularEnv {
         '@angular/compiler-cli': '12.1.0',
         'jest': '~27.0.4',
         'jest-preset-angular': '~10.0.1',
-        typescript: '-',
+        'typescript': '-',
       },
       peerDependencies: {
         '@angular/common': '12.1.0',
         '@angular/core': '12.1.0',
         '@angular/platform-browser': '12.1.0',
         '@angular/platform-browser-dynamic': '12.1.0',
-        rxjs: '^6.6.7',
+        'rxjs': '^6.6.7',
         'zone.js': '~0.11.4',
-        typescript: '~4.3.2',
+        'typescript': '~4.3.2',
       },
     };
   }

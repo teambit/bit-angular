@@ -1,6 +1,5 @@
 import { AngularEnv } from '@teambit/angular';
 import { CompilerMain } from '@teambit/compiler';
-import { CompositionsMain } from '@teambit/compositions';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
@@ -19,7 +18,7 @@ import { AngularV10Webpack } from './angular-v10.webpack';
  */
 export class AngularV10Env extends AngularEnv {
   name = 'Angular-v10';
-  angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
+  angularWebpack: AngularV10Webpack;
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
   jestConfigPath = require.resolve('./jest/jest.config');
@@ -35,10 +34,10 @@ export class AngularV10Env extends AngularEnv {
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace | undefined,
-    private compositions: CompositionsMain,
     private pkg: PkgMain,
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
+    this.angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.pkg, this.nodeModulesPaths);
   }
 
   /**
@@ -68,8 +67,8 @@ export class AngularV10Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        tslib: '^2.0.0',
-        rxjs: '-',
+        'tslib': '^2.0.0',
+        'rxjs': '-',
         'zone.js': '-',
       },
       devDependencies: {
@@ -77,16 +76,16 @@ export class AngularV10Env extends AngularEnv {
         '@angular/compiler-cli': '~10.2.5',
         'jest': '~27.0.4',
         'jest-preset-angular': '~10.0.1',
-        typescript: '-',
+        'typescript': '-',
       },
       peerDependencies: {
         '@angular/common': '~10.2.5',
         '@angular/core': '~10.2.5',
         '@angular/platform-browser': '~10.2.5',
         '@angular/platform-browser-dynamic': '~10.2.5',
-        rxjs: '^6.6.3',
+        'rxjs': '^6.6.3',
         'zone.js': '~0.10.3',
-        typescript: '~4.0.2',
+        'typescript': '~4.0.2',
       },
     };
   }

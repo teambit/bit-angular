@@ -12,7 +12,6 @@ export class AngularV10Main extends AngularMain {
     generator,
     webpack,
     workspace,
-    compositions,
     envs,
     isolator,
     pkg,
@@ -27,7 +26,6 @@ export class AngularV10Main extends AngularMain {
       isolator,
       webpack,
       workspace,
-      compositions,
       pkg,
     );
     return new AngularV10Main(envs, angularV10Env);

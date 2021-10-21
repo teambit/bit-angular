@@ -1,6 +1,5 @@
 import { AngularEnv } from '@teambit/angular';
 import { CompilerMain } from '@teambit/compiler';
-import { CompositionsMain } from '@teambit/compositions';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
@@ -19,7 +18,7 @@ import { AngularV9Webpack } from './angular-v9.webpack';
  */
 export class AngularV9Env extends AngularEnv {
   name = 'Angular-v9';
-  angularWebpack = new AngularV9Webpack(this.workspace, this.webpackMain, this.compositions, this.pkg, this.nodeModulesPaths);
+  angularWebpack: AngularV9Webpack;
   ngPackagr = require.resolve('ng-packagr');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
   jestConfigPath = require.resolve('./jest/jest.config');
@@ -35,10 +34,10 @@ export class AngularV9Env extends AngularEnv {
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     private workspace: Workspace | undefined,
-    private compositions: CompositionsMain,
     private pkg: PkgMain
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
+    this.angularWebpack = new AngularV9Webpack(this.workspace, this.webpackMain, this.pkg, this.nodeModulesPaths);
   }
 
   /**
@@ -68,8 +67,8 @@ export class AngularV9Env extends AngularEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        tslib: '^1.10.0',
-        rxjs: '-',
+        'tslib': '^1.10.0',
+        'rxjs': '-',
         'zone.js': '-',
       },
       devDependencies: {
@@ -77,16 +76,16 @@ export class AngularV9Env extends AngularEnv {
         '@angular/compiler-cli': '~9.1.13',
         'jest': '~27.0.4',
         'jest-preset-angular': '~9.0.7',
-        typescript: '-',
+        'typescript': '-',
       },
       peerDependencies: {
         '@angular/common': '~9.1.13',
         '@angular/core': '~9.1.13',
         '@angular/platform-browser': '~9.1.13',
         '@angular/platform-browser-dynamic': '~9.1.13',
-        rxjs: '^6.6.3',
+        'rxjs': '^6.6.3',
         'zone.js': '~0.10.3',
-        typescript: '~3.8.3',
+        'typescript': '~3.8.3',
       },
     };
   }

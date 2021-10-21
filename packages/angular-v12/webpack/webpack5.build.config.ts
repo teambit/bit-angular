@@ -1,6 +1,5 @@
 import { AngularModulesResolverPlugin } from '@teambit/angular';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
-import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
@@ -51,7 +50,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
-                  plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
+                  plugins: [RemarkPrism, RemarkHTML, RemarkFrontmatter],
                 },
               },
             },

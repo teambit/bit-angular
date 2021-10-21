@@ -1,7 +1,6 @@
 import { CompilerOptions as TsCompilerOptions, readConfiguration } from '@angular/compiler-cli';
 import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
-import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintAspect, ESLintMain } from '@teambit/eslint';
 import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
@@ -26,7 +25,6 @@ export type AngularDeps = [
   GeneratorMain,
   WebpackMain,
   Workspace | undefined,
-  CompositionsMain,
   EnvsMain,
   IsolatorMain,
   PkgMain
@@ -44,7 +42,6 @@ export abstract class AngularMain {
     GeneratorAspect,
     WebpackAspect,
     WorkspaceAspect,
-    CompositionsAspect,
     EnvsAspect,
     IsolatorAspect,
     PkgAspect,

@@ -2,7 +2,8 @@ import { Resolver } from 'enhanced-resolve';
 import { existsSync } from 'fs';
 import { dirname } from 'path';
 
-const getInnerRequest = require('enhanced-resolve/lib/getInnerRequest');
+// @ts-ignore
+import getInnerRequest from 'enhanced-resolve/lib/getInnerRequest';
 
 const regex = /^@angular\/(.*)$/;
 
@@ -22,7 +23,7 @@ export class AngularModulesResolverPlugin {
 
     resolver
       .getHook(source)
-      .tapAsync('AngularWebpackResolverPlugin', (request: any, resolveContext, callback) => {
+      .tapAsync('AngularWebpackResolverPlugin', (request: any, resolveContext: any, callback: any) => {
         if (!request) {
           return callback();
         }

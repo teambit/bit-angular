@@ -9,11 +9,11 @@ export type DocsFile = {
 window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<any>();
 
 export default function docsRoot(
-  provider: Type<any> | undefined,
-  componentId: string,
+  _provider: Type<any> | undefined,
+  _componentId: string,
   docs: DocsFile | undefined,
-  compositionsMap: { [name: string]: Type<any> },
-  context: RenderingContext
+  _compositionsMap: { [name: string]: Type<any> },
+  _context: RenderingContext
 ) {
   // const angularRenderingContext = context.get(AngularAspect.id);
   if (docs) {

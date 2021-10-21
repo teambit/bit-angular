@@ -29,10 +29,7 @@ export type InputFileSystem = Compiler['inputFileSystem'];
 export class NgccProcessor {
   constructor(
     private readonly propertiesToConsider: string[],
-    private readonly compilationWarnings: (Error | string)[],
-    private readonly compilationErrors: (Error | string)[],
     private readonly tsConfigPath: string,
-    private readonly inputFileSystem: InputFileSystem,
     private readonly resolver: ResolverWithOptions,
   ) {}
 
@@ -155,7 +152,7 @@ export function initializeNgccProcessor(
   compiler: Compiler,
   tsconfig: string,
 ): { processor: NgccProcessor; errors: string[]; warnings: string[] } {
-  const { inputFileSystem, options: webpackOptions } = compiler;
+  const { options: webpackOptions } = compiler;
   const mainFields = webpackOptions.resolve?.mainFields?.flat() ?? [];
 
   const errors: string[] = [];
@@ -168,10 +165,7 @@ export function initializeNgccProcessor(
   });
   const processor = new NgccProcessor(
     mainFields,
-    warnings,
-    errors,
     tsconfig,
-    inputFileSystem,
     resolver,
   );
 

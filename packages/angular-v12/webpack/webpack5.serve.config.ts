@@ -13,7 +13,6 @@ import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
-import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
@@ -61,7 +60,7 @@ export function webpack5ServeConfigFactory(
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: (info) => pathNormalizeToLinux(resolve(info.absoluteResourcePath)),
+      devtoolModuleFilenameTemplate: (info: any) => pathNormalizeToLinux(resolve(info.absoluteResourcePath)),
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
@@ -167,7 +166,7 @@ export function webpack5ServeConfigFactory(
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
-                  plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
+                  plugins: [RemarkPrism, RemarkHTML, RemarkFrontmatter],
                 },
               },
             },

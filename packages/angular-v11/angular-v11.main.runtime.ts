@@ -12,7 +12,6 @@ export class AngularV11Main extends AngularMain {
     generator,
     webpack,
     workspace,
-    compositions,
     envs,
     isolator,
     pkg,
@@ -27,7 +26,6 @@ export class AngularV11Main extends AngularMain {
       isolator,
       webpack,
       workspace,
-      compositions,
       pkg,
     );
     return new AngularV11Main(envs, angularV11Env);

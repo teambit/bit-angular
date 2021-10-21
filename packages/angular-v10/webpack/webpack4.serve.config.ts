@@ -11,7 +11,6 @@ import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
-import RemarkAutolink from 'remark-autolink-headings';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
@@ -72,7 +71,7 @@ export function webpack4ServeConfigFactory(
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: (info) => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath)),
+      devtoolModuleFilenameTemplate: (info: any) => pathNormalizeToLinux(path.resolve(info.absoluteResourcePath)),
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
@@ -116,7 +115,7 @@ export function webpack4ServeConfigFactory(
       sockPath,
       sockPort,
 
-      before(app, server) {
+      before(app: any, server: any) {
         // Keep `evalSourceMapMiddleware` and `errorOverlayMiddleware`
         // middlewares before `redirectServedPath` otherwise will not have any effect
         // This lets us fetch source contents from webpack for the error overlay
@@ -125,7 +124,7 @@ export function webpack4ServeConfigFactory(
         app.use(errorOverlayMiddleware());
       },
 
-      after(app) {
+      after(app: any) {
         // Redirect to `PUBLIC_URL` or `homepage` from `package.json` if url not match
         app.use(redirectServedPath(publicUrlOrPath));
 
@@ -163,7 +162,7 @@ export function webpack4ServeConfigFactory(
               options: {
                 removeFrontMatter: false,
                 remarkOptions: {
-                  plugins: [RemarkPrism, RemarkAutolink, RemarkHTML, RemarkFrontmatter],
+                  plugins: [RemarkPrism, RemarkHTML, RemarkFrontmatter],
                 },
               },
             },

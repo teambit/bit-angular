@@ -27,7 +27,6 @@ import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
 import { AngularWebpack, optionValue, WebpackSetup } from '@teambit/angular';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
-import { CompositionsMain } from '@teambit/compositions';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
@@ -56,8 +55,8 @@ export class AngularV8Webpack extends AngularWebpack {
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, compositions: CompositionsMain, pkg: PkgMain, nodeModulesPaths: string[]) {
-    super(workspace, webpackMain, compositions, pkg, AngularV8Aspect, nodeModulesPaths);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, nodeModulesPaths: string[]) {
+    super(workspace, webpackMain, pkg, AngularV8Aspect, nodeModulesPaths);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
