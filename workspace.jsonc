@@ -126,13 +126,6 @@
     },
     "examples/demo-lib-v8": {
       "teambit.angular/angular-v8": {}
-    },
-    /**
-     * "*" is a special rule which applied on all components in the workspace.
-     **/
-    "*": {
-      //      "teambit.angular/angular-v12": {}
-      //      "teambit.react/react": {}
     }
   }
 }
