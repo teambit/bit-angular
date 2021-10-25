@@ -8,21 +8,19 @@ import {
   OnDestroy,
   OnInit,
   Type,
-  ViewChild,
-  ɵNgModuleDef
+  ɵNgModuleDef,
+  ViewContainerRef,
+  NgZone
 } from '@angular/core';
 import { DocsComponent } from '../docs/docs.component';
-import { LazyLoadDirective } from './lazy-load.directive';
 
 @Component({
   selector: 'app-lazy-load',
-  template: `
-    <ng-template lazyLoad></ng-template> `
+  template: ``
 })
 export class LazyLoadComponent implements OnInit, OnDestroy {
-  @ViewChild(LazyLoadDirective, { static: true }) lazyLoad!: LazyLoadDirective;
 
-  constructor(private cfr: ComponentFactoryResolver, private cdr: ChangeDetectorRef, private compiler: Compiler, private injector: Injector) {
+  constructor(private cfr: ComponentFactoryResolver, private compiler: Compiler, private injector: Injector, private viewContainerRef: ViewContainerRef, private ngZone: NgZone) {
   }
 
   /**
@@ -33,13 +31,15 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
   }
 
   private insertComponent(components: Type<any>[], veCfr?: ComponentFactoryResolver): ComponentRef<any>[] {
-    this.lazyLoad.viewContainerRef.clear();
+    this.viewContainerRef.clear();
     const cmpRefs: ComponentRef<any>[] = [];
     components.forEach((component) => {
-      const componentFactory = (veCfr || this.cfr).resolveComponentFactory(component);
-      cmpRefs.push(this.lazyLoad.viewContainerRef.createComponent(componentFactory));
+      this.ngZone.run(() => {
+        const componentFactory = (veCfr || this.cfr).resolveComponentFactory(component);
+        const ref = this.viewContainerRef.createComponent(componentFactory);
+        cmpRefs.push(ref);
+      });
     });
-    this.cdr.detectChanges();
     return cmpRefs;
   }
 
@@ -57,10 +57,11 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
   }
 
   private insertDocs(template: string) {
-    const cmpRefs = this.insertComponent([DocsComponent]);
-    const docsCmp = cmpRefs[0].instance as DocsComponent;
-    docsCmp.template = template;
-    this.cdr.detectChanges();
+    this.ngZone.run(() => {
+      const cmpRefs = this.insertComponent([DocsComponent]);
+      const docsCmp = cmpRefs[0].instance as DocsComponent;
+      docsCmp.template = template;
+    });
   }
 
   ngOnInit(): void {
