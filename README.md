@@ -74,6 +74,43 @@ bit start
 
 Open-up your browser on localhost:3000, or any other available port, and display your workspace with your components.
 
+### Use the Angular environment in an existing Bit workspace
+First you need to get the latest version of the Angular environment that you want to use by running this command:
+
+```bash
+npm dist-tag ls @teambit/angular-v12
+```
+You can replace `v12` by the version that you want to use (starting from `v8`).
+
+Then in your `workspace.jsonc` configuration file, add the following lines and replace `x.x.x` by the version number retrieved with the previous command:
+```json
+{
+  // ...
+  // Load the angular-v12 environment into the workspace
+  "teambit.angular/angular-v12@x.x.x": {},
+  "teambit.workspace/variants": {
+    // Use the angular-v12 environment for all components, or specify a pattern to use it just for some components
+    "*": {
+      // Replace `v12` by the version of Angular that you want to use
+      "teambit.angular/angular-v12@x.x.x": {}
+    }
+  },
+  // Add Angular component generators to the list of available component templates
+  "teambit.generator/generator": {
+    "aspects": [
+      // Replace `v12` by the version of Angular that you want to use
+      "teambit.angular/angular-v12"
+    ]
+  },
+  // ...
+}
+```
+
+Install dependencies:
+
+```bash
+bit install
+```
 
 ### Resources & Community
 
