@@ -115,7 +115,7 @@ export class AngularV12Webpack extends AngularWebpack {
     const browserOptions: BrowserBuilderSchema = {
       ...angularOptions,
       baseHref: './',
-      preserveSymlinks: true,
+      preserveSymlinks: false,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
       index: 'src/index.html',
       main: 'src/main.ts',

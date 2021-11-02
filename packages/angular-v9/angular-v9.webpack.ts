@@ -91,7 +91,7 @@ export class AngularV9Webpack extends AngularWebpack {
     const browserOptions: BrowserBuilderSchema = {
       ...angularOptions,
       baseHref: path.posix.join('/', context.rootPath!, context.publicPath!),
-      preserveSymlinks: true,
+      preserveSymlinks: false,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
       index: 'src/index.html',
       main: 'src/main.ts',
