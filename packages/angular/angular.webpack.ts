@@ -1,7 +1,7 @@
 import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
-import { ComponentID } from '@teambit/component';
+import { Component, ComponentID } from '@teambit/component';
 import { PkgMain } from '@teambit/pkg';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Logger } from '@teambit/logger';
@@ -11,7 +11,6 @@ import {
   runTransformersWithContext,
   WebpackBundler,
   WebpackConfigMutator,
-  WebpackConfigTransformContext,
   WebpackConfigTransformer,
   WebpackConfigWithDevServer,
   WebpackDevServer,
@@ -118,7 +117,7 @@ export abstract class AngularWebpack {
     }
 
     // get the list of files for existing component compositions to include into the compilation
-    context.components.forEach(component => {
+    context.components.forEach((component: Component) => {
       let outputPath: string;
 
       if (this.isBuildContext(context)) {
@@ -189,11 +188,10 @@ export abstract class AngularWebpack {
     );
     const configMutator = new WebpackConfigMutator(config);
 
-    const transformerContext: WebpackConfigTransformContext = { mode: 'dev' };
     const afterMutation = runTransformersWithContext(
       configMutator.clone(),
       [defaultTransformer, ...transformers],
-      transformerContext
+      { mode: 'dev' }
     );
 
     return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer as any);
@@ -212,7 +210,7 @@ export abstract class AngularWebpack {
 
     const defaultConfig: any = await this.getWebpackConfig(
       context,
-      context.targets.map((target) => target.entries).flat(),
+      context.targets.map((target: Target) => target.entries).flat(),
       tsconfigPath,
       rootPath,
       this.webpackMain.logger,
@@ -224,13 +222,12 @@ export abstract class AngularWebpack {
       configMutator.merge([defaultConfig]);
 
     const configs = this.createPreviewConfig(context.targets);
-    const transformerContext: WebpackConfigTransformContext = { mode: 'prod' };
     const mutatedConfigs = configs.map((config: any) => {
       const configMutator = new WebpackConfigMutator(config);
       const afterMutation = runTransformersWithContext(
         configMutator.clone(),
         [defaultTransformer, ...transformers],
-        transformerContext
+        { mode: 'prod' }
       );
       return afterMutation.raw;
     });
