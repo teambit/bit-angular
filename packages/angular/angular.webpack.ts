@@ -1,6 +1,7 @@
 import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
+import { ComponentID } from '@teambit/component';
 import { PkgMain } from '@teambit/pkg';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Logger } from '@teambit/logger';
@@ -21,8 +22,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
 import objectHash from 'object-hash';
 import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
-import webpack, { Configuration } from 'webpack';
-import WsDevServer from 'webpack-dev-server';
+import { Configuration } from 'webpack';
 
 export enum WebpackSetup {
   Serve = 'serve',
@@ -152,8 +152,16 @@ export abstract class AngularWebpack {
   }
 
   async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    // TODO(ocombe) find a better way to get the preview root path
-    const rootPath = resolve(require.resolve('@teambit/angular'), '../../preview/');
+    let rootPath: string;
+    try {
+      rootPath = this.workspace?.componentDir(ComponentID.fromString('teambit.angular/angular'), {
+        ignoreScopeAndVersion: true,
+        ignoreVersion: true
+      }, { relative: false }) || '';
+      rootPath = join(rootPath, 'preview');
+    } catch(e) {
+      rootPath = resolve(require.resolve('@teambit/angular'), '../../preview/');
+    }
     const tsconfigPath = this.writeTsconfig(context, rootPath);
 
     const defaultConfig: any = await this.getWebpackConfig(

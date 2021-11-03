@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-// import { RouterModule } from '@angular/router';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -13,7 +12,6 @@ import { LazyLoadComponent } from './lazy-load/lazy-load.component';
 @NgModule({
   declarations: [AppComponent, LazyLoadComponent],
   imports: [CommonModule, BrowserModule, BrowserAnimationsModule, HttpClientModule, /*RouterModule.forRoot([]),*/ ReactiveFormsModule, FormsModule, DocsModule],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule {

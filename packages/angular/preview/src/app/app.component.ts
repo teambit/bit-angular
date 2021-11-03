@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html',
+  template: `<app-lazy-load class='primaryPalette'></app-lazy-load>`,
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {

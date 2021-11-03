@@ -34,6 +34,11 @@
     "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
+        "@teambit/base-ui.text.text-sizes": "1.0.0",
+        "@teambit/base-ui.theme.color-definition": "1.0.1",
+        "@teambit/base-ui.theme.colors": "1.0.0",
+        "@teambit/documenter.ui.label": "4.0.4",
+        "@teambit/documenter.ui.label-list": "4.0.4",
         "@teambit/harmony": "^0.2.11",
         "@teambit/legacy": "^1.0.129",
         "@types/dompurify": "^2.2.2",
@@ -60,7 +65,45 @@
         "react": "17.0.2",
         "react-dev-utils": "10.2.1",
         "webpack-manifest-plugin": "3.1.1",
-        "webpack-merge": "5.7.3"
+        "webpack-merge": "5.7.3",
+
+        // Angular components for docs
+        "@teambit/base-ui.theme.sizes": "1.0.0",
+        "@teambit/base-ui.ng.content.base-icon": "0.0.1",
+        "@teambit/base-ui.ng.layout.grid": "0.0.2",
+        "@teambit/base-ui.ng.text.heading": "0.0.1",
+        "@teambit/base-ui.ng.text.paragraph": "0.0.1",
+        "@teambit/design.ng.content.icon": "0.0.1",
+        "@teambit/design.ng.content.separator": "0.0.1",
+        "@teambit/design.ng.theme.app-context": "0.0.1",
+        "@teambit/design.ng.theme.icons-font": "0.0.1",
+        "@teambit/design.ng.theme.theme-provider": "0.0.1",
+        "@teambit/documenter.ng.content.consumable-link": "0.0.2",
+        "@teambit/documenter.ng.content.copied-message": "0.0.1",
+        "@teambit/documenter.ng.content.copy-box": "0.0.2",
+        "@teambit/documenter.ng.content.label": "0.0.1",
+        "@teambit/documenter.ng.content.label-list": "0.0.1",
+        "@teambit/documenter.ng.markdown.paragraph": "0.0.1",
+        "copy-to-clipboard": "3.3.1",
+
+        // GraphQL & Apollo dependencies
+        "graphql": "14.7.0",
+        "iterall": "^1.2.2",
+        "@apollo/client": "3.3.6",
+        "@graphql-typed-document-node/core": "^3.0.0",
+        "@types/zen-observable": "^0.8.0",
+        "@wry/context": "^0.5.2",
+        "@wry/equality": "^0.3.0",
+        "fast-json-stable-stringify": "^2.0.0",
+        "graphql-tag": "^2.11.0",
+        "hoist-non-react-statics": "^3.3.2",
+        "optimism": "^0.13.1",
+        "prop-types": "^15.7.2",
+        "symbol-observable": "^2.0.0",
+        "ts-invariant": "^0.6.0",
+        "@ungap/global-this": "^0.4.2",
+        "tslib": "^1.10.0",
+        "zen-observable": "^0.8.14"
       },
       "peerDependencies": {}
     },

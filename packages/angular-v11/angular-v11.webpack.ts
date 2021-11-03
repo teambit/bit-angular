@@ -95,7 +95,7 @@ export class AngularV11Webpack extends AngularWebpack {
       sourceMap: optionValue(angularOptions.sourceMap, setup === WebpackSetup.Serve),
       outputHashing: optionValue(angularOptions.outputHashing, setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', ...(angularOptions.allowedCommonJsDependencies || [])],
+      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
     };
 
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
