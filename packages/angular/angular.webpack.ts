@@ -150,24 +150,27 @@ export abstract class AngularWebpack {
     return targetPath;
   }
 
-  async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    let rootPath: string;
+  private getPreviewRootPath(): string {
     try {
-      rootPath = this.workspace?.componentDir(ComponentID.fromString('teambit.angular/angular'), {
+      const rootPath = this.workspace?.componentDir(ComponentID.fromString('teambit.angular/angular'), {
         ignoreScopeAndVersion: true,
         ignoreVersion: true
       }, { relative: false }) || '';
-      rootPath = join(rootPath, 'preview');
+      return join(rootPath, 'preview');
     } catch(e) {
-      rootPath = resolve(require.resolve('@teambit/angular'), '../../preview/');
+      return resolve(require.resolve('@teambit/angular'), '../../preview/');
     }
-    const tsconfigPath = this.writeTsconfig(context, rootPath);
+  }
+
+  async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
+    const previewRootPath = this.getPreviewRootPath();
+    const tsconfigPath = this.writeTsconfig(context, previewRootPath);
 
     const defaultConfig: any = await this.getWebpackConfig(
       context,
       context.entry,
       tsconfigPath,
-      rootPath,
+      previewRootPath,
       this.webpackMain.logger,
       WebpackSetup.Serve,
       this.webpackServeOptions,
@@ -205,14 +208,14 @@ export abstract class AngularWebpack {
 
   async createBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
     // TODO(ocombe) find a better way to get the preview root path
-    const rootPath = resolve(require.resolve('@teambit/angular'), '../../preview/');
-    const tsconfigPath = this.writeTsconfig(context, rootPath);
+    const previewRootPath = this.getPreviewRootPath();
+    const tsconfigPath = this.writeTsconfig(context, previewRootPath);
 
     const defaultConfig: any = await this.getWebpackConfig(
       context,
       context.targets.map((target: Target) => target.entries).flat(),
       tsconfigPath,
-      rootPath,
+      previewRootPath,
       this.webpackMain.logger,
       WebpackSetup.Build,
       this.webpackBuildOptions as WebpackConfigWithDevServer,
