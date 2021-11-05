@@ -32,22 +32,22 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Remove v11
-        run: bit remove angular-v11 -s -f
+        run: bit remove angular-v11 -s -f --log
 
       - name: Remove v10
-        run: bit remove angular-v10 -s -f
+        run: bit remove angular-v10 -s -f --log
 
       - name: Remove v9
-        run: bit remove angular-v9 -s -f
+        run: bit remove angular-v9 -s -f --log
 
       - name: Remove v8
-        run: bit remove angular-v8 -s -f
+        run: bit remove angular-v8 -s -f --log
 
       - name: Add example app
-        run: bit add examples/demo-lib-v12
+        run: bit add examples/demo-lib-v12 --log
 
       - name: Install dependencies
-        run: bit install
+        run: bit install --log
 
       # Compile the aspects
       - name: Bit compile aspects
@@ -55,7 +55,7 @@ jobs:
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
-        run: bit link
+        run: bit link --log
 
       # Compile the example component
       - name: Bit compile example
