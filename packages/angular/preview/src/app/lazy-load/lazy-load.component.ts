@@ -58,7 +58,6 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
 
   private insertDocs(template: DocsTemplateAttrs) {
     this.ngZone.run(() => {
-      console.log(template)
       const cmpRefs = this.insertComponent([DocsComponent]);
       const docsCmp = cmpRefs[0].instance as DocsComponent;
       docsCmp.template = template.body;

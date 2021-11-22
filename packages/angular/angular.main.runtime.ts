@@ -1,5 +1,4 @@
-import { CompilerOptions as TsCompilerOptions, readConfiguration } from '@angular/compiler-cli';
-import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
+import type { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
 import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintAspect, ESLintMain } from '@teambit/eslint';
@@ -7,6 +6,7 @@ import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
 import { JestAspect, JestMain } from '@teambit/jest';
 import { MainRuntime } from '@teambit/cli';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
+import { WorkerAspect, WorkerMain } from '@teambit/worker';
 import { PkgAspect } from '@teambit/pkg';
 import { PkgMain } from '@teambit/pkg';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
@@ -15,6 +15,7 @@ import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { TesterAspect, TesterMain } from '@teambit/tester';
 import { Configuration } from 'webpack';
 import { AngularEnv } from './angular.env';
+import { loadEsmModule } from './utils';
 
 export type AngularDeps = [
   JestMain,
@@ -27,7 +28,8 @@ export type AngularDeps = [
   Workspace | undefined,
   EnvsMain,
   IsolatorMain,
-  PkgMain
+  PkgMain,
+  WorkerMain,
 ];
 
 export abstract class AngularMain {
@@ -45,6 +47,7 @@ export abstract class AngularMain {
     EnvsAspect,
     IsolatorAspect,
     PkgAspect,
+    WorkerAspect,
   ];
 
   constructor(private envs: EnvsMain, private angularEnv: AngularEnv) {
@@ -62,11 +65,12 @@ export abstract class AngularMain {
    * Override the compiler options for the Angular environment.
    * Compiler options combine both typescript "compilerOptions" and Angular specific "angularCompilerOptions"
    */
-  overrideCompilerOptions(tsconfigPath: string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
-  overrideCompilerOptions(compilerOptions: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
-  overrideCompilerOptions(opts?: TsCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer {
+  async overrideCompilerOptions(tsconfigPath: string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
+  async overrideCompilerOptions(compilerOptions: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
+  async overrideCompilerOptions(opts?: TsCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer> {
     let tsCompilerOptions: TsCompilerOptions | undefined;
     if (typeof opts === 'string') {
+      const { readConfiguration } = await loadEsmModule('@angular/compiler-cli');
       tsCompilerOptions = readConfiguration(opts).options;
     } else {
       tsCompilerOptions = opts;
@@ -86,9 +90,9 @@ export abstract class AngularMain {
    * Override Angular options for serve (bit start) and build (bit build).
    * Angular options are the ones you could find in an angular.json file
    */
-  overrideAngularOptions(angularOpts: Partial<BrowserBuilderSchema>): EnvTransformer;
-  overrideAngularOptions(serveOpts: Partial<BrowserBuilderSchema>, buildOpts: Partial<BrowserBuilderSchema>): EnvTransformer;
-  overrideAngularOptions(serveOpts: Partial<BrowserBuilderSchema>, buildOpts?: Partial<BrowserBuilderSchema>): EnvTransformer {
+  overrideAngularOptions(angularOpts: any): EnvTransformer;
+  overrideAngularOptions(serveOpts: any, buildOpts: any): EnvTransformer;
+  overrideAngularOptions(serveOpts: any, buildOpts?: any): EnvTransformer {
     if (typeof buildOpts === 'undefined') {
       buildOpts = serveOpts;
     }

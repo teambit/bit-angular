@@ -7,8 +7,6 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@typescript-eslint/eslint-plugin": "^4.26.0",
-          "@typescript-eslint/parser": "^4.26.0",
           "eslint": "-",
           "eslint-plugin-markdown": "^2.2.0"
         },
@@ -16,6 +14,8 @@
           "@angular-eslint/eslint-plugin": ">= 1",
           "@angular-eslint/eslint-plugin-template": ">= 1",
           "@angular-eslint/template-parser": ">= 1",
+          "@typescript-eslint/eslint-plugin": ">= 4",
+          "@typescript-eslint/parser": ">= 4",
           "eslint": "> 7.0.0"
         }
       }

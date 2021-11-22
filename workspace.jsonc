@@ -41,11 +41,12 @@
         "@teambit/documenter.ui.label-list": "4.0.4",
         "@teambit/harmony": "^0.2.11",
         "@teambit/legacy": "^1.0.129",
+        "@teambit/toolbox.performance.v8-cache": "0.0.3",
         "@types/dompurify": "^2.2.2",
         "@types/fs-extra": "~9.0.7",
         "@types/jasmine": "~3.7.0",
-        "@types/jest": "~26.0.23",
-        "@types/node": "~12.11.1",
+        "@types/jest": "^27.0.2",
+        "@types/node": "^12.11.1",
         "@types/object-hash": "~2.1.0",
         "buffer": "6.0.3",
         "dompurify": "^2.2.9",
@@ -79,6 +80,7 @@
   },
   "teambit.generator/generator": {
     "aspects": [
+      "teambit.angular/angular-v13",
       "teambit.angular/angular-v12",
       "teambit.angular/angular-v11",
       "teambit.angular/angular-v10",
@@ -87,6 +89,7 @@
     ]
   },
   // Add angular templates to the list
+  "teambit.angular/angular-v13": {},
   "teambit.angular/angular-v12": {},
   "teambit.angular/angular-v11": {},
   "teambit.angular/angular-v10": {},
@@ -116,6 +119,9 @@
     },
     "examples/custom-env": {
       "teambit.harmony/aspect": {}
+    },
+    "examples/demo-lib-v13": {
+      "teambit.angular/angular-v13": {}
     },
     "examples/demo-lib-v12": {
       "teambit.angular/angular-v12": {}

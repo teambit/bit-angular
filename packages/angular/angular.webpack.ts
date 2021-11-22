@@ -1,4 +1,3 @@
-import { Schema as BrowserBuilderSchema } from '@angular-devkit/build-angular/src/browser/schema';
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { Component, ComponentID } from '@teambit/component';
@@ -34,8 +33,8 @@ export abstract class AngularWebpack {
   private readonly tempFolder: string;
   webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
   webpackBuildOptions: Partial<Configuration> = {}
-  angularServeOptions: Partial<BrowserBuilderSchema> = {};
-  angularBuildOptions: Partial<BrowserBuilderSchema> = {};
+  angularServeOptions: any = {};
+  angularBuildOptions: any = {};
 
   constructor(
     private workspace: Workspace | undefined,
@@ -61,7 +60,7 @@ export abstract class AngularWebpack {
     logger: Logger,
     setup: WebpackSetup,
     webpackOptions: Partial<WebpackConfigWithDevServer>,
-    angularOptions: Partial<BrowserBuilderSchema>
+    angularOptions: any
   ): Promise<WebpackConfigWithDevServer | Configuration>;
   abstract webpack: any;
   abstract webpackDevServer: any;

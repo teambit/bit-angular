@@ -39,6 +39,12 @@
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
+    "angular-v13": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "packages/angular-v13"
+    },
     "angular-v8": {
         "scope": "teambit.angular",
         "version": "0.0.22",
