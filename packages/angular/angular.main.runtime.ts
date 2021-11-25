@@ -1,4 +1,5 @@
 import type { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
+import { readConfiguration } from '@angular/compiler-cli';
 import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintAspect, ESLintMain } from '@teambit/eslint';
@@ -50,7 +51,7 @@ export abstract class AngularMain {
     WorkerAspect,
   ];
 
-  constructor(private envs: EnvsMain, private angularEnv: AngularEnv) {
+  constructor(protected envs: EnvsMain, protected angularEnv: AngularEnv) {
     envs.registerEnv(angularEnv);
   }
 
@@ -65,12 +66,11 @@ export abstract class AngularMain {
    * Override the compiler options for the Angular environment.
    * Compiler options combine both typescript "compilerOptions" and Angular specific "angularCompilerOptions"
    */
-  async overrideCompilerOptions(tsconfigPath: string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
-  async overrideCompilerOptions(compilerOptions: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
-  async overrideCompilerOptions(opts?: TsCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer> {
+  overrideCompilerOptions(tsconfigPath: string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
+  overrideCompilerOptions(compilerOptions: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
+  overrideCompilerOptions(opts?: TsCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer {
     let tsCompilerOptions: TsCompilerOptions | undefined;
     if (typeof opts === 'string') {
-      const { readConfiguration } = await loadEsmModule('@angular/compiler-cli');
       tsCompilerOptions = readConfiguration(opts).options;
     } else {
       tsCompilerOptions = opts;

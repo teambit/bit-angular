@@ -10,3 +10,7 @@ export function optionValue<T>(value: T, defaultValue: T) {
 export async function loadEsmModule<T>(modulePath: string | URL): Promise<T> {
   return new Function('modulePath', `return import(modulePath)`)(modulePath) as Promise<T>;
 }
+
+function isPromise<T>(fct: any): fct is Promise<T> {
+  return !!fct && typeof fct.then === 'function'
+}
