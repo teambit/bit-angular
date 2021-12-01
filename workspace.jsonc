@@ -46,7 +46,6 @@
         "@types/fs-extra": "~9.0.7",
         "@types/jasmine": "~3.7.0",
         "@types/jest": "^27.0.2",
-        "@types/node": "^12.11.1",
         "@types/object-hash": "~2.1.0",
         "buffer": "6.0.3",
         "dompurify": "^2.2.9",

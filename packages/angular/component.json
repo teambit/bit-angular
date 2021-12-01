@@ -34,6 +34,7 @@
           "@teambit/documenter.ng.content.label-list": "0.0.1",
           "@teambit/documenter.ng.markdown.paragraph": "0.0.1",
           "@types/enhanced-resolve": "~3.0.7",
+          "@types/node": "^12.11.1",
           "@types/trusted-types": "~2.0.1",
           "@types/zen-observable": "^0.8.0",
           "@ungap/global-this": "^0.4.2",
