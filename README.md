@@ -46,9 +46,9 @@ bvm install
 
 Create a new workspace
 ```bash
-bit new ng-workspace <workspace-name> -a teambit.angular/angular-v12
+bit new ng-workspace <workspace-name> -a teambit.angular/angular-v13
 ```
-You can replace `v12` by the version that you want to use (starting from `v8`).
+You can replace `v13` by the version that you want to use (starting from `v8`).
 
 Change directory to the newly created workspace
 ```bash
@@ -78,28 +78,28 @@ Open-up your browser on localhost:3000, or any other available port, and display
 First you need to get the latest version of the Angular environment that you want to use by running this command:
 
 ```bash
-npm dist-tag ls @teambit/angular-v12
+npm dist-tag ls @teambit/angular-v13
 ```
-You can replace `v12` by the version that you want to use (starting from `v8`).
+You can replace `v13` by the version that you want to use (starting from `v8`).
 
 Then in your `workspace.jsonc` configuration file, add the following lines and replace `x.x.x` by the version number retrieved with the previous command:
-```json
+```
 {
   // ...
-  // Load the angular-v12 environment into the workspace
-  "teambit.angular/angular-v12@x.x.x": {},
+  // Load the angular-v13 environment into the workspace
+  "teambit.angular/angular-v13@x.x.x": {},
   "teambit.workspace/variants": {
-    // Use the angular-v12 environment for all components, or specify a pattern to use it just for some components
+    // Use the angular-v13 environment for all components, or specify a pattern to use it just for some components
     "*": {
-      // Replace `v12` by the version of Angular that you want to use
-      "teambit.angular/angular-v12@x.x.x": {}
+      // Replace `v13` by the version of Angular that you want to use
+      "teambit.angular/angular-v13@x.x.x": {}
     }
   },
   // Add Angular component generators to the list of available component templates
   "teambit.generator/generator": {
     "aspects": [
-      // Replace `v12` by the version of Angular that you want to use
-      "teambit.angular/angular-v12"
+      // Replace `v13` by the version of Angular that you want to use
+      "teambit.angular/angular-v13"
     ]
   },
   // ...
