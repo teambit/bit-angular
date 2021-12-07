@@ -28,7 +28,7 @@ export function webpack5ServeConfigFactory(
   publicPath: string,
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
-  tsConfigPath: string,
+  _tsConfigPath: string,
 ): any {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
