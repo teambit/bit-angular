@@ -34,11 +34,6 @@
     "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
-        "@teambit/base-ui.text.text-sizes": "1.0.0",
-        "@teambit/base-ui.theme.color-definition": "1.0.1",
-        "@teambit/base-ui.theme.colors": "1.0.0",
-        "@teambit/documenter.ui.label": "4.0.4",
-        "@teambit/documenter.ui.label-list": "4.0.4",
         "@teambit/harmony": "^0.2.11",
         "@teambit/legacy": "^1.0.129",
         "@teambit/toolbox.performance.v8-cache": "0.0.3",

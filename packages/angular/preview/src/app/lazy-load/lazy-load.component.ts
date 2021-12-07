@@ -61,10 +61,6 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
       const cmpRefs = this.insertComponent([DocsComponent]);
       const docsCmp = cmpRefs[0].instance as DocsComponent;
       docsCmp.template = template.body;
-      docsCmp.labels = template.attributes.labels;
-      docsCmp.displayName = template.attributes.displayName;
-      docsCmp.packageName = template.attributes.packageName;
-      docsCmp.description = template.attributes.description;
     });
   }
 
