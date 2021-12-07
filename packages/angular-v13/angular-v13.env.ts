@@ -84,6 +84,7 @@ export class AngularV13Env extends AngularEnv {
         '@angular/compiler': '13.0.0',
         '@angular/compiler-cli': '13.0.0',
         '@types/jest': '^27.0.2',
+        '@types/node': '^12.11.1',
         'jest': '~27.3.1',
         'jest-preset-angular': '~11.0.0-rc.3',
         'typescript': '-'

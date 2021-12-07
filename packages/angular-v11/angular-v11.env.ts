@@ -75,6 +75,7 @@ export class AngularV11Env extends AngularEnv {
         '@angular/compiler': '~11.2.14',
         '@angular/compiler-cli': '~11.2.14',
         '@types/jest': '~27.0.2',
+        '@types/node': '^12.11.1',
         'jest': '~27.0.4',
         'jest-preset-angular': '~10.0.1',
         'typescript': '-',

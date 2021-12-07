@@ -75,6 +75,7 @@ export class AngularV10Env extends AngularEnv {
         '@angular/compiler': '~10.2.5',
         '@angular/compiler-cli': '~10.2.5',
         '@types/jest': '~27.0.2',
+        '@types/node': '^12.11.1',
         'jest': '~27.0.4',
         'jest-preset-angular': '~10.0.1',
         'typescript': '-',
