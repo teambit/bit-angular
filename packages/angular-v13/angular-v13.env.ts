@@ -63,10 +63,6 @@ export class AngularV13Env extends AngularEnv {
     return id || AngularV13Aspect.id;
   }
 
-  private getDefaultTsConfig() {
-
-  }
-
   /**
    * Returns the list of dependencies
    * Required for any task
