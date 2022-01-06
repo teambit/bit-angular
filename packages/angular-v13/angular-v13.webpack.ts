@@ -12,12 +12,9 @@ import {
   getIndexOutputFile
 } from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
 import {
-  getBrowserConfig,
   getCommonConfig,
   getDevServerConfig,
-  getStatsConfig,
   getStylesConfig,
-  getTypeScriptConfig
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
@@ -174,10 +171,7 @@ export class AngularV13Webpack extends AngularWebpack {
       (wco: BrowserWebpackConfigOptions) => [
         setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
         getCommonConfig(wco),
-        getBrowserConfig(wco),
         getStylesConfig(wco), // TODO
-        getStatsConfig(wco),
-        getTypeScriptConfig(wco),
       ],
       loggerApi,
       {}
