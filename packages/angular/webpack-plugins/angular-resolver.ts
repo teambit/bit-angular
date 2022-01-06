@@ -1,6 +1,6 @@
 import { Resolver } from 'enhanced-resolve';
 import { existsSync } from 'fs';
-import { dirname } from 'path';
+import { dirname, join } from 'path';
 
 // @ts-ignore
 import getInnerRequest from 'enhanced-resolve/lib/getInnerRequest';
@@ -49,11 +49,20 @@ export class AngularModulesResolverPlugin {
           if (!alias) {
             try {
               // Resolve to the folder containing package.json (root of the module)
-              alias = dirname(require.resolve(`${originalRequest}/package.json`, {paths: this.nodeModulesPaths}));
+              for(let i = 0; i<this.nodeModulesPaths.length; i++) {
+                const resolvedPackage = require.resolve(`${originalRequest}/package.json`, {paths: [this.nodeModulesPaths[i]]});
+                // Check if package.json says it has been processed by ngcc
+                const { __processed_by_ivy_ngcc__ } = require(resolvedPackage);
+                if(__processed_by_ivy_ngcc__) {
+                  alias = dirname(resolvedPackage);
+                  break;
+                }
+              }
+              // TODO if there is no alias we should run ngcc on the first resolved valid path
             } catch (e) {
               return callback();
             }
-            if (!existsSync(alias)) {
+            if (!alias || !existsSync(alias)) {
               return callback();
             }
             this.modulePaths.set(originalRequest, alias);
