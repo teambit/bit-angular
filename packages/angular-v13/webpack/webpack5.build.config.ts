@@ -34,7 +34,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     resolve: {
       alias: fallbacksAliases,
       fallback: fallbacks,
-      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
+      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths, false)]
     },
 
     module: {

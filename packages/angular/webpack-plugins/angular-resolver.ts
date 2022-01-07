@@ -15,7 +15,7 @@ const regex = /^@angular\/(.*)$/;
 export class AngularModulesResolverPlugin {
   private modulePaths = new Map<string, string>();
 
-  constructor(private nodeModulesPaths: string[]) {}
+  constructor(private nodeModulesPaths: string[], private usingNgcc = true) {}
 
   apply(resolver: Resolver) {
     const source = resolver.ensureHook('before-resolve');
@@ -51,6 +51,11 @@ export class AngularModulesResolverPlugin {
               // Resolve to the folder containing package.json (root of the module)
               for(let i = 0; i<this.nodeModulesPaths.length; i++) {
                 const resolvedPackage = require.resolve(`${originalRequest}/package.json`, {paths: [this.nodeModulesPaths[i]]});
+                // if we don't use ngcc, we can use the first version that we find
+                if(!this.usingNgcc) {
+                  alias = dirname(resolvedPackage);
+                  break;
+                }
                 // Check if package.json says it has been processed by ngcc
                 const { __processed_by_ivy_ngcc__ } = require(resolvedPackage);
                 if(__processed_by_ivy_ngcc__) {
