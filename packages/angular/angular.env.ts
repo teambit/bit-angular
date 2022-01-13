@@ -130,4 +130,14 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
     return this.angularWebpack.createDevServer(context, transformers);
   }
+
+  /**
+   * Required to use the old preview code until the envs are updated to use the new version
+   */
+  getPreviewConfig(){
+    return {
+      strategyName: 'env',
+      splitComponentBundle: false
+    }
+  }
 }
