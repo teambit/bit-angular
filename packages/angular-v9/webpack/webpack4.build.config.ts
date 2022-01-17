@@ -1,4 +1,4 @@
-import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
@@ -46,7 +46,7 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
       alias: {
         path: require.resolve('path-browserify'),
       },
-      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
+      modules: nodeModulesPaths
     },
 
     module: {
@@ -70,6 +70,10 @@ export function webpack4BuildConfigFactory(entryFiles: string[], rootPath: strin
         },
       ],
     },
+
+    plugins: [
+      new BitDedupeModuleResolvePlugin(),
+    ]
   };
 
   return config as Configuration;

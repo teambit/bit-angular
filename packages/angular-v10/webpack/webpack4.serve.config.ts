@@ -1,4 +1,4 @@
-import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -146,7 +146,7 @@ export function webpack4ServeConfigFactory(
         ...fallbacksAliases,
         path: require.resolve('path-browserify')
       },
-      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
+      modules: nodeModulesPaths
     },
 
     module: {
@@ -172,6 +172,7 @@ export function webpack4ServeConfigFactory(
     },
 
     plugins: [
+      new BitDedupeModuleResolvePlugin(),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },
       }),

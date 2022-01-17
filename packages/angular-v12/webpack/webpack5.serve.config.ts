@@ -1,4 +1,4 @@
-import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -150,7 +150,7 @@ export function webpack5ServeConfigFactory(
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
       alias: fallbacksAliases,
       fallback: { ...fallbacks, events: require.resolve('events/') } as any,
-      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
+      modules: nodeModulesPaths
     },
 
     module: {
@@ -176,6 +176,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
+      new BitDedupeModuleResolvePlugin(),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },

@@ -1,92 +1,236 @@
-import { Resolver } from 'enhanced-resolve';
-import { existsSync } from 'fs';
-import { dirname, join } from 'path';
+/**
+ * @license
+ * Copyright Google LLC All Rights Reserved.
+ *
+ * Use of this source code is governed by an MIT-style license that can be
+ * found in the LICENSE file at https://angular.io/license
+ */
+import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
+import { Compiler } from 'webpack';
+import { NodeJSFileSystem } from './nodejs-file-system';
 
-// @ts-ignore
-import getInnerRequest from 'enhanced-resolve/lib/getInnerRequest';
+interface ResourceData {
+  entryPoint: string;
+  relativePath: string;
+  resource: string;
+  packageName?: string;
+  packageVersion?: string;
+  packagePath: string;
+  entryPointPackageData?: EntryPointPackageJson;
+}
 
-const regex = /^@angular\/(.*)$/;
+export interface DedupeModuleResolvePluginOptions {
+  verbose?: boolean;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getResourceData(resolveData: any): ResourceData {
+  const { descriptionFileData, relativePath, descriptionFileRoot } = resolveData.createData.resourceResolveData;
+
+  return {
+    entryPoint: resolveData.request,
+    packageName: descriptionFileData?.name,
+    packageVersion: descriptionFileData?.version,
+    relativePath,
+    packagePath: pathNormalizeToLinux(descriptionFileRoot),
+    resource: resolveData.createData.resource,
+    entryPointPackageData: descriptionFileData
+  };
+}
+
+export class MockLogger {
+  logs: { [P in Exclude<keyof any, 'level'>]: string[][] } = {
+    debug: [],
+    info: [],
+    warn: [],
+    error: []
+  };
+
+  debug(...args: string[]) {
+    this.logs.debug.push(args);
+  }
+
+  info(...args: string[]) {
+    this.logs.info.push(args);
+  }
+
+  warn(...args: string[]) {
+    this.logs.warn.push(args);
+  }
+
+  error(...args: string[]) {
+    this.logs.error.push(args);
+  }
+}
+
+export interface PackageJsonFormatPropertiesMap {
+  browser?: string;
+  fesm2015?: string;
+  fesm2020?: string;
+  fesm5?: string;
+  es2015?: string;  // if exists then it is actually FESM2015
+  es2020?: string;
+  esm2015?: string;
+  esm2020?: string;
+  esm5?: string;
+  main?: string;     // UMD
+  module?: string;   // if exists then it is actually FESM5
+  types?: string;    // Synonymous to `typings` property - see https://bit.ly/2OgWp2H
+  typings?: string;  // TypeScript .d.ts files
+}
+export type PackageJsonFormatProperties = keyof PackageJsonFormatPropertiesMap;
+
+export type EntryPointJsonProperty = Exclude<PackageJsonFormatProperties, 'types'|'typings'>;
+// We need to keep the elements of this const and the `EntryPointJsonProperty` type in sync.
+export const SUPPORTED_FORMAT_PROPERTIES: EntryPointJsonProperty[] =
+  ['fesm2020', 'fesm2015', 'fesm5', 'es2015', 'es2020', 'es2015', 'esm2020', 'esm2015', 'esm5', 'main', 'module', 'browser'];
+
+const ANGULAR_FORMATS: EntryPointJsonProperty[] = ['fesm2020', 'fesm2015', 'fesm5'];
+
+export type JsonPrimitive = string|number|boolean|null;
+export type JsonValue = JsonPrimitive|Array<JsonValue>|JsonObject|undefined;
+export interface JsonObject {
+  [key: string]: JsonValue;
+}
 
 /**
- * This webpack plugin resolves Angular packages to the capsule node_modules when possible in order to avoid getting
- * errors with multiple instances of the same module (like "Uncaught TypeError: Cannot read property 'bindingStartIndex'
- * of null")
+ * The properties that may be loaded from the `package.json` file.
  */
-export class AngularModulesResolverPlugin {
-  private modulePaths = new Map<string, string>();
+export interface EntryPointPackageJson extends JsonObject, PackageJsonFormatPropertiesMap {
+  name: string;
+  version?: string;
+  scripts?: Record<string, string>;
+  __processed_by_ivy_ngcc__?: Record<string, string>;
+}
 
-  constructor(private nodeModulesPaths: string[], private usingNgcc = true) {}
+/**
+ * DedupeModuleResolvePlugin is a webpack plugin which dedupes modules with the same name and versions
+ * that are laid out in different parts of the node_modules tree.
+ *
+ * This is needed because Webpack relies on package managers to hoist modules and doesn't have any deduping logic.
+ *
+ * This is similar to how Webpack's 'NormalModuleReplacementPlugin' works
+ * @see https://github.com/webpack/webpack/blob/4a1f068828c2ab47537d8be30d542cd3a1076db4/lib/NormalModuleReplacementPlugin.js#L9
+ */
+export class BitDedupeModuleResolvePlugin {
+  modules = new Map<string, { request: string; resource: string }>();
+  typings = new Map<string, string>();
+  pluginName = 'BitDedupeModuleResolvePlugin';
+  private fs = new NodeJSFileSystem();
 
-  apply(resolver: Resolver) {
-    const source = resolver.ensureHook('before-resolve');
-    const target = resolver.ensureHook('resolve');
+  constructor(private options?: DedupeModuleResolvePluginOptions) {
+  }
 
-    resolver
-      .getHook(source)
-      .tapAsync('AngularWebpackResolverPlugin', (request: any, resolveContext: any, callback: any) => {
-        if (!request) {
-          return callback();
-        }
-        const originalRequest = getInnerRequest(resolver, request);
+  guessTypingsFromPackageJson(
+    fs: any, entryPointPath: string,
+    entryPointPackageJson: EntryPointPackageJson): string|null {
+    const cached = this.typings.get(entryPointPath);
+    if(cached) {
+      return cached;
+    }
+    for (const prop of SUPPORTED_FORMAT_PROPERTIES) {
+      const field = entryPointPackageJson[prop];
+      if (typeof field !== 'string') {
+        // Some crazy packages have things like arrays in these fields!
+        continue;
+      }
+      const relativeTypingsPath = field.replace(/\.js$/, '.d.ts');
+      const typingsPath = fs.resolve(entryPointPath, relativeTypingsPath);
+      if (fs.exists(typingsPath)) {
+        this.typings.set(entryPointPath, typingsPath);
+        return typingsPath;
+      }
+    }
+    return null;
+  }
 
-        if (
-          // Ignore empty requests
-          !originalRequest ||
-          // Relative or absolute requests are not mapped
-          originalRequest.startsWith('.') || originalRequest.startsWith('/') ||
-          // Ignore all webpack special requests
-          originalRequest.startsWith('!!') ||
-          // Only work on Javascript/TypeScript issuers.
-          !request.context.issuer || !request.context.issuer.match(/\.[jt]sx?$/)
-        ) {
-          return callback();
-        }
+  isCompiledByAngular(packageName: string, packagePath: string, packageVersion: string, entryPointPath: string, entryPointPackageJson?: EntryPointPackageJson): boolean {
+    if(!entryPointPackageJson) {
+      return false;
+    }
+    if(entryPointPackageJson.exports && (entryPointPackageJson as any).exports['.']) {
+      entryPointPackageJson = (entryPointPackageJson as any).exports['.'] as EntryPointPackageJson;
+    }
+    const typings = entryPointPackageJson?.typings
+      || entryPointPackageJson.types
+      || this.guessTypingsFromPackageJson(this.fs, entryPointPath, entryPointPackageJson);
+    if (typeof typings !== 'string') {
+      // Missing the required `typings` property
+      return false;
+    }
 
-        // Let's check if the request is an angular module name
-        const match = originalRequest.match(regex);
-        if (match) {
-          let alias = this.modulePaths.get(originalRequest);
-          if (!alias) {
-            try {
-              // Resolve to the folder containing package.json (root of the module)
-              for(let i = 0; i<this.nodeModulesPaths.length; i++) {
-                const resolvedPackage = require.resolve(`${originalRequest}/package.json`, {paths: [this.nodeModulesPaths[i]]});
-                // if we don't use ngcc, we can use the first version that we find
-                if(!this.usingNgcc) {
-                  alias = dirname(resolvedPackage);
-                  break;
-                }
-                // Check if package.json says it has been processed by ngcc
-                const { __processed_by_ivy_ngcc__ } = require(resolvedPackage);
-                if(__processed_by_ivy_ngcc__) {
-                  alias = dirname(resolvedPackage);
-                  break;
-                }
-              }
-              // TODO if there is no alias we should run ngcc on the first resolved valid path
-            } catch (e) {
-              return callback();
-            }
-            if (!alias || !existsSync(alias)) {
-              return callback();
-            }
-            this.modulePaths.set(originalRequest, alias);
+    // An entry-point is assumed to be compiled by Angular if there is either:
+    // * a `metadata.json` file next to the typings entry-point
+    // * files processed by ngcc
+    // * one of the angular formats in package.json
+    const metadataPath = this.fs.resolve(entryPointPath, typings.replace(/\.d\.ts$/, '') + '.metadata.json');
+    return entryPointPackageJson.__processed_by_ivy_ngcc__ !== undefined
+      || ANGULAR_FORMATS.some(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
+      || this.fs.exists(metadataPath);
+  }
+
+  apply(compiler: Compiler) {
+    compiler.hooks.compilation.tap(
+      this.pluginName,
+      (compilation, { normalModuleFactory }) => {
+        normalModuleFactory.hooks.afterResolve.tap(this.pluginName, (result) => {
+          if (
+            // Ignore empty requests
+            !result.request
+            // Relative or absolute requests are not mapped
+            || result.request.startsWith('.') || result.request.startsWith('/') || result.request.match(/^.:(\/|\\\\)/)
+            // Ignore all webpack special requests
+            || result.request.startsWith('!')
+            // Only work on Javascript/TypeScript issuers.
+            || !result.contextInfo.issuer || !result.contextInfo.issuer.match(/\.[jt]sx?$/)
+          ) {
+            return;
           }
-          const obj = { ...request, request: alias };
-          const msg = `aliased with mapping "${originalRequest}": "${alias}"`;
-          return resolver.doResolve(target, obj, msg, resolveContext, (err: any, result: any) => {
-            if (err) {
-              return callback(err);
+
+          const { packageName, packageVersion, resource, packagePath, entryPoint, entryPointPackageData } = getResourceData(result);
+
+          // Empty name or versions are no valid primary entry points of a library
+          if (!packageName || !packageVersion) {
+            return;
+          }
+
+          const moduleId = entryPoint || packageName;
+          const prevResolvedModule = this.modules.get(moduleId);
+
+          // If this is the first time we visit this module.
+          if (!prevResolvedModule) {
+            // Only deal with Angular libraries
+            const entryPointPath = packagePath.replace(packageName, entryPoint);
+            const isCompiledByAngular = this.isCompiledByAngular(packageName, packagePath, packageVersion, entryPointPath, entryPointPackageData);
+            if(!isCompiledByAngular) {
+              return
             }
 
-            // Don't allow other aliasing or raw request
-            if (result === undefined) {
-              return callback(null, null);
-            }
-            callback(null, result);
-          });
-        }
-        return callback();
-      });
+            // Add it to cache
+            this.modules.set(moduleId, {
+              resource,
+              request: result.request
+            });
+            return;
+          }
+
+          const { resource: prevResource, request: prevRequest } = prevResolvedModule;
+          if (resource === prevResource) {
+            // No deduping needed.
+            // Current path and previously resolved path are the same.
+            return;
+          }
+
+          if (this.options?.verbose) {
+            console.info(compilation, `[BitDedupeModuleResolvePlugin]: ${resource} -> ${prevResource}`);
+          }
+
+          // Alter current request with previously resolved module.
+          const createData = result.createData as { resource: string; userRequest: string };
+          createData.resource = prevResource;
+          createData.userRequest = prevRequest;
+        });
+      }
+    );
   }
 }

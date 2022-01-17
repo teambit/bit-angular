@@ -1,4 +1,4 @@
-import { AngularModulesResolverPlugin } from '@teambit/angular';
+import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
@@ -34,7 +34,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     resolve: {
       alias: fallbacksAliases,
       fallback: fallbacks,
-      plugins: [new AngularModulesResolverPlugin(nodeModulesPaths)]
+      modules: nodeModulesPaths
     },
 
     module: {
@@ -60,6 +60,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     },
 
     plugins: [
+      new BitDedupeModuleResolvePlugin(),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
     ],
   };
