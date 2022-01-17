@@ -1,4 +1,4 @@
-import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
+import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { eslintConfig } from '@teambit/angular-eslint-config';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
@@ -60,11 +60,11 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   abstract jestConfigPath: string;
   abstract jestModulePath: string;
 
-  private createNgPackgrCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
+  private createNgPackgrCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
     return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, this.nodeModulesPaths);
   }
 
-  getCompiler(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
+  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
     return this.createNgPackgrCompiler(tsCompilerOptions, bitCompilerOptions);
   }
 
@@ -72,7 +72,7 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
    * Returns the component build pipeline
    * Required for `bit build`
    */
-  getBuildPipe(tsCompilerOptions?: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): BuildTask[] {
+  getBuildPipe(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): BuildTask[] {
     const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions);
     const compilerTask = this.compiler.createTask('NgPackagrCompiler', compiler);
     return [compilerTask, this.tester.task];

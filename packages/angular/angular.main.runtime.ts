@@ -1,5 +1,5 @@
-import type { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
-import { readConfiguration } from '@angular/compiler-cli';
+import type { AngularCompilerOptions } from '@angular/compiler-cli';
+
 import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintAspect, ESLintMain } from '@teambit/eslint';
@@ -16,7 +16,6 @@ import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { TesterAspect, TesterMain } from '@teambit/tester';
 import { Configuration } from 'webpack';
 import { AngularEnv } from './angular.env';
-import { loadEsmModule } from './utils';
 
 export type AngularDeps = [
   JestMain,
@@ -67,11 +66,12 @@ export abstract class AngularMain {
    * Compiler options combine both typescript "compilerOptions" and Angular specific "angularCompilerOptions"
    */
   overrideCompilerOptions(tsconfigPath: string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
-  overrideCompilerOptions(compilerOptions: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
-  overrideCompilerOptions(opts?: TsCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer {
-    let tsCompilerOptions: TsCompilerOptions | undefined;
+  overrideCompilerOptions(compilerOptions: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer;
+  overrideCompilerOptions(opts?: AngularCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): EnvTransformer {
+    let tsCompilerOptions: AngularCompilerOptions | undefined;
     if (typeof opts === 'string') {
-      tsCompilerOptions = readConfiguration(opts).options;
+      // tsCompilerOptions = readConfiguration(opts).options;
+      throw new Error('Angular compiler options should be an object, not a string');
     } else {
       tsCompilerOptions = opts;
     }

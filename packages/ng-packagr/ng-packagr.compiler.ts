@@ -1,4 +1,4 @@
-import { CompilerOptions as TsCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
+import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
 import { BuildContext, BuiltTaskResult, ComponentResult } from '@teambit/builder';
 import {
   CompilationInitiator,
@@ -62,7 +62,7 @@ export class NgPackagrCompiler implements Compiler {
     private logger: Logger,
     private workspace: Workspace,
     readDefaultTsConfig: string,
-    private tsCompilerOptions: TsCompilerOptions = {},
+    private tsCompilerOptions: AngularCompilerOptions = {},
     bitCompilerOptions: Partial<CompilerOptions> = {},
     private nodeModulesPaths: string[] = []
   ) {
@@ -122,7 +122,7 @@ export class NgPackagrCompiler implements Compiler {
   async ngPackagrCompilation(
     pathToComponent: string,
     pathToOutputFolder: string,
-    tsCompilerOptions: TsCompilerOptions
+    tsCompilerOptions: AngularCompilerOptions
   ): Promise<void> {
     // create ng-package.json config file for ngPackagr
     const ngPackageJson = {

@@ -1,5 +1,5 @@
 import { AngularDeps, AngularMain, loadEsmModule } from '@teambit/angular';
-import type { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
+import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { CompilerOptions } from '@teambit/compiler';
 import { EnvTransformer } from '@teambit/envs';
 import { AngularV13Aspect } from './angular-v13.aspect';
@@ -44,10 +44,10 @@ export class AngularV13Main extends AngularMain {
   // @ts-ignore
   async overrideCompilerOptions(tsconfigPath: string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
   // @ts-ignore
-  async overrideCompilerOptions(compilerOptions: TsCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
+  async overrideCompilerOptions(compilerOptions: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer>;
   // @ts-ignore
-  async overrideCompilerOptions(opts?: TsCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer> {
-    let tsCompilerOptions: TsCompilerOptions | undefined;
+  async overrideCompilerOptions(opts?: AngularCompilerOptions | string, bitCompilerOptions?: Partial<CompilerOptions>): Promise<EnvTransformer> {
+    let tsCompilerOptions: AngularCompilerOptions | undefined;
     if (typeof opts === 'string') {
       const { readConfiguration } = await loadEsmModule('@angular/compiler-cli');
       tsCompilerOptions = readConfiguration(opts).options;

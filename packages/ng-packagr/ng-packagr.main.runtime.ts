@@ -1,4 +1,4 @@
-import { CompilerOptions as TsCompilerOptions } from '@angular/compiler-cli';
+import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { MainRuntime } from '@teambit/cli';
 import { Compiler, CompilerOptions } from '@teambit/compiler';
 import { Logger, LoggerAspect, LoggerMain } from '@teambit/logger';
@@ -18,7 +18,7 @@ export class NgPackagrMain {
   createCompiler(
     ngPackagr: string,
     readDefaultTsConfig: string,
-    tsCompilerOptions?: TsCompilerOptions,
+    tsCompilerOptions?: AngularCompilerOptions,
     bitCompilerOptions?: Partial<CompilerOptions>,
     nodeModulesPaths: string[] = []
   ): Compiler {
