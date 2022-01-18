@@ -44,16 +44,9 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
   }
 
   private insertModule(module: Type<any>): void {
-    const moduleProps = Reflect.get(module, 'ɵmod') as ɵNgModuleDef<any>;
-    if (moduleProps) {
-      // we are using ivy & AOT
-      this.insertComponent(this.maybeUnwrapFn(moduleProps.bootstrap));
-    } else {
-      // we are using view engine & JIT
-      const ngModuleFactory = this.compiler.compileModuleSync(module);
-      const moduleRef: any = ngModuleFactory.create(this.injector);
-      this.insertComponent(this.maybeUnwrapFn(moduleRef._bootstrapComponents), moduleRef.componentFactoryResolver);
-    }
+    const ngModuleFactory = this.compiler.compileModuleSync(module);
+    const moduleRef: any = ngModuleFactory.create(this.injector);
+    this.insertComponent(this.maybeUnwrapFn(moduleRef._bootstrapComponents), moduleRef.componentFactoryResolver);
   }
 
   private insertDocs(template: DocsTemplateAttrs) {
