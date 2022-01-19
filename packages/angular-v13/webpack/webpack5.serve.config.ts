@@ -176,7 +176,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(workspaceDir, tempFolder),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },

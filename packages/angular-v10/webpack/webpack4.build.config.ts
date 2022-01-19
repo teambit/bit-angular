@@ -78,7 +78,7 @@ export function webpack4BuildConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(workspaceDir, tempFolder),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
     ]
   };
 

@@ -120,7 +120,7 @@ export class BitDedupeModuleResolvePlugin {
   private fs = new NodeJSFileSystem();
   private ngccProcessor?: NgccProcessor;
 
-  constructor(private workspaceDir: string, private tempFolder: string) {
+  constructor(private nodeModulesPaths: string[], private workspaceDir: string, private tempFolder: string) {
   }
 
   guessTypingsFromPackageJson(
@@ -174,8 +174,12 @@ export class BitDedupeModuleResolvePlugin {
   apply(compiler: Compiler) {
     if(!this.ngccProcessor) {
       this.ngccProcessor = NgccProcessor.init(compiler, this.workspaceDir, this.tempFolder);
+      // Process all node_modules folders (only work if the modules are hoisted)
     }
     const needsNgcc = this.ngccProcessor.needsProcessing();
+    if(needsNgcc) {
+      this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path));
+    }
 
     compiler.hooks.compilation.tap(
       this.pluginName,

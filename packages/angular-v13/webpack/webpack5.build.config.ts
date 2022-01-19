@@ -66,7 +66,7 @@ export function webpack5BuildConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(workspaceDir, tempFolder),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
     ],
   };
