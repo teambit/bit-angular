@@ -27,6 +27,7 @@ import type { Compiler } from 'webpack';
 export class NgccProcessor {
   lockFile?: string;
   lockData?: string;
+  runHashFilePath?: string;
 
   constructor(
     private readonly propertiesToConsider: string[],
@@ -59,12 +60,10 @@ export class NgccProcessor {
     };
   }
 
-  process(modulePath: string) {
+  needsProcessing(): boolean {
     // Perform a ngcc run check to determine if an initial execution is required.
     // If a run hash file exists that matches the current package manager lock file and the
     // project's tsconfig, then an initial ngcc run has already been performed.
-    let skipProcessing = false;
-    let runHashFilePath: string | undefined;
     try {
       const { lockData, lockFile } = this.getLockFile(this.workspaceDir);
 
@@ -76,21 +75,20 @@ export class NgccProcessor {
 
       // The hash is used directly in the file name to mitigate potential read/write race
       // conditions as well as to only require a file existence check
-      runHashFilePath = path.join(this.tempFolder, runHash + '.lock');
+      this.runHashFilePath = path.join(this.tempFolder, runHash + '.lock');
 
       // If the run hash lock file exists, then ngcc was already run against this project state
-      if (existsSync(runHashFilePath)) {
-        skipProcessing = true;
+      if (existsSync(this.runHashFilePath)) {
+        return false;
       }
     } catch {
       // Any error means an ngcc execution is needed
     }
+    return true;
+  }
 
-    if (skipProcessing) {
-      return;
-    }
-
-
+  process(modulePath: string) {
+    console.log('processing', modulePath);
     // We spawn instead of using the API because:
     // - NGCC Async uses clustering which is problematic when used via the API which means
     // that we cannot setup multiple cluster masters with different options.
@@ -121,12 +119,13 @@ export class NgccProcessor {
     }
 
     // ngcc was successful so if a run hash was generated, write it for next time
-    if (runHashFilePath) {
+    if (this.runHashFilePath) {
       try {
         if (!existsSync(this.tempFolder)) {
           mkdirSync(this.tempFolder, { recursive: true });
         }
-        writeFileSync(runHashFilePath, '');
+        writeFileSync(this.runHashFilePath, '');
+        this.runHashFilePath = undefined;
       } catch {
         // Errors are non-fatal
       }
