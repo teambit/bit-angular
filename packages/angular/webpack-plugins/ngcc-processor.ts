@@ -93,10 +93,12 @@ export class NgccProcessor {
     // that we cannot setup multiple cluster masters with different options.
     // - We will not be able to have concurrent builds otherwise Ex: App-Shell,
     // as NGCC will create a lock file for both builds and it will cause builds to fails.
+    // this.resolver.resolveSync({}, )
+    const mainNgcc = require.resolve('@angular/compiler-cli/ngcc').replace('index.js', 'main-ngcc.js')
     const { status, error } = spawnSync(
       process.execPath,
       [
-        require.resolve('@angular/compiler-cli/ngcc/main-ngcc.js'),
+        mainNgcc,
         '--source' /** path to the module to compile */,
         modulePath,
         '--properties' /** propertiesToConsider */,
