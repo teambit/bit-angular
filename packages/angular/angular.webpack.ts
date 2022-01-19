@@ -73,8 +73,9 @@ export abstract class AngularWebpack {
     pubsub: PubsubMain,
     nodeModulesPaths: string[],
     tsconfigPath: string,
+    tempFolder: string,
   ) => WebpackConfigWithDevServer;
-  abstract webpackBuildConfigFactory: (entryFiles: string[], rootPath: string, nodeModulesPaths: string[]) => Configuration;
+  abstract webpackBuildConfigFactory: (entryFiles: string[], rootPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string) => Configuration;
 
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
@@ -186,6 +187,7 @@ export abstract class AngularWebpack {
       context.publicPath,
       this.webpackMain.pubsub,
       this.nodeModulesPaths,
+      this.tempFolder,
       tsconfigPath,
     );
     const configMutator = new WebpackConfigMutator(config);
@@ -201,7 +203,7 @@ export abstract class AngularWebpack {
 
   private createPreviewConfig(targets: Target[]): Configuration[] {
     return targets.map((target) => {
-      return this.webpackBuildConfigFactory(target.entries, target.outputPath, this.nodeModulesPaths);
+      return this.webpackBuildConfigFactory(target.entries, target.outputPath, this.nodeModulesPaths, this.workspace?.path || '', this.tempFolder);
     });
   }
 

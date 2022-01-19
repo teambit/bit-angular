@@ -5,7 +5,13 @@ import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 import webpack, { Configuration } from 'webpack';
 
-export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: string, nodeModulesPaths: string[]): Configuration {
+export function webpack5BuildConfigFactory(
+  entryFiles: string[],
+  rootPath: string,
+  nodeModulesPaths: string[],
+  workspaceDir: string,
+  tempFolder: string
+): Configuration {
   const config = {
     mode: 'production',
     // Stop compilation early in production
@@ -60,7 +66,7 @@ export function webpack5BuildConfigFactory(entryFiles: string[], rootPath: strin
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(),
+      new BitDedupeModuleResolvePlugin(workspaceDir, tempFolder),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
     ],
   };

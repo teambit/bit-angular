@@ -7,6 +7,7 @@
  */
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Compiler } from 'webpack';
+import { NgccProcessor } from './ngcc-processor';
 import { NodeJSFileSystem } from './nodejs-file-system';
 
 interface ResourceData {
@@ -117,8 +118,9 @@ export class BitDedupeModuleResolvePlugin {
   typings = new Map<string, string>();
   pluginName = 'BitDedupeModuleResolvePlugin';
   private fs = new NodeJSFileSystem();
+  private ngccProcessor?: NgccProcessor;
 
-  constructor(private options?: DedupeModuleResolvePluginOptions) {
+  constructor(private workspaceDir: string, private tempFolder: string) {
   }
 
   guessTypingsFromPackageJson(
@@ -170,6 +172,10 @@ export class BitDedupeModuleResolvePlugin {
   }
 
   apply(compiler: Compiler) {
+    if(!this.ngccProcessor) {
+      this.ngccProcessor = NgccProcessor.init(compiler, this.workspaceDir, this.tempFolder);
+    }
+
     compiler.hooks.compilation.tap(
       this.pluginName,
       (compilation, { normalModuleFactory }) => {
@@ -211,6 +217,10 @@ export class BitDedupeModuleResolvePlugin {
               resource,
               request: result.request
             });
+
+            // Run ngcc
+            this.ngccProcessor!.process(packagePath);
+
             return;
           }
 
@@ -219,10 +229,6 @@ export class BitDedupeModuleResolvePlugin {
             // No deduping needed.
             // Current path and previously resolved path are the same.
             return;
-          }
-
-          if (this.options?.verbose) {
-            console.info(compilation, `[BitDedupeModuleResolvePlugin]: ${resource} -> ${prevResource}`);
           }
 
           // Alter current request with previously resolved module.

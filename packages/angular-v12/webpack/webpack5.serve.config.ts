@@ -28,7 +28,7 @@ export function webpack5ServeConfigFactory(
   publicPath: string,
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
-  _tsConfigPath: string,
+  tempFolder: string,
 ): any {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
@@ -176,7 +176,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(),
+      new BitDedupeModuleResolvePlugin(workspaceDir, tempFolder),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },

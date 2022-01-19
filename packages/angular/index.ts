@@ -4,4 +4,3 @@ export { BitDedupeModuleResolvePlugin } from './webpack-plugins/angular-resolver
 export { AngularMain } from './angular.main.runtime';
 export * from './utils';
 export type { AngularDeps } from './angular.main.runtime';
-export { BitAngularPlugin } from './webpack-plugins/bit-angular.plugin';
