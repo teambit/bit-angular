@@ -9,6 +9,7 @@ export async function workspaceConfig({ name, defaultScope, aspectComponent }: W
   configParsed['teambit.workspace/workspace'].defaultScope = scope;
   configParsed['teambit.workspace/workspace'].name = name;
   configParsed['teambit.dependencies/dependency-resolver'].packageManager = 'teambit.dependencies/pnpm';
+  configParsed['teambit.dependencies/dependency-resolver'].nodeLinker = 'hoisted';
   configParsed[envScopeId] = {};
   configParsed['teambit.workspace/variants'] = {
     '*': {

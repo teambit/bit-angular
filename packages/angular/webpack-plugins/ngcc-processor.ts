@@ -88,7 +88,6 @@ export class NgccProcessor {
   }
 
   process(modulePath: string) {
-    console.log('processing', modulePath);
     // We spawn instead of using the API because:
     // - NGCC Async uses clustering which is problematic when used via the API which means
     // that we cannot setup multiple cluster masters with different options.
