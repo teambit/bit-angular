@@ -32,7 +32,6 @@
      * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
      */
     "packageManager": "teambit.dependencies/pnpm",
-    "nodeLinker": "hoisted",
     "policy": {
       "dependencies": {
         "@teambit/harmony": "^0.2.11",
