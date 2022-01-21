@@ -203,7 +203,7 @@ export abstract class AngularWebpack {
 
   private createPreviewConfig(targets: Target[]): Configuration[] {
     return targets.map((target) => {
-      return this.webpackBuildConfigFactory(target.entries, target.outputPath, this.nodeModulesPaths, this.workspace?.path || '', this.tempFolder);
+      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, this.nodeModulesPaths, this.workspace?.path || '', this.tempFolder);
     });
   }
 
@@ -214,7 +214,7 @@ export abstract class AngularWebpack {
 
     const defaultConfig: any = await this.getWebpackConfig(
       context,
-      context.targets.map((target: Target) => target.entries).flat(),
+      context.targets.map((target: Target) => target.entries).flat() as string[],
       tsconfigPath,
       previewRootPath,
       this.webpackMain.logger,
