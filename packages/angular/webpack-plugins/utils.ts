@@ -26,15 +26,16 @@ export function tryResolvePackage(resolver: ResolverWithOptions, moduleName: str
 export function getNodeModulesPaths(workspaceDir: string, scopeAspectsRootDir: string) {
   const nodeModulesPaths: string[] = [];
   const workspaceNodeModules = resolve(workspaceDir, 'node_modules');
-  // Add the workspace node modules dir first for resolutions
-  nodeModulesPaths.push(workspaceNodeModules);
 
   // Check if we are in the aspects capsule
   if(!__dirname.startsWith(workspaceNodeModules)) {
     const aspectsNodeModules = resolve(scopeAspectsRootDir, 'node_modules');
-    // Add the aspects capsule node modules as a fallback
+    // Add the aspects capsule node modules first
     nodeModulesPaths.push(aspectsNodeModules);
   }
+
+  // Add the workspace node modules dir last for resolutions
+  nodeModulesPaths.push(workspaceNodeModules);
 
   return nodeModulesPaths;
 }
