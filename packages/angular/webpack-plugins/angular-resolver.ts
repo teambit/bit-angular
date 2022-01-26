@@ -173,7 +173,7 @@ export class BitDedupeModuleResolvePlugin {
 
   apply(compiler: Compiler) {
     if(!this.ngccProcessor) {
-      this.ngccProcessor = NgccProcessor.init(compiler, this.workspaceDir, this.tempFolder);
+      this.ngccProcessor = NgccProcessor.init(compiler, this.workspaceDir, this.tempFolder, this.nodeModulesPaths);
     }
     const needsNgcc = this.ngccProcessor.needsProcessing();
     if(needsNgcc) {

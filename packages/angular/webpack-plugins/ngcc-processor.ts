@@ -33,6 +33,7 @@ export class NgccProcessor {
     private readonly propertiesToConsider: string[],
     private readonly workspaceDir: string,
     private tempFolder: string,
+    private nodeModulesPath: string[],
   ) {}
 
   getLockFile(projectBasePath: string): { lockData: string, lockFile: string } {
@@ -71,6 +72,7 @@ export class NgccProcessor {
       const runHash = createHash('sha256')
         .update(lockData)
         .update(lockFile)
+        .update(this.nodeModulesPath.join(':'))
         .digest('hex');
 
       // The hash is used directly in the file name to mitigate potential read/write race
@@ -136,7 +138,8 @@ export class NgccProcessor {
   static init(
     compiler: Compiler,
     workspaceDir: string,
-    tempFolder: string
+    tempFolder: string,
+    nodeModulesPath: string[],
   ): NgccProcessor {
     const { options: webpackOptions } = compiler;
     const mainFields = webpackOptions.resolve?.mainFields?.flat() ?? [];
@@ -144,7 +147,8 @@ export class NgccProcessor {
     return new NgccProcessor(
       mainFields,
       workspaceDir,
-      tempFolder
+      tempFolder,
+      nodeModulesPath
     );
   }
 }
