@@ -23,18 +23,24 @@ export function tryResolvePackage(resolver: ResolverWithOptions, moduleName: str
   }
 }
 
-export function getNodeModulesPaths(workspaceDir: string, scopeAspectsRootDir: string) {
+export function getNodeModulesPaths(workspaceDir: string, scopeAspectsRootDir: string, workspaceCapsulesRootDir?: string) {
   const nodeModulesPaths: string[] = [];
   const workspaceNodeModules = resolve(workspaceDir, 'node_modules');
 
-  // Check if we are in the aspects capsule
-  if(!__dirname.startsWith(workspaceNodeModules)) {
-    const aspectsNodeModules = resolve(scopeAspectsRootDir, 'node_modules');
-    // Add the aspects capsule node modules first
-    nodeModulesPaths.push(aspectsNodeModules);
+  if (workspaceCapsulesRootDir) {
+    const workspaceCapsuleNodeModules = resolve(workspaceCapsulesRootDir, 'node_modules');
+    // Add the workspace capsule node modules
+    nodeModulesPaths.push(workspaceCapsuleNodeModules);
   }
 
-  // Add the workspace node modules dir last for resolutions
+  // Check if we are in the aspects capsule
+  if (!__dirname.startsWith(workspaceNodeModules)) {
+    const aspectsCapsuleNodeModules = resolve(scopeAspectsRootDir, 'node_modules');
+    // Add the aspects capsule node modules
+    nodeModulesPaths.push(aspectsCapsuleNodeModules);
+  }
+
+  // Add the workspace node modules
   nodeModulesPaths.push(workspaceNodeModules);
 
   return nodeModulesPaths;

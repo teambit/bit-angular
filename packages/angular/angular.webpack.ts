@@ -40,8 +40,7 @@ export abstract class AngularWebpack {
     private workspace: Workspace | undefined,
     private webpackMain: WebpackMain,
     private pkg: PkgMain,
-    angularAspect: Aspect,
-    private nodeModulesPaths: string[] = []
+    angularAspect: Aspect
   ) {
     if (workspace) {
       this.tempFolder = workspace.getTempDir(angularAspect.id);
@@ -162,7 +161,7 @@ export abstract class AngularWebpack {
     }
   }
 
-  async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
+  async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = [], nodeModulesPaths: string[]): Promise<DevServer> {
     const previewRootPath = this.getPreviewRootPath();
     const tsconfigPath = this.writeTsconfig(context, previewRootPath);
 
@@ -186,7 +185,7 @@ export abstract class AngularWebpack {
       context.rootPath,
       context.publicPath,
       this.webpackMain.pubsub,
-      this.nodeModulesPaths,
+      nodeModulesPaths,
       this.tempFolder,
       tsconfigPath,
     );
@@ -201,13 +200,13 @@ export abstract class AngularWebpack {
     return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer as any);
   }
 
-  private createPreviewConfig(targets: Target[]): Configuration[] {
+  private createPreviewConfig(targets: Target[], nodeModulesPaths: string[]): Configuration[] {
     return targets.map((target) => {
-      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, this.nodeModulesPaths, this.workspace?.path || '', this.tempFolder);
+      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, nodeModulesPaths, this.workspace?.path || '', this.tempFolder);
     });
   }
 
-  async createBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
+  async createBundler(context: BundlerContext, transformers: any[], nodeModulesPaths: string[]): Promise<Bundler> {
     // TODO(ocombe) find a better way to get the preview root path
     const previewRootPath = this.getPreviewRootPath();
     const tsconfigPath = this.writeTsconfig(context, previewRootPath);
@@ -225,7 +224,7 @@ export abstract class AngularWebpack {
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);
 
-    const configs = this.createPreviewConfig(context.targets);
+    const configs = this.createPreviewConfig(context.targets, nodeModulesPaths);
     const mutatedConfigs = configs.map((config: any) => {
       const configMutator = new WebpackConfigMutator(config);
       const afterMutation = runTransformersWithContext(

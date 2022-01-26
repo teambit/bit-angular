@@ -30,7 +30,6 @@ import { getNodeModulesPaths } from './webpack-plugins/utils';
  */
 export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-  nodeModulesPaths: string[] = [];
 
   constructor(
     protected jestAspect: JestMain,
@@ -38,16 +37,12 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
     private tester: TesterMain,
     protected eslint: ESLintMain,
     protected ngPackagrAspect: NgPackagrMain,
-    isolator: IsolatorMain,
-    workspace: Workspace | undefined,
+    private isolator: IsolatorMain,
+    protected workspace: Workspace | undefined,
     generator: GeneratorMain,
   ) {
     generator.registerComponentTemplate(angularTemplates);
     generator.registerWorkspaceTemplate(workspaceTemplates);
-    if (workspace) {
-      const scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
-      this.nodeModulesPaths = getNodeModulesPaths(workspace.path, scopeAspectsRootDir);
-    }
   }
 
   /** Abstract functions & properties specific to the adapter **/
@@ -60,8 +55,18 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
   abstract jestConfigPath: string;
   abstract jestModulePath: string;
 
+  private getNodeModulesPaths(build: boolean): string[] {
+    if (!this.workspace) {
+      return [];
+    }
+    const scopeAspectsRootDir = this.isolator.getCapsulesRootDir(this.workspace.scope.getAspectCapsulePath());
+    const workspaceCapsulesRootDir = build ? this.isolator.getCapsulesRootDir(this.workspace.path) : undefined;
+    return getNodeModulesPaths(this.workspace.path, scopeAspectsRootDir, workspaceCapsulesRootDir);
+  }
+
   private createNgPackgrCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
-    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, this.nodeModulesPaths);
+    const nodeModulesPaths = this.getNodeModulesPaths(false);
+    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
   }
 
   getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
@@ -96,10 +101,11 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
 
   /**
    * Returns a bundler for the preview.
-   * Required for `bit build` & `build start`
+   * Required for `bit build`
    */
   async getBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
-    return this.angularWebpack.createBundler(context, transformers);
+    const nodeModulesPaths = this.getNodeModulesPaths(true);
+    return this.angularWebpack.createBundler(context, transformers, nodeModulesPaths);
   }
 
   /**
@@ -128,7 +134,8 @@ export abstract class AngularEnv implements LinterEnv, DependenciesEnv, DevEnv, 
    * Required for `bit start`
    */
   async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    return this.angularWebpack.createDevServer(context, transformers);
+    const nodeModulesPaths = this.getNodeModulesPaths(false);
+    return this.angularWebpack.createDevServer(context, transformers, nodeModulesPaths);
   }
 
   /**

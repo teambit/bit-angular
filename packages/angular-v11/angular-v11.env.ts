@@ -33,11 +33,11 @@ export class AngularV11Env extends AngularEnv {
     generator: GeneratorMain,
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
-    private workspace: Workspace | undefined,
+    protected workspace: Workspace | undefined,
     private pkg: PkgMain,
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
-    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg, this.nodeModulesPaths);
+    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg);
   }
 
   /**

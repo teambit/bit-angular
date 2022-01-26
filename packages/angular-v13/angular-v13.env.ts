@@ -34,12 +34,12 @@ export class AngularV13Env extends AngularEnv {
     generator: GeneratorMain,
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
-    private workspace: Workspace | undefined,
+    protected workspace: Workspace | undefined,
     private pkg: PkgMain
     // private worker?: HarmonyWorker<any>
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
-    this.angularWebpack = new AngularV13Webpack(this.workspace, this.webpackMain, this.pkg, this.nodeModulesPaths);
+    this.angularWebpack = new AngularV13Webpack(this.workspace, this.webpackMain, this.pkg);
 
     // Disable v8-caching because it breaks ESM loaders
     NativeCompileCache.uninstall();
