@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { BitTestService } from './bit-test.service';
 
 @Component({
@@ -9,5 +9,5 @@ import { BitTestService } from './bit-test.service';
         `
 })
 export class BitTestComponent {
-  constructor(public service: BitTestService) {}
+  constructor(@Inject(BitTestService) public service: BitTestService) {}
 }
