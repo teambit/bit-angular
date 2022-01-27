@@ -17,6 +17,8 @@ import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import { writeFileSync } from 'fs-extra';
 import { join, posix, resolve } from 'path';
+import { NgccProcessor } from '@teambit/angular';
+
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -55,6 +57,7 @@ export class NgPackagrCompiler implements Compiler {
   artifactName: string;
   readDefaultTsConfig: () => Promise<ParsedConfiguration>;
   ngPackagr: NgPackagr;
+  ngccProcessor = new NgccProcessor();
 
   constructor(
     readonly id: string,
@@ -190,6 +193,8 @@ export class NgPackagrCompiler implements Compiler {
    */
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
+      // Process all node_modules folders (only works if the modules are hoisted)
+      this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path));
       return;
     }
     // recreate packageJson from component to make sure that its dependencies are updated with recent code changes

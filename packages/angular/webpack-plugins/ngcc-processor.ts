@@ -11,7 +11,6 @@ import { spawnSync } from 'child_process';
 import { createHash } from 'crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs-extra';
 import * as path from 'path';
-import type { Compiler } from 'webpack';
 
 
 // We cannot create a plugin for this, because NGTSC requires addition type
@@ -28,13 +27,6 @@ export class NgccProcessor {
   lockFile?: string;
   lockData?: string;
   runHashFilePath?: string;
-
-  constructor(
-    private readonly propertiesToConsider: string[],
-    private readonly workspaceDir: string,
-    private tempFolder: string,
-    private nodeModulesPath: string[],
-  ) {}
 
   getLockFile(projectBasePath: string): { lockData: string, lockFile: string } {
     let lockFile: string;
@@ -61,23 +53,23 @@ export class NgccProcessor {
     };
   }
 
-  needsProcessing(): boolean {
+  needsProcessing(workspaceDir: string, tempFolder: string, nodeModulesPath: string[]): boolean {
     // Perform a ngcc run check to determine if an initial execution is required.
     // If a run hash file exists that matches the current package manager lock file and the
     // project's tsconfig, then an initial ngcc run has already been performed.
     try {
-      const { lockData, lockFile } = this.getLockFile(this.workspaceDir);
+      const { lockData, lockFile } = this.getLockFile(workspaceDir);
 
       // Generate a hash that represents the state of the package lock file and used tsconfig
       const runHash = createHash('sha256')
         .update(lockData)
         .update(lockFile)
-        .update(this.nodeModulesPath.join(':'))
+        .update(nodeModulesPath.join(':'))
         .digest('hex');
 
       // The hash is used directly in the file name to mitigate potential read/write race
       // conditions as well as to only require a file existence check
-      this.runHashFilePath = path.join(this.tempFolder, runHash + '.lock');
+      this.runHashFilePath = path.join(tempFolder, runHash + '.lock');
 
       // If the run hash lock file exists, then ngcc was already run against this project state
       if (existsSync(this.runHashFilePath)) {
@@ -89,7 +81,7 @@ export class NgccProcessor {
     return true;
   }
 
-  process(modulePath: string) {
+  process(modulePath: string, tempFolder?: string) {
     // We spawn instead of using the API because:
     // - NGCC Async uses clustering which is problematic when used via the API which means
     // that we cannot setup multiple cluster masters with different options.
@@ -103,8 +95,6 @@ export class NgccProcessor {
         mainNgcc,
         '--source' /** path to the module to compile */,
         modulePath,
-        '--properties' /** propertiesToConsider */,
-        ...this.propertiesToConsider,
         '--first-only' /** compileAllFormats */,
         '--create-ivy-entry-points' /** createNewEntryPointFormats */,
         '--async',
@@ -122,10 +112,10 @@ export class NgccProcessor {
     }
 
     // ngcc was successful so if a run hash was generated, write it for next time
-    if (this.runHashFilePath) {
+    if (this.runHashFilePath && tempFolder) {
       try {
-        if (!existsSync(this.tempFolder)) {
-          mkdirSync(this.tempFolder, { recursive: true });
+        if (!existsSync(tempFolder)) {
+          mkdirSync(tempFolder, { recursive: true });
         }
         writeFileSync(this.runHashFilePath, '');
         this.runHashFilePath = undefined;
@@ -133,22 +123,5 @@ export class NgccProcessor {
         // Errors are non-fatal
       }
     }
-  }
-
-  static init(
-    compiler: Compiler,
-    workspaceDir: string,
-    tempFolder: string,
-    nodeModulesPath: string[],
-  ): NgccProcessor {
-    const { options: webpackOptions } = compiler;
-    const mainFields = webpackOptions.resolve?.mainFields?.flat() ?? [];
-
-    return new NgccProcessor(
-      mainFields,
-      workspaceDir,
-      tempFolder,
-      nodeModulesPath
-    );
   }
 }
