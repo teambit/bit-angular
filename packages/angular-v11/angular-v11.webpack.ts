@@ -174,32 +174,30 @@ export class AngularV11Webpack extends AngularWebpack {
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }
 
-    if (setup === WebpackSetup.Serve && browserOptions.index) {
-      const { scripts = [], styles = [] } = browserOptions;
-      const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
-      const entrypoints = generateEntryPoints({ scripts, styles });
-      const normalizedIndex = normalize(browserOptions.index as string);
-      const normalizedOptimization = normalizeOptimization(browserOptions.optimization);
-      if (!webpackConfig.plugins) {
-        webpackConfig.plugins = [];
-      }
-      webpackConfig.plugins.push(
-        new IndexHtmlWebpackPlugin({
-          indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
-          outputPath: getIndexOutputFile(normalizedIndex),
-          baseHref: browserOptions.baseHref || '/',
-          entrypoints,
-          moduleEntrypoints: [],
-          noModuleEntrypoints: ['polyfills-es5'],
-          deployUrl: browserOptions.deployUrl,
-          sri: browserOptions.subresourceIntegrity,
-          optimization: normalizedOptimization,
-          WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
-          crossOrigin: browserOptions.crossOrigin,
-          lang: 'en-US', // TODO(ocombe) support locale
-        })
-      );
+    const { scripts = [], styles = [] } = browserOptions;
+    const buildBrowserFeatures = new BuildBrowserFeatures(workspaceRoot);
+    const entrypoints = generateEntryPoints({ scripts, styles });
+    const normalizedIndex = normalize(browserOptions.index as string);
+    const normalizedOptimization = normalizeOptimization(browserOptions.optimization);
+    if (!webpackConfig.plugins) {
+      webpackConfig.plugins = [];
     }
+    webpackConfig.plugins.push(
+      new IndexHtmlWebpackPlugin({
+        indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
+        outputPath: getIndexOutputFile(normalizedIndex),
+        baseHref: browserOptions.baseHref || '/',
+        entrypoints,
+        moduleEntrypoints: [],
+        noModuleEntrypoints: ['polyfills-es5'],
+        deployUrl: browserOptions.deployUrl,
+        sri: browserOptions.subresourceIntegrity,
+        optimization: normalizedOptimization,
+        WOFFSupportNeeded: !buildBrowserFeatures.isFeatureSupported('woff2'),
+        crossOrigin: browserOptions.crossOrigin,
+        lang: 'en-US', // TODO(ocombe) support locale
+      })
+    );
 
     // don't use the output path from angular
     delete webpackConfig?.output?.path;

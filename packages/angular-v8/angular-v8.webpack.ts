@@ -200,27 +200,24 @@ export class AngularV8Webpack extends AngularWebpack {
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
     }
 
-    if (setup === WebpackSetup.Serve && browserOptions.index) {
-      const { scripts = [], styles = [] } = browserOptions;
-      const entrypoints = generateEntryPoints({ scripts, styles });
-      if (!webpackConfig.plugins) {
-        webpackConfig.plugins = [];
-      }
-      webpackConfig.plugins.push(
-        new IndexHtmlWebpackPlugin({
-          input: path.resolve(workspaceRoot, browserOptions.index as string),
-          output: getIndexOutputFile(browserOptions),
-          baseHref: browserOptions.baseHref || '/',
-          entrypoints,
-          moduleEntrypoints: [],
-          noModuleEntrypoints: ['polyfills-es5'],
-          deployUrl: browserOptions.deployUrl,
-          sri: browserOptions.subresourceIntegrity,
-          crossOrigin: browserOptions.crossOrigin,
-        })
-      );
+    const { scripts = [], styles = [] } = browserOptions;
+    const entrypoints = generateEntryPoints({ scripts, styles });
+    if (!webpackConfig.plugins) {
+      webpackConfig.plugins = [];
     }
-
+    webpackConfig.plugins.push(
+      new IndexHtmlWebpackPlugin({
+        input: path.resolve(workspaceRoot, browserOptions.index as string),
+        output: getIndexOutputFile(browserOptions),
+        baseHref: browserOptions.baseHref || '/',
+        entrypoints,
+        moduleEntrypoints: [],
+        noModuleEntrypoints: ['polyfills-es5'],
+        deployUrl: browserOptions.deployUrl,
+        sri: browserOptions.subresourceIntegrity,
+        crossOrigin: browserOptions.crossOrigin,
+      })
+    );
 
     // don't use the output path from angular
     delete webpackConfig?.output?.path;
