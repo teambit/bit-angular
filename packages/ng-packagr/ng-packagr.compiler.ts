@@ -223,6 +223,9 @@ export class NgPackagrCompiler implements Compiler {
     const capsules = context.capsuleNetwork.seedersCapsules;
     const componentsResults: ComponentResult[] = [];
 
+    // Process all node_modules folders (only works if the modules are hoisted)
+    this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path));
+
     await Promise.all(
       context.components.map(async(component: Component) => {
         const capsule = capsules.getCapsule(component.id);
