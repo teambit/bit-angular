@@ -26,7 +26,7 @@ export interface DedupeModuleResolvePluginOptions {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getResourceData(resolveData: any): ResourceData {
-  const { descriptionFileData, relativePath, descriptionFileRoot } = resolveData.createData.resourceResolveData;
+  const { descriptionFileData, relativePath, descriptionFileRoot } = resolveData.createData?.resourceResolveData || resolveData.resourceResolveData;
 
   return {
     entryPoint: resolveData.request,
@@ -34,7 +34,7 @@ function getResourceData(resolveData: any): ResourceData {
     packageVersion: descriptionFileData?.version,
     relativePath,
     packagePath: pathNormalizeToLinux(descriptionFileRoot),
-    resource: resolveData.createData.resource,
+    resource: resolveData.createData?.resource || resolveData.resource,
     entryPointPackageData: descriptionFileData
   };
 }
@@ -171,6 +171,10 @@ export class BitDedupeModuleResolvePlugin {
       || this.fs.exists(metadataPath);
   }
 
+  getIssuer(result) {
+    return result.contextInfo?.issuer || result.resourceResolveData?.context?.issuer;
+  }
+
   apply(compiler: Compiler) {
     if(!this.ngccProcessor) {
       this.ngccProcessor = new NgccProcessor();
@@ -193,10 +197,11 @@ export class BitDedupeModuleResolvePlugin {
             // Ignore all webpack special requests
             || result.request.startsWith('!')
             // Only work on Javascript/TypeScript issuers.
-            || !result.contextInfo.issuer || !result.contextInfo.issuer.match(/\.[jt]sx?$/)
+            || !this.getIssuer(result)?.match(/\.[jt]sx?$/)
           ) {
             return;
           }
+
 
           const { packageName, packageVersion, resource, packagePath, entryPoint, entryPointPackageData } = getResourceData(result);
 
