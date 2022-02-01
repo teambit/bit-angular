@@ -16,7 +16,6 @@
           "@angular-eslint/eslint-plugin-template": "^1.2.0",
           "@angular-eslint/template-parser": "^1.2.0",
           "@angular/animations": "~8.2.14",
-          "@angular/cli": "~8.3.29",
           "@angular/common": "~8.2.14",
           "@angular/compiler": "~8.2.14",
           "@angular/compiler-cli": "~8.2.14",
