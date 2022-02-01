@@ -35,7 +35,7 @@
           "html-loader": "~2.1.2",
           "jest": "~27.0.4",
           "jest-preset-angular": "~10.0.1",
-          "ng-packagr": "~12.2.1",
+          "ng-packagr": "~12.2.7",
           "react-dev-utils": "10.2.1",
           "remark": "~13.0.0",
           "remark-frontmatter": "~3.0.0",

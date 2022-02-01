@@ -77,8 +77,8 @@ export class AngularV13Env extends AngularEnv {
         'zone.js': '-'
       },
       devDependencies: {
-        '@angular/compiler': '~13.1.1',
-        '@angular/compiler-cli': '~13.1.1',
+        '@angular/compiler': '~13.2.0',
+        '@angular/compiler-cli': '~13.2.0',
         '@types/jest': '^27.0.3',
         '@types/node': '^12.11.1',
         'jest': '^27.4.4',
@@ -86,10 +86,10 @@ export class AngularV13Env extends AngularEnv {
         'typescript': '-'
       },
       peerDependencies: {
-        '@angular/common': '~13.1.1',
-        '@angular/core': '~13.1.1',
-        '@angular/platform-browser': '~13.1.1',
-        '@angular/platform-browser-dynamic': '~13.1.1',
+        '@angular/common': '~13.2.0',
+        '@angular/core': '~13.2.0',
+        '@angular/platform-browser': '~13.2.0',
+        '@angular/platform-browser-dynamic': '~13.2.0',
         'rxjs': '~7.4.0',
         'zone.js': '~0.11.4',
         'typescript': '~4.5.2'
