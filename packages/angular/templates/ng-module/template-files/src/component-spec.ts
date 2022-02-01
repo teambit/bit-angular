@@ -8,6 +8,7 @@ export const componentSpecFile = (context: ComponentContext): ComponentFile => {
     content: `import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ${Name}Component } from './${name}.component';
+import { ${Name}Module } from './${name}.module';
 
 describe('${Name}Component', () => {
   let component: ${Name}Component;
@@ -15,7 +16,7 @@ describe('${Name}Component', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ${Name}Component ]
+      imports: [ ${Name}Module ]
     })
     .compileComponents();
   });
