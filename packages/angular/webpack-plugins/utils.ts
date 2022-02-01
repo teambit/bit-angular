@@ -1,11 +1,7 @@
 import { existsSync } from 'fs';
 import path, { resolve } from 'path';
-import { Compiler } from 'webpack';
 
-// Extract Resolver type from Webpack types since it is not directly exported
-export type ResolverWithOptions = ReturnType<Compiler['resolverFactory']['get']>;
-
-export function tryResolvePackage(resolver: ResolverWithOptions, moduleName: string, nodeModulesDir: string): string | undefined {
+export function tryResolvePackage(resolver: any, moduleName: string, nodeModulesDir: string): string | undefined {
   try {
     const resolvedPath = resolver.resolveSync(
       {},
