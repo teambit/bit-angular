@@ -84,8 +84,24 @@ You can replace `v13` by the version that you want to use (starting from `v8`).
 
 Then in your `workspace.jsonc` configuration file, add the following lines and replace `x.x.x` by the version number retrieved with the previous command:
 ```
-{
+{  
   // ...
+  // Update the dependencies to include angular
+  "teambit.dependencies/dependency-resolver": {
+    /**
+      * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
+      */
+    "packageManager": "teambit.dependencies/pnpm",
+    "policy": {
+      "dependencies": {
+        // ...
+        // Replace `v13` by the version of Angular that you want to use
+        "@teambit/angular-v13": "x.x.x"
+      },
+      "peerDependencies": {}
+    },
+    "nodeLinker": "hoisted"
+  },
   // Load the angular-v13 environment into the workspace
   "teambit.angular/angular-v13@x.x.x": {},
   "teambit.workspace/variants": {
