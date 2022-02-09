@@ -4,7 +4,7 @@ export const docsFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
 
   return {
-    relativePath: `src/${name}.docs.md`,
+    relativePath: `${name}.docs.md`,
     content: `---
 labels: ['angular', 'typescript', '${name}']
 description: 'A \`${name}\` component.'

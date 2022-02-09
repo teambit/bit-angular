@@ -4,7 +4,7 @@ export const componentSpecFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
 
   return {
-    relativePath: `src/${name}.spec.ts`,
+    relativePath: `${name}.spec.ts`,
     content: `import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { ${Name}Component } from './${name}.component';

@@ -8,8 +8,8 @@ export const publicApiFile = (context: ComponentContext): ComponentFile => {
     content: `/**
  * Entry point for this Angular library, do not move or rename this file.
  */
-export * from './src/${name}.component';
-export * from './src/${name}.module';
+export * from './${name}.component';
+export * from './${name}.module';
 `,
   };
 };
