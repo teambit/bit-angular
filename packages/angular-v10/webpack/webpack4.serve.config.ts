@@ -14,6 +14,7 @@ import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
+import { WebpackPluginInstance } from 'webpack';
 
 const sockHost = process.env.WDS_SOCKET_HOST;
 const sockPath = process.env.WDS_SOCKET_PATH; // default: '/sockjs-node'
@@ -30,6 +31,7 @@ export function webpack4ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tempFolder: string,
+  plugins: WebpackPluginInstance[] = []
 ): any {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
 
@@ -176,6 +178,7 @@ export function webpack4ServeConfigFactory(
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },
       }),
+      ...plugins
     ],
   };
 }

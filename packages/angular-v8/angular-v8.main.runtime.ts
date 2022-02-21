@@ -15,6 +15,11 @@ export class AngularV8Main extends AngularMain {
     envs,
     isolator,
     pkg,
+    application,
+    aspectLoader,
+    multicompiler,
+    babel,
+    dependencyResolver,
   ]: AngularDeps): Promise<AngularMain> {
     const angularV8Env = new AngularV8Env(
       jestAspect,
@@ -27,6 +32,11 @@ export class AngularV8Main extends AngularMain {
       webpack,
       workspace,
       pkg,
+      application,
+      aspectLoader,
+      multicompiler,
+      babel,
+      dependencyResolver,
     );
     return new AngularV8Main(envs, angularV8Env);
   }

@@ -15,6 +15,11 @@ export class AngularV9Main extends AngularMain {
     envs,
     isolator,
     pkg,
+    application,
+    aspectLoader,
+    multicompiler,
+    babel,
+    dependencyResolver,
   ]: AngularDeps): Promise<AngularMain> {
     const angularV9Env = new AngularV9Env(
       jestAspect,
@@ -27,6 +32,11 @@ export class AngularV9Main extends AngularMain {
       webpack,
       workspace,
       pkg,
+      application,
+      aspectLoader,
+      multicompiler,
+      babel,
+      dependencyResolver,
     );
     return new AngularV9Main(envs, angularV9Env);
   }

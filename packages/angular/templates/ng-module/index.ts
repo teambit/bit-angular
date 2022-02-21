@@ -22,4 +22,10 @@ export const ngModuleTemplate: ComponentTemplate = {
       compositionFile(context),
     ];
   },
+
+  config: {
+    'teambit.envs/envs': {
+      env: 'teambit.harmony/aspect',
+    },
+  }
 };

@@ -12,6 +12,11 @@ import { Workspace } from '@teambit/workspace';
 import { GeneratorMain } from '@teambit/generator';
 import { AngularV12Aspect } from './angular-v12.aspect';
 import { AngularV12Webpack } from './angular-v12.webpack';
+import { ApplicationMain } from '@teambit/application';
+import { AspectLoaderMain } from '@teambit/aspect-loader';
+import { MultiCompilerMain } from '@teambit/multi-compiler';
+import { BabelMain } from '@teambit/babel';
+import { DependencyResolverMain } from '@teambit/dependency-resolver';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -34,10 +39,15 @@ export class AngularV12Env extends AngularEnv {
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     protected workspace: Workspace | undefined,
-    private pkg: PkgMain
+    private pkg: PkgMain,
+    application: ApplicationMain,
+    aspectLoader: AspectLoaderMain,
+    multicompiler: MultiCompilerMain,
+    babel: BabelMain,
+    dependencyResolver: DependencyResolverMain,
   ) {
-    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
-    this.angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.pkg);
+    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
+    this.angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.pkg, application);
   }
 
   /**

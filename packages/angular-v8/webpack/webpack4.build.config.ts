@@ -2,15 +2,16 @@ import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
-import { Configuration } from 'webpack';
+import { Configuration, WebpackPluginInstance } from 'webpack';
 
 // TODO(ocombe): this is webpack 5 build config, not webpack 4
 export function webpack4BuildConfigFactory(
   entryFiles: string[],
-  rootPath: string,
+  outputPath: string,
   nodeModulesPaths: string[],
   workspaceDir: string,
-  tempFolder: string
+  tempFolder: string,
+  plugins: WebpackPluginInstance[] = []
 ): Configuration {
   const config = {
     mode: 'production',
@@ -18,7 +19,7 @@ export function webpack4BuildConfigFactory(
     bail: true,
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry: entryFiles.filter(Boolean),
+    entry: entryFiles,
 
     node: {
       // @ts-ignore
@@ -27,7 +28,7 @@ export function webpack4BuildConfigFactory(
 
     output: {
       // The build folder.
-      path: `${rootPath}/public`,
+      path: outputPath,
 
       // publicPath: ``,
 
@@ -79,6 +80,7 @@ export function webpack4BuildConfigFactory(
 
     plugins:[
       new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
+      ...plugins
     ]
   };
 

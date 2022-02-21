@@ -36,6 +36,7 @@
       "dependencies": {
         "@teambit/harmony": "^0.2.11",
         "@teambit/legacy": "^1.0.129",
+        "@teambit/toolbox.network.get-port": "0.0.112",
         "@teambit/toolbox.performance.v8-cache": "0.0.3",
         "@types/dompurify": "^2.2.2",
         "@types/fs-extra": "~9.0.7",
@@ -80,6 +81,7 @@
       "teambit.angular/angular-v8",
     ]
   },
+
   // Add angular templates to the list
   "teambit.angular/angular-v13": {},
   "teambit.angular/angular-v12": {},
@@ -87,6 +89,10 @@
   "teambit.angular/angular-v10": {},
   "teambit.angular/angular-v9": {},
   "teambit.angular/angular-v8": {},
+
+  // Add angular apps (until this is no longer necessary)
+//  "examples/demo-app": {},
+
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a
@@ -116,6 +122,9 @@
       "teambit.angular/angular-v13": {}
     },
     "examples/demo-lib-v12": {
+      "teambit.angular/angular-v12": {}
+    },
+    "examples/demo-app": {
       "teambit.angular/angular-v12": {}
     },
     "examples/demo-lib-v11": {

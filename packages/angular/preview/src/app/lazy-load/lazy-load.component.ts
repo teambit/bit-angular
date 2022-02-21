@@ -7,11 +7,9 @@ import {
   OnDestroy,
   OnInit,
   Type,
-  ɵNgModuleDef,
   ViewContainerRef,
   NgZone
 } from '@angular/core';
-import { DocsTemplateAttrs } from '../../types';
 import { DocsComponent } from '../docs/docs.component';
 
 @Component({
@@ -49,11 +47,11 @@ export class LazyLoadComponent implements OnInit, OnDestroy {
     this.insertComponent(this.maybeUnwrapFn(moduleRef._bootstrapComponents), moduleRef.componentFactoryResolver);
   }
 
-  private insertDocs(template: DocsTemplateAttrs) {
+  private insertDocs(template: string) {
     this.ngZone.run(() => {
       const cmpRefs = this.insertComponent([DocsComponent]);
       const docsCmp = cmpRefs[0].instance as DocsComponent;
-      docsCmp.template = template.body;
+      docsCmp.template = template;
     });
   }
 

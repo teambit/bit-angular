@@ -3,14 +3,15 @@ import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@team
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
-import webpack, { Configuration } from 'webpack';
+import webpack, { Configuration, WebpackPluginInstance } from 'webpack';
 
 export function webpack5BuildConfigFactory(
   entryFiles: string[],
-  rootPath: string,
+  outputPath: string,
   nodeModulesPaths: string[],
   workspaceDir: string,
-  tempFolder: string
+  tempFolder: string,
+  plugins: WebpackPluginInstance[] = []
 ): Configuration {
   const config = {
     mode: 'production',
@@ -18,11 +19,11 @@ export function webpack5BuildConfigFactory(
     bail: true,
     // These are the "entry points" to our application.
     // This means they will be the "root" imports that are included in JS bundle.
-    entry: entryFiles.filter(Boolean),
+    entry: entryFiles,
 
     output: {
       // The build folder.
-      path: `${rootPath}/public`,
+      path: `${outputPath}/`,
 
       filename: 'static/js/[name].[contenthash:8].js',
       // There are also additional JS chunk files if you use code splitting.
@@ -68,6 +69,7 @@ export function webpack5BuildConfigFactory(
     plugins: [
       new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
+      ...plugins
     ],
   };
 

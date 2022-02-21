@@ -20,7 +20,10 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
 import objectHash from 'object-hash';
 import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
-import { Configuration } from 'webpack';
+import { Configuration, WebpackPluginInstance } from 'webpack';
+import { AppBuildContext, AppContext, ApplicationMain } from '@teambit/application';
+import { componentIsApp } from './utils';
+import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export enum WebpackSetup {
   Serve = 'serve',
@@ -40,7 +43,8 @@ export abstract class AngularWebpack {
     private workspace: Workspace | undefined,
     private webpackMain: WebpackMain,
     private pkg: PkgMain,
-    angularAspect: Aspect
+    private application: ApplicationMain,
+    angularAspect: Aspect,
   ) {
     if (workspace) {
       this.tempFolder = workspace.getTempDir(angularAspect.id);
@@ -71,10 +75,10 @@ export abstract class AngularWebpack {
     publicPath: string,
     pubsub: PubsubMain,
     nodeModulesPaths: string[],
-    tsconfigPath: string,
     tempFolder: string,
+    plugins?: WebpackPluginInstance[]
   ) => WebpackConfigWithDevServer;
-  abstract webpackBuildConfigFactory: (entryFiles: string[], rootPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string) => Configuration;
+  abstract webpackBuildConfigFactory: (entryFiles: string[], outputPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string, plugins?: WebpackPluginInstance[]) => Configuration;
 
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
@@ -104,6 +108,14 @@ export abstract class AngularWebpack {
     return (context as BundlerContext).capsuleNetwork !== undefined;
   }
 
+  isAppContext(context: DevServerContext | AppContext): context is DevServerContext & AppContext {
+    return (context as AppContext).appComponent !== undefined;
+  }
+
+  isAppBuildContext(context: BundlerContext | AppBuildContext): context is BundlerContext & AppBuildContext {
+    return (context as AppBuildContext).appComponent !== undefined;
+  }
+
   /**
    * write a link to load custom modules dynamically.
    */
@@ -119,6 +131,10 @@ export abstract class AngularWebpack {
     context.components.forEach((component: Component) => {
       let outputPath: string;
 
+      const isApp = componentIsApp(component, this.application);
+      if(isApp) {
+        return;
+      }
       if (this.isBuildContext(context)) {
         const capsules = context.capsuleNetwork.graphCapsules;
         const capsule = capsules.getCapsule(component.id);
@@ -161,15 +177,22 @@ export abstract class AngularWebpack {
     }
   }
 
-  async createDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = [], nodeModulesPaths: string[]): Promise<DevServer> {
-    const previewRootPath = this.getPreviewRootPath();
-    const tsconfigPath = this.writeTsconfig(context, previewRootPath);
+  async createDevServer(context: DevServerContext | (DevServerContext & AppContext), transformers: WebpackConfigTransformer[] = [], nodeModulesPaths: string[]): Promise<DevServer> {
+    let appRootPath, tsconfigPath, plugins: WebpackPluginInstance[] = [];
+    if(this.isAppContext(context)) { // When you use `bit run <app>`
+      appRootPath = this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';
+      tsconfigPath = join(appRootPath, 'tsconfig.app.json');
+      plugins = [new StatsLoggerPlugin()];
+    } else { // When you use `bit start`
+      appRootPath = this.getPreviewRootPath();
+      tsconfigPath = this.writeTsconfig(context, appRootPath);
+    }
 
     const defaultConfig: any = await this.getWebpackConfig(
       context,
       context.entry,
       tsconfigPath,
-      previewRootPath,
+      appRootPath,
       this.webpackMain.logger,
       WebpackSetup.Serve,
       this.webpackServeOptions,
@@ -187,7 +210,7 @@ export abstract class AngularWebpack {
       this.webpackMain.pubsub,
       nodeModulesPaths,
       this.tempFolder,
-      tsconfigPath,
+      plugins
     );
     const configMutator = new WebpackConfigMutator(config);
 
@@ -200,22 +223,31 @@ export abstract class AngularWebpack {
     return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer as any);
   }
 
-  private createPreviewConfig(targets: Target[], nodeModulesPaths: string[]): Configuration[] {
-    return targets.map((target) => {
-      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, nodeModulesPaths, this.workspace?.path || '', this.tempFolder);
+  private createPreviewConfig(context: BundlerContext | (BundlerContext & AppBuildContext), nodeModulesPaths: string[]): Configuration[] {
+    let plugins: WebpackPluginInstance[] = [];
+    if(this.isAppBuildContext(context)) {
+      plugins = [new StatsLoggerPlugin()];
+    }
+    return context.targets.map((target) => {
+      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, nodeModulesPaths, this.workspace?.path || '', this.tempFolder, plugins);
     });
   }
 
-  async createBundler(context: BundlerContext, transformers: any[], nodeModulesPaths: string[]): Promise<Bundler> {
-    // TODO(ocombe) find a better way to get the preview root path
-    const previewRootPath = this.getPreviewRootPath();
-    const tsconfigPath = this.writeTsconfig(context, previewRootPath);
+  async createBundler(context: BundlerContext | (BundlerContext & AppBuildContext), transformers: any[], nodeModulesPaths: string[]): Promise<Bundler> {
+    let appRootPath, tsconfigPath;
+    if(this.isAppBuildContext(context)) {
+      appRootPath = context.capsule.path;// this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';
+      tsconfigPath = join(appRootPath, 'tsconfig.app.json');
+    } else {
+      appRootPath = this.getPreviewRootPath();
+      tsconfigPath = this.writeTsconfig(context, appRootPath);
+    }
 
     const defaultConfig: any = await this.getWebpackConfig(
       context,
       context.targets.map((target: Target) => target.entries).flat() as string[],
       tsconfigPath,
-      previewRootPath,
+      appRootPath,
       this.webpackMain.logger,
       WebpackSetup.Build,
       this.webpackBuildOptions as WebpackConfigWithDevServer,
@@ -224,7 +256,7 @@ export abstract class AngularWebpack {
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);
 
-    const configs = this.createPreviewConfig(context.targets, nodeModulesPaths);
+    const configs = this.createPreviewConfig(context, nodeModulesPaths);
     const mutatedConfigs = configs.map((config: any) => {
       const configMutator = new WebpackConfigMutator(config);
       const afterMutation = runTransformersWithContext(

@@ -30,6 +30,7 @@ import WsDevServer from 'webpack-dev-server';
 import { AngularV13Aspect } from './angular-v13.aspect';
 import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
 import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
+import { ApplicationMain } from '@teambit/application';
 
 export class AngularV13Webpack extends AngularWebpack {
   enableIvy = true;
@@ -38,8 +39,8 @@ export class AngularV13Webpack extends AngularWebpack {
   webpackBuildConfigFactory = webpack5BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain) {
-    super(workspace, webpackMain, pkg, AngularV13Aspect);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain) {
+    super(workspace, webpackMain, pkg, application, AngularV13Aspect);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
@@ -128,7 +129,7 @@ export class AngularV13Webpack extends AngularWebpack {
       buildOptimizer: optionValue(angularOptions.buildOptimizer, setup === WebpackSetup.Build),
       aot: optionValue(angularOptions.aot, true),
       deleteOutputPath: optionValue(angularOptions.deleteOutputPath, true),
-      sourceMap: optionValue(angularOptions.sourceMap, setup === WebpackSetup.Serve),
+      sourceMap: optionValue(angularOptions.sourceMap, true),
       outputHashing: optionValue(angularOptions.outputHashing, setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
       allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
@@ -171,7 +172,7 @@ export class AngularV13Webpack extends AngularWebpack {
       (wco: BrowserWebpackConfigOptions) => [
         setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
         getCommonConfig(wco),
-        getStylesConfig(wco), // TODO
+        getStylesConfig(wco),
       ],
       loggerApi,
       {}
@@ -212,6 +213,7 @@ export class AngularV13Webpack extends AngularWebpack {
 
     // don't use the output path from angular
     delete webpackConfig?.output?.path;
+    delete webpackConfig?.resolve?.modules;
     webpackConfig.stats = 'errors-only';
     // uniqueName should not be an empty string
     webpackConfig.output.uniqueName = 'angular-v13';

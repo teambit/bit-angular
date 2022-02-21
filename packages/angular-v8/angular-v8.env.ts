@@ -12,6 +12,11 @@ import { PkgMain } from '@teambit/pkg';
 import { GeneratorMain } from '@teambit/generator';
 import { AngularV8Aspect } from './angular-v8.aspect';
 import { AngularV8Webpack } from './angular-v8.webpack';
+import { ApplicationMain } from '@teambit/application';
+import { AspectLoaderMain } from '@teambit/aspect-loader';
+import { MultiCompilerMain } from '@teambit/multi-compiler';
+import { BabelMain } from '@teambit/babel';
+import { DependencyResolverMain } from '@teambit/dependency-resolver';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -35,8 +40,13 @@ export class AngularV8Env extends AngularEnv {
     private webpackMain: WebpackMain,
     protected workspace: Workspace | undefined,
     private pkg: PkgMain,
+    application: ApplicationMain,
+    aspectLoader: AspectLoaderMain,
+    multicompiler: MultiCompilerMain,
+    babel: BabelMain,
+    dependencyResolver: DependencyResolverMain,
   ) {
-    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
+    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
     this.angularWebpack = new AngularV8Webpack(this.workspace, this.webpackMain, this.pkg);
   }
 

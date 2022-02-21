@@ -15,6 +15,11 @@ export class AngularV11Main extends AngularMain {
     envs,
     isolator,
     pkg,
+    application,
+    aspectLoader,
+    multicompiler,
+    babel,
+    dependencyResolver,
   ]: AngularDeps): Promise<AngularMain> {
     const angularV11Env = new AngularV11Env(
       jestAspect,
@@ -27,6 +32,11 @@ export class AngularV11Main extends AngularMain {
       webpack,
       workspace,
       pkg,
+      application,
+      aspectLoader,
+      multicompiler,
+      babel,
+      dependencyResolver,
     );
     return new AngularV11Main(envs, angularV11Env);
   }

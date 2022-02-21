@@ -13,6 +13,11 @@ import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { AngularV13Aspect } from './angular-v13.aspect';
 import { AngularV13Webpack } from './angular-v13.webpack';
+import { ApplicationMain } from '@teambit/application';
+import { AspectLoaderMain } from '@teambit/aspect-loader';
+import { MultiCompilerMain } from '@teambit/multi-compiler';
+import { BabelMain } from '@teambit/babel';
+import { DependencyResolverMain } from '@teambit/dependency-resolver';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -35,10 +40,14 @@ export class AngularV13Env extends AngularEnv {
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
     protected workspace: Workspace | undefined,
-    private pkg: PkgMain
-    // private worker?: HarmonyWorker<any>
+    private pkg: PkgMain,
+    application: ApplicationMain,
+    aspectLoader: AspectLoaderMain,
+    multicompiler: MultiCompilerMain,
+    babel: BabelMain,
+    dependencyResolver: DependencyResolverMain,
   ) {
-    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator);
+    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
     this.angularWebpack = new AngularV13Webpack(this.workspace, this.webpackMain, this.pkg);
 
     // Disable v8-caching because it breaks ESM loaders

@@ -171,7 +171,7 @@ export class BitDedupeModuleResolvePlugin {
       || this.fs.exists(metadataPath);
   }
 
-  getIssuer(result) {
+  getIssuer(result: any) {
     return result.contextInfo?.issuer || result.resourceResolveData?.context?.issuer;
   }
 

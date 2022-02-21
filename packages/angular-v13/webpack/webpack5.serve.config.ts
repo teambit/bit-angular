@@ -16,7 +16,7 @@ import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
-import { ProvidePlugin } from 'webpack';
+import { ProvidePlugin, WebpackPluginInstance } from 'webpack';
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 
@@ -29,6 +29,7 @@ export function webpack5ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tempFolder: string,
+  plugins: WebpackPluginInstance[] = []
 ): any {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
@@ -181,6 +182,7 @@ export function webpack5ServeConfigFactory(
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },
       }),
+      ...plugins
     ],
   };
 

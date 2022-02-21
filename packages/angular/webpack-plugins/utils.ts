@@ -37,7 +37,7 @@ export function getNodeModulesPaths(workspaceDir: string, scopeAspectsRootDir: s
   }
 
   // Add the workspace node modules
-  nodeModulesPaths.push(workspaceNodeModules);
+  nodeModulesPaths.push(workspaceNodeModules, 'node_modules');
 
   return nodeModulesPaths;
 }

@@ -38,6 +38,7 @@ import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
 import { AngularV10Aspect } from './angular-v10.aspect';
 import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
 import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
+import { ApplicationMain } from '@teambit/application';
 
 function getCompilerConfig(wco: WebpackConfigOptions): webpack.Configuration {
   if (wco.buildOptions.main || wco.buildOptions.polyfills) {
@@ -54,8 +55,8 @@ export class AngularV10Webpack extends AngularWebpack {
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain) {
-    super(workspace, webpackMain, pkg, AngularV10Aspect);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain) {
+    super(workspace, webpackMain, pkg, application, AngularV10Aspect);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
@@ -105,7 +106,7 @@ export class AngularV10Webpack extends AngularWebpack {
       buildOptimizer: optionValue(angularOptions.buildOptimizer, setup === WebpackSetup.Build),
       aot: optionValue(angularOptions.aot, true),
       deleteOutputPath: optionValue(angularOptions.deleteOutputPath, true),
-      sourceMap: optionValue(angularOptions.sourceMap, setup === WebpackSetup.Serve),
+      sourceMap: optionValue(angularOptions.sourceMap, true),
       outputHashing: optionValue(angularOptions.outputHashing, setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
       allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
@@ -138,7 +139,7 @@ export class AngularV10Webpack extends AngularWebpack {
       (wco: BrowserWebpackConfigOptions) => [
         getCommonConfig(wco),
         getBrowserConfig(wco),
-        getStylesConfig(wco), // TODO
+        getStylesConfig(wco),
         getStatsConfig(wco),
         getCompilerConfig(wco),
       ],
@@ -220,6 +221,7 @@ export class AngularV10Webpack extends AngularWebpack {
 
     // don't use the output path from angular
     delete webpackConfig?.output?.path;
+    delete webpackConfig?.resolve?.modules;
     webpackConfig.stats = 'errors-only';
     webpackConfig.context = workspaceRoot;
 

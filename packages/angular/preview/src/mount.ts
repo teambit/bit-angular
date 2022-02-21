@@ -1,5 +1,4 @@
 import { ReplaySubject } from 'rxjs';
-// import { RenderingContext } from '@teambit/preview';
 
 window.onComponentLoad$ = window.onComponentLoad$ || new ReplaySubject<any>();
 window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
@@ -9,7 +8,7 @@ window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
  * this function can be overridden through AngularAspect.overrideCompositionsMounter() API
  * to apply custom logic for component DOM mounting.
  */
-export default (composition: any/*, previewContext: RenderingContext*/) => {
+export default (composition: any) => {
   if (Reflect.get(composition, 'ɵcmp')) {
     window.onComponentLoad$.next(composition);
   } else if (Reflect.get(composition, 'ɵmod') || Reflect.get(composition, 'ngInjectorDef')) {

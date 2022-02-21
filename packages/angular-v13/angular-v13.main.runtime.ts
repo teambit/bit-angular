@@ -18,6 +18,11 @@ export class AngularV13Main extends AngularMain {
     envs,
     isolator,
     pkg,
+    application,
+    aspectLoader,
+    multicompiler,
+    babel,
+    dependencyResolver,
   ]: AngularDeps): Promise<AngularMain> {
     const angularV13Env = new AngularV13Env(
       jestAspect,
@@ -30,6 +35,11 @@ export class AngularV13Main extends AngularMain {
       webpack,
       workspace,
       pkg,
+      application,
+      aspectLoader,
+      multicompiler,
+      babel,
+      dependencyResolver,
     );
     // @ts-ignore
     return new AngularV13Main(envs, angularV13Env);

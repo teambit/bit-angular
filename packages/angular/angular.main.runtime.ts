@@ -7,7 +7,6 @@ import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
 import { JestAspect, JestMain } from '@teambit/jest';
 import { MainRuntime } from '@teambit/cli';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
-import { WorkerAspect, WorkerMain } from '@teambit/worker';
 import { PkgAspect } from '@teambit/pkg';
 import { PkgMain } from '@teambit/pkg';
 import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
@@ -16,6 +15,11 @@ import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { TesterAspect, TesterMain } from '@teambit/tester';
 import { Configuration } from 'webpack';
 import { AngularEnv } from './angular.env';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
+import AspectLoaderAspect, { AspectLoaderMain } from '@teambit/aspect-loader';
+import { MultiCompilerAspect, MultiCompilerMain } from '@teambit/multi-compiler';
+import { BabelAspect, BabelMain } from '@teambit/babel';
+import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 
 export type AngularDeps = [
   JestMain,
@@ -29,7 +33,11 @@ export type AngularDeps = [
   EnvsMain,
   IsolatorMain,
   PkgMain,
-  WorkerMain,
+  ApplicationMain,
+  AspectLoaderMain,
+  MultiCompilerMain,
+  BabelMain,
+  DependencyResolverMain
 ];
 
 export abstract class AngularMain {
@@ -47,7 +55,11 @@ export abstract class AngularMain {
     EnvsAspect,
     IsolatorAspect,
     PkgAspect,
-    WorkerAspect,
+    ApplicationAspect,
+    AspectLoaderAspect,
+    MultiCompilerAspect,
+    BabelAspect,
+    DependencyResolverAspect,
   ];
 
   constructor(protected envs: EnvsMain, protected angularEnv: AngularEnv) {
