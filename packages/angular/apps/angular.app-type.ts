@@ -9,11 +9,7 @@ export class AngularAppType implements ApplicationType<AngularAppOptions> {
   createApp(options: AngularAppOptions): Application {
     return new AngularApp(
       this.angularEnv,
-      options.name,
-      options.portRange || [3000, 4000],
-      options.bundler,
-      options.webpackTransformers,
-      options.deploy
+      options
     );
   }
 }

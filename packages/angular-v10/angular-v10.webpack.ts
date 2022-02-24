@@ -1,5 +1,5 @@
 import { BuilderContext } from '@angular-devkit/architect';
-import { DevServerBuilderOptions } from '@angular-devkit/build-angular';
+import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import {
   getBrowserConfig,
   getCommonConfig,
@@ -26,13 +26,13 @@ import {
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/angular-cli-files/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
-import { AngularWebpack, optionValue, WebpackSetup } from '@teambit/angular';
+import { AngularWebpack, WebpackSetup } from '@teambit/angular';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { PkgMain } from '@teambit/pkg';
-import path from 'path';
+import path, { join } from 'path';
 import webpack, { Configuration } from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
 import { AngularV10Aspect } from './angular-v10.aspect';
@@ -85,39 +85,40 @@ export class AngularV10Webpack extends AngularWebpack {
     logger: Logger,
     setup: WebpackSetup,
     webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
-    angularOptions: Partial<BrowserBuilderSchema> = {}
+    angularOptions: Partial<BrowserBuilderOptions> = {},
+    sourceRoot = 'src',
   ): Promise<WebpackConfigWithDevServer | Configuration> {
     // Options from angular.json
-    const browserOptions: BrowserBuilderSchema = {
+    const browserOptions: BrowserBuilderOptions = {
       ...angularOptions,
       baseHref: path.posix.join('/', context.rootPath!, context.publicPath!),
       preserveSymlinks: false,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
-      index: 'src/index.html',
-      main: 'src/main.ts',
-      polyfills: 'src/polyfills.ts',
-      tsConfig: tsconfigPath,
-      assets: ['src/favicon.ico', 'src/assets', ...(angularOptions.assets || [])],
-      styles: ['src/styles.scss', ...(angularOptions.styles || [])],
+      index: angularOptions.index ?? join(sourceRoot, `index.html`),
+      main: angularOptions.main ?? join(sourceRoot, `main.ts`),
+      polyfills: angularOptions.polyfills ?? join(sourceRoot, `polyfills.ts`),
+      tsConfig: angularOptions.tsConfig ?? tsconfigPath,
+      assets: [...new Set([path.posix.join(sourceRoot, `favicon.ico`), path.posix.join(sourceRoot, `assets`), ...(angularOptions.assets ?? [])])], // using set to remove duplicates
+      styles: [...new Set([path.posix.join(sourceRoot, `styles.scss`), ...(angularOptions.styles ?? [])])], // using set to remove duplicates
       scripts: angularOptions.scripts,
-      vendorChunk: optionValue(angularOptions.vendorChunk, true),
-      namedChunks: optionValue(angularOptions.namedChunks, true),
-      optimization: optionValue(angularOptions.optimization, setup === WebpackSetup.Build),
-      buildOptimizer: optionValue(angularOptions.buildOptimizer, setup === WebpackSetup.Build),
-      aot: optionValue(angularOptions.aot, true),
-      deleteOutputPath: optionValue(angularOptions.deleteOutputPath, true),
-      sourceMap: optionValue(angularOptions.sourceMap, true),
-      outputHashing: optionValue(angularOptions.outputHashing, setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
+      vendorChunk: angularOptions.vendorChunk ?? true,
+      namedChunks: angularOptions.namedChunks ?? true,
+      optimization: angularOptions.optimization ?? setup === WebpackSetup.Build,
+      buildOptimizer: angularOptions.buildOptimizer ?? setup === WebpackSetup.Build,
+      aot: angularOptions.aot ?? true,
+      deleteOutputPath: angularOptions.deleteOutputPath ?? true,
+      sourceMap: angularOptions.sourceMap ?? true,
+      outputHashing: angularOptions.outputHashing ?? (setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
       allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
     };
 
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');
-    const sourceRoot = normalize('src');
+    const normalizedSourceRoot = normalize(sourceRoot);
 
     const host = new NodeJsSyncHost();
-    const normalizedOptions = normalizeBrowserSchema(host, normalizedWorkspaceRoot, projectRoot, sourceRoot, {
+    const normalizedOptions = normalizeBrowserSchema(host, normalizedWorkspaceRoot, projectRoot, normalizedSourceRoot, {
       ...browserOptions,
       ...(webpackOptions as Partial<BrowserBuilderSchema & DevServerBuilderOptions>),
     });
@@ -134,7 +135,7 @@ export class AngularV10Webpack extends AngularWebpack {
       }} as BuilderContext,
       getSystemPath(normalizedWorkspaceRoot),
       getSystemPath(projectRoot),
-      getSystemPath(sourceRoot),
+      getSystemPath(normalizedSourceRoot),
       normalizedOptions,
       (wco: BrowserWebpackConfigOptions) => [
         getCommonConfig(wco),

@@ -1,5 +1,4 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-
 import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintAspect, ESLintMain } from '@teambit/eslint';
@@ -20,6 +19,7 @@ import AspectLoaderAspect, { AspectLoaderMain } from '@teambit/aspect-loader';
 import { MultiCompilerAspect, MultiCompilerMain } from '@teambit/multi-compiler';
 import { BabelAspect, BabelMain } from '@teambit/babel';
 import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
+import { BrowserOptions, DevServerOptions } from './angular.webpack';
 
 export type AngularDeps = [
   JestMain,
@@ -102,9 +102,9 @@ export abstract class AngularMain {
    * Override Angular options for serve (bit start) and build (bit build).
    * Angular options are the ones you could find in an angular.json file
    */
-  overrideAngularOptions(angularOpts: any): EnvTransformer;
-  overrideAngularOptions(serveOpts: any, buildOpts: any): EnvTransformer;
-  overrideAngularOptions(serveOpts: any, buildOpts?: any): EnvTransformer {
+  overrideAngularOptions(angularOpts: Partial<BrowserOptions & DevServerOptions>): EnvTransformer;
+  overrideAngularOptions(serveOpts: Partial<BrowserOptions & DevServerOptions>, buildOpts: Partial<BrowserOptions>): EnvTransformer;
+  overrideAngularOptions(serveOpts: Partial<BrowserOptions & DevServerOptions>, buildOpts?: Partial<BrowserOptions>): EnvTransformer {
     if (typeof buildOpts === 'undefined') {
       buildOpts = serveOpts;
     }

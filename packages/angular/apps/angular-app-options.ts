@@ -1,31 +1,47 @@
-import { Bundler, DevServer } from '@teambit/bundler';
+import { Bundler } from '@teambit/bundler';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-
+import { BrowserOptions, DevServerOptions } from '../angular.webpack';
 import { AngularDeployContext } from './deploy-context';
+
 
 export type AngularAppOptions = {
   /**
-   * name of the application.
+   * Name of the application.
    */
   name: string;
 
   /**
-   * instance of bundler to use. default is Webpack.
+   * The root of the source files, assets and index.html file structure.
+   */
+  sourceRoot: string;
+
+  /**
+   * Instance of bundler to use. default is Webpack.
    */
   bundler?: Bundler;
 
   /**
-   * set webpack transformers
+   * Set webpack transformers
    */
   webpackTransformers?: WebpackConfigTransformer[];
 
   /**
-   * deploy function.
+   * Deploy function.
    */
   deploy?: (context: AngularDeployContext) => Promise<void>;
 
   /**
-   * ranges of ports to use to run the app server.
+   * Ranges of ports to use to run the app server.
    */
   portRange?: number[];
+
+  /**
+   * Angular options for `bit build`
+   */
+  angularBuildOptions: BrowserOptions;
+
+  /**
+   * Angular options for `bit run`
+   */
+  angularServeOptions: BrowserOptions & DevServerOptions;
 };

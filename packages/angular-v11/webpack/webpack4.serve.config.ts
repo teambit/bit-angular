@@ -1,4 +1,4 @@
-import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
+import { BitDedupeModuleResolvePlugin, StatsLoggerPlugin } from '@teambit/angular';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -31,7 +31,8 @@ export function webpack4ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tempFolder: string,
-  plugins: WebpackPluginInstance[] = []
+  plugins: WebpackPluginInstance[] = [],
+  isApp = false
 ): any {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
 
@@ -42,6 +43,10 @@ export function webpack4ServeConfigFactory(
   process.env.NODE_ENV = 'development';
 
   const publicDirectory = path.posix.join(publicRoot, publicPath);
+
+  if(isApp) {
+    plugins.push(new StatsLoggerPlugin())
+  }
 
   return {
     // Environment mode

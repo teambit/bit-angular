@@ -16,6 +16,7 @@ import {
   WebpackMain,
 } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
+import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
 import objectHash from 'object-hash';
 import { join, posix, resolve } from 'path';
@@ -30,14 +31,18 @@ export enum WebpackSetup {
   Build = 'build',
 }
 
+export type BrowserOptions = Omit<BrowserBuilderOptions, "outputPath" | "preserveSymlinks">;
+export type DevServerOptions = Omit<DevServerBuilderOptions, "aot" | "baseHref" | "browserTarget" | "commonChunk" | "deployUrl" | "hmrWarning" | "open" | "optimization" | "port" | "progress" | "servePathDefaultWarning" | "sourceMap" | "vendorChunk">;
+
 export abstract class AngularWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
   webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
   webpackBuildOptions: Partial<Configuration> = {}
-  angularServeOptions: any = {};
-  angularBuildOptions: any = {};
+  angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {};
+  angularBuildOptions: Partial<BrowserOptions> = {};
+  sourceRoot = 'src';
 
   constructor(
     private workspace: Workspace | undefined,
@@ -63,7 +68,8 @@ export abstract class AngularWebpack {
     logger: Logger,
     setup: WebpackSetup,
     webpackOptions: Partial<WebpackConfigWithDevServer>,
-    angularOptions: any
+    angularOptions: any,
+    sourceRoot?: string,
   ): Promise<WebpackConfigWithDevServer | Configuration>;
   abstract webpack: any;
   abstract webpackDevServer: any;
@@ -76,7 +82,8 @@ export abstract class AngularWebpack {
     pubsub: PubsubMain,
     nodeModulesPaths: string[],
     tempFolder: string,
-    plugins?: WebpackPluginInstance[]
+    plugins?: WebpackPluginInstance[],
+    IsApp?: boolean
   ) => WebpackConfigWithDevServer;
   abstract webpackBuildConfigFactory: (entryFiles: string[], outputPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string, plugins?: WebpackPluginInstance[]) => Configuration;
 
@@ -178,11 +185,13 @@ export abstract class AngularWebpack {
   }
 
   async createDevServer(context: DevServerContext | (DevServerContext & AppContext), transformers: WebpackConfigTransformer[] = [], nodeModulesPaths: string[]): Promise<DevServer> {
-    let appRootPath, tsconfigPath, plugins: WebpackPluginInstance[] = [];
+    let appRootPath, tsconfigPath;
+    const plugins: WebpackPluginInstance[] = [];
+    let isApp = false;
     if(this.isAppContext(context)) { // When you use `bit run <app>`
       appRootPath = this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';
       tsconfigPath = join(appRootPath, 'tsconfig.app.json');
-      plugins = [new StatsLoggerPlugin()];
+      isApp = true;
     } else { // When you use `bit start`
       appRootPath = this.getPreviewRootPath();
       tsconfigPath = this.writeTsconfig(context, appRootPath);
@@ -196,7 +205,8 @@ export abstract class AngularWebpack {
       this.webpackMain.logger,
       WebpackSetup.Serve,
       this.webpackServeOptions,
-      this.angularServeOptions
+      this.angularServeOptions,
+      this.sourceRoot
     );
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);
@@ -210,7 +220,8 @@ export abstract class AngularWebpack {
       this.webpackMain.pubsub,
       nodeModulesPaths,
       this.tempFolder,
-      plugins
+      plugins,
+      isApp
     );
     const configMutator = new WebpackConfigMutator(config);
 
@@ -251,7 +262,8 @@ export abstract class AngularWebpack {
       this.webpackMain.logger,
       WebpackSetup.Build,
       this.webpackBuildOptions as WebpackConfigWithDevServer,
-      this.angularBuildOptions
+      this.angularBuildOptions,
+      this.sourceRoot
     );
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);

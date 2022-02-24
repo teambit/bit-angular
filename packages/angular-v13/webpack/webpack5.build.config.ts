@@ -23,7 +23,7 @@ export function webpack5BuildConfigFactory(
 
     output: {
       // The build folder.
-      path: outputPath,
+      path: `${outputPath}/`,
 
       filename: 'static/js/[name].[contenthash:8].js',
       // There are also additional JS chunk files if you use code splitting.

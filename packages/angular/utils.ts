@@ -5,7 +5,7 @@ import { NG_APP_PATTERN } from './angular.env';
 /**
  * Returns the value of the option or its default value if undefined
  */
-export function optionValue<T>(value: T, defaultValue: T) {
+export function optionValue<T>(value: T | undefined, defaultValue: T) {
   return typeof value === 'undefined' ? defaultValue : value;
 }
 

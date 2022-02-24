@@ -48,7 +48,7 @@ export class AngularV13Env extends AngularEnv {
     dependencyResolver: DependencyResolverMain,
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
-    this.angularWebpack = new AngularV13Webpack(this.workspace, this.webpackMain, this.pkg);
+    this.angularWebpack = new AngularV13Webpack(this.workspace, this.webpackMain, this.pkg, application);
 
     // Disable v8-caching because it breaks ESM loaders
     NativeCompileCache.uninstall();

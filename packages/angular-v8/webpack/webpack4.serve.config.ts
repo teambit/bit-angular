@@ -1,4 +1,4 @@
-import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
+import { BitDedupeModuleResolvePlugin, StatsLoggerPlugin } from '@teambit/angular';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {

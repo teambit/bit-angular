@@ -28,7 +28,7 @@ export function webpack4BuildConfigFactory(
 
     output: {
       // The build folder.
-      path: outputPath,
+      path: `${outputPath}/`,
 
       // publicPath: ``,
 

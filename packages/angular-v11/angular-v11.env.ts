@@ -47,7 +47,7 @@ export class AngularV11Env extends AngularEnv {
     dependencyResolver: DependencyResolverMain,
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
-    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg);
+    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg, application);
   }
 
   /**

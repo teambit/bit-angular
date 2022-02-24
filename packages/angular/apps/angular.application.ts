@@ -1,22 +1,21 @@
 import { AppBuildContext, AppContext, Application } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
+import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Port } from '@teambit/toolbox.network.get-port';
 import { join } from 'path';
-import { AngularDeployContext } from './deploy-context';
 import { AngularEnv } from '../angular.env';
+import { AngularAppOptions } from './angular-app-options';
 import { AngularAppBuildResult } from './angular-build-result';
-import { WebpackConfigTransformer } from '@teambit/webpack';
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 
 export class AngularApp implements Application {
+  readonly name: string;
+
   constructor(
     private angularEnv: AngularEnv,
-    readonly name: string,
-    readonly portRange: number[],
-    readonly bundler?: Bundler,
-    readonly transformers?: WebpackConfigTransformer[],
-    readonly deploy?: (context: AngularDeployContext) => Promise<void>
-  ) {}
+    readonly options: AngularAppOptions
+  ) {
+    this.name = options.name;
+  }
 
   readonly publicDir = 'public';
 
@@ -24,27 +23,29 @@ export class AngularApp implements Application {
     return Object.assign(context, {
       entry: [],
       rootPath: '',
-      publicPath: `public/${this.name}`,
-      title: this.name
+      publicPath: `public/${this.options.name}`,
+      title: this.options.name
     });
   }
 
   async getDevServer(context: AppContext): Promise<DevServer> {
     const devServerContext = this.getDevServerContext(context);
-    return this.angularEnv.getDevServer(devServerContext, this.transformers);
+    return this.angularEnv.getDevServer(devServerContext, this.options.webpackTransformers);
   }
 
   async run(context: AppContext): Promise<number> {
-    const [from, to] = this.portRange;
+    const [from, to] = this.options.portRange || [3000, 4000];
     const port = await Port.getPort(from, to);
+    this.angularEnv.angularWebpack.angularServeOptions = { ...this.angularEnv.angularWebpack.angularServeOptions, ...this.options.angularServeOptions };
+    this.angularEnv.angularWebpack.sourceRoot = this.options.sourceRoot;
     const devServer = await this.getDevServer(context);
     await devServer.listen(port);
     return port;
   }
 
   async getBundler(context: AppBuildContext): Promise<Bundler> {
-    if (this.bundler) {
-      return this.bundler;
+    if (this.options.bundler) {
+      return this.options.bundler;
     }
 
     const { capsule } = context;
@@ -58,9 +59,11 @@ export class AngularApp implements Application {
       }],
       entry: [],
       rootPath: '/',
-      appName: this.name
+      appName: this.options.name
     });
-    return this.angularEnv.getBundler(bundlerContext, this.transformers);
+    this.angularEnv.angularWebpack.angularBuildOptions = { ...this.angularEnv.angularWebpack.angularBuildOptions, ...this.options.angularBuildOptions };
+    this.angularEnv.angularWebpack.sourceRoot = this.options.sourceRoot;
+    return this.angularEnv.getBundler(bundlerContext, this.options.webpackTransformers);
   }
 
   async build(context: AppBuildContext): Promise<AngularAppBuildResult> {
