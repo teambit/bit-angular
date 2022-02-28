@@ -11,7 +11,7 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "0.0.55",
+        "version": "0.0.56",
         "mainFile": "index.ts",
         "rootDir": "packages/angular"
     },
@@ -23,43 +23,43 @@
     },
     "angular-v10": {
         "scope": "teambit.angular",
-        "version": "0.0.44",
+        "version": "0.0.45",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v10"
     },
     "angular-v11": {
         "scope": "teambit.angular",
-        "version": "0.0.57",
+        "version": "0.0.58",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v11"
     },
     "angular-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.63",
+        "version": "0.0.64",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v12"
     },
     "angular-v13": {
         "scope": "teambit.angular",
-        "version": "0.0.19",
+        "version": "0.0.20",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v13"
     },
     "angular-v8": {
         "scope": "teambit.angular",
-        "version": "0.0.41",
+        "version": "0.0.42",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v8"
     },
     "angular-v9": {
         "scope": "teambit.angular",
-        "version": "0.0.42",
+        "version": "0.0.43",
         "mainFile": "index.ts",
         "rootDir": "packages/angular-v9"
     },
     "ng-packagr": {
         "scope": "teambit.angular",
-        "version": "0.0.21",
+        "version": "0.0.22",
         "mainFile": "index.ts",
         "rootDir": "packages/ng-packagr"
     },
