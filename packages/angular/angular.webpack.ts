@@ -261,7 +261,7 @@ export abstract class AngularWebpack {
       appRootPath,
       this.webpackMain.logger,
       WebpackSetup.Build,
-      this.webpackBuildOptions as WebpackConfigWithDevServer,
+      this.webpackBuildOptions as unknown as WebpackConfigWithDevServer,
       this.angularBuildOptions,
       this.sourceRoot
     );

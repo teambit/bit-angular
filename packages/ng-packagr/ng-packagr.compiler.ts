@@ -206,7 +206,9 @@ export class NgPackagrCompiler implements Compiler {
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       // Process all node_modules folders (only works if the modules are hoisted)
-      this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path));
+      for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+        await this.ngccProcessor.process(this.nodeModulesPaths[i]);
+      }
       return;
     }
     // recreate packageJson from component to make sure that its dependencies are updated with recent code changes
@@ -236,44 +238,45 @@ export class NgPackagrCompiler implements Compiler {
     const componentsResults: ComponentResult[] = [];
 
     // Process all node_modules folders (only works if the modules are hoisted)
-    this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path));
+    for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+      await this.ngccProcessor.process(this.nodeModulesPaths[i]);
+    }
 
-    await Promise.all(
-      context.components.map(async(component: Component) => {
-        const capsule = capsules.getCapsule(component.id);
-        if (!capsule) {
-          throw new Error(`No capsule found for ${component.id} in network graph`);
-        }
-        const currentComponentResult: ComponentResult = {
-          component
-        };
-        const isApp = componentIsApp(component, this.application);
-        if(!isApp) { // No need to compile an app
-          try {
-            // disable logger temporarily so that it doesn't mess up with ngPackagr logs
-            this.logger.off();
-            await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions);
-            this.logger.on();
-            // @ts-ignore
-          } catch (e: any) {
-            currentComponentResult.errors = [e];
-          }
-
-          if (this.shouldCopyNonSupportedFiles) {
-            const dataToPersist = new DataToPersist();
-            capsule.component.filesystem.files.forEach((file: AbstractVinyl) => {
-              if (!this.isFileSupported(file.path)) {
-                dataToPersist.addFile(file);
-              }
-            });
-            dataToPersist.addBasePath(join(capsule.path, this.distDir));
-            await dataToPersist.persistAllToFS();
-          }
+    for(let i =0; i < context.components.length; i++) {
+      const component = context.components[i];
+      const capsule = capsules.getCapsule(component.id);
+      if (!capsule) {
+        throw new Error(`No capsule found for ${component.id} in network graph`);
+      }
+      const currentComponentResult: ComponentResult = {
+        component
+      };
+      const isApp = componentIsApp(component, this.application);
+      if(!isApp) { // No need to compile an app
+        try {
+          // disable logger temporarily so that it doesn't mess up with ngPackagr logs
+          this.logger.off();
+          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions);
+          this.logger.on();
+          // @ts-ignore
+        } catch (e: any) {
+          currentComponentResult.errors = [e];
         }
 
-        componentsResults.push({ ...currentComponentResult });
-      })
-    );
+        if (this.shouldCopyNonSupportedFiles) {
+          const dataToPersist = new DataToPersist();
+          capsule.component.filesystem.files.forEach((file: AbstractVinyl) => {
+            if (!this.isFileSupported(file.path)) {
+              dataToPersist.addFile(file);
+            }
+          });
+          dataToPersist.addBasePath(join(capsule.path, this.distDir));
+          await dataToPersist.persistAllToFS();
+        }
+      }
+
+      componentsResults.push({ ...currentComponentResult });
+    }
 
     return {
       artifacts: this.getArtifactDefinition(),
