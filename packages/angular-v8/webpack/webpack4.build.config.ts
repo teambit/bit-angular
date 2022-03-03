@@ -1,4 +1,5 @@
 import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
+import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
@@ -28,7 +29,7 @@ export function webpack4BuildConfigFactory(
 
     output: {
       // The build folder.
-      path: `${outputPath}/`,
+      path: `${outputPath}${sep}public`,
 
       // publicPath: ``,
 

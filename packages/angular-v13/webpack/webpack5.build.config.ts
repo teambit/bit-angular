@@ -1,5 +1,6 @@
 import { BitDedupeModuleResolvePlugin } from '@teambit/angular';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
+import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
@@ -23,7 +24,7 @@ export function webpack5BuildConfigFactory(
 
     output: {
       // The build folder.
-      path: `${outputPath}/`,
+      path: `${outputPath}${sep}public`,
 
       filename: 'static/js/[name].[contenthash:8].js',
       // There are also additional JS chunk files if you use code splitting.

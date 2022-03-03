@@ -23,7 +23,7 @@ export class AngularApp implements Application {
     return Object.assign(context, {
       entry: [],
       rootPath: '',
-      publicPath: `public/${this.options.name}`,
+      publicPath: `${this.publicDir}/${this.options.name}`,
       title: this.options.name
     });
   }
