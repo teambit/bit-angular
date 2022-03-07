@@ -21,11 +21,5 @@ export const ngModuleTemplate: ComponentTemplate = {
       componentSpecFile(context),
       compositionFile(context),
     ];
-  },
-
-  config: {
-    'teambit.envs/envs': {
-      env: 'teambit.harmony/aspect',
-    },
   }
 };
