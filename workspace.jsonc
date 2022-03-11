@@ -31,7 +31,7 @@
     /**
      * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
      */
-    "packageManager": "teambit.dependencies/pnpm",
+    "packageManager": "teambit.dependencies/yarn",
     "policy": {
       "dependencies": {
         "@teambit/harmony": "^0.2.11",
@@ -43,6 +43,8 @@
         "@types/jasmine": "~3.7.0",
         "@types/object-hash": "~2.1.0",
         "buffer": "6.0.3",
+        "cypress": "9.5.1",
+        "cypress-iframe": "1.0.1",
         "dompurify": "^2.2.9",
         "eslint-config-airbnb-typescript": {
           "version": "5.1.0",
@@ -59,6 +61,7 @@
         "process": "0.11.10",
         "react-dev-utils": "10.2.1",
         "replace-in-file": "6.3.2",
+        "start-server-and-test": "1.14.0",
         "webpack-manifest-plugin": "3.1.1",
         "webpack-merge": "5.7.3"
       },

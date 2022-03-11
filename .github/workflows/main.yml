@@ -31,6 +31,9 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
       - name: Keep v13
         run: npm i replace-in-file && node scripts/keep-env.js --version=13
 
@@ -70,6 +73,9 @@ jobs:
       - name: Bit test
         run: bit test --log
 
+      - name: Run e2e tests
+        run: npm run e2e
+
       - name: Bit build
         run: bit build --log
 
@@ -91,6 +97,9 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
+
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Keep v12
         run: npm i replace-in-file && node scripts/keep-env.js --version=12
@@ -131,6 +140,9 @@ jobs:
       - name: Bit test
         run: bit test --log
 
+      - name: Run e2e tests
+        run: npm run e2e
+
       - name: Bit build
         run: bit build --log
 
@@ -152,6 +164,9 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
+
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Keep v11
         run: npm i replace-in-file && node scripts/keep-env.js --version=11
@@ -192,6 +207,9 @@ jobs:
       - name: Bit test
         run: bit test --log
 
+      - name: Run e2e tests
+        run: npm run e2e
+
       - name: Bit build
         run: bit build --log
 
@@ -213,6 +231,9 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
+
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Keep v10
         run: npm i replace-in-file && node scripts/keep-env.js --version=10
@@ -253,6 +274,9 @@ jobs:
       - name: Bit test
         run: bit test --log
 
+      - name: Run e2e tests
+        run: npm run e2e
+
       - name: Bit build
         run: bit build --log
 
@@ -274,6 +298,9 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
+
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Keep v9
         run: npm i replace-in-file && node scripts/keep-env.js --version=9
@@ -314,6 +341,9 @@ jobs:
       - name: Bit test
         run: bit test --log
 
+      - name: Run e2e tests
+        run: npm run e2e
+
       - name: Bit build
         run: bit build --log
 
@@ -335,6 +365,9 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
+
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Keep v8
         run: npm i replace-in-file && node scripts/keep-env.js --version=8
@@ -374,6 +407,9 @@ jobs:
 
       - name: Bit test
         run: bit test --log
+
+      - name: Run e2e tests
+        run: npm run e2e
 
       - name: Bit build
         run: bit build --log

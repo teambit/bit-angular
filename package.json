@@ -9,7 +9,10 @@
   "devDependencies": {},
   "scripts": {
     "format": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md|mdx)\" --write",
-    "format:check": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md)\" --check"
+    "format:check": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md)\" --check",
+    "start": "node ./node_modules/@teambit/bit/dist/app start --no-browser",
+    "cy:run": "cypress run",
+    "e2e": "start-server-and-test start http://localhost:3000/preview/teambit.harmony/aspect/ cy:run"
   },
   "repository": {
     "type": "git",
