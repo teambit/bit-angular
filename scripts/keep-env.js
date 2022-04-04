@@ -16,17 +16,25 @@ const argv = key => {
   return value.replace( `--${ key }=` , '' );
 }
 
+const regexp = [];
+// Remove all versions but this one
 const version = parseInt(argv('version'));
-const regexp = new RegExp(`\\s\\s"teambit\\.angular\\/angular\\-v(?!${version})\\d\\d?":\\s\\{\\},\\n`, "g")
-console.log(regexp);
-const options = {
-  files: resolve(__dirname, '..', 'workspace.jsonc'),
-  from: regexp,
-  to: '',
-};
+regexp.push(new RegExp(`\\s\\s"teambit\\.angular\\/versions\\/angular\\-v(?!${version})\\d\\d?":\\s\\{\\},\\n`, "g"));
+
+const defaultEnv = argv('default');
+// Remove default env & app if needed
+if(!defaultEnv) {
+  regexp.push(new RegExp(`\\s\\s"teambit\\.angular\\/angular":\\s\\{\\},\\n`, "g"));
+  regexp.push(new RegExp(`\\s\\s"examples\\/demo-app":\\s\\{\\},\\n`, "g"));
+}
 
 try {
-  const results = replace.sync(options);
+  const results = replace.sync({
+    files: resolve(__dirname, '..', 'workspace.jsonc'),
+    from: regexp,
+    to: '',
+    countMatches: true,
+  });
   console.log('Replacement results:', results);
 }
 catch (error) {

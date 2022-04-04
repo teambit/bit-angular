@@ -1,0 +1,36 @@
+{
+  "componentId": {
+    "name": "dev-services/linter/angular-eslint-config"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-eslint-config",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "eslint": "-",
+          "eslint-plugin-markdown": "^2.2.0"
+        },
+        "peerDependencies": {
+          "@angular-eslint/eslint-plugin": ">= 1",
+          "@angular-eslint/eslint-plugin-template": ">= 1",
+          "@angular-eslint/template-parser": ">= 1",
+          "@typescript-eslint/eslint-plugin": ">= 4",
+          "@typescript-eslint/parser": ">= 4",
+          "eslint": "> 7.0.0"
+        }
+      }
+    }
+  }
+}

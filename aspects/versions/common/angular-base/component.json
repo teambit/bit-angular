@@ -1,0 +1,72 @@
+{
+  "componentId": {
+    "name": "versions/common/angular-base"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-base",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular-devkit/build-angular": "-",
+          "@angular/core": "-",
+          "@angular/common": "-",
+          "@angular/compiler-cli": "-",
+          "@angular/forms": "-",
+          "@angular/platform-browser": "-",
+          "@angular/platform-browser-dynamic": "-",
+          "@angular/router": "-",
+          "@babel/plugin-proposal-class-properties": "7.12.13",
+          "@babel/preset-env": "7.12.17",
+          "@babel/preset-typescript": "7.12.7",
+          "@types/enhanced-resolve": "~3.0.7",
+          "@types/lodash": "4.14.165",
+          "@types/node": "^12.11.1",
+          "@types/trusted-types": "~2.0.1",
+          "enhanced-resolve": "5.8.3",
+          "events": "3.3.0",
+          "graphql": "14.7.0",
+          "graphql-tag": "^2.11.0",
+          "html-entities": "2.3.2",
+          "lodash": "4.17.21",
+          "react": "17.0.2",
+          "react-dom": "17.0.2",
+          "rxjs": "-",
+          "subscriptions-transport-ws": "0.11.0",
+          "typescript": "-",
+          "webpack": "-",
+          "webpack-dev-server": "-",
+          "zone.js": "-"
+        },
+        "peerDependencies": {
+          "@angular-devkit/build-angular": ">= 0.0.1",
+          "@angular/core": ">= 8.0.0",
+          "@angular/common": ">= 8.0.0",
+          "@angular/compiler-cli": ">= 8.0.0",
+          "@angular/forms": ">= 8.0.0",
+          "@angular/platform-browser": ">= 8.0.0",
+          "@angular/platform-browser-dynamic": ">= 8.0.0",
+          "@angular/router": ">= 8.0.0",
+          "jest": ">= 25.1.0",
+          "jest-preset-angular": ">= 8.2.0",
+          "rxjs": ">= 6.4.0",
+          "typescript": ">= 3.5.3",
+          "webpack": ">= 4.44.2",
+          "webpack-dev-server": ">= 3.11.2",
+          "zone.js": ">= 0.9.1"
+        }
+      }
+    }
+  }
+}

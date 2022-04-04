@@ -1,4 +1,4 @@
-import { AngularAppOptions, BrowserOptions, DevServerOptions } from '@teambit/angular';
+import { AngularAppOptions, BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
 
 const angularOptions: BrowserOptions & DevServerOptions = {
   main: 'src/main.ts',
@@ -28,7 +28,8 @@ export const DemoAppOptions: AngularAppOptions = {
   /**
    * Angular options for `bit run`
    */
-  angularServeOptions: angularOptions
+  angularServeOptions: angularOptions,
+
 };
 
 export default DemoAppOptions;

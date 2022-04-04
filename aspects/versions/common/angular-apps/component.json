@@ -1,0 +1,27 @@
+{
+  "componentId": {
+    "name": "versions/common/angular-apps"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-apps",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "peerDependencies": {
+          "@angular-devkit/build-angular": ">= 0.0.1"
+        }
+      }
+    }
+  }
+}

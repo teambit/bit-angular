@@ -1,0 +1,68 @@
+{
+  "componentId": {
+    "name": "versions/angular-v12"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-v12",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular-devkit/architect": "~0.1202.16",
+          "@angular-devkit/build-angular": "^12.2.16",
+          "@angular-devkit/build-webpack": "~0.1202.16",
+          "@angular-devkit/core": "^12.2.16",
+          "@angular-devkit/schematics": "^12.2.16",
+          "@angular-eslint/eslint-plugin": "^12.1.0",
+          "@angular-eslint/eslint-plugin-template": "^12.1.0",
+          "@angular-eslint/template-parser": "^12.1.0",
+          "@angular/animations": "^12.2.16",
+          "@angular/common": "^12.2.16",
+          "@angular/compiler": "^12.2.16",
+          "@angular/compiler-cli": "^12.2.16",
+          "@angular/core": "^12.2.16",
+          "@angular/forms": "^12.2.16",
+          "@angular/platform-browser": "^12.2.16",
+          "@angular/platform-browser-dynamic": "^12.2.16",
+          "@angular/router": "^12.2.16",
+          "@ngtools/webpack": "^12.2.16",
+          "@types/react-dev-utils": "~9.0.8",
+          "@types/remark-prism": "~1.3.0",
+          "@types/webpack-dev-server": "4.3.1",
+          "@typescript-eslint/eslint-plugin": "^4.26.0",
+          "@typescript-eslint/parser": "^4.26.0",
+          "eslint": "7.26.0",
+          "html-loader": "~2.1.2",
+          "jest": "~27.0.4",
+          "jest-preset-angular": "~10.0.1",
+          "ng-packagr": "~12.2.7",
+          "react-dev-utils": "10.2.1",
+          "remark": "~13.0.0",
+          "remark-frontmatter": "~3.0.0",
+          "remark-html": "13.0.1",
+          "remark-loader": "~4.0.0",
+          "remark-prism": "~1.3.6",
+          "rxjs": "^6.6.7",
+          "tslib": "^2.2.0",
+          "ts-node": "^9.1.1",
+          "typescript": "~4.3.2",
+          "webpack": "^5.37.0",
+          "webpack-dev-middleware": "5.1.0",
+          "webpack-dev-server": "4.3.1",
+          "zone.js": "~0.11.4"
+        }
+      }
+    }
+  }
+}

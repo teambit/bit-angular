@@ -102,4 +102,7 @@ build-harmony/yarn.lock
 !.yarn/plugins
 !.yarn/sdks
 !.yarn/versions
+yarn.lock
 
+# cypress
+cypress/videos

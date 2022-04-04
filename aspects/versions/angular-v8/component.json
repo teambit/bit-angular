@@ -1,0 +1,73 @@
+{
+  "componentId": {
+    "name": "versions/angular-v8"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-v8",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular-devkit/architect": "~0.803.29",
+          "@angular-devkit/build-angular": "~0.803.29",
+          "@angular-devkit/build-webpack": "~0.803.29",
+          "@angular-devkit/core": "~8.3.29",
+          "@angular-devkit/schematics": "~8.3.29",
+          "@angular-eslint/eslint-plugin": "^1.2.0",
+          "@angular-eslint/eslint-plugin-template": "^1.2.0",
+          "@angular-eslint/template-parser": "^1.2.0",
+          "@angular/animations": "~8.2.14",
+          "@angular/common": "~8.2.14",
+          "@angular/compiler": "~8.2.14",
+          "@angular/compiler-cli": "~8.2.14",
+          "@angular/core": "~8.2.14",
+          "@angular/forms": "~8.2.14",
+          "@angular/platform-browser": "~8.2.14",
+          "@angular/platform-browser-dynamic": "~8.2.14",
+          "@angular/router": "~8.2.14",
+          "@ngtools/webpack": "~8.3.29",
+          "@types/react-dev-utils": "~9.0.8",
+          "@types/remark-prism": "~1.3.0",
+          "@types/webpack-dev-server": "~3.11.2",
+          "@typescript-eslint/eslint-plugin": "^4.26.0",
+          "@typescript-eslint/parser": "^4.26.0",
+          "eslint": "7.26.0",
+          "eslint-plugin-import": "^2.23.4",
+          "eslint-plugin-jsdoc": "^35.5.1",
+          "eslint-plugin-prefer-arrow": "^1.2.3",
+          "html-loader": "~1.3.2",
+          "jest": "^25.1.0",
+          "jest-preset-angular": "~8.2.0",
+          "ng-packagr": "~5.7.1",
+          "path-browserify": "1.0.1",
+          "react-dev-utils": "10.2.1",
+          "remark": "~13.0.0",
+          "remark-frontmatter": "~3.0.0",
+          "remark-html": "13.0.1",
+          "remark-loader": "~2.0.0",
+          "remark-prism": "~1.3.6",
+          "rxjs": "~6.4.0",
+          "tslib": "^1.10.0",
+          "ts-jest": "^25.5.1",
+          "ts-node": "~8.3.0",
+          "typescript": "~3.5.3",
+          "webpack": "~4.44.2",
+          "webpack-dev-middleware": "~3.7.2",
+          "webpack-dev-server": "~3.11.2",
+          "zone.js": "~0.9.1"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "componentId": {
+    "name": "dev-services/compiler/ngcc"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/ngcc",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular/compiler-cli": "-"
+        },
+        "devDependencies": {
+          "@teambit/harmony": "^0.2.11",
+          "comlink": "4.3.0"
+        },
+        "peerDependencies": {
+          "@angular/compiler-cli": ">= 8.0.0",
+          "ng-packagr": ">=5.0.0"
+        }
+      }
+    }
+  }
+}

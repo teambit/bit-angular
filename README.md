@@ -44,73 +44,7 @@ Install Bit:
 bvm install
 ```
 
-Create a new workspace
-```bash
-bit new ng-workspace <workspace-name> -a teambit.angular/angular-v13
-```
-You can replace `v13` by the version that you want to use (starting from `v8`).
-
-Change directory to the newly created workspace
-```bash
-cd <workspace-name>
-```
-
-Create a bit component:
-```bash
-bit create ng-module ui/my-button
-```
-
-Install dependencies:
-
-```bash
-bit install
-```
-
-Start the dev server
-
-```bash
-bit start
-```
-
-Open-up your browser on localhost:3000, or any other available port, and display your workspace with your components.
-
-### Use the Angular environment in an existing Bit workspace
-First you need to get the latest version of the Angular environment that you want to use by running this command:
-
-```bash
-npm dist-tag ls @teambit/angular-v13
-```
-You can replace `v13` by the version that you want to use (starting from `v8`).
-
-Then in your `workspace.jsonc` configuration file, add the following lines and replace `x.x.x` by the version number retrieved with the previous command:
-```
-{
-  // ...
-  // Load the angular-v13 environment into the workspace
-  "teambit.angular/angular-v13@x.x.x": {},
-  "teambit.workspace/variants": {
-    // Use the angular-v13 environment for all components, or specify a pattern to use it just for some components
-    "*": {
-      // Replace `v13` by the version of Angular that you want to use
-      "teambit.angular/angular-v13@x.x.x": {}
-    }
-  },
-  // Add Angular component generators to the list of available component templates
-  "teambit.generator/generator": {
-    "aspects": [
-      // Replace `v13` by the version of Angular that you want to use
-      "teambit.angular/angular-v13"
-    ]
-  },
-  // ...
-}
-```
-
-Install dependencies:
-
-```bash
-bit install
-```
+After that, follow the instructions to install the [angular environment](https://bit.cloud/teambit/angular/angular).
 
 ### Resources & Community
 

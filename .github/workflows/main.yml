@@ -17,6 +17,77 @@ env:
   BIT_TOKEN: ${{ secrets.BIT_TOKEN }}
 
 jobs:
+  # Test angular
+  default-angular:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: docker://bitcli/bit:latest
+    steps:
+      - uses: teambit/setup-action@v1
+        with:
+          name: angular-github-actions
+          BIT_TOKEN: ${{ env.BIT_TOKEN }}
+
+      - uses: actions/checkout@v2
+
+      - name: Install ubuntu packages
+        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
+
+      - name: Keep default
+        run: npm i replace-in-file && node scripts/keep-env.js --version=13 --default
+
+      - name: Remove v12
+        run: bit remove versions/angular-v12 -s -f --log
+
+      - name: Remove v11
+        run: bit remove versions/angular-v11 -s -f --log
+
+      - name: Remove v10
+        run: bit remove versions/angular-v10 -s -f --log
+
+      - name: Remove v9
+        run: bit remove versions/angular-v9 -s -f --log
+
+      - name: Remove v8
+        run: bit remove versions/angular-v8 -s -f --log
+
+      - name: Add example component
+        run: bit add examples/demo-lib --log
+
+      - name: Add example app
+        run: bit add examples/demo-app --log
+
+      - name: Install dependencies
+        run: bit install --log
+
+      # Compile the aspects
+      - name: Bit compile aspects
+        run: bit compile --log
+
+      # Run bit link to regenerate the package.json of the example component
+      - name: Bit link
+        run: bit link --log
+
+      # Compile the example component
+      - name: Bit compile example component
+        run: bit compile demo-lib --log
+
+      # Compile the example app
+      - name: Bit compile example app
+        run: bit compile demo-app --log
+
+      - name: Bit test
+        run: bit test --log
+
+      - name: Bit build
+        run: bit build --log
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: debug-log
+          path: $HOME/Library/Caches/Bit/logs
+
   # Test angular-v13
   v13:
     runs-on: ubuntu-latest
@@ -34,22 +105,25 @@ jobs:
       - name: Keep v13
         run: npm i replace-in-file && node scripts/keep-env.js --version=13
 
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
       - name: Remove v12
-        run: bit remove angular-v12 -s -f --log
+        run: bit remove versions/angular-v12 -s -f --log
 
       - name: Remove v11
-        run: bit remove angular-v11 -s -f --log
+        run: bit remove versions/angular-v11 -s -f --log
 
       - name: Remove v10
-        run: bit remove angular-v10 -s -f --log
+        run: bit remove versions/angular-v10 -s -f --log
 
       - name: Remove v9
-        run: bit remove angular-v9 -s -f --log
+        run: bit remove versions/angular-v9 -s -f --log
 
       - name: Remove v8
-        run: bit remove angular-v8 -s -f --log
+        run: bit remove versions/angular-v8 -s -f --log
 
-      - name: Add example app
+      - name: Add example component
         run: bit add examples/demo-lib-v13 --log
 
       - name: Install dependencies
@@ -57,7 +131,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v13 --log
+        run: bit compile --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -95,22 +169,25 @@ jobs:
       - name: Keep v12
         run: npm i replace-in-file && node scripts/keep-env.js --version=12
 
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
       - name: Remove v13
-        run: bit remove angular-v13 -s -f --log
+        run: bit remove versions/angular-v13 -s -f --log
 
       - name: Remove v11
-        run: bit remove angular-v11 -s -f --log
+        run: bit remove versions/angular-v11 -s -f --log
 
       - name: Remove v10
-        run: bit remove angular-v10 -s -f --log
+        run: bit remove versions/angular-v10 -s -f --log
 
       - name: Remove v9
-        run: bit remove angular-v9 -s -f --log
+        run: bit remove versions/angular-v9 -s -f --log
 
       - name: Remove v8
-        run: bit remove angular-v8 -s -f --log
+        run: bit remove versions/angular-v8 -s -f --log
 
-      - name: Add example app
+      - name: Add example component
         run: bit add examples/demo-lib-v12 --log
 
       - name: Install dependencies
@@ -118,7 +195,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v12 --log
+        run: bit compile --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -156,22 +233,25 @@ jobs:
       - name: Keep v11
         run: npm i replace-in-file && node scripts/keep-env.js --version=11
 
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
       - name: Remove v13
-        run: bit remove angular-v13 -s -f --log
+        run: bit remove versions/angular-v13 -s -f --log
 
       - name: Remove v12
-        run: bit remove angular-v12 -s -f
+        run: bit remove versions/angular-v12 -s -f
 
       - name: Remove v10
-        run: bit remove angular-v10 -s -f
+        run: bit remove versions/angular-v10 -s -f
 
       - name: Remove v9
-        run: bit remove angular-v9 -s -f
+        run: bit remove versions/angular-v9 -s -f
 
       - name: Remove v8
-        run: bit remove angular-v8 -s -f
+        run: bit remove versions/angular-v8 -s -f
 
-      - name: Add example app
+      - name: Add example component
         run: bit add examples/demo-lib-v11
 
       - name: Install dependencies
@@ -179,7 +259,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v11 --log
+        run: bit compile --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -217,22 +297,25 @@ jobs:
       - name: Keep v10
         run: npm i replace-in-file && node scripts/keep-env.js --version=10
 
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
       - name: Remove v13
-        run: bit remove angular-v13 -s -f --log
+        run: bit remove versions/angular-v13 -s -f --log
 
       - name: Remove v12
-        run: bit remove angular-v12 -s -f
+        run: bit remove versions/angular-v12 -s -f
 
       - name: Remove v11
-        run: bit remove angular-v11 -s -f
+        run: bit remove versions/angular-v11 -s -f
 
       - name: Remove v9
-        run: bit remove angular-v9 -s -f
+        run: bit remove versions/angular-v9 -s -f
 
       - name: Remove v8
-        run: bit remove angular-v8 -s -f
+        run: bit remove versions/angular-v8 -s -f
 
-      - name: Add example app
+      - name: Add example component
         run: bit add examples/demo-lib-v10
 
       - name: Install dependencies
@@ -240,7 +323,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v10 --log
+        run: bit compile --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -278,22 +361,25 @@ jobs:
       - name: Keep v9
         run: npm i replace-in-file && node scripts/keep-env.js --version=9
 
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
       - name: Remove v13
-        run: bit remove angular-v13 -s -f --log
+        run: bit remove versions/angular-v13 -s -f --log
 
       - name: Remove v12
-        run: bit remove angular-v12 -s -f
+        run: bit remove versions/angular-v12 -s -f
 
       - name: Remove v11
-        run: bit remove angular-v11 -s -f
+        run: bit remove versions/angular-v11 -s -f
 
       - name: Remove v10
-        run: bit remove angular-v10 -s -f
+        run: bit remove versions/angular-v10 -s -f
 
       - name: Remove v8
-        run: bit remove angular-v8 -s -f
+        run: bit remove versions/angular-v8 -s -f
 
-      - name: Add example app
+      - name: Add example component
         run: bit add examples/demo-lib-v9
 
       - name: Install dependencies
@@ -301,7 +387,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v9 --log
+        run: bit compile --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link
@@ -339,22 +425,25 @@ jobs:
       - name: Keep v8
         run: npm i replace-in-file && node scripts/keep-env.js --version=8
 
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
       - name: Remove v13
-        run: bit remove angular-v13 -s -f --log
+        run: bit remove versions/angular-v13 -s -f --log
 
       - name: Remove v12
-        run: bit remove angular-v12 -s -f
+        run: bit remove versions/angular-v12 -s -f
 
       - name: Remove v11
-        run: bit remove angular-v11 -s -f
+        run: bit remove versions/angular-v11 -s -f
 
       - name: Remove v10
-        run: bit remove angular-v10 -s -f
+        run: bit remove versions/angular-v10 -s -f
 
       - name: Remove v9
-        run: bit remove angular-v9 -s -f
+        run: bit remove versions/angular-v9 -s -f
 
-      - name: Add example app
+      - name: Add example component
         run: bit add examples/demo-lib-v8
 
       - name: Install dependencies
@@ -362,7 +451,7 @@ jobs:
 
       # Compile the aspects
       - name: Bit compile aspects
-        run: bit compile ng-packagr angular-eslint-config angular angular-v8 --log
+        run: bit compile --log
 
       # Run bit link to regenerate the package.json of the example component
       - name: Bit link

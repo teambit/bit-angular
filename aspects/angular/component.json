@@ -1,0 +1,20 @@
+{
+  "componentId": {
+    "name": "angular"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    }
+  }
+}
