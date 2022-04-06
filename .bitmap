@@ -11,73 +11,73 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "0.0.60",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/angular"
     },
     "dev-services/compiler/ng-packagr": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/dev-services/compiler/ng-packagr"
     },
     "dev-services/compiler/ngcc": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "0.0.1",
         "mainFile": "index.ts",
         "rootDir": "aspects/dev-services/compiler/ngcc"
     },
     "dev-services/linter/angular-eslint-config": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/dev-services/linter/eslint-config"
     },
     "versions/angular-v10": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v10"
     },
     "versions/angular-v11": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v11"
     },
     "versions/angular-v12": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v12"
     },
     "versions/angular-v13": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v13"
     },
     "versions/angular-v8": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v8"
     },
     "versions/angular-v9": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v9"
     },
     "versions/common/angular-apps": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "0.0.1",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/common/angular-apps"
     },
     "versions/common/angular-base": {
-        "scope": "",
-        "version": "",
+        "scope": "teambit.angular",
+        "version": "0.0.1",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/common/angular-base"
     },
