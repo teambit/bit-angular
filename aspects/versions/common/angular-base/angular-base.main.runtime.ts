@@ -1,44 +1,24 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
-import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
-import { ESLintAspect, ESLintMain } from '@teambit/eslint';
-import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
-import { JestAspect, JestMain } from '@teambit/jest';
+import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
+import { ApplicationAspect } from '@teambit/application';
+import AspectLoaderAspect from '@teambit/aspect-loader';
+import { BabelAspect } from '@teambit/babel';
 import { MainRuntime } from '@teambit/cli';
-import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
+import { CompilerAspect, CompilerOptions } from '@teambit/compiler';
+import { DependencyResolverAspect } from '@teambit/dependency-resolver';
+import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
+import { ESLintAspect } from '@teambit/eslint';
+import { GeneratorAspect } from '@teambit/generator';
+import { IsolatorAspect } from '@teambit/isolator';
+import { JestAspect } from '@teambit/jest';
+import { MultiCompilerAspect } from '@teambit/multi-compiler';
+import { NgPackagrAspect } from '@teambit/ng-packagr';
 import { PkgAspect } from '@teambit/pkg';
-import { PkgMain } from '@teambit/pkg';
-import { NgPackagrAspect, NgPackagrMain } from '@teambit/ng-packagr';
-import { WebpackAspect, WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
-import { TesterAspect, TesterMain } from '@teambit/tester';
+import { TesterAspect } from '@teambit/tester';
+import { WebpackAspect, WebpackConfigWithDevServer } from '@teambit/webpack';
+import { WorkspaceAspect } from '@teambit/workspace';
 import { Configuration } from 'webpack';
 import { AngularBaseEnv } from './angular-base.env';
-import { ApplicationAspect, ApplicationMain } from '@teambit/application';
-import AspectLoaderAspect, { AspectLoaderMain } from '@teambit/aspect-loader';
-import { MultiCompilerAspect, MultiCompilerMain } from '@teambit/multi-compiler';
-import { BabelAspect, BabelMain } from '@teambit/babel';
-import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
-import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
-
-export type AngularDeps = [
-  JestMain,
-  CompilerMain,
-  TesterMain,
-  ESLintMain,
-  NgPackagrMain,
-  GeneratorMain,
-  WebpackMain,
-  Workspace | undefined,
-  EnvsMain,
-  IsolatorMain,
-  PkgMain,
-  ApplicationMain,
-  AspectLoaderMain,
-  MultiCompilerMain,
-  BabelMain,
-  DependencyResolverMain
-];
 
 export abstract class AngularBaseMain {
   static slots = [];
