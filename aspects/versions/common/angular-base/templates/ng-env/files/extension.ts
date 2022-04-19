@@ -2,14 +2,14 @@ import { ComponentContext } from '@teambit/generator';
 
 export function extensionFile({ namePascalCase: Name }: ComponentContext) {
   return `import { EnvsMain, EnvsAspect } from '@teambit/envs'
-import { AngularV13Aspect, AngularV13Main } from '-v13'
+import { AngularAspect, AngularMain } from '@teambit/angular'
 
 export class ${Name}Extension {
-  constructor(private angular: AngularV13Main) {}
+  constructor(private angular: AngularMain) {}
 
-  static dependencies: any = [EnvsAspect, AngularV13Aspect]
+  static dependencies: any = [EnvsAspect, AngularAspect]
 
-  static async provider([envs, angular]: [EnvsMain, AngularV13Main]) {
+  static async provider([envs, angular]: [EnvsMain, AngularMain]) {
     // Use any of the "angular.override..." transformers, for example:
     const compilerOptions = await angular.overrideCompilerOptions({
       fullTemplateTypeCheck: false
