@@ -18,6 +18,9 @@
     },
     "teambit.dependencies/dependency-resolver": {
       "policy": {
+        "dependencies": {
+          "@angular-devkit/build-angular": "-"
+        },
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1"
         }
