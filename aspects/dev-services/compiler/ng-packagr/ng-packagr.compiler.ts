@@ -16,15 +16,20 @@ import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
 import DataToPersist from '@teambit/legacy/dist/consumer/component/sources/data-to-persist';
+import { CompositionsMain } from '@teambit/compositions';
 import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import { writeFileSync } from 'fs-extra';
-import { join, posix, resolve } from 'path';
+import { join, posix, resolve, parse } from 'path';
 import { NgccProcessor } from '@teambit/ngcc';
 import { ApplicationMain } from '@teambit/application';
 import { componentIsApp } from '@teambit/angular-apps';
+import { RollupCompiler } from '@teambit/angular-elements';
+import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
+import { Timer } from '@teambit/legacy/dist/toolbox/timer';
+import chalk from 'chalk';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -71,11 +76,15 @@ export class NgPackagrCompiler implements Compiler {
     private logger: Logger,
     private workspace: Workspace,
     readDefaultTsConfig: string,
+    private compositions: CompositionsMain,
+    private rollupCompiler: RollupCompiler,
     private tsCompilerOptions: AngularCompilerOptions = {},
     bitCompilerOptions: Partial<CompilerOptions> = {},
     private nodeModulesPaths: string[] = [],
     private application: ApplicationMain
   ) {
+    // TODO only do that if necessary
+    // NativeCompileCache.uninstall();
     this.ngPackagr = require(ngPackagr).ngPackagr();
     this.distDir = bitCompilerOptions.distDir || 'dist';
     this.distGlobPatterns = bitCompilerOptions.distGlobPatterns || [`${this.distDir}/**`];
@@ -195,6 +204,34 @@ export class NgPackagrCompiler implements Compiler {
       });
   }
 
+  async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false) {
+    // Process all node_modules folders (only works if the modules are hoisted)
+    for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+      await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+    }
+    // Build compositions with rollup
+    this.logger.console('\nBuilding compositions');
+    const timer = Timer.create();
+    timer.start();
+    const compositions = this.compositions.readCompositions(component);
+    const compositionFiles = compositions.map(composition => join(componentDir, composition.filepath || ''));
+    const compositionsDist = join(outputDir, 'dist/compositions');
+    // TODO use a worker
+    await this.rollupCompiler.compile({
+      entries: compositionFiles,
+      sourceRoot: componentDir,
+      dest: join(outputDir, 'dist/compositions'),
+      moduleName: component.id.fullName
+    }, watch, 'full');
+    const duration = timer.stop();
+    this.logger.console(chalk.green(`\n------------------------------------------------------------------------------
+Built Angular Compositions
+ - from: ${componentDir}
+ - to:   ${compositionsDist}
+------------------------------------------------------------------------------`));
+    this.logger.console(`\nBuild completed in ${chalk.bold(duration.elapsed)}ms`);
+  }
+
   /**
    * used by `bit compile`
    */
@@ -209,6 +246,8 @@ export class NgPackagrCompiler implements Compiler {
       for(let i = 0; i < this.nodeModulesPaths.length; i++) {
         await this.ngccProcessor.process(this.nodeModulesPaths[i]);
       }
+      // Build compositions
+      await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true);
       return;
     }
     // recreate packageJson from component to make sure that its dependencies are updated with recent code changes
@@ -217,8 +256,9 @@ export class NgPackagrCompiler implements Compiler {
     await packageJson.write();
     // disable logger temporarily so that it doesn't mess up with ngPackagr logs
     this.logger.off();
-    // if it's not in the background, we wait for the promise to resolve
-    await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
+    // Build component package
+    // TODO uncomment this
+    // await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
     this.logger.on();
   }
 
@@ -286,10 +326,12 @@ export class NgPackagrCompiler implements Compiler {
 
   /**
    * given a source file, return its parallel in the dists. e.g. index.ts => dist/index.js
-   * used by `bit build`
+   * used by `bit build` & `bit start` for compositions & doc files
    */
   getDistPathBySrcPath(srcPath: string): string {
-    // we use the typescript compiler, so we just need to return the typescript src file path
+    if (this.isFileSupported(srcPath)) {
+      return join('dist/compositions', `${parse(srcPath).name}.js`);
+    }
     return srcPath;
   }
 
@@ -298,18 +340,16 @@ export class NgPackagrCompiler implements Compiler {
    * in node_modules by default
    * used by `bit start`
    */
-  getPreviewComponentRootPath?(component: Component): string {
-    return this.workspace.componentDir(component.id, {
-      ignoreScopeAndVersion: true,
-      ignoreVersion: true
-    }, { relative: true });
+  getPreviewComponentRootPath(component: Component): string {
+    return this.workspace.componentPackageDir(component, {relative: true});
+    // join(this.tempFolder.replace(this.workspace.path, ''), component?.id.name || '')
   }
 
   /**
    * whether ngPackagr is able to compile the given path
    */
   isFileSupported(filePath: string): boolean {
-    return filePath.endsWith('.ts') || (!!this.tsCompilerOptions.allowJs && filePath.endsWith('.js')) || filePath.endsWith('.md');
+    return filePath.endsWith('.ts') || (!!this.tsCompilerOptions.allowJs && filePath.endsWith('.js'));
   }
 
   version(): string {

@@ -12,6 +12,7 @@ import { JestMain } from '@teambit/jest';
 import { MultiCompilerMain } from '@teambit/multi-compiler';
 import { NgPackagrMain } from '@teambit/ng-packagr';
 import { PkgMain } from '@teambit/pkg';
+import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
@@ -36,6 +37,7 @@ export class AngularV12Main extends AngularBaseMain {
     multicompiler,
     babel,
     dependencyResolver,
+    react,
   ]: [
     JestMain,
     CompilerMain,
@@ -52,7 +54,8 @@ export class AngularV12Main extends AngularBaseMain {
     AspectLoaderMain,
     MultiCompilerMain,
     BabelMain,
-    DependencyResolverMain
+    DependencyResolverMain,
+    ReactMain,
   ]): Promise<AngularBaseMain> {
     const angularV12Env = new AngularV12Env(
       jestAspect,
@@ -70,6 +73,7 @@ export class AngularV12Main extends AngularBaseMain {
       multicompiler,
       babel,
       dependencyResolver,
+      react,
     );
     return new AngularV12Main(envs, angularV12Env);
   }

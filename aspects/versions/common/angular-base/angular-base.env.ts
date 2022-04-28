@@ -13,6 +13,7 @@ import {
   DevEnv,
   EnvDescriptor,
   LinterEnv,
+  PreviewEnv,
   TesterEnv
 } from '@teambit/envs';
 import { EslintConfigTransformer, ESLintMain } from '@teambit/eslint';
@@ -31,6 +32,7 @@ import { AngularBaseWebpack } from './angular-base.webpack';
 import { AngularAppType, NG_APP_NAME } from '@teambit/angular-apps';
 import { NgccProcessor } from '@teambit/ngcc';
 import { getNodeModulesPaths } from './webpack-plugins/utils';
+import { EnvPreviewConfig } from '@teambit/preview';
 
 const presets = [
   require.resolve('@babel/preset-env'),
@@ -41,7 +43,7 @@ const plugins = [require.resolve('@babel/plugin-proposal-class-properties')];
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv {
+export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv, PreviewEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
 
   constructor(
@@ -177,7 +179,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
   /**
    * Required to use the old preview code until the envs are updated to use the new version
    */
-  getPreviewConfig() {
+  getPreviewConfig(): EnvPreviewConfig {
     return {
       strategyName: 'env',
       splitComponentBundle: false

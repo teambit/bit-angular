@@ -6,6 +6,7 @@ export const compositionFile = (context: ComponentContext): ComponentFile => {
   return {
     relativePath: `${name}.composition.ts`,
     content: `import { Component, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { ${Name}Module } from './${name}.module';
 
 @Component({
@@ -16,7 +17,7 @@ class ${Name}CompositionComponent {}
 
 @NgModule({
   declarations: [${Name}CompositionComponent],
-  imports: [${Name}Module],
+  imports: [BrowserModule, ${Name}Module],
   bootstrap: [${Name}CompositionComponent]
 })
 export class ${Name}CompositionModule {}

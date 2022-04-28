@@ -14,6 +14,7 @@ import { JestAspect } from '@teambit/jest';
 import { MultiCompilerAspect } from '@teambit/multi-compiler';
 import { NgPackagrAspect } from '@teambit/ng-packagr';
 import { PkgAspect } from '@teambit/pkg';
+import { ReactAspect } from '@teambit/react';
 import { TesterAspect } from '@teambit/tester';
 import { WebpackAspect, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { WorkspaceAspect } from '@teambit/workspace';
@@ -40,6 +41,7 @@ export abstract class AngularBaseMain {
     MultiCompilerAspect,
     BabelAspect,
     DependencyResolverAspect,
+    ReactAspect,
   ];
 
   constructor(protected envs: EnvsMain, protected angularEnv: AngularBaseEnv) {

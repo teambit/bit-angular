@@ -95,7 +95,7 @@ export abstract class AngularBaseWebpack {
     tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
     tsconfigJSON.config.files = [posix.join(pAppPath, 'src/main.ts'), posix.join(pAppPath, 'src/polyfills.ts')];
     tsconfigJSON.config.include = [
-      posix.join(pAppPath, 'src/app/**/*.ts'),
+      // posix.join(pAppPath, 'src/app/**/*.ts'),
       ...includePaths.map((path) => posix.join(path, '**/*.ts')),
     ];
     tsconfigJSON.config.exclude = [
@@ -193,6 +193,8 @@ export abstract class AngularBaseWebpack {
       appRootPath = this.getPreviewRootPath();
       tsconfigPath = this.writeTsconfig(context, appRootPath);
     }
+    context.entry.push(posix.join(appRootPath, 'src/bundle.js'));
+    console.log(context.entry);
 
     const mergedAngularServeOptions = Object.assign({}, this.angularServeOptions, angularServeOptions);
 

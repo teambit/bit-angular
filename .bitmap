@@ -15,6 +15,12 @@
         "mainFile": "index.ts",
         "rootDir": "aspects/angular"
     },
+    "dev-services/compiler/angular-elements": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "aspects/dev-services/compiler/angular-elements"
+    },
     "dev-services/compiler/ng-packagr": {
         "scope": "teambit.angular",
         "version": "1.0.3",

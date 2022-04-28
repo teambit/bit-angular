@@ -4,10 +4,12 @@ import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { JestMain } from '@teambit/jest';
 import { IsolatorMain } from '@teambit/isolator';
+import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
+import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
 import { PkgMain } from '@teambit/pkg';
 import { NgPackagrMain } from '@teambit/ng-packagr';
-import { WebpackMain } from '@teambit/webpack';
+import { WebpackConfigTransformer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { GeneratorMain } from '@teambit/generator';
 import { AngularV12Aspect } from './angular-v12.aspect';
@@ -45,6 +47,7 @@ export class AngularV12Env extends AngularBaseEnv {
     multicompiler: MultiCompilerMain,
     babel: BabelMain,
     dependencyResolver: DependencyResolverMain,
+    private react: ReactMain
   ) {
     super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
     this.angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.pkg, application);
@@ -100,5 +103,47 @@ export class AngularV12Env extends AngularBaseEnv {
         'typescript': '~4.3.2',
       },
     };
+  }
+
+  /**
+   * Returns a paths to a function which mounts a given component to DOM
+   * Required for `bit build`
+   */
+  override getMounter() {
+    return require.resolve('@teambit/angular-elements/dist/mount/mount.js');
+  }
+
+  /**
+   * Returns a path to a docs template.
+   * Required for `bit build`
+   */
+  override getDocsTemplate() {
+    return this.react.env.getDocsTemplate();
+  }
+
+  /**
+   * Returns a bundler for the preview.
+   * Required for `bit build` & `build start`
+   */
+  override async getBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
+    return this.react.env.getBundler(context, transformers);
+  }
+
+  /**
+   * Returns and configures the dev server.
+   * Required for `bit start`
+   */
+  override async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
+    return this.react.env.getDevServer(context, transformers);
+  }
+
+  /**
+   * Required to use the new preview code
+   */
+  override getPreviewConfig(){
+    return {
+      strategyName: 'component',
+      splitComponentBundle: true
+    }
   }
 }

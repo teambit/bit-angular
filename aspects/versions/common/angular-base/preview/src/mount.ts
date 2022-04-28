@@ -8,7 +8,8 @@ window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
  * this function can be overridden through AngularAspect.overrideCompositionsMounter() API
  * to apply custom logic for component DOM mounting.
  */
-export default (composition: any) => {
+export default function(composition: any/*, previewContext: RenderingContext*/) {
+  console.log(composition, arguments)
   if (Reflect.get(composition, 'ɵcmp')) {
     window.onComponentLoad$.next(composition);
   } else if (Reflect.get(composition, 'ɵmod') || Reflect.get(composition, 'ngInjectorDef')) {

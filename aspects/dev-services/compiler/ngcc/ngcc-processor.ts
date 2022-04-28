@@ -13,16 +13,6 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs-extra';
 import * as path from 'path';
 
 
-// We cannot create a plugin for this, because NGTSC requires addition type
-// information which ngcc creates when processing a package which was compiled with NGC.
-
-// Example of such errors:
-// ERROR in node_modules/@angular/platform-browser/platform-browser.d.ts(42,22):
-// error TS-996002: Appears in the NgModule.imports of AppModule,
-// but could not be resolved to an NgModule class
-
-// We now transform a package and it's typings when NGTSC is resolving a module.
-
 export class NgccProcessor {
   lockFile?: string;
   lockData?: string;
@@ -99,7 +89,7 @@ export class NgccProcessor {
         '--source' /** path to the module to compile */,
         modulePath,
         '--first-only' /** compileAllFormats */,
-        '--create-ivy-entry-points' /** createNewEntryPointFormats */,
+        // '--create-ivy-entry-points' /** createNewEntryPointFormats */,
         '--async',
         'false',
         '--no-tsconfig' /** don't use tsconfig */
