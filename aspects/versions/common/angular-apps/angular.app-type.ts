@@ -6,7 +6,7 @@ import { GenericAngularEnv } from './generic-angular-env';
 export class AngularAppType implements ApplicationType<AngularAppOptions> {
   constructor(readonly name: string, private angularEnv: GenericAngularEnv) {}
 
-  createApp(options: AngularAppOptions): Application {
+  async createApp(options: AngularAppOptions): Promise<Application> {
     return new AngularApp(
       this.angularEnv,
       options
