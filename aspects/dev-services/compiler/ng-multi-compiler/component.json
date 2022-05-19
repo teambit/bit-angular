@@ -1,0 +1,31 @@
+{
+  "componentId": {
+    "name": "dev-services/compiler/ng-multi-compiler"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/ng-multi-compiler",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular/compiler-cli": "-"
+        },
+        "peerDependencies": {
+          "@angular/compiler-cli": ">= 8.0.0",
+          "minimatch": "3.0.4"
+        }
+      }
+    }
+  }
+}

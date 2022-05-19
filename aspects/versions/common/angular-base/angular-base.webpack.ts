@@ -182,6 +182,7 @@ export abstract class AngularBaseWebpack {
   }
 
   async createDevServer(context: DevServerContext | (DevServerContext & AppContext), transformers: WebpackConfigTransformer[] = [], nodeModulesPaths: string[], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string): Promise<DevServer> {
+    console.log('creating dev server');
     let appRootPath, tsconfigPath;
     const plugins: WebpackPluginInstance[] = [];
     let isApp = false;
@@ -193,8 +194,6 @@ export abstract class AngularBaseWebpack {
       appRootPath = this.getPreviewRootPath();
       tsconfigPath = this.writeTsconfig(context, appRootPath);
     }
-    context.entry.push(posix.join(appRootPath, 'src/bundle.js'));
-    console.log(context.entry);
 
     const mergedAngularServeOptions = Object.assign({}, this.angularServeOptions, angularServeOptions);
 

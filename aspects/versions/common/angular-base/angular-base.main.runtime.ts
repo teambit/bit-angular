@@ -2,7 +2,6 @@ import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
 import { ApplicationAspect } from '@teambit/application';
 import AspectLoaderAspect from '@teambit/aspect-loader';
-import { BabelAspect } from '@teambit/babel';
 import { MainRuntime } from '@teambit/cli';
 import { CompilerAspect, CompilerOptions } from '@teambit/compiler';
 import { DependencyResolverAspect } from '@teambit/dependency-resolver';
@@ -11,8 +10,7 @@ import { ESLintAspect } from '@teambit/eslint';
 import { GeneratorAspect } from '@teambit/generator';
 import { IsolatorAspect } from '@teambit/isolator';
 import { JestAspect } from '@teambit/jest';
-import { MultiCompilerAspect } from '@teambit/multi-compiler';
-import { NgPackagrAspect } from '@teambit/ng-packagr';
+import { NgMultiCompilerAspect } from '@teambit/ng-multi-compiler';
 import { PkgAspect } from '@teambit/pkg';
 import { ReactAspect } from '@teambit/react';
 import { TesterAspect } from '@teambit/tester';
@@ -20,6 +18,14 @@ import { WebpackAspect, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { WorkspaceAspect } from '@teambit/workspace';
 import { Configuration } from 'webpack';
 import { AngularBaseEnv } from './angular-base.env';
+
+export interface AngularEnvOptions {
+  /**
+   * Use Rollup & Angular Elements to compile compositions instead of webpack.
+   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
+   */
+  useAngularElements?: boolean
+}
 
 export abstract class AngularBaseMain {
   static slots = [];
@@ -29,7 +35,7 @@ export abstract class AngularBaseMain {
     CompilerAspect,
     TesterAspect,
     ESLintAspect,
-    NgPackagrAspect,
+    NgMultiCompilerAspect,
     GeneratorAspect,
     WebpackAspect,
     WorkspaceAspect,
@@ -38,8 +44,6 @@ export abstract class AngularBaseMain {
     PkgAspect,
     ApplicationAspect,
     AspectLoaderAspect,
-    MultiCompilerAspect,
-    BabelAspect,
     DependencyResolverAspect,
     ReactAspect,
   ];

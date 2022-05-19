@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-// import { RenderingContext } from '@teambit/preview';
 
-import {loadAngularElement} from './main';
+import { loadAngularElement } from './loader';
 
 const root = document.getElementById('root') as HTMLElement;
 
@@ -12,7 +11,7 @@ const root = document.getElementById('root') as HTMLElement;
  * to apply custom logic for component DOM mounting.
  */
 export default async (composition: any/*, previewContext: RenderingContext*/) => {
-  const selectors = await loadAngularElement(composition);
+  const selectors = await loadAngularElement([composition]);
   ReactDOM.render(
     <div>{selectors.map(Selector => <Selector key={Selector}></Selector>)}</div>,
     root

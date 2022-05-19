@@ -14,5 +14,4 @@ class CompositionComponent {}
   bootstrap: [CompositionComponent]
 })
 export class CompositionModule {
-  ngDoBootstrap() {}
 }

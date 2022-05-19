@@ -1,35 +1,26 @@
 import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
+import { componentIsApp } from '@teambit/angular-apps';
+import { ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
   BuildContext,
   BuiltTaskResult,
   ComponentResult
 } from '@teambit/builder';
-import {
-  CompilationInitiator,
-  Compiler,
-  CompilerOptions,
-  TranspileComponentParams
-} from '@teambit/compiler';
+import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
+import { CompositionsMain } from '@teambit/compositions';
 import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
 import DataToPersist from '@teambit/legacy/dist/consumer/component/sources/data-to-persist';
-import { CompositionsMain } from '@teambit/compositions';
 import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
+import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace } from '@teambit/workspace';
 import { writeFileSync } from 'fs-extra';
-import { join, posix, resolve, parse } from 'path';
-import { NgccProcessor } from '@teambit/ngcc';
-import { ApplicationMain } from '@teambit/application';
-import { componentIsApp } from '@teambit/angular-apps';
-import { RollupCompiler } from '@teambit/angular-elements';
-import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
-import { Timer } from '@teambit/legacy/dist/toolbox/timer';
-import chalk from 'chalk';
+import { join, parse, posix, resolve } from 'path';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -62,35 +53,28 @@ export interface NgPackagr {
 
 export class NgPackagrCompiler implements Compiler {
   displayName = 'NgPackagr compiler';
-  distDir: string;
-  distGlobPatterns: string[];
-  shouldCopyNonSupportedFiles: boolean;
-  artifactName: string;
   readDefaultTsConfig: () => Promise<ParsedConfiguration>;
   ngPackagr: NgPackagr;
   ngccProcessor = new NgccProcessor();
 
   constructor(
     readonly id: string,
-    ngPackagr: string,
+    ngPackagrPath: string,
+    readDefaultTsConfig: string,
     private logger: Logger,
     private workspace: Workspace,
-    readDefaultTsConfig: string,
     private compositions: CompositionsMain,
-    private rollupCompiler: RollupCompiler,
+    private application: ApplicationMain,
+    public distDir: string,
+    public distGlobPatterns: string[],
+    public shouldCopyNonSupportedFiles: boolean,
+    public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
-    bitCompilerOptions: Partial<CompilerOptions> = {},
-    private nodeModulesPaths: string[] = [],
-    private application: ApplicationMain
+    private nodeModulesPaths: string[] = []
   ) {
     // TODO only do that if necessary
     // NativeCompileCache.uninstall();
-    this.ngPackagr = require(ngPackagr).ngPackagr();
-    this.distDir = bitCompilerOptions.distDir || 'dist';
-    this.distGlobPatterns = bitCompilerOptions.distGlobPatterns || [`${this.distDir}/**`];
-    this.shouldCopyNonSupportedFiles =
-      typeof bitCompilerOptions.shouldCopyNonSupportedFiles === 'boolean' ? bitCompilerOptions.shouldCopyNonSupportedFiles : true;
-    this.artifactName = bitCompilerOptions.artifactName || 'dist';
+    this.ngPackagr = require(ngPackagrPath).ngPackagr();
 
     const module = require(readDefaultTsConfig);
     if (typeof module.readDefaultTsConfig !== 'undefined') {
@@ -204,50 +188,20 @@ export class NgPackagrCompiler implements Compiler {
       });
   }
 
-  async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false) {
-    // Process all node_modules folders (only works if the modules are hoisted)
-    for(let i = 0; i < this.nodeModulesPaths.length; i++) {
-      await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-    }
-    // Build compositions with rollup
-    this.logger.console('\nBuilding compositions');
-    const timer = Timer.create();
-    timer.start();
-    const compositions = this.compositions.readCompositions(component);
-    const compositionFiles = compositions.map(composition => join(componentDir, composition.filepath || ''));
-    const compositionsDist = join(outputDir, 'dist/compositions');
-    // TODO use a worker
-    await this.rollupCompiler.compile({
-      entries: compositionFiles,
-      sourceRoot: componentDir,
-      dest: join(outputDir, 'dist/compositions'),
-      moduleName: component.id.fullName
-    }, watch, 'full');
-    const duration = timer.stop();
-    this.logger.console(chalk.green(`\n------------------------------------------------------------------------------
-Built Angular Compositions
- - from: ${componentDir}
- - to:   ${compositionsDist}
-------------------------------------------------------------------------------`));
-    this.logger.console(`\nBuild completed in ${chalk.bold(duration.elapsed)}ms`);
-  }
-
   /**
    * used by `bit compile`
    */
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
     const isApp = componentIsApp(params.component, this.application);
     // No need to compile an app
-    if(isApp) {
+    if (isApp) {
       return;
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       // Process all node_modules folders (only works if the modules are hoisted)
-      for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
         await this.ngccProcessor.process(this.nodeModulesPaths[i]);
       }
-      // Build compositions
-      await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true);
       return;
     }
     // recreate packageJson from component to make sure that its dependencies are updated with recent code changes
@@ -257,8 +211,7 @@ Built Angular Compositions
     // disable logger temporarily so that it doesn't mess up with ngPackagr logs
     this.logger.off();
     // Build component package
-    // TODO uncomment this
-    // await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
+    await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
     this.logger.on();
   }
 
@@ -278,11 +231,11 @@ Built Angular Compositions
     const componentsResults: ComponentResult[] = [];
 
     // Process all node_modules folders (only works if the modules are hoisted)
-    for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+    for (let i = 0; i < this.nodeModulesPaths.length; i++) {
       await this.ngccProcessor.process(this.nodeModulesPaths[i]);
     }
 
-    for(let i =0; i < context.components.length; i++) {
+    for (let i = 0; i < context.components.length; i++) {
       const component = context.components[i];
       const capsule = capsules.getCapsule(component.id);
       if (!capsule) {
@@ -292,7 +245,7 @@ Built Angular Compositions
         component
       };
       const isApp = componentIsApp(component, this.application);
-      if(!isApp) { // No need to compile an app
+      if (!isApp) { // No need to compile an app
         try {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();
@@ -305,9 +258,9 @@ Built Angular Compositions
 
         if (this.shouldCopyNonSupportedFiles) {
           const dataToPersist = new DataToPersist();
-          capsule.component.filesystem.files.forEach((file: AbstractVinyl) => {
+          capsule.component.filesystem.files.forEach(file => {
             if (!this.isFileSupported(file.path)) {
-              dataToPersist.addFile(file);
+              dataToPersist.addFile(file as any as AbstractVinyl);
             }
           });
           dataToPersist.addBasePath(join(capsule.path, this.distDir));
@@ -341,7 +294,7 @@ Built Angular Compositions
    * used by `bit start`
    */
   getPreviewComponentRootPath(component: Component): string {
-    return this.workspace.componentPackageDir(component, {relative: true});
+    return this.workspace.componentPackageDir(component, { relative: true });
     // join(this.tempFolder.replace(this.workspace.path, ''), component?.id.name || '')
   }
 

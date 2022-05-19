@@ -16,7 +16,6 @@
         }
       }
     },
-  "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {

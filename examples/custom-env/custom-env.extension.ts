@@ -14,9 +14,10 @@ export class CustomEnvExtension {
        *   fullTemplateTypeCheck: false
        * })
        */
-      angular.overrideAngularOptions({styles: ['my-style.scss']})
+      angular.overrideAngularOptions({styles: ['my-style.scss']}),
     ])
 
+    angular.useAngularElements();
     envs.registerEnv(CustomEnvEnv)
 
     return new CustomEnvExtension(angular)

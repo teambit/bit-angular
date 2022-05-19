@@ -1,16 +1,14 @@
-import { AngularBaseMain } from '@teambit/angular-base';
+import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
-import { BabelMain } from '@teambit/babel';
 import { CompilerMain } from '@teambit/compiler';
 import { DependencyResolverMain } from '@teambit/dependency-resolver';
-import { EnvsMain } from '@teambit/envs';
+import { EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
-import { MultiCompilerMain } from '@teambit/multi-compiler';
-import { NgPackagrMain } from '@teambit/ng-packagr';
+import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
 import { PkgMain } from '@teambit/pkg';
 import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
@@ -25,7 +23,7 @@ export class AngularV12Main extends AngularBaseMain {
     compiler,
     tester,
     eslint,
-    ngPackagr,
+    ngMultiCompiler,
     generator,
     webpack,
     workspace,
@@ -34,35 +32,31 @@ export class AngularV12Main extends AngularBaseMain {
     pkg,
     application,
     aspectLoader,
-    multicompiler,
-    babel,
     dependencyResolver,
-    react,
+    react
   ]: [
     JestMain,
     CompilerMain,
     TesterMain,
     ESLintMain,
-    NgPackagrMain,
+    NgMultiCompilerMain,
     GeneratorMain,
     WebpackMain,
-      Workspace | undefined,
+    Workspace | undefined,
     EnvsMain,
     IsolatorMain,
     PkgMain,
     ApplicationMain,
     AspectLoaderMain,
-    MultiCompilerMain,
-    BabelMain,
     DependencyResolverMain,
-    ReactMain,
-  ]): Promise<AngularBaseMain> {
+    ReactMain
+  ], options: AngularEnvOptions): Promise<AngularBaseMain> {
     const angularV12Env = new AngularV12Env(
       jestAspect,
       compiler,
       tester,
       eslint,
-      ngPackagr,
+      ngMultiCompiler,
       generator,
       isolator,
       webpack,
@@ -70,12 +64,21 @@ export class AngularV12Main extends AngularBaseMain {
       pkg,
       application,
       aspectLoader,
-      multicompiler,
-      babel,
       dependencyResolver,
       react,
+      options,
     );
     return new AngularV12Main(envs, angularV12Env);
+  }
+
+  /**
+   * Use Rollup & Angular Elements to compile compositions instead of webpack.
+   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
+   */
+  useAngularElements(): EnvTransformer {
+    return this.envs.override({
+      useAngularElements: true
+    });
   }
 }
 

@@ -13,41 +13,45 @@ import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { NgPackagrAspect } from './ng-packagr.aspect';
 import { NgPackagrCompiler } from './ng-packagr.compiler';
 
-type NgPackagerMain = [LoggerMain, Workspace, ApplicationMain, CompositionsMain, AngularElementsMain];
+type NgPackagerMain = [LoggerMain, Workspace, ApplicationMain, CompositionsMain];
 
 export class NgPackagrMain {
   static slots = [];
   static dependencies: any = [LoggerAspect, WorkspaceAspect, ApplicationAspect, CompositionsAspect, AngularElementsAspect];
   static runtime: any = MainRuntime;
 
-  constructor(private logger: Logger, private workspace: Workspace, private application: ApplicationMain, private compositions: CompositionsMain, private rollupCompiler: RollupCompiler) {}
+  constructor(private logger: Logger, private workspace: Workspace, private application: ApplicationMain, private compositions: CompositionsMain) {}
 
   createCompiler(
-    ngPackagr: string,
+    ngPackagrPath: string,
     readDefaultTsConfig: string,
+    distDir: string,
+    distGlobPatterns: string[],
+    shouldCopyNonSupportedFiles: boolean,
+    artifactName: string,
     tsCompilerOptions?: AngularCompilerOptions,
-    bitCompilerOptions?: Partial<CompilerOptions>,
-    nodeModulesPaths: string[] = []
+    nodeModulesPaths: string[] = [],
   ): Compiler {
     return new NgPackagrCompiler(
       NgPackagrAspect.id,
-      ngPackagr,
+      ngPackagrPath,
+      readDefaultTsConfig,
       this.logger,
       this.workspace,
-      readDefaultTsConfig,
       this.compositions,
-      this.rollupCompiler,
+      this.application,
+      distDir,
+      distGlobPatterns,
+      shouldCopyNonSupportedFiles,
+      artifactName,
       tsCompilerOptions,
-      bitCompilerOptions,
       nodeModulesPaths,
-      this.application
     );
   }
 
-  static async provider([loggerMain, workspace, application, compositions, angularElementsMain]: NgPackagerMain) {
+  static async provider([loggerMain, workspace, application, compositions]: NgPackagerMain) {
     const logger = loggerMain.createLogger(NgPackagrAspect.id);
-    const rollupCompiler = angularElementsMain.createCompiler();
-    return new NgPackagrMain(logger, workspace, application, compositions, rollupCompiler);
+    return new NgPackagrMain(logger, workspace, application, compositions);
   }
 }
 

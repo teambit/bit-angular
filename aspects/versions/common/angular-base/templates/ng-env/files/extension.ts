@@ -10,11 +10,12 @@ export class ${Name}Extension {
   static dependencies: any = [EnvsAspect, AngularAspect]
 
   static async provider([envs, angular]: [EnvsMain, AngularMain]) {
-    // Use any of the "angular.override..." transformers, for example:
+    // Use any of the "angular.override..." or "angular.use..." transformers, for example:
     const compilerOptions = await angular.overrideCompilerOptions({
       fullTemplateTypeCheck: false
     });
-    const ${Name}Env = angular.compose([compilerOptions])
+    const useAngularElement = angular.useAngularElement();
+    const ${Name}Env = angular.compose([compilerOptions, useAngularElement])
     envs.registerEnv(${Name}Env)
 
     return new ${Name}Extension(angular)

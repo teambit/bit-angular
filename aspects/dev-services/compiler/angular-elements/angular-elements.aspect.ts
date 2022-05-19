@@ -1,5 +1,5 @@
 import { Aspect } from '@teambit/harmony';
 
 export const AngularElementsAspect = Aspect.create({
-  id: 'teambit.angular/angular-elements',
+  id: 'teambit.angular/dev-services/compiler/angular-elements',
 });
