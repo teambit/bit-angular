@@ -1,5 +1,5 @@
 import { EnvsMain, EnvsAspect } from '@teambit/envs'
-import { AngularV12Aspect, AngularV12Main } from '@teambit/angular-v12'
+import { AngularV12Aspect, AngularV12Main } from '@teambit/angular-v12';
 
 export class CustomEnvExtension {
   constructor(private angular: AngularV12Main) {}
@@ -14,11 +14,11 @@ export class CustomEnvExtension {
        *   fullTemplateTypeCheck: false
        * })
        */
-      angular.overrideAngularOptions({styles: ['my-style.scss']})
-    ])
+      angular.useAngularElements()
+    ]);
 
     envs.registerEnv(CustomEnvEnv)
 
-    return new CustomEnvExtension(angular)
+    return new CustomEnvExtension(angular);
   }
 }

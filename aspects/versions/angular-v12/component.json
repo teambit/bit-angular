@@ -21,6 +21,7 @@
         "dependencies": {
           "@angular-devkit/architect": "~0.1202.16",
           "@angular-devkit/build-angular": "^12.2.16",
+          "@angular-devkit/build-optimizer": "~0.1202.16",
           "@angular-devkit/build-webpack": "~0.1202.16",
           "@angular-devkit/core": "^12.2.16",
           "@angular-devkit/schematics": "^12.2.16",
@@ -32,6 +33,7 @@
           "@angular/compiler": "^12.2.16",
           "@angular/compiler-cli": "^12.2.16",
           "@angular/core": "^12.2.16",
+          "@angular/elements": "^12.2.16",
           "@angular/forms": "^12.2.16",
           "@angular/platform-browser": "^12.2.16",
           "@angular/platform-browser-dynamic": "^12.2.16",

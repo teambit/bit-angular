@@ -187,8 +187,9 @@ export class BitDedupeModuleResolvePlugin {
 
     compiler.hooks.compilation.tap(
       this.pluginName,
+        // @ts-ignore
       (compilation, { normalModuleFactory }) => {
-        normalModuleFactory.hooks.afterResolve.tap(this.pluginName, (result) => {
+        normalModuleFactory.hooks.afterResolve.tap(this.pluginName, (result: any) => {
           if (
             // Ignore empty requests
             !result.request

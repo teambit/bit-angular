@@ -1,17 +1,15 @@
 import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
+import { componentIsApp } from '@teambit/angular-apps';
+import { ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
   BuildContext,
   BuiltTaskResult,
   ComponentResult
 } from '@teambit/builder';
-import {
-  CompilationInitiator,
-  Compiler,
-  CompilerOptions,
-  TranspileComponentParams
-} from '@teambit/compiler';
+import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
+import { CompositionsMain } from '@teambit/compositions';
 import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
@@ -19,12 +17,10 @@ import DataToPersist from '@teambit/legacy/dist/consumer/component/sources/data-
 import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
+import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace } from '@teambit/workspace';
 import { writeFileSync } from 'fs-extra';
-import { join, posix, resolve } from 'path';
-import { NgccProcessor } from '@teambit/ngcc';
-import { ApplicationMain } from '@teambit/application';
-import { componentIsApp } from '@teambit/angular-apps';
+import { join, parse, posix, resolve } from 'path';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -57,31 +53,28 @@ export interface NgPackagr {
 
 export class NgPackagrCompiler implements Compiler {
   displayName = 'NgPackagr compiler';
-  distDir: string;
-  distGlobPatterns: string[];
-  shouldCopyNonSupportedFiles: boolean;
-  artifactName: string;
   readDefaultTsConfig: () => Promise<ParsedConfiguration>;
   ngPackagr: NgPackagr;
   ngccProcessor = new NgccProcessor();
 
   constructor(
     readonly id: string,
-    ngPackagr: string,
+    ngPackagrPath: string,
+    readDefaultTsConfig: string,
     private logger: Logger,
     private workspace: Workspace,
-    readDefaultTsConfig: string,
+    private compositions: CompositionsMain,
+    private application: ApplicationMain,
+    public distDir: string,
+    public distGlobPatterns: string[],
+    public shouldCopyNonSupportedFiles: boolean,
+    public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
-    bitCompilerOptions: Partial<CompilerOptions> = {},
-    private nodeModulesPaths: string[] = [],
-    private application: ApplicationMain
+    private nodeModulesPaths: string[] = []
   ) {
-    this.ngPackagr = require(ngPackagr).ngPackagr();
-    this.distDir = bitCompilerOptions.distDir || 'dist';
-    this.distGlobPatterns = bitCompilerOptions.distGlobPatterns || [`${this.distDir}/**`];
-    this.shouldCopyNonSupportedFiles =
-      typeof bitCompilerOptions.shouldCopyNonSupportedFiles === 'boolean' ? bitCompilerOptions.shouldCopyNonSupportedFiles : true;
-    this.artifactName = bitCompilerOptions.artifactName || 'dist';
+    // TODO only do that if necessary
+    // NativeCompileCache.uninstall();
+    this.ngPackagr = require(ngPackagrPath).ngPackagr();
 
     const module = require(readDefaultTsConfig);
     if (typeof module.readDefaultTsConfig !== 'undefined') {
@@ -201,12 +194,12 @@ export class NgPackagrCompiler implements Compiler {
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
     const isApp = componentIsApp(params.component, this.application);
     // No need to compile an app
-    if(isApp) {
+    if (isApp) {
       return;
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       // Process all node_modules folders (only works if the modules are hoisted)
-      for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
         await this.ngccProcessor.process(this.nodeModulesPaths[i]);
       }
       return;
@@ -217,7 +210,7 @@ export class NgPackagrCompiler implements Compiler {
     await packageJson.write();
     // disable logger temporarily so that it doesn't mess up with ngPackagr logs
     this.logger.off();
-    // if it's not in the background, we wait for the promise to resolve
+    // Build component package
     await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
     this.logger.on();
   }
@@ -238,11 +231,11 @@ export class NgPackagrCompiler implements Compiler {
     const componentsResults: ComponentResult[] = [];
 
     // Process all node_modules folders (only works if the modules are hoisted)
-    for(let i = 0; i < this.nodeModulesPaths.length; i++) {
+    for (let i = 0; i < this.nodeModulesPaths.length; i++) {
       await this.ngccProcessor.process(this.nodeModulesPaths[i]);
     }
 
-    for(let i =0; i < context.components.length; i++) {
+    for (let i = 0; i < context.components.length; i++) {
       const component = context.components[i];
       const capsule = capsules.getCapsule(component.id);
       if (!capsule) {
@@ -252,7 +245,7 @@ export class NgPackagrCompiler implements Compiler {
         component
       };
       const isApp = componentIsApp(component, this.application);
-      if(!isApp) { // No need to compile an app
+      if (!isApp) { // No need to compile an app
         try {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();
@@ -265,9 +258,9 @@ export class NgPackagrCompiler implements Compiler {
 
         if (this.shouldCopyNonSupportedFiles) {
           const dataToPersist = new DataToPersist();
-          capsule.component.filesystem.files.forEach((file: AbstractVinyl) => {
+          capsule.component.filesystem.files.forEach(file => {
             if (!this.isFileSupported(file.path)) {
-              dataToPersist.addFile(file);
+              dataToPersist.addFile(file as any as AbstractVinyl);
             }
           });
           dataToPersist.addBasePath(join(capsule.path, this.distDir));
@@ -286,10 +279,9 @@ export class NgPackagrCompiler implements Compiler {
 
   /**
    * given a source file, return its parallel in the dists. e.g. index.ts => dist/index.js
-   * used by `bit build`
+   * used by `bit build` & `bit start` for compositions & doc files
    */
   getDistPathBySrcPath(srcPath: string): string {
-    // we use the typescript compiler, so we just need to return the typescript src file path
     return srcPath;
   }
 
@@ -298,7 +290,7 @@ export class NgPackagrCompiler implements Compiler {
    * in node_modules by default
    * used by `bit start`
    */
-  getPreviewComponentRootPath?(component: Component): string {
+  getPreviewComponentRootPath(component: Component): string {
     return this.workspace.componentDir(component.id, {
       ignoreScopeAndVersion: true,
       ignoreVersion: true
@@ -309,7 +301,7 @@ export class NgPackagrCompiler implements Compiler {
    * whether ngPackagr is able to compile the given path
    */
   isFileSupported(filePath: string): boolean {
-    return filePath.endsWith('.ts') || (!!this.tsCompilerOptions.allowJs && filePath.endsWith('.js')) || filePath.endsWith('.md');
+    return filePath.endsWith('.ts') || (!!this.tsCompilerOptions.allowJs && filePath.endsWith('.js'));
   }
 
   version(): string {

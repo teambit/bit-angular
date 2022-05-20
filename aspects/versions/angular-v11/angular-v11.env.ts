@@ -1,22 +1,20 @@
-import { AngularBaseEnv } from '@teambit/angular-base';
-import { CompilerMain } from '@teambit/compiler';
-import { EnvDescriptor } from '@teambit/envs';
-import { ESLintMain } from '@teambit/eslint';
-import { JestMain } from '@teambit/jest';
-import { IsolatorMain } from '@teambit/isolator';
-import { TesterMain } from '@teambit/tester';
-import { PkgMain } from '@teambit/pkg';
-import { NgPackagrMain } from '@teambit/ng-packagr';
-import { WebpackMain } from '@teambit/webpack';
-import { Workspace } from '@teambit/workspace';
-import { GeneratorMain } from '@teambit/generator';
-import { AngularV11Aspect } from './angular-v11.aspect';
-import { AngularV11Webpack } from './angular-v11.webpack';
+import { AngularBaseEnv, AngularEnvOptions } from '@teambit/angular-base';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
-import { MultiCompilerMain } from '@teambit/multi-compiler';
-import { BabelMain } from '@teambit/babel';
+import { CompilerMain } from '@teambit/compiler';
 import { DependencyResolverMain } from '@teambit/dependency-resolver';
+import { EnvDescriptor } from '@teambit/envs';
+import { ESLintMain } from '@teambit/eslint';
+import { GeneratorMain } from '@teambit/generator';
+import { IsolatorMain } from '@teambit/isolator';
+import { JestMain } from '@teambit/jest';
+import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
+import { PkgMain } from '@teambit/pkg';
+import { TesterMain } from '@teambit/tester';
+import { WebpackMain } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
+import { AngularV11Aspect } from './angular-v11.aspect';
+import { AngularV11Webpack } from './angular-v11.webpack';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -25,6 +23,7 @@ export class AngularV11Env extends AngularBaseEnv {
   name = 'Angular-v11';
   angularWebpack: AngularV11Webpack;
   ngPackagr = require.resolve('ng-packagr');
+  elements = null;
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
   jestConfigPath = require.resolve('./jest/jest.config');
   jestModulePath = require.resolve('jest');
@@ -34,7 +33,7 @@ export class AngularV11Env extends AngularBaseEnv {
     compiler: CompilerMain,
     tester: TesterMain,
     eslint: ESLintMain,
-    ngPackagrAspect: NgPackagrMain,
+    ngMultiCompiler: NgMultiCompilerMain,
     generator: GeneratorMain,
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
@@ -42,11 +41,10 @@ export class AngularV11Env extends AngularBaseEnv {
     private pkg: PkgMain,
     application: ApplicationMain,
     aspectLoader: AspectLoaderMain,
-    multicompiler: MultiCompilerMain,
-    babel: BabelMain,
     dependencyResolver: DependencyResolverMain,
+    options: AngularEnvOptions
   ) {
-    super(jestAspect, compiler, tester, eslint, ngPackagrAspect, isolator, workspace, generator, application, aspectLoader, multicompiler, babel, dependencyResolver);
+    super(jestAspect, compiler, tester, eslint, ngMultiCompiler, isolator, workspace, generator, application, aspectLoader, dependencyResolver, options);
     this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg, application);
   }
 

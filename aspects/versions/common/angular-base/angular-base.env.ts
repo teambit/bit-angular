@@ -1,18 +1,29 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
+import {
+  AngularAppType,
+  BrowserOptions,
+  DevServerOptions,
+  NG_APP_NAME
+} from '@teambit/angular-apps';
 import { eslintConfig } from '@teambit/angular-eslint-config';
-import { AppBuildContext, ApplicationMain } from '@teambit/application';
+import { AppBuildContext, AppContext, ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
-import { BabelMain } from '@teambit/babel';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
-import { CompilerMain, CompilerOptions } from '@teambit/compiler';
-import { DependencyResolverMain, VariantPolicyConfigObject, InstallArgs, DependencyInstaller } from '@teambit/dependency-resolver';
+import { Compiler, CompilerMain, CompilerOptions } from '@teambit/compiler';
+import {
+  DependencyInstaller,
+  DependencyResolverMain,
+  InstallArgs,
+  VariantPolicyConfigObject
+} from '@teambit/dependency-resolver';
 import {
   CompilerEnv,
   DependenciesEnv,
   DevEnv,
   EnvDescriptor,
   LinterEnv,
+  PreviewEnv,
   TesterEnv
 } from '@teambit/envs';
 import { EslintConfigTransformer, ESLintMain } from '@teambit/eslint';
@@ -20,60 +31,67 @@ import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
 import { Linter, LinterContext } from '@teambit/linter';
-import { MultiCompilerMain } from '@teambit/multi-compiler';
-import { NgPackagrMain } from '@teambit/ng-packagr';
+import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
+import { NgccProcessor } from '@teambit/ngcc';
+import { EnvPreviewConfig } from '@teambit/preview';
 import { Tester, TesterMain } from '@teambit/tester';
 import { WebpackConfigTransformer } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
+import { AngularEnvOptions } from './angular-base.main.runtime';
 import { angularBaseTemplates, workspaceTemplates } from './angular-base.templates';
-import { BrowserOptions, DevServerOptions, NG_APP_PATTERN } from '@teambit/angular-apps';
 import { AngularBaseWebpack } from './angular-base.webpack';
-import { AngularAppType, NG_APP_NAME } from '@teambit/angular-apps';
-import { NgccProcessor } from '@teambit/ngcc';
 import { getNodeModulesPaths } from './webpack-plugins/utils';
-
-const presets = [
-  require.resolve('@babel/preset-env'),
-  require.resolve('@babel/preset-typescript'),
-];
-const plugins = [require.resolve('@babel/plugin-proposal-class-properties')];
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv {
+export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv, PreviewEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-
-  constructor(
-    protected jestAspect: JestMain,
-    protected compiler: CompilerMain,
-    private tester: TesterMain,
-    protected eslint: ESLintMain,
-    protected ngPackagrAspect: NgPackagrMain,
-    private isolator: IsolatorMain,
-    protected workspace: Workspace | undefined,
-    generator: GeneratorMain,
-    application: ApplicationMain,
-    private aspectLoader: AspectLoaderMain,
-    private multicompiler: MultiCompilerMain,
-    private babel: BabelMain,
-    dependencyResolver: DependencyResolverMain,
-  ) {
-    generator.registerComponentTemplate(angularBaseTemplates);
-    generator.registerWorkspaceTemplate(workspaceTemplates);
-    application.registerAppType(new AngularAppType(NG_APP_NAME, this));
-    dependencyResolver.registerPostInstallSubscribers([this.postInstall.bind(this)])
-  }
+  useAngularElements = false;
+  private ngMultiCompiler: Compiler | undefined;
 
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;
   abstract ngPackagr: string;
+  abstract elements: string | null;
   abstract readDefaultTsConfig: string;
   abstract angularWebpack: AngularBaseWebpack;
   abstract __getDescriptor(): Promise<EnvDescriptor>;
   abstract getDependencies(): VariantPolicyConfigObject | Promise<VariantPolicyConfigObject>;
   abstract jestConfigPath: string;
   abstract jestModulePath: string;
+
+  constructor(
+    protected jestAspect: JestMain,
+    protected compiler: CompilerMain,
+    private tester: TesterMain,
+    protected eslint: ESLintMain,
+    protected ngMultiCompilerMain: NgMultiCompilerMain,
+    private isolator: IsolatorMain,
+    protected workspace: Workspace | undefined,
+    generator: GeneratorMain,
+    application: ApplicationMain,
+    private aspectLoader: AspectLoaderMain,
+    dependencyResolver: DependencyResolverMain,
+    protected options: AngularEnvOptions,
+    private angularElements?: any
+  ) {
+    generator.registerComponentTemplate(angularBaseTemplates);
+    generator.registerWorkspaceTemplate(workspaceTemplates);
+    application.registerAppType(new AngularAppType(NG_APP_NAME, this));
+    dependencyResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
+    if (options.useAngularElements) {
+      this.useAngularElements = true;
+    }
+  }
+
+  isAppContext(context: DevServerContext | AppContext): context is DevServerContext & AppContext {
+    return (context as any).appName !== undefined;
+  }
+
+  isAppBuildContext(context: BundlerContext | AppBuildContext): context is BundlerContext & AppBuildContext {
+    return (context as any).appName !== undefined;
+  }
 
   private getNodeModulesPaths(build: boolean): string[] {
     if (!this.workspace) {
@@ -90,23 +108,20 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     this.getNodeModulesPaths(isBuild).forEach(path => new NgccProcessor().process(path));
   }
 
-  private createNgPackgrCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
+  private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {
     const nodeModulesPaths = this.getNodeModulesPaths(false);
-    return this.ngPackagrAspect.createCompiler(this.ngPackagr, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
+    return this.ngMultiCompilerMain.createCompiler(this.ngPackagr, this.useAngularElements, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths, this.angularElements);
   }
 
   /**
    * Returns a compiler
    * Required for making and reading dists, especially for `bit compile`
    */
-  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>) {
-    const babelCompiler = this.babel.createCompiler({ babelTransformOptions: {
-        presets,
-        plugins,
-        sourceMaps: true,
-      }, shouldCopyNonSupportedFiles: false, supportedFilesGlobPatterns: [NG_APP_PATTERN]});
-    const ngPackagrCompiler = this.createNgPackgrCompiler(tsCompilerOptions, bitCompilerOptions);
-    return this.multicompiler.createCompiler([babelCompiler, ngPackagrCompiler]);
+  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {
+    if(!this.ngMultiCompiler) {
+      this.ngMultiCompiler = this.createNgMultiCompiler(tsCompilerOptions, bitCompilerOptions);
+    }
+    return this.ngMultiCompiler;
   }
 
   /**
@@ -177,7 +192,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
   /**
    * Required to use the old preview code until the envs are updated to use the new version
    */
-  getPreviewConfig() {
+  getPreviewConfig(): EnvPreviewConfig {
     return {
       strategyName: 'env',
       splitComponentBundle: false

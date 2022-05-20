@@ -15,7 +15,7 @@ export class StatsLoggerPlugin {
     };
     // "Executed when the compilation has completed."
     const { createWebpackLoggingCallback } = await loadEsmModule('@angular-devkit/build-angular/src/webpack/utils/stats');
-    const loggingCallback = createWebpackLoggingCallback({} as any, logger as any) as any as WebpackLoggingCallback
+    const loggingCallback = createWebpackLoggingCallback({} as any, logger as any) as any;
     compiler.hooks.done.tap(PLUGIN_NAME, (stats: Stats) => {
       loggingCallback(stats, {stats: {logging: 'info', colors: true}});
     });

@@ -1,7 +1,6 @@
-import { AngularBaseMain } from '@teambit/angular-base';
+import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
-import { BabelMain } from '@teambit/babel';
 import { CompilerMain } from '@teambit/compiler';
 import { DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvsMain } from '@teambit/envs';
@@ -9,8 +8,7 @@ import { ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
-import { MultiCompilerMain } from '@teambit/multi-compiler';
-import { NgPackagrMain } from '@teambit/ng-packagr';
+import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
 import { PkgMain } from '@teambit/pkg';
 import { TesterMain } from '@teambit/tester';
 import { WebpackMain } from '@teambit/webpack';
@@ -24,7 +22,7 @@ export class AngularV11Main extends AngularBaseMain {
     compiler,
     tester,
     eslint,
-    ngPackagr,
+    ngMultiCompiler,
     generator,
     webpack,
     workspace,
@@ -33,15 +31,13 @@ export class AngularV11Main extends AngularBaseMain {
     pkg,
     application,
     aspectLoader,
-    multicompiler,
-    babel,
     dependencyResolver,
   ]: [
     JestMain,
     CompilerMain,
     TesterMain,
     ESLintMain,
-    NgPackagrMain,
+    NgMultiCompilerMain,
     GeneratorMain,
     WebpackMain,
       Workspace | undefined,
@@ -50,16 +46,14 @@ export class AngularV11Main extends AngularBaseMain {
     PkgMain,
     ApplicationMain,
     AspectLoaderMain,
-    MultiCompilerMain,
-    BabelMain,
-    DependencyResolverMain
-  ]): Promise<AngularBaseMain> {
+    DependencyResolverMain,
+  ], options: AngularEnvOptions): Promise<AngularBaseMain> {
     const angularV11Env = new AngularV11Env(
       jestAspect,
       compiler,
       tester,
       eslint,
-      ngPackagr,
+      ngMultiCompiler,
       generator,
       isolator,
       webpack,
@@ -67,9 +61,8 @@ export class AngularV11Main extends AngularBaseMain {
       pkg,
       application,
       aspectLoader,
-      multicompiler,
-      babel,
       dependencyResolver,
+      options,
     );
     return new AngularV11Main(envs, angularV11Env);
   }

@@ -9,6 +9,18 @@
  */
 
 {
+    "dev-services/compiler/angular-elements": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "aspects/dev-services/compiler/angular-elements"
+    },
+    "dev-services/compiler/ng-multi-compiler": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "aspects/dev-services/compiler/ng-multi-compiler"
+    },
     "angular": {
         "scope": "teambit.angular",
         "version": "1.0.4",
