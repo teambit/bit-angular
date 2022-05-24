@@ -37,17 +37,27 @@ import { EnvPreviewConfig } from '@teambit/preview';
 import { Tester, TesterMain } from '@teambit/tester';
 import { WebpackConfigTransformer } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { AngularEnvOptions } from './angular-base.main.runtime';
 import { angularBaseTemplates, workspaceTemplates } from './angular-base.templates';
 import { AngularBaseWebpack } from './angular-base.webpack';
 import { getNodeModulesPaths } from './webpack-plugins/utils';
+
+export interface AngularEnvOptions {
+  /**
+   * Use Rollup & Angular Elements to compile compositions instead of webpack.
+   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
+   */
+  useAngularElementsPreview: boolean | undefined
+}
+
+const defaultNgEnvOptions: AngularEnvOptions = {
+  useAngularElementsPreview: false
+}
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
 export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv, PreviewEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-  useAngularElements = false;
   private ngMultiCompiler: Compiler | undefined;
 
   /** Abstract functions & properties specific to the adapter **/
@@ -80,8 +90,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     generator.registerWorkspaceTemplate(workspaceTemplates);
     application.registerAppType(new AngularAppType(NG_APP_NAME, this));
     dependencyResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
-    if (options.useAngularElements) {
-      this.useAngularElements = true;
+    if (options.useAngularElementsPreview) {
+      defaultNgEnvOptions['useAngularElementsPreview'] = true;
     }
   }
 
@@ -108,18 +118,27 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     this.getNodeModulesPaths(isBuild).forEach(path => new NgccProcessor().process(path));
   }
 
-  private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {
+  protected getNgEnvOption(key: keyof AngularEnvOptions, ngEnvOptions?: AngularEnvOptions): AngularEnvOptions[keyof AngularEnvOptions] {
+    return ngEnvOptions?.[key] ?? defaultNgEnvOptions[key];
+  }
+
+  protected useNgElementsPreview(ngEnvOptions?: AngularEnvOptions): boolean {
+    return !!this.getNgEnvOption('useAngularElementsPreview', ngEnvOptions);
+  }
+
+  private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
     const nodeModulesPaths = this.getNodeModulesPaths(false);
-    return this.ngMultiCompilerMain.createCompiler(this.ngPackagr, this.useAngularElements, this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths, this.angularElements);
+    console.log('useAngularElements', this.useNgElementsPreview(ngEnvOptions));
+    return this.ngMultiCompilerMain.createCompiler(this.ngPackagr, this.useNgElementsPreview(ngEnvOptions), this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths, this.angularElements);
   }
 
   /**
    * Returns a compiler
    * Required for making and reading dists, especially for `bit compile`
    */
-  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {
+  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
     if(!this.ngMultiCompiler) {
-      this.ngMultiCompiler = this.createNgMultiCompiler(tsCompilerOptions, bitCompilerOptions);
+      this.ngMultiCompiler = this.createNgMultiCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions);
     }
     return this.ngMultiCompiler;
   }
@@ -138,7 +157,9 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns a paths to a function which mounts a given component to DOM
    * Required for `bit build`
    */
-  getMounter() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getMounter(ngEnvOptions?: AngularEnvOptions) {
+    console.log('base get mounter', ngEnvOptions);
     return require.resolve('./preview/src/mount');
   }
 
@@ -146,7 +167,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns a path to a docs template.
    * Required for `bit build`
    */
-  getDocsTemplate() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getDocsTemplate(ngEnvOptions?: AngularEnvOptions) {
     return require.resolve('./preview/src/docs');
   }
 
@@ -154,7 +176,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns a bundler for the preview.
    * Required for `bit build`
    */
-  async getBundler(context: BundlerContext | (BundlerContext & AppBuildContext), transformers: any[] = [], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string): Promise<Bundler> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getBundler(context: BundlerContext | (BundlerContext & AppBuildContext), transformers: any[] = [], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string, ngEnvOptions?: AngularEnvOptions): Promise<Bundler> {
     const nodeModulesPaths = this.getNodeModulesPaths(true);
     return this.angularWebpack.createBundler(context, transformers, nodeModulesPaths, angularBuildOptions, sourceRoot);
   }
@@ -184,7 +207,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns and configures the dev server.
    * Required for `bit start`
    */
-  async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string): Promise<DevServer> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string, ngEnvOptions?: AngularEnvOptions): Promise<DevServer> {
     const nodeModulesPaths = this.getNodeModulesPaths(false);
     return this.angularWebpack.createDevServer(context, transformers, nodeModulesPaths, angularServeOptions, sourceRoot);
   }
@@ -192,7 +216,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
   /**
    * Required to use the old preview code until the envs are updated to use the new version
    */
-  getPreviewConfig(): EnvPreviewConfig {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getPreviewConfig(ngEnvOptions?: AngularEnvOptions): EnvPreviewConfig {
     return {
       strategyName: 'env',
       splitComponentBundle: false

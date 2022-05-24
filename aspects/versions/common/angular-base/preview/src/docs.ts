@@ -18,6 +18,7 @@ export default async function docsRoot(
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   _context: RenderingContext
 ) {
+  console.log('base docs root');
   // const angularRenderingContext = context.get(AngularAspect.id);
   // const component = await getComponentData(componentId);
   if (docs) {

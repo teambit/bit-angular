@@ -1,9 +1,11 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
+import { AngularElementsAspect } from '@teambit/angular-elements';
 import { ApplicationAspect } from '@teambit/application';
 import AspectLoaderAspect from '@teambit/aspect-loader';
+import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { MainRuntime } from '@teambit/cli';
-import { CompilerAspect, CompilerOptions } from '@teambit/compiler';
+import { Compiler, CompilerAspect, CompilerOptions } from '@teambit/compiler';
 import { DependencyResolverAspect } from '@teambit/dependency-resolver';
 import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { ESLintAspect } from '@teambit/eslint';
@@ -14,19 +16,15 @@ import { NgMultiCompilerAspect } from '@teambit/ng-multi-compiler';
 import { PkgAspect } from '@teambit/pkg';
 import { ReactAspect } from '@teambit/react';
 import { TesterAspect } from '@teambit/tester';
-import { WebpackAspect, WebpackConfigWithDevServer } from '@teambit/webpack';
+import {
+  WebpackAspect,
+  WebpackConfigTransformer,
+  WebpackConfigWithDevServer
+} from '@teambit/webpack';
 import { WorkspaceAspect } from '@teambit/workspace';
 import { Configuration } from 'webpack';
-import { AngularElementsAspect } from '@teambit/angular-elements';
-import { AngularBaseEnv } from './angular-base.env';
+import { AngularBaseEnv, AngularEnvOptions } from './angular-base.env';
 
-export interface AngularEnvOptions {
-  /**
-   * Use Rollup & Angular Elements to compile compositions instead of webpack.
-   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
-   */
-  useAngularElements?: boolean
-}
 
 export abstract class AngularBaseMain {
   static slots = [];
@@ -118,6 +116,23 @@ export abstract class AngularBaseMain {
     angularWebpack.webpackBuildOptions = buildOpts;
     return this.envs.override({
       angularWebpack
+    });
+  }
+
+  /***
+   * Override options for the Angular Env
+   */
+  overrideAngularEnvOptions(ngEnvOptions: AngularEnvOptions): EnvTransformer {
+    return this.envs.override({
+      getMounter: () => {
+        console.log('get mounter override', ngEnvOptions);
+        return this.angularEnv.getMounter(ngEnvOptions);
+      },
+      getCompiler: (tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler => this.angularEnv.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions),
+      getDocsTemplate: () => this.angularEnv.getDocsTemplate(ngEnvOptions),
+      getBundler: (context: BundlerContext, transformers: any[], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string) => this.angularEnv.getBundler(context, transformers, angularBuildOptions, sourceRoot, ngEnvOptions),
+      getPreviewConfig: () => this.angularEnv.getPreviewConfig(ngEnvOptions),
+      getDevServer: (context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string) => this.angularEnv.getDevServer(context, transformers, angularServeOptions, sourceRoot, ngEnvOptions)
     });
   }
 }
