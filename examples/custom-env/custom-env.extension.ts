@@ -2,8 +2,6 @@ import { EnvsMain, EnvsAspect } from '@teambit/envs'
 import { AngularV12Aspect, AngularV12Main } from '@teambit/angular-v12';
 
 export class CustomEnvExtension {
-  constructor(private angular: AngularV12Main) {}
-
   static dependencies: any = [EnvsAspect, AngularV12Aspect]
 
   static async provider([envs, angular]: [EnvsMain, AngularV12Main]) {
@@ -14,11 +12,11 @@ export class CustomEnvExtension {
        *   fullTemplateTypeCheck: false
        * })
        */
-      angular.useAngularElements()
+      angular.overrideAngularEnvOptions({useAngularElementsPreview: true})
     ]);
 
     envs.registerEnv(CustomEnvEnv)
 
-    return new CustomEnvExtension(angular);
+    return new CustomEnvExtension();
   }
 }

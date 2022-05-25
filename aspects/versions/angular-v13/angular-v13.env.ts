@@ -1,4 +1,6 @@
+import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
 import { AngularBaseEnv, AngularEnvOptions } from '@teambit/angular-base';
+import { AngularElementsMain } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
@@ -17,7 +19,6 @@ import { TesterMain } from '@teambit/tester';
 import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
 import { WebpackConfigTransformer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { AngularElementsMain } from '@teambit/angular-elements';
 import { AngularV13Aspect } from './angular-v13.aspect';
 import { AngularV13Webpack } from './angular-v13.webpack';
 
@@ -114,8 +115,8 @@ export class AngularV13Env extends AngularBaseEnv {
    * Returns a paths to a function which mounts a given component to DOM
    * Required for `bit build`
    */
-  override getMounter() {
-    if (!this.useAngularElements) {
+  override getMounter(ngEnvOptions?: AngularEnvOptions) {
+    if (!this.useNgElementsPreview(ngEnvOptions)) {
       return super.getMounter();
     }
     return require.resolve('@teambit/angular-elements/dist/preview/mount.js');
@@ -125,8 +126,8 @@ export class AngularV13Env extends AngularBaseEnv {
    * Returns a path to a docs template.
    * Required for `bit build`
    */
-  override getDocsTemplate() {
-    if (!this.useAngularElements) {
+  override getDocsTemplate(ngEnvOptions?: AngularEnvOptions) {
+    if (!this.useNgElementsPreview(ngEnvOptions)) {
       return super.getDocsTemplate();
     }
     return require.resolve('@teambit/angular-elements/dist/preview/docs.js');
@@ -134,10 +135,11 @@ export class AngularV13Env extends AngularBaseEnv {
 
   /**
    * Returns a bundler for the preview.
-   * Required for `bit build` & `build start`
+   * Required for `bit build`
    */
-  override async getBundler(context: BundlerContext, transformers: any[]): Promise<Bundler> {
-    if (this.isAppBuildContext(context) || !this.useAngularElements) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override async getBundler(context: BundlerContext, transformers: any[], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string, ngEnvOptions?: AngularEnvOptions): Promise<Bundler> {
+    if (this.isAppBuildContext(context) || !this.useNgElementsPreview(ngEnvOptions)) {
       return super.getBundler(context, transformers);
     }
     return this.react.env.getBundler(context, transformers);
@@ -147,8 +149,9 @@ export class AngularV13Env extends AngularBaseEnv {
    * Returns and configures the dev server.
    * Required for `bit start`
    */
-  override async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = []): Promise<DevServer> {
-    if (this.isAppContext(context) || !this.useAngularElements) {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  override async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string, ngEnvOptions?: AngularEnvOptions): Promise<DevServer> {
+    if (this.isAppContext(context) || !this.useNgElementsPreview(ngEnvOptions)) {
       return super.getDevServer(context, transformers);
     }
     return this.react.env.getDevServer(context, transformers);
@@ -157,8 +160,8 @@ export class AngularV13Env extends AngularBaseEnv {
   /**
    * Required to use the new preview code
    */
-  override getPreviewConfig(): EnvPreviewConfig {
-    if (!this.useAngularElements) {
+  override getPreviewConfig(ngEnvOptions?: AngularEnvOptions): EnvPreviewConfig {
+    if (!this.useNgElementsPreview(ngEnvOptions)) {
       return super.getPreviewConfig();
     }
     return {

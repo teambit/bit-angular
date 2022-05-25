@@ -1,9 +1,10 @@
 import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
+import { AngularElementsMain } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
 import { CompilerMain } from '@teambit/compiler';
 import { DependencyResolverMain } from '@teambit/dependency-resolver';
-import { EnvsMain, EnvTransformer } from '@teambit/envs';
+import { EnvsMain } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
@@ -14,7 +15,6 @@ import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { AngularElementsMain } from '@teambit/angular-elements';
 import { AngularV12Aspect } from './angular-v12.aspect';
 import { AngularV12Env } from './angular-v12.env';
 
@@ -73,15 +73,6 @@ export class AngularV12Main extends AngularBaseMain {
       angularElements
     );
     return new AngularV12Main(envs, angularV12Env);
-  }
-
-  /**
-   * Use Rollup & Angular Elements to compile compositions instead of webpack.
-   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
-   */
-  useAngularElements(): EnvTransformer {
-    this.angularEnv.useAngularElements = true;
-    return this.envs.override({});
   }
 }
 

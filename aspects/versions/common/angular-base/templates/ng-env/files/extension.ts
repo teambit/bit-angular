@@ -5,8 +5,6 @@ export function extensionFile({ namePascalCase: Name }: ComponentContext) {
 import { AngularAspect, AngularMain } from '@teambit/angular'
 
 export class ${Name}Extension {
-  constructor(private angular: AngularMain) {}
-
   static dependencies: any = [EnvsAspect, AngularAspect]
 
   static async provider([envs, angular]: [EnvsMain, AngularMain]) {
@@ -14,11 +12,11 @@ export class ${Name}Extension {
     const compilerOptions = await angular.overrideCompilerOptions({
       fullTemplateTypeCheck: false
     });
-    const useAngularElement = angular.useAngularElement();
-    const ${Name}Env = angular.compose([compilerOptions, useAngularElement])
-    envs.registerEnv(${Name}Env)
+    const overrideAngularEnvOptions = angular.overrideAngularEnvOptions({useAngularElementsPreview: true});
+    const ${Name}Env = angular.compose([compilerOptions, overrideAngularEnvOptions]);
+    envs.registerEnv(${Name}Env);
 
-    return new ${Name}Extension(angular)
+    return new ${Name}Extension();
   }
 }
 `;
