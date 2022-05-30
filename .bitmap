@@ -9,6 +9,18 @@
  */
 
 {
+    "custom-env": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "examples/custom-env"
+    },
+    "demo-lib-v12": {
+        "scope": "",
+        "version": "",
+        "mainFile": "public-api.ts",
+        "rootDir": "examples/demo-lib-v12"
+    },
     "dev-services/compiler/angular-elements": {
         "scope": "",
         "version": "",
@@ -20,12 +32,6 @@
         "version": "",
         "mainFile": "index.ts",
         "rootDir": "aspects/dev-services/compiler/ng-multi-compiler"
-    },
-    "angular": {
-        "scope": "teambit.angular",
-        "version": "1.0.4",
-        "mainFile": "index.ts",
-        "rootDir": "aspects/angular"
     },
     "dev-services/compiler/ng-packagr": {
         "scope": "teambit.angular",
@@ -45,41 +51,11 @@
         "mainFile": "index.ts",
         "rootDir": "aspects/dev-services/linter/eslint-config"
     },
-    "versions/angular-v10": {
-        "scope": "teambit.angular",
-        "version": "1.0.4",
-        "mainFile": "index.ts",
-        "rootDir": "aspects/versions/angular-v10"
-    },
-    "versions/angular-v11": {
-        "scope": "teambit.angular",
-        "version": "1.0.4",
-        "mainFile": "index.ts",
-        "rootDir": "aspects/versions/angular-v11"
-    },
     "versions/angular-v12": {
         "scope": "teambit.angular",
         "version": "1.0.4",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v12"
-    },
-    "versions/angular-v13": {
-        "scope": "teambit.angular",
-        "version": "1.0.4",
-        "mainFile": "index.ts",
-        "rootDir": "aspects/versions/angular-v13"
-    },
-    "versions/angular-v8": {
-        "scope": "teambit.angular",
-        "version": "1.0.4",
-        "mainFile": "index.ts",
-        "rootDir": "aspects/versions/angular-v8"
-    },
-    "versions/angular-v9": {
-        "scope": "teambit.angular",
-        "version": "1.0.4",
-        "mainFile": "index.ts",
-        "rootDir": "aspects/versions/angular-v9"
     },
     "versions/common/angular-apps": {
         "scope": "teambit.angular",
