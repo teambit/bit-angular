@@ -21,7 +21,7 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularBaseWebpack, WebpackSetup } from '@teambit/angular-base';
+import { AngularBaseWebpack, WebpackConfig, WebpackSetup } from '@teambit/angular-base';
 import { PkgMain } from '@teambit/pkg';
 import { Workspace } from '@teambit/workspace';
 import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
@@ -30,7 +30,7 @@ import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import path, { join } from 'path';
-import webpack, { Configuration } from 'webpack';
+import webpack  from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
 import { AngularV11Aspect } from './angular-v11.aspect';
 import { ApplicationMain } from '@teambit/application';
@@ -54,7 +54,7 @@ export class AngularV11Webpack extends AngularBaseWebpack {
   /**
    * Migrate options from webpack-dev-server 3 to 4
    */
-  private migrateConfiguration(webpackConfig: Configuration): Configuration {
+  private migrateConfiguration(webpackConfig: WebpackConfig): WebpackConfigWithDevServer | WebpackConfig {
     /**
      * Removed contentBase in favor of the static option
      */
@@ -71,10 +71,10 @@ export class AngularV11Webpack extends AngularBaseWebpack {
     workspaceRoot: string,
     logger: Logger,
     setup: WebpackSetup,
-    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
+    webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
     angularOptions: Partial<BrowserBuilderOptions> = {},
     sourceRoot = 'src',
-  ): Promise<WebpackConfigWithDevServer | Configuration> {
+  ): Promise<WebpackConfigWithDevServer | WebpackConfig> {
     // Options from angular.json
     const browserOptions: BrowserBuilderOptions = {
       ...angularOptions,

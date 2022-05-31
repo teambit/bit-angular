@@ -1,9 +1,8 @@
-import { BitDedupeModuleResolvePlugin } from '@teambit/angular-base';
+import { BitDedupeModuleResolvePlugin, WebpackConfig, WebpackPlugin } from '@teambit/angular-base';
 import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
-import { Configuration, WebpackPluginInstance } from 'webpack';
 
 // TODO(ocombe): this is webpack 5 build config, not webpack 4
 export function webpack4BuildConfigFactory(
@@ -12,8 +11,8 @@ export function webpack4BuildConfigFactory(
   nodeModulesPaths: string[],
   workspaceDir: string,
   tempFolder: string,
-  plugins: WebpackPluginInstance[] = []
-): Configuration {
+  plugins: WebpackPlugin[] = []
+): WebpackConfig {
   const config = {
     mode: 'production',
     // Stop compilation early in production
@@ -85,5 +84,5 @@ export function webpack4BuildConfigFactory(
     ]
   };
 
-  return config as Configuration;
+  return config as WebpackConfig;
 }

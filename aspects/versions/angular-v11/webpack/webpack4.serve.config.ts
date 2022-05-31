@@ -1,4 +1,8 @@
-import { BitDedupeModuleResolvePlugin, StatsLoggerPlugin } from '@teambit/angular-base';
+import {
+  BitDedupeModuleResolvePlugin,
+  StatsLoggerPlugin,
+  WebpackPlugin
+} from '@teambit/angular-base';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -14,7 +18,6 @@ import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
-import { WebpackPluginInstance } from 'webpack';
 
 const sockHost = process.env.WDS_SOCKET_HOST;
 const sockPath = process.env.WDS_SOCKET_PATH; // default: '/sockjs-node'
@@ -31,7 +34,7 @@ export function webpack4ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tempFolder: string,
-  plugins: WebpackPluginInstance[] = [],
+  plugins: WebpackPlugin[] = [],
   isApp = false
 ): any {
   const resolveWorkspacePath = (relativePath: string) => path.resolve(workspaceDir, relativePath);
@@ -45,7 +48,7 @@ export function webpack4ServeConfigFactory(
   const publicDirectory = path.posix.join(publicRoot, publicPath);
 
   if(isApp) {
-    plugins.push(new StatsLoggerPlugin())
+    plugins.push(new StatsLoggerPlugin() as any)
   }
 
   return {

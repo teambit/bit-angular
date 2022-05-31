@@ -30,13 +30,16 @@ export enum WebpackSetup {
   Build = 'build',
 }
 
+export type WebpackConfig = Configuration;
+
+export type WebpackPlugin = WebpackPluginInstance;
 
 export abstract class AngularBaseWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
   webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
-  webpackBuildOptions: Partial<Configuration> = {}
+  webpackBuildOptions: Partial<WebpackConfig> = {}
   angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {};
   angularBuildOptions: Partial<BrowserOptions> = {};
   sourceRoot = 'src';
@@ -64,7 +67,7 @@ export abstract class AngularBaseWebpack {
     rootPath: string,
     logger: Logger,
     setup: WebpackSetup,
-    webpackOptions: Partial<WebpackConfigWithDevServer>,
+    webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig>,
     angularOptions: any,
     sourceRoot?: string,
   ): Promise<WebpackConfigWithDevServer | Configuration>;
@@ -79,10 +82,10 @@ export abstract class AngularBaseWebpack {
     pubsub: PubsubMain,
     nodeModulesPaths: string[],
     tempFolder: string,
-    plugins?: WebpackPluginInstance[],
+    plugins?: WebpackPlugin[],
     IsApp?: boolean
   ) => WebpackConfigWithDevServer;
-  abstract webpackBuildConfigFactory: (entryFiles: string[], outputPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string, plugins?: WebpackPluginInstance[]) => Configuration;
+  abstract webpackBuildConfigFactory: (entryFiles: string[], outputPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string, plugins?: WebpackPlugin[]) => Configuration;
 
   /**
    * Add the list of files to include into the typescript compilation as absolute paths

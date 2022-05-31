@@ -25,21 +25,21 @@ import {
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/angular-cli-files/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
-import { AngularBaseWebpack, WebpackSetup } from '@teambit/angular-base';
+import { AngularBaseWebpack, WebpackConfig, WebpackSetup } from '@teambit/angular-base';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { PkgMain } from '@teambit/pkg';
 import path, { join } from 'path';
-import webpack, { Configuration } from 'webpack';
+import webpack  from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
 import { AngularV8Aspect } from './angular-v8.aspect';
 import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
 import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
 import { ApplicationMain } from '@teambit/application';
 
-function getCompilerConfig(wco: WebpackConfigOptions): webpack.Configuration {
+function getCompilerConfig(wco: WebpackConfigOptions): WebpackConfig {
   if (wco.buildOptions.main || wco.buildOptions.polyfills) {
     return wco.buildOptions.aot ? getAotConfig(wco) : getNonAotConfig(wco);
   }
@@ -68,7 +68,7 @@ export class AngularV8Webpack extends AngularBaseWebpack {
   /**
    * Migrate options from webpack-dev-server 3 to 4
    */
-  private migrateConfiguration(webpackConfig: Configuration): Configuration {
+  private migrateConfiguration(webpackConfig: WebpackConfig): WebpackConfigWithDevServer | WebpackConfig {
     /**
      * Removed contentBase in favor of the static option
      */
@@ -85,10 +85,10 @@ export class AngularV8Webpack extends AngularBaseWebpack {
     workspaceRoot: string,
     logger: Logger,
     setup: WebpackSetup,
-    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
+    webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
     angularOptions: Partial<BrowserBuilderOptions> = {},
     sourceRoot = 'src',
-  ): Promise<WebpackConfigWithDevServer | Configuration> {
+  ): Promise<WebpackConfigWithDevServer | WebpackConfig> {
     // Options from angular.json
     const browserOptions: BrowserBuilderOptions = {
       ...angularOptions,

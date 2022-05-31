@@ -1,4 +1,4 @@
-export { AngularBaseWebpack, WebpackSetup } from './angular-base.webpack';
+export { AngularBaseWebpack, WebpackSetup, WebpackConfig, WebpackPlugin } from './angular-base.webpack';
 export { AngularBaseEnv, AngularEnvOptions } from './angular-base.env';
 export { BitDedupeModuleResolvePlugin } from './webpack-plugins/angular-resolver';
 export { NgccProcessor } from '@teambit/ngcc';

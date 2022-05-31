@@ -18,14 +18,14 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularBaseWebpack, WebpackSetup } from '@teambit/angular-base';
+import { AngularBaseWebpack, WebpackSetup, WebpackConfig } from '@teambit/angular-base';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import path, { join } from 'path';
-import webpack, { Configuration } from 'webpack';
+import webpack  from 'webpack';
 import WsDevServer from 'webpack-dev-server';
 import { AngularV13Aspect } from './angular-v13.aspect';
 import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
@@ -51,7 +51,7 @@ export class AngularV13Webpack extends AngularBaseWebpack {
   /**
    * Migrate options from webpack-dev-server 3 to 4
    */
-  private migrateConfiguration(webpackConfig: any): Configuration {
+  private migrateConfiguration(webpackConfig: any): WebpackConfigWithDevServer | WebpackConfig {
     /**
      * Removed logLevel in favor of built-in logger
      * see https://webpack.js.org/configuration/other-options/#infrastructurelogginglevel
@@ -107,10 +107,10 @@ export class AngularV13Webpack extends AngularBaseWebpack {
     workspaceRoot: string,
     logger: Logger,
     setup: WebpackSetup,
-    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
+    webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
     angularOptions: Partial<BrowserBuilderOptions> = {},
     sourceRoot = 'src',
-  ): Promise<WebpackConfigWithDevServer | Configuration> {
+  ): Promise<WebpackConfigWithDevServer | WebpackConfig> {
     // Options from angular.json
     const browserOptions: BrowserBuilderOptions = {
       ...angularOptions,
