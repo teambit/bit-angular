@@ -154,6 +154,17 @@ export class AngularV12Env extends AngularBaseEnv {
   }
 
   /**
+   * Used to configure peer dependencies from host env
+   */
+  override getAdditionalHostDependencies(ngEnvOptions?: AngularEnvOptions): string[] {
+    if (!this.useNgElementsPreview(ngEnvOptions)) {
+      return super.getAdditionalHostDependencies();
+    }
+    // Add react as a shared peer dependency
+    return super.getAdditionalHostDependencies().concat(['react']);
+  }
+
+  /**
    * Required to use the new preview code
    */
   override getPreviewConfig(ngEnvOptions?: AngularEnvOptions): EnvPreviewConfig {

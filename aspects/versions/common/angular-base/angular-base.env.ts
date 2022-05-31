@@ -213,6 +213,14 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
   }
 
   /**
+   * Used to configure peer dependencies from host env
+   */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  getAdditionalHostDependencies(ngEnvOptions?: AngularEnvOptions): string[] {
+    return [];
+  }
+
+  /**
    * Required to use the old preview code until the envs are updated to use the new version
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

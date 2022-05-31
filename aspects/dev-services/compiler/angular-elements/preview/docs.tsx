@@ -8,7 +8,7 @@ import { loadAngularElement } from './loader';
  * This mounts Angular compositions into the React DOM in the component preview.
  */
 export default async (
-    Provider: React.ComponentType | undefined,
+    _Provider: React.ComponentType | undefined,
     componentId: string,
     docs: any,
     compositionsMap: { [key: string]: any },
@@ -24,5 +24,5 @@ export default async (
     };
   });
 
-  DocsRoot(Provider, componentId, docs, reactComponents, _context);
+  DocsRoot(undefined, componentId, docs, reactComponents, _context);
 };
