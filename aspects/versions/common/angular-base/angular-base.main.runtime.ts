@@ -127,6 +127,7 @@ export abstract class AngularBaseMain {
       getMounter: () => this.angularEnv.getMounter(ngEnvOptions),
       getCompiler: (tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler => this.angularEnv.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions),
       getDocsTemplate: () => this.angularEnv.getDocsTemplate(ngEnvOptions),
+      getAdditionalHostDependencies: () => this.angularEnv.getAdditionalHostDependencies(ngEnvOptions),
       getBundler: (context: BundlerContext, transformers: any[], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string) => this.angularEnv.getBundler(context, transformers, angularBuildOptions, sourceRoot, ngEnvOptions),
       getPreviewConfig: () => this.angularEnv.getPreviewConfig(ngEnvOptions),
       getDevServer: (context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string) => this.angularEnv.getDevServer(context, transformers, angularServeOptions, sourceRoot, ngEnvOptions),

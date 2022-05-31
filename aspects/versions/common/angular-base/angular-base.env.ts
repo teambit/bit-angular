@@ -212,6 +212,10 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     return this.angularWebpack.createDevServer(context, transformers, nodeModulesPaths, angularServeOptions, sourceRoot);
   }
 
+  getAdditionalHostDependencies(_ngEnvOptions?: AngularEnvOptions): string[] {
+    return [];
+  }
+
   /**
    * Required to use the old preview code until the envs are updated to use the new version
    */

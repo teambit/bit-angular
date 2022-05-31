@@ -150,7 +150,19 @@ export class AngularV12Env extends AngularBaseEnv {
     if (this.isAppContext(context) || !this.useNgElementsPreview(ngEnvOptions)) {
       return super.getDevServer(context, transformers);
     }
-    return this.react.env.getDevServer(context, transformers);
+    return this.react.env.getDevServer(context, [(config) => {
+      console.log('im here transformer')
+      // config.addAliases({react: require.resolve('react')})
+      console.log('config.raw.resolve', config.raw.resolve)
+      return config;
+    }]);
+  }
+
+  override getAdditionalHostDependencies(ngEnvOptions?: AngularEnvOptions): string[] {
+    if (!this.useNgElementsPreview(ngEnvOptions)) {
+      return super.getAdditionalHostDependencies();
+    }
+    return super.getAdditionalHostDependencies().concat(['react']);
   }
 
   /**
