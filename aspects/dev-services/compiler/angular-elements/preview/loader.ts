@@ -1,6 +1,9 @@
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
-import { BrowserModule, platformBrowser } from '@angular/platform-browser';
+import { BrowserModule } from '@angular/platform-browser';
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
+import '@angular/compiler';
+import './native-shim.js';
 import 'zone.js/dist/zone';
 import { AppModule } from './main';
 
@@ -9,7 +12,7 @@ const DEFINED_ELEMENTS = new Map();
 
 // Bootstrap the AppModule
 function bootstrap(module: Type<any>): Promise<NgModuleRef<any>> {
-  return platformBrowser()
+  return platformBrowserDynamic()
     .bootstrapModule(module);
 }
 

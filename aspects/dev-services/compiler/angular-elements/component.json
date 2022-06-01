@@ -35,6 +35,12 @@
           "@teambit/harmony": "^0.2.11"
         },
         "peerDependencies": {
+          "@angular-devkit/build-optimizer": ">= 0.0.1",
+          "@angular/compiler-cli": ">= 8.0.0",
+          "@angular/core": ">= 8.0.0",
+          "@angular/elements": ">= 8.0.0",
+          "@angular/platform-browser": ">= 8.0.0",
+          "@angular/platform-browser-dynamic": ">= 8.0.0"
         }
       }
     }

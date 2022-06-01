@@ -13,7 +13,7 @@ import { generateKey, readCacheEntry, saveCacheEntry } from './utils/cache';
 import {
   ngBabelLinker,
   ngccCompilerCli,
-  ngtscFileSystemCompilerCli
+  getNodeJSFileSystem
 } from './utils/ng-compiler-cli';
 
 export type OutputFileCache = Map<string, { version: string; content: string }>;
@@ -52,7 +52,7 @@ export class RollupCompiler {
     const cacheDirectory = opts.cacheDirectory;
 
     /** File system used by the Angular linker plugin. */
-    const { NodeJSFileSystem } = await ngtscFileSystemCompilerCli();
+    const NodeJSFileSystem = await getNodeJSFileSystem();
     const fileSystem = new NodeJSFileSystem();
 
     /** Logger used by the Angular linker plugin. */

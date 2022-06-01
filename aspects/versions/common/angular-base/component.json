@@ -51,6 +51,7 @@
         },
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",
+          "@angular-devkit/build-optimizer": ">= 0.0.1",
           "@angular/core": ">= 8.0.0",
           "@angular/common": ">= 8.0.0",
           "@angular/compiler-cli": ">= 8.0.0",
