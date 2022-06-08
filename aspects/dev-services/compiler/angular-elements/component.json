@@ -19,6 +19,13 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
+          "@angular-devkit/build-optimizer": "-",
+          "@angular/compiler": "-",
+          "@angular/compiler-cli": "-",
+          "@angular/core": "-",
+          "@angular/elements": "-",
+          "@angular/platform-browser": "-",
+          "@angular/platform-browser-dynamic": "-",
           "@babel/core": "7.16.5",
           "@rollup/plugin-babel": "^5.3.0",
           "@rollup/plugin-html": "^0.2.4",
@@ -34,6 +41,7 @@
         },
         "peerDependencies": {
           "@angular-devkit/build-optimizer": ">= 0.0.1",
+          "@angular/compiler": ">= 8.0.0",
           "@angular/compiler-cli": ">= 8.0.0",
           "@angular/core": ">= 8.0.0",
           "@angular/elements": ">= 8.0.0",
