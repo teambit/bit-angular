@@ -1,12 +1,7 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
-import {
-  AngularElementsAspect,
-  AngularElementsMain,
-  RollupCompiler
-} from '@teambit/angular-elements';
 import { MainRuntime } from '@teambit/cli';
-import { Compiler, CompilerOptions } from '@teambit/compiler';
+import { Compiler } from '@teambit/compiler';
 import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
 import { Logger, LoggerAspect, LoggerMain } from '@teambit/logger';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
@@ -17,7 +12,7 @@ type NgPackagerMain = [LoggerMain, Workspace, ApplicationMain, CompositionsMain]
 
 export class NgPackagrMain {
   static slots = [];
-  static dependencies: any = [LoggerAspect, WorkspaceAspect, ApplicationAspect, CompositionsAspect, AngularElementsAspect];
+  static dependencies: any = [LoggerAspect, WorkspaceAspect, ApplicationAspect, CompositionsAspect];
   static runtime: any = MainRuntime;
 
   constructor(private logger: Logger, private workspace: Workspace, private application: ApplicationMain, private compositions: CompositionsMain) {}
