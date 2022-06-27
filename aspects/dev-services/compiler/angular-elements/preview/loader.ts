@@ -64,7 +64,7 @@ async function getModuleComponents<M>(module: Type<M>): Promise<Type<any>[]> {
     console.warn(`Automatically injecting "BrowserModule" into your composition for retro-compatibility, please add it to the imports of your module "${module.name}"`);
     const moduleInjector = Reflect.get(module, 'ɵinj');
     const { imports } = AppModule.ɵinj as { imports: any[] };
-    moduleInjector.imports[0].push(...imports[0]);
+    moduleInjector.imports.push(...imports[0]);
   }
   // we are using ivy & AOT
   return componentsToLoad;
