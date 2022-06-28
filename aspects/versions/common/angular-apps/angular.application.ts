@@ -18,7 +18,8 @@ export class AngularApp implements Application {
     this.name = options.name;
   }
 
-  readonly publicDir = 'public';
+  // no need for a public dir because it's already added by the webpack build config
+  readonly publicDir = '';
 
   private getDevServerContext(context: AppContext): DevServerContext {
     return Object.assign(cloneDeep(context), {
