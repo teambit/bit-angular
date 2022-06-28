@@ -140,7 +140,7 @@ export class AngularV13Env extends AngularBaseEnv {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override async getBundler(context: BundlerContext, transformers: any[], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string, ngEnvOptions?: AngularEnvOptions): Promise<Bundler> {
     if (this.isAppBuildContext(context) || !this.useNgElementsPreview(ngEnvOptions)) {
-      return super.getBundler(context, transformers);
+      return super.getBundler(context, transformers, angularBuildOptions, sourceRoot, ngEnvOptions);
     }
     return this.react.env.getBundler(context, transformers);
   }
@@ -152,7 +152,7 @@ export class AngularV13Env extends AngularBaseEnv {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   override async getDevServer(context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string, ngEnvOptions?: AngularEnvOptions): Promise<DevServer> {
     if (this.isAppContext(context) || !this.useNgElementsPreview(ngEnvOptions)) {
-      return super.getDevServer(context, transformers);
+      return super.getDevServer(context, transformers, angularServeOptions, sourceRoot, ngEnvOptions);
     }
     return this.react.env.getDevServer(context, transformers);
   }

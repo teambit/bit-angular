@@ -18,8 +18,7 @@ export class AngularApp implements Application {
     this.name = options.name;
   }
 
-  // no need for a public dir because it's already added by the webpack build config
-  readonly publicDir = '';
+  readonly publicDir = 'public';
 
   private getDevServerContext(context: AppContext): DevServerContext {
     return Object.assign(cloneDeep(context), {
@@ -50,7 +49,7 @@ export class AngularApp implements Application {
     }
 
     const { capsule } = context;
-    const outputPath = pathNormalizeToLinux(join(capsule.path, this.publicDir));
+    const outputPath = pathNormalizeToLinux(capsule.path);
 
     const bundlerContext: BundlerContext = Object.assign(cloneDeep(context), {
       targets: [{
