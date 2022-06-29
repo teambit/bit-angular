@@ -1,4 +1,5 @@
 import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
+import { AngularElementsMain } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
 import { CompilerMain } from '@teambit/compiler';
@@ -10,6 +11,7 @@ import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
 import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
 import { PkgMain } from '@teambit/pkg';
+import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
@@ -32,6 +34,8 @@ export class AngularV10Main extends AngularBaseMain {
     application,
     aspectLoader,
     dependencyResolver,
+    react,
+    angularElements
   ]: [
     JestMain,
     CompilerMain,
@@ -47,6 +51,8 @@ export class AngularV10Main extends AngularBaseMain {
     ApplicationMain,
     AspectLoaderMain,
     DependencyResolverMain,
+    ReactMain,
+    AngularElementsMain,
   ], options: AngularEnvOptions): Promise<AngularBaseMain> {
     const angularV10Env = new AngularV10Env(
       jestAspect,
@@ -62,7 +68,9 @@ export class AngularV10Main extends AngularBaseMain {
       application,
       aspectLoader,
       dependencyResolver,
+      react,
       options,
+      angularElements
     );
     return new AngularV10Main(envs, angularV10Env);
   }

@@ -1,4 +1,5 @@
 import { AngularBaseEnv, AngularEnvOptions } from '@teambit/angular-base';
+import { AngularElementsMain } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
 import { CompilerMain } from '@teambit/compiler';
@@ -10,6 +11,7 @@ import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
 import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
 import { PkgMain } from '@teambit/pkg';
+import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
 import { WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
@@ -42,9 +44,11 @@ export class AngularV10Env extends AngularBaseEnv {
     application: ApplicationMain,
     aspectLoader: AspectLoaderMain,
     dependencyResolver: DependencyResolverMain,
-    options: AngularEnvOptions
+    private react: ReactMain,
+    options: AngularEnvOptions,
+    angularElements?: AngularElementsMain
   ) {
-    super(jestAspect, compiler, tester, eslint, ngMultiCompiler, isolator, workspace, generator, application, aspectLoader, dependencyResolver, options);
+    super(jestAspect, compiler, tester, eslint, ngMultiCompiler, isolator, workspace, generator, application, aspectLoader, dependencyResolver, options, angularElements);
     this.angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.pkg, application);
   }
 
