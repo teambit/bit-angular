@@ -19,7 +19,8 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@angular/compiler-cli": "-"
+          "@angular/compiler-cli": "-",
+          "@babel/preset-env": "7.12.17"
         },
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0",
