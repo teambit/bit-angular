@@ -47,6 +47,7 @@
           "@typescript-eslint/eslint-plugin": "^5.3.0",
           "@typescript-eslint/parser": "^5.3.0",
           "eslint": "8.2.0",
+          "events": "^3.2.0",
           "html-loader": "~2.1.2",
           "jest": "^27.4.4",
           "jest-preset-angular": "~11.0.1",
