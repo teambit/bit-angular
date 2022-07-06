@@ -1,8 +1,8 @@
+import '@angular/compiler';
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import '@angular/compiler';
 import './native-shim.js';
 import 'zone.js/dist/zone';
 import { AppModule } from './main';
