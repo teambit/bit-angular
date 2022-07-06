@@ -11,7 +11,7 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "1.1.6",
+        "version": "1.1.7",
         "mainFile": "index.ts",
         "rootDir": "aspects/angular"
     },
@@ -59,13 +59,13 @@
     },
     "versions/angular-v12": {
         "scope": "teambit.angular",
-        "version": "1.1.6",
+        "version": "1.1.7",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v12"
     },
     "versions/angular-v13": {
         "scope": "teambit.angular",
-        "version": "1.1.6",
+        "version": "1.1.7",
         "mainFile": "index.ts",
         "rootDir": "aspects/versions/angular-v13"
     },
