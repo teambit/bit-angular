@@ -9,10 +9,12 @@ export class ${Name}Extension {
 
   static async provider([envs, angular]: [EnvsMain, AngularMain]) {
     // Use any of the "angular.override..." or "angular.use..." transformers, for example:
-    const compilerOptions = await angular.overrideCompilerOptions({ fullTemplateTypeCheck: false });
-    const overrideAngularEnvOptions = angular.overrideAngularEnvOptions({ useAngularElementsPreview: true });
+    // const compilerOptions = await angular.overrideCompilerOptions({ fullTemplateTypeCheck: false });
+    // const overrideAngularEnvOptions = angular.overrideAngularEnvOptions({ useAngularElementsPreview: true });
+    // const transformers = [compilerOptions, overrideAngularEnvOptions];
+    const transformers = [];
 
-    const ${Name}Env = angular.compose([compilerOptions, overrideAngularEnvOptions]);
+    const ${Name}Env = angular.compose(transformers);
     envs.registerEnv(${Name}Env);
 
     return new ${Name}Extension();
