@@ -27,12 +27,12 @@ import { Workspace } from '@teambit/workspace';
 import path, { join } from 'path';
 import webpack  from 'webpack';
 import WsDevServer from 'webpack-dev-server';
-import { AngularV13Aspect } from './angular-v13.aspect';
+import { AngularV14Aspect } from './angular-v14.aspect';
 import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
 import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
 import { ApplicationMain } from '@teambit/application';
 
-export class AngularV13Webpack extends AngularBaseWebpack {
+export class AngularV14Webpack extends AngularBaseWebpack {
   enableIvy = true;
   webpackDevServer = WsDevServer;
   webpackServeConfigFactory = webpack5ServeConfigFactory;
@@ -40,7 +40,7 @@ export class AngularV13Webpack extends AngularBaseWebpack {
   webpack: typeof webpack;
 
   constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain) {
-    super(workspace, webpackMain, pkg, application, AngularV13Aspect);
+    super(workspace, webpackMain, pkg, application, AngularV14Aspect);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
@@ -168,7 +168,7 @@ export class AngularV13Webpack extends AngularBaseWebpack {
       getSystemPath(normalizedWorkspaceRoot),
       getSystemPath(projectRoot),
       getSystemPath(normalizedSourceRoot),
-      'bit-angular-v13', // projectName
+      'bit-angular-v14', // projectName
       normalizedOptions,
       (wco: BrowserWebpackConfigOptions) => [
         setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
@@ -217,7 +217,7 @@ export class AngularV13Webpack extends AngularBaseWebpack {
     delete webpackConfig?.resolve?.modules;
     webpackConfig.stats = 'errors-only';
     // uniqueName should not be an empty string
-    webpackConfig.output.uniqueName = 'angular-v13';
+    webpackConfig.output.uniqueName = 'angular-v14';
 
     if (setup === WebpackSetup.Serve) {
       webpackConfig = this.migrateConfiguration(webpackConfig);

@@ -1,5 +1,5 @@
 import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
-import { AngularV13Main } from '@teambit/angular-v13';
+import { AngularV14Main } from '@teambit/angular-v14';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
 import { CompilerMain } from '@teambit/compiler';
@@ -19,7 +19,7 @@ import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
 import { AngularAspect } from './angular.aspect';
 import { AngularEnv } from './angular.env';
 
-export class AngularMain extends AngularV13Main {
+export class AngularMain extends AngularV14Main {
   static async provider([
     jestAspect,
     compiler,

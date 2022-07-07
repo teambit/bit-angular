@@ -59,6 +59,7 @@ const defaultNgEnvOptions: AngularEnvOptions = {
 export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv, PreviewEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
   private ngMultiCompiler: Compiler | undefined;
+  readonly applicationType = 'angular';
 
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;

@@ -18,7 +18,6 @@ export interface Options {
   rootDir: string;
   sourceMap?: boolean;
   target?: string;
-  // buildOptimizer?: OptimizerOptions;
 }
 
 export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugin> {
@@ -59,11 +58,6 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
         // eslint-disable-next-line @typescript-eslint/return-await
         return await compile({ id: resolve(id).replace(/\\/g, '/'), host, options: opts, files });
       }
-      // TODO: optimize for prod only
-      /*return optimizer(code, id, {
-        sideEffectFreeModules,
-        angularCoreModules: options?.buildOptimizer?.angularCoreModules
-      })*/
     }
   }
 }
