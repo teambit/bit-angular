@@ -24,7 +24,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses: teambit/setup-action@v2
+      - uses: teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -95,7 +95,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -159,7 +159,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -223,7 +223,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -287,7 +287,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -351,7 +351,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -415,7 +415,7 @@ jobs:
     container:
       image: docker://bitcli/bit:latest
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.01
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
