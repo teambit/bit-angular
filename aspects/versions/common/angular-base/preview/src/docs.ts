@@ -2,25 +2,29 @@ import { RenderingContext } from '@teambit/preview';
 import { Type } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
+
+window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<string>();
+
 export type DocsFile = {
   default: string;
 };
 
-window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<string>();
-
-
-export default async function docsRoot(
-  _provider: Type<any> | undefined,
+export type DocsRootProps = {
+  Provider: Type<any> | undefined,
   componentId: string,
   docs: DocsFile | string | undefined,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _compositionsMap: { [name: string]: Type<any> },
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _context: RenderingContext
-) {
-  // const angularRenderingContext = context.get(AngularAspect.id);
-  // const component = await getComponentData(componentId);
+  compositions: { [key: string]: any },
+  context: RenderingContext
+}
+
+async function docsRoot({docs}: DocsRootProps): Promise<void> {
   if (docs) {
-    window.onDocsLoad$.next((docs as any).default ?? docs);
+    window.onDocsLoad$.next((docs as DocsFile).default ?? docs);
   }
 }
+
+// Add support for new api signature
+// TODO: remove by the end of 2022
+docsRoot.apiObject = true;
+
+export default docsRoot;

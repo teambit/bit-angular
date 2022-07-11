@@ -117,9 +117,9 @@ export class AngularV13Env extends AngularBaseEnv {
    */
   override getMounter(ngEnvOptions?: AngularEnvOptions) {
     if (!this.useNgElementsPreview(ngEnvOptions)) {
-      return super.getMounter();
+      return super.getMounter(ngEnvOptions);
     }
-    return require.resolve('@teambit/angular-elements/dist/preview/mount.js');
+    return ngEnvOptions?.mountTemplatePath ?? require.resolve('@teambit/angular-elements/dist/preview/mount.js');
   }
 
   /**
@@ -128,9 +128,9 @@ export class AngularV13Env extends AngularBaseEnv {
    */
   override getDocsTemplate(ngEnvOptions?: AngularEnvOptions) {
     if (!this.useNgElementsPreview(ngEnvOptions)) {
-      return super.getDocsTemplate();
+      return super.getDocsTemplate(ngEnvOptions);
     }
-    return require.resolve('@teambit/angular-elements/dist/preview/docs.js');
+    return ngEnvOptions?.docsTemplatePath ?? require.resolve('@teambit/angular-elements/dist/preview/docs.js');
   }
 
   /**
@@ -162,7 +162,7 @@ export class AngularV13Env extends AngularBaseEnv {
    */
   override getAdditionalHostDependencies(ngEnvOptions?: AngularEnvOptions): string[] {
     if (!this.useNgElementsPreview(ngEnvOptions)) {
-      return super.getAdditionalHostDependencies();
+      return super.getAdditionalHostDependencies(ngEnvOptions);
     }
     // Add react as a shared peer dependency
     return super.getAdditionalHostDependencies().concat(['react']);
@@ -173,7 +173,7 @@ export class AngularV13Env extends AngularBaseEnv {
    */
   override getPreviewConfig(ngEnvOptions?: AngularEnvOptions): EnvPreviewConfig {
     if (!this.useNgElementsPreview(ngEnvOptions)) {
-      return super.getPreviewConfig();
+      return super.getPreviewConfig(ngEnvOptions);
     }
     return {
       strategyName: 'component',

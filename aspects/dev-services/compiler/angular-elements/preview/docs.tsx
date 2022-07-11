@@ -2,27 +2,34 @@ import { Type } from '@angular/core';
 import { RenderingContext } from '@teambit/preview';
 import DocsRoot from '@teambit/react.ui.docs-app';
 import React from 'react';
-import { loadAngularElement } from './loader';
+import { ngToReact } from './loader';
+
+export type DocsRootProps = {
+  Provider: Type<any> | undefined,
+  componentId: string,
+  docs: any,
+  compositions: { [key: string]: any },
+  context: RenderingContext
+}
 
 /**
- * This mounts Angular compositions into the React DOM in the component preview.
+ * This mounts Angular compositions into the React DOM for the component preview.
  */
-export default async (
-    _Provider: React.ComponentType | undefined,
-    componentId: string,
-    docs: any,
-    compositionsMap: { [key: string]: any },
-    _context: RenderingContext
-): Promise<void> => {
-  const keys: string[] = Object.keys(compositionsMap);
-  const compositions: Type<any>[] = Object.values(compositionsMap);
-  const selectors = await loadAngularElement(compositions);
-  const reactComponents: { [key: string]: any } = {};
-  selectors.map((Selector: string, index: number) => {
-    reactComponents[keys[index]] = () => {
-      return <Selector key={Selector}></Selector>;
-    };
+async function docsRoot({docs, componentId, compositions: ngCompositions, context, Provider}: DocsRootProps): Promise<void> {
+  const keys: string[] = Object.keys(ngCompositions);
+  const reactComponents = await ngToReact(Object.values(ngCompositions));
+
+  const compositions: { [key: string]: any } = {};
+  reactComponents.forEach((component: any, index: number) => {
+    compositions[keys[index]] = component;
   });
 
-  DocsRoot(undefined, componentId, docs, reactComponents, _context);
-};
+  // undefined, componentId, docs, reactComponents, context
+  DocsRoot({Provider, componentId, docs, compositions, context});
+}
+
+// Add support for new api signature
+// TODO: remove by the end of 2022
+docsRoot.apiObject = true;
+
+export default docsRoot;

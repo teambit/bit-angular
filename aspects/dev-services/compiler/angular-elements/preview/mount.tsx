@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 // required here to make sure that this is loaded before the compositions file
 import '@angular/compiler';
 
-import { loadAngularElement } from './loader';
+import { ngToCustomElements } from './loader';
 
 const root = document.getElementById('root') as HTMLElement;
 
@@ -13,7 +13,7 @@ const root = document.getElementById('root') as HTMLElement;
  * to apply custom logic for component DOM mounting.
  */
 export default async (composition: any/*, previewContext: RenderingContext*/) => {
-  const selectors = await loadAngularElement([composition]);
+  const selectors = await ngToCustomElements([composition]);
   ReactDOM.render(
     <div>{selectors.map(Selector => <Selector key={Selector}></Selector>)}</div>,
     root

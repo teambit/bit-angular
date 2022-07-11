@@ -46,11 +46,22 @@ export interface AngularEnvOptions {
    * Use Rollup & Angular Elements to compile compositions instead of webpack.
    * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
    */
-  useAngularElementsPreview: boolean | undefined
-}
+  useAngularElementsPreview?: boolean;
 
-const defaultNgEnvOptions: AngularEnvOptions = {
-  useAngularElementsPreview: false
+  /**
+   * Override the default Angular docs template path
+   */
+  docsTemplatePath?: string;
+
+  /**
+   * Override the default Angular mount template path
+   */
+  mountTemplatePath?: string;
+}
+interface DefaultAngularEnvOptions {
+  useAngularElementsPreview: boolean;
+  docsTemplatePath: string;
+  mountTemplatePath: string;
 }
 
 /**
@@ -59,6 +70,11 @@ const defaultNgEnvOptions: AngularEnvOptions = {
 export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv, PreviewEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
   private ngMultiCompiler: Compiler | undefined;
+  private ngEnvOptions: DefaultAngularEnvOptions = {
+    useAngularElementsPreview: false,
+    docsTemplatePath: require.resolve('./preview/src/docs'),
+    mountTemplatePath: require.resolve('./preview/src/mount'),
+  };
 
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;
@@ -92,7 +108,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     application.registerAppType(new AngularAppType(NG_APP_NAME, this));
     dependencyResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
     if (options.useAngularElementsPreview) {
-      defaultNgEnvOptions['useAngularElementsPreview'] = true;
+      this.ngEnvOptions.useAngularElementsPreview = true;
     }
   }
 
@@ -119,12 +135,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     this.getNodeModulesPaths(isBuild).forEach(path => new NgccProcessor().process(path));
   }
 
-  protected getNgEnvOption(key: keyof AngularEnvOptions, ngEnvOptions?: AngularEnvOptions): AngularEnvOptions[keyof AngularEnvOptions] {
-    return ngEnvOptions?.[key] ?? defaultNgEnvOptions[key];
-  }
-
   protected useNgElementsPreview(ngEnvOptions?: AngularEnvOptions): boolean {
-    return !!this.getNgEnvOption('useAngularElementsPreview', ngEnvOptions);
+    return !!ngEnvOptions?.useAngularElementsPreview ?? this.ngEnvOptions.useAngularElementsPreview;
   }
 
   private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
@@ -159,7 +171,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getMounter(ngEnvOptions?: AngularEnvOptions) {
-    return require.resolve('./preview/src/mount');
+    return ngEnvOptions?.mountTemplatePath ?? this.ngEnvOptions.mountTemplatePath;
   }
 
   /**
@@ -168,7 +180,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getDocsTemplate(ngEnvOptions?: AngularEnvOptions) {
-    return require.resolve('./preview/src/docs');
+    return ngEnvOptions?.docsTemplatePath ?? this.ngEnvOptions.docsTemplatePath;
   }
 
   /**

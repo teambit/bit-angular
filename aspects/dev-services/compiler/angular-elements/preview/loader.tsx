@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import './native-shim.js';
 import 'zone.js/dist/zone';
+import React from 'react';
 import { AppModule } from './main';
 
 let counter = 0;
@@ -70,7 +71,11 @@ async function getModuleComponents<M>(module: Type<M>): Promise<Type<any>[]> {
   return componentsToLoad;
 }
 
-async function loadAngularElement(moduleOrComponents: Type<any>[]): Promise<string[]> {
+/**
+ * Loads the given Angular modules/components as custom elements and returns their selectors.
+ * For modules, it returns the selectors of the components that are in the "bootstrap" property.
+ */
+async function ngToCustomElements(moduleOrComponents: Type<any>[]): Promise<string[]> {
   const componentsToLoad: Type<any>[] = [];
   let parentModule: Type<any> | undefined;
   for (let i = 0; i < moduleOrComponents.length; i++) {
@@ -93,4 +98,23 @@ async function loadAngularElement(moduleOrComponents: Type<any>[]): Promise<stri
   }
 }
 
-export { loadAngularElement };
+/**
+ * Creates React components from a list of custom element selectors
+ */
+function customElementsToReact(selectors: string[]): React.ComponentType<any>[] {
+  return selectors.map((Selector: string, index: number) => {
+    return () => {
+      return <Selector key={Selector}></Selector>;
+    };
+  });
+}
+
+/**
+ * Loads the given Angular modules/components as custom elements and returns them as React components.
+ * For modules, it creates a new React component for each Angular components that are in the "bootstrap" property.
+ */
+async function ngToReact(moduleOrComponents: Type<any>[]): Promise<React.ComponentType[]> {
+  return customElementsToReact(await ngToCustomElements(moduleOrComponents));
+}
+
+export { ngToCustomElements, customElementsToReact, ngToReact };

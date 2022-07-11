@@ -31,7 +31,7 @@
           "@rollup/plugin-html": "^0.2.4",
           "@rollup/plugin-json": "^4.1.0",
           "@rollup/plugin-node-resolve": "^13.0.4",
-          "@teambit/react.ui.docs-app": "^0.0.176",
+          "@teambit/react.ui.docs-app": "^0.0.180",
           "@types/cacache": "^15.0.1",
           "cacache": "^15.3.0",
           "esbuild": "^0.14.9",

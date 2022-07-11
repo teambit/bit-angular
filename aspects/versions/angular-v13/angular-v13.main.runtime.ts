@@ -77,8 +77,6 @@ export class AngularV13Main extends AngularBaseMain {
     return new AngularV13Main(envs, angularV13Env);
   }
 
-
-
   /**
    * Override the compiler options for the Angular environment.
    * Compiler options combine both typescript "compilerOptions" and Angular specific "angularCompilerOptions"
@@ -106,16 +104,6 @@ export class AngularV13Main extends AngularBaseMain {
         // @ts-ignore
         return this.angularEnv.getBuildPipe(tsCompilerOptions, bitCompilerOptions);
       }
-    });
-  }
-
-  /**
-   * Use Rollup & Angular Elements to compile compositions instead of webpack.
-   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
-   */
-  useAngularElements(): EnvTransformer {
-    return this.envs.override({
-      useAngularElements: true
     });
   }
 }

@@ -124,14 +124,14 @@ export abstract class AngularBaseMain {
    */
   overrideAngularEnvOptions(ngEnvOptions: AngularEnvOptions): EnvTransformer {
     return this.envs.override({
-      getMounter: () => this.angularEnv.getMounter(ngEnvOptions),
-      getCompiler: (tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler => this.angularEnv.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions),
-      getDocsTemplate: () => this.angularEnv.getDocsTemplate(ngEnvOptions),
       getAdditionalHostDependencies: () => this.angularEnv.getAdditionalHostDependencies(ngEnvOptions),
       getBundler: (context: BundlerContext, transformers: any[], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string) => this.angularEnv.getBundler(context, transformers, angularBuildOptions, sourceRoot, ngEnvOptions),
-      getPreviewConfig: () => this.angularEnv.getPreviewConfig(ngEnvOptions),
+      getCompiler: (tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler => this.angularEnv.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions),
+      getDevEnvId: (context: DevServerContext) => this.angularEnv.getDevEnvId(context.envDefinition.id),
       getDevServer: (context: DevServerContext, transformers: WebpackConfigTransformer[] = [], angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {}, sourceRoot?: string) => this.angularEnv.getDevServer(context, transformers, angularServeOptions, sourceRoot, ngEnvOptions),
-      getDevEnvId: (context: DevServerContext) => this.angularEnv.getDevEnvId(context.envDefinition.id)
+      getDocsTemplate: () => this.angularEnv.getDocsTemplate(ngEnvOptions),
+      getMounter: () => this.angularEnv.getMounter(ngEnvOptions),
+      getPreviewConfig: () => this.angularEnv.getPreviewConfig(ngEnvOptions),
     });
   }
 }
