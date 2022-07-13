@@ -2,7 +2,6 @@ import { AppBuildContext, AppContext, Application } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Port } from '@teambit/toolbox.network.get-port';
-import { join } from 'path';
 import { AngularAppOptions } from './angular-app-options';
 import { AngularAppBuildResult } from './angular-build-result';
 import { cloneDeep } from 'lodash';
