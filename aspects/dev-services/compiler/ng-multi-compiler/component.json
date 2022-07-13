@@ -22,11 +22,14 @@
           "@angular/compiler-cli": "-",
           "@babel/plugin-proposal-class-properties": "7.12.13",
           "@babel/preset-env": "7.12.17",
-          "@babel/preset-typescript": "7.12.7"
+          "@babel/preset-typescript": "7.12.7",
+          "minimatch": "~3.0.4"
+        },
+        "devDependencies": {
+          "@types/minimatch":"~3.0.4"
         },
         "peerDependencies": {
-          "@angular/compiler-cli": ">= 8.0.0",
-          "minimatch": "~3.0.4"
+          "@angular/compiler-cli": ">= 8.0.0"
         }
       }
     }

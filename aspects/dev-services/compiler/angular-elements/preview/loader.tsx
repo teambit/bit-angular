@@ -1,10 +1,13 @@
-import '@angular/compiler';
+// Only load those if we are in the browser
+if(typeof window !== 'undefined') {
+  require('@angular/compiler');
+  require('./native-shim.js');
+  require('zone.js/dist/zone');
+}
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
-import './native-shim.js';
-import 'zone.js/dist/zone';
 import React from 'react';
 import { AppModule } from './main';
 

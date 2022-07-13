@@ -1,6 +1,6 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp, NG_APP_PATTERN } from '@teambit/angular-apps';
-import { AngularElementsCompiler, AngularElementsMain } from '@teambit/angular-elements';
+import { AngularElementsCompiler } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { BabelCompiler, BabelMain } from '@teambit/babel';
 import { BuildContext, BuiltTaskResult } from '@teambit/builder';
@@ -15,7 +15,7 @@ import {
 import { Component } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
 import { Logger } from '@teambit/logger';
-import { NgPackagrCompiler, NgPackagrMain } from '@teambit/ng-packagr';
+import { NgPackagrCompiler } from '@teambit/ng-packagr';
 import { Workspace } from '@teambit/workspace';
 import minimatch from 'minimatch';
 
@@ -26,6 +26,7 @@ const presets = [
 const plugins = [require.resolve('@babel/plugin-proposal-class-properties')];
 
 export class NgMultiCompiler implements Compiler {
+  readonly id = 'teambit.angular/dev-services/compiler/ng-multi-compiler';
   displayName = 'Angular multi-compiler';
   distDir: string;
   distGlobPatterns: string[];
@@ -36,15 +37,12 @@ export class NgMultiCompiler implements Compiler {
   mainCompiler: NgPackagrCompiler | AngularElementsCompiler;
 
   constructor(
-    readonly id: string,
     ngPackagrPath: string,
-    ngPackagrMain: NgPackagrMain,
     private useElements: boolean,
-    angularElements: AngularElementsMain | undefined,
     private babelMain: BabelMain,
     readDefaultTsConfig: string,
     private logger: Logger,
-    private workspace: Workspace,
+    private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
     private application: ApplicationMain,
     private tsCompilerOptions: AngularCompilerOptions = {},
@@ -56,9 +54,13 @@ export class NgMultiCompiler implements Compiler {
     this.shouldCopyNonSupportedFiles =
       typeof bitCompilerOptions.shouldCopyNonSupportedFiles === 'boolean' ? bitCompilerOptions.shouldCopyNonSupportedFiles : true;
     this.artifactName = bitCompilerOptions.artifactName || 'dist';
-    this.ngPackagrCompiler = ngPackagrMain.createCompiler(
+    this.ngPackagrCompiler = new NgPackagrCompiler(
       ngPackagrPath,
       readDefaultTsConfig,
+      this.logger,
+      this.workspace,
+      this.compositions,
+      this.application,
       this.distDir,
       this.distGlobPatterns,
       this.shouldCopyNonSupportedFiles,
@@ -67,8 +69,12 @@ export class NgMultiCompiler implements Compiler {
       nodeModulesPaths
     ) as NgPackagrCompiler;
 
-    if (this.useElements && angularElements) {
-      this.angularElementsCompiler = angularElements.createCompiler(
+    if (this.useElements) {
+      this.angularElementsCompiler = new AngularElementsCompiler(
+        this.logger,
+        this.workspace,
+        this.compositions,
+        this.application,
         this.distDir,
         this.distGlobPatterns,
         this.shouldCopyNonSupportedFiles,

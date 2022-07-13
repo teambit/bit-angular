@@ -20,7 +20,7 @@ import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace } from '@teambit/workspace';
 import { writeFileSync } from 'fs-extra';
-import { join, parse, posix, resolve } from 'path';
+import { join, posix, resolve } from 'path';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -52,17 +52,17 @@ export interface NgPackagr {
 
 
 export class NgPackagrCompiler implements Compiler {
+  readonly id = 'teambit.angular/dev-services/compiler/ng-packagr';
   displayName = 'NgPackagr compiler';
   readDefaultTsConfig: () => Promise<ParsedConfiguration>;
   ngPackagr: NgPackagr;
   ngccProcessor = new NgccProcessor();
 
   constructor(
-    readonly id: string,
     ngPackagrPath: string,
     readDefaultTsConfig: string,
     private logger: Logger,
-    private workspace: Workspace,
+    private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
     private application: ApplicationMain,
     public distDir: string,
@@ -291,7 +291,7 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit start`
    */
   getPreviewComponentRootPath(component: Component): string {
-    return this.workspace.componentDir(component.id, {
+    return this.workspace!.componentDir(component.id, {
       ignoreScopeAndVersion: true,
       ignoreVersion: true
     }, { relative: true });

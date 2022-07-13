@@ -1,15 +1,16 @@
 import { AngularBaseEnv, AngularEnvOptions } from '@teambit/angular-base';
-import { AngularElementsMain } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
+import { BabelMain } from '@teambit/babel';
 import { CompilerMain } from '@teambit/compiler';
+import { CompositionsMain } from '@teambit/compositions';
 import { DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvDescriptor } from '@teambit/envs';
 import { ESLintMain } from '@teambit/eslint';
 import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
-import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
+import { LoggerMain } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
 import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
@@ -35,7 +36,6 @@ export class AngularV8Env extends AngularBaseEnv {
     compiler: CompilerMain,
     tester: TesterMain,
     eslint: ESLintMain,
-    ngMultiCompiler: NgMultiCompilerMain,
     generator: GeneratorMain,
     isolator: IsolatorMain,
     private webpackMain: WebpackMain,
@@ -45,10 +45,12 @@ export class AngularV8Env extends AngularBaseEnv {
     aspectLoader: AspectLoaderMain,
     dependencyResolver: DependencyResolverMain,
     private react: ReactMain,
+    loggerMain: LoggerMain,
+    compositions: CompositionsMain,
+    babel: BabelMain,
     options: AngularEnvOptions,
-    angularElements?: AngularElementsMain
   ) {
-    super(jestAspect, compiler, tester, eslint, ngMultiCompiler, isolator, workspace, generator, application, aspectLoader, dependencyResolver, options, angularElements);
+    super(jestAspect, compiler, tester, eslint, isolator, workspace, generator, application, aspectLoader, dependencyResolver, loggerMain, compositions, babel, options);
     this.angularWebpack = new AngularV8Webpack(this.workspace, this.webpackMain, this.pkg, application);
   }
 

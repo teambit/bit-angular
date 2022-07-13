@@ -19,14 +19,14 @@ import chalk from 'chalk';
 import { join, parse } from 'path';
 
 export class AngularElementsCompiler implements Compiler {
+  readonly id = 'teambit.angular/dev-services/compiler/angular-elements';
   displayName = 'Angular elements compiler';
   ngccProcessor = new NgccProcessor();
   rollupCompiler: RollupCompiler;
 
   constructor(
-    readonly id: string,
     private logger: Logger,
-    private workspace: Workspace,
+    private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
     private application: ApplicationMain,
     public distDir: string,
@@ -154,7 +154,7 @@ Built Angular Compositions
    * used by `bit start`
    */
   getPreviewComponentRootPath(component: Component): string {
-    return this.workspace.componentPackageDir(component, { relative: true });
+    return this.workspace!.componentPackageDir(component, { relative: true });
   }
 
   /**

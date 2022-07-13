@@ -1,30 +1,53 @@
 import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
-import { AngularElementsMain } from '@teambit/angular-elements';
-import { ApplicationMain } from '@teambit/application';
-import { AspectLoaderMain } from '@teambit/aspect-loader';
-import { CompilerMain } from '@teambit/compiler';
-import { DependencyResolverMain } from '@teambit/dependency-resolver';
-import { EnvsMain } from '@teambit/envs';
-import { ESLintMain } from '@teambit/eslint';
-import { GeneratorMain } from '@teambit/generator';
-import { IsolatorMain } from '@teambit/isolator';
-import { JestMain } from '@teambit/jest';
-import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
-import { PkgMain } from '@teambit/pkg';
-import { ReactMain } from '@teambit/react';
-import { TesterMain } from '@teambit/tester';
-import { WebpackMain } from '@teambit/webpack';
-import { Workspace } from '@teambit/workspace';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
+import { AspectLoaderAspect, AspectLoaderMain } from '@teambit/aspect-loader';
+import { BabelAspect, BabelMain } from '@teambit/babel';
+import { MainRuntime } from '@teambit/cli';
+import { CompilerAspect, CompilerMain } from '@teambit/compiler';
+import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
+import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
+import { EnvsAspect, EnvsMain } from '@teambit/envs';
+import { ESLintAspect, ESLintMain } from '@teambit/eslint';
+import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
+import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
+import { JestAspect, JestMain } from '@teambit/jest';
+import { LoggerAspect, LoggerMain } from '@teambit/logger';
+import { PkgAspect, PkgMain } from '@teambit/pkg';
+import { ReactAspect, ReactMain } from '@teambit/react';
+import { TesterAspect, TesterMain } from '@teambit/tester';
+import { WebpackAspect, WebpackMain } from '@teambit/webpack';
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { AngularV8Aspect } from './angular-v8.aspect';
 import { AngularV8Env } from './angular-v8.env';
 
 export class AngularV8Main extends AngularBaseMain {
+  static slots = [];
+  static runtime: any = MainRuntime;
+  static dependencies: any = [
+    JestAspect,
+    CompilerAspect,
+    TesterAspect,
+    ESLintAspect,
+    GeneratorAspect,
+    WebpackAspect,
+    WorkspaceAspect,
+    EnvsAspect,
+    IsolatorAspect,
+    PkgAspect,
+    ApplicationAspect,
+    AspectLoaderAspect,
+    DependencyResolverAspect,
+    ReactAspect,
+    LoggerAspect,
+    CompositionsAspect,
+    BabelAspect,
+  ];
+
   static async provider([
     jestAspect,
     compiler,
     tester,
     eslint,
-    ngMultiCompiler,
     generator,
     webpack,
     workspace,
@@ -35,13 +58,14 @@ export class AngularV8Main extends AngularBaseMain {
     aspectLoader,
     dependencyResolver,
     react,
-    angularElements
+    loggerMain,
+    compositions,
+    babel,
   ]: [
     JestMain,
     CompilerMain,
     TesterMain,
     ESLintMain,
-    NgMultiCompilerMain,
     GeneratorMain,
     WebpackMain,
       Workspace | undefined,
@@ -52,14 +76,15 @@ export class AngularV8Main extends AngularBaseMain {
     AspectLoaderMain,
     DependencyResolverMain,
     ReactMain,
-    AngularElementsMain,
+    LoggerMain,
+    CompositionsMain,
+    BabelMain,
   ], options: AngularEnvOptions): Promise<AngularBaseMain> {
     const angularV8Env = new AngularV8Env(
       jestAspect,
       compiler,
       tester,
       eslint,
-      ngMultiCompiler,
       generator,
       isolator,
       webpack,
@@ -69,8 +94,10 @@ export class AngularV8Main extends AngularBaseMain {
       aspectLoader,
       dependencyResolver,
       react,
+      loggerMain,
+      compositions,
+      babel,
       options,
-      angularElements
     );
     return new AngularV8Main(envs, angularV8Env);
   }

@@ -1,53 +1,14 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
-import { AngularElementsAspect } from '@teambit/angular-elements';
-import { ApplicationAspect } from '@teambit/application';
-import AspectLoaderAspect from '@teambit/aspect-loader';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
-import { MainRuntime } from '@teambit/cli';
-import { Compiler, CompilerAspect, CompilerOptions } from '@teambit/compiler';
-import { DependencyResolverAspect } from '@teambit/dependency-resolver';
-import { Environment, EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
-import { ESLintAspect } from '@teambit/eslint';
-import { GeneratorAspect } from '@teambit/generator';
-import { IsolatorAspect } from '@teambit/isolator';
-import { JestAspect } from '@teambit/jest';
-import { NgMultiCompilerAspect } from '@teambit/ng-multi-compiler';
-import { PkgAspect } from '@teambit/pkg';
-import { ReactAspect } from '@teambit/react';
-import { TesterAspect } from '@teambit/tester';
-import {
-  WebpackAspect,
-  WebpackConfigTransformer,
-  WebpackConfigWithDevServer
-} from '@teambit/webpack';
-import { WorkspaceAspect } from '@teambit/workspace';
+import { Compiler, CompilerOptions } from '@teambit/compiler';
+import { Environment, EnvsMain, EnvTransformer } from '@teambit/envs';
+import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { Configuration } from 'webpack';
 import { AngularBaseEnv, AngularEnvOptions } from './angular-base.env';
 
 
 export abstract class AngularBaseMain {
-  static slots = [];
-  static runtime: any = MainRuntime;
-  static dependencies: any = [
-    JestAspect,
-    CompilerAspect,
-    TesterAspect,
-    ESLintAspect,
-    NgMultiCompilerAspect,
-    GeneratorAspect,
-    WebpackAspect,
-    WorkspaceAspect,
-    EnvsAspect,
-    IsolatorAspect,
-    PkgAspect,
-    ApplicationAspect,
-    AspectLoaderAspect,
-    DependencyResolverAspect,
-    ReactAspect,
-    AngularElementsAspect,
-  ];
-
   constructor(protected envs: EnvsMain, protected angularEnv: AngularBaseEnv) {
     envs.registerEnv(angularEnv);
   }

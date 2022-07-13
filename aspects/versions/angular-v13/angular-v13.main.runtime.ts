@@ -1,31 +1,54 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { AngularBaseMain, AngularEnvOptions, loadEsmModule } from '@teambit/angular-base';
-import { ApplicationMain } from '@teambit/application';
-import { AspectLoaderMain } from '@teambit/aspect-loader';
-import { CompilerMain, CompilerOptions } from '@teambit/compiler';
-import { DependencyResolverMain } from '@teambit/dependency-resolver';
-import { EnvsMain, EnvTransformer } from '@teambit/envs';
-import { ESLintMain } from '@teambit/eslint';
-import { GeneratorMain } from '@teambit/generator';
-import { IsolatorMain } from '@teambit/isolator';
-import { JestMain } from '@teambit/jest';
-import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
-import { PkgMain } from '@teambit/pkg';
-import { ReactMain } from '@teambit/react';
-import { TesterMain } from '@teambit/tester';
-import { WebpackMain } from '@teambit/webpack';
-import { Workspace } from '@teambit/workspace';
-import { AngularElementsMain } from '@teambit/angular-elements';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
+import { AspectLoaderMain, AspectLoaderAspect } from '@teambit/aspect-loader';
+import { BabelAspect, BabelMain } from '@teambit/babel';
+import { MainRuntime } from '@teambit/cli';
+import { CompilerAspect, CompilerMain, CompilerOptions } from '@teambit/compiler';
+import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
+import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
+import { EnvsAspect, EnvsMain, EnvTransformer } from '@teambit/envs';
+import { ESLintAspect, ESLintMain } from '@teambit/eslint';
+import { GeneratorAspect, GeneratorMain } from '@teambit/generator';
+import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
+import { JestAspect, JestMain } from '@teambit/jest';
+import { LoggerAspect, LoggerMain } from '@teambit/logger';
+import { PkgAspect, PkgMain } from '@teambit/pkg';
+import { ReactAspect, ReactMain } from '@teambit/react';
+import { TesterAspect, TesterMain } from '@teambit/tester';
+import { WebpackAspect, WebpackMain } from '@teambit/webpack';
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { AngularV13Aspect } from './angular-v13.aspect';
 import { AngularV13Env } from './angular-v13.env';
 
 export class AngularV13Main extends AngularBaseMain {
+  static slots = [];
+  static runtime: any = MainRuntime;
+  static dependencies: any = [
+    JestAspect,
+    CompilerAspect,
+    TesterAspect,
+    ESLintAspect,
+    GeneratorAspect,
+    WebpackAspect,
+    WorkspaceAspect,
+    EnvsAspect,
+    IsolatorAspect,
+    PkgAspect,
+    ApplicationAspect,
+    AspectLoaderAspect,
+    DependencyResolverAspect,
+    ReactAspect,
+    LoggerAspect,
+    CompositionsAspect,
+    BabelAspect,
+  ];
+
   static async provider([
     jestAspect,
     compiler,
     tester,
     eslint,
-    ngMultiCompiler,
     generator,
     webpack,
     workspace,
@@ -36,13 +59,14 @@ export class AngularV13Main extends AngularBaseMain {
     aspectLoader,
     dependencyResolver,
     react,
-    angularElements,
+    loggerMain,
+    compositions,
+    babel,
   ]: [
     JestMain,
     CompilerMain,
     TesterMain,
     ESLintMain,
-    NgMultiCompilerMain,
     GeneratorMain,
     WebpackMain,
     Workspace | undefined,
@@ -53,14 +77,15 @@ export class AngularV13Main extends AngularBaseMain {
     AspectLoaderMain,
     DependencyResolverMain,
     ReactMain,
-    AngularElementsMain,
+    LoggerMain,
+    CompositionsMain,
+    BabelMain,
   ], options: AngularEnvOptions): Promise<AngularBaseMain> {
     const angularV13Env = new AngularV13Env(
       jestAspect,
       compiler,
       tester,
       eslint,
-      ngMultiCompiler,
       generator,
       isolator,
       webpack,
@@ -70,8 +95,10 @@ export class AngularV13Main extends AngularBaseMain {
       aspectLoader,
       dependencyResolver,
       react,
+      loggerMain,
+      compositions,
+      babel,
       options,
-      angularElements,
     );
     // @ts-ignore
     return new AngularV13Main(envs, angularV13Env);

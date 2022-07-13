@@ -8,9 +8,11 @@ import {
 import { eslintConfig } from '@teambit/angular-eslint-config';
 import { AppBuildContext, AppContext, ApplicationMain } from '@teambit/application';
 import { AspectLoaderMain } from '@teambit/aspect-loader';
+import { BabelMain } from '@teambit/babel';
 import { BuildTask } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { Compiler, CompilerMain, CompilerOptions } from '@teambit/compiler';
+import { CompositionsMain } from '@teambit/compositions';
 import {
   DependencyInstaller,
   DependencyResolverMain,
@@ -31,7 +33,8 @@ import { GeneratorMain } from '@teambit/generator';
 import { IsolatorMain } from '@teambit/isolator';
 import { JestMain } from '@teambit/jest';
 import { Linter, LinterContext } from '@teambit/linter';
-import { NgMultiCompilerMain } from '@teambit/ng-multi-compiler';
+import { Logger, LoggerMain } from '@teambit/logger';
+import { NgMultiCompiler } from '@teambit/ng-multi-compiler';
 import { NgccProcessor } from '@teambit/ngcc';
 import { EnvPreviewConfig } from '@teambit/preview';
 import { Tester, TesterMain } from '@teambit/tester';
@@ -69,6 +72,7 @@ interface DefaultAngularEnvOptions {
  */
 export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevEnv, TesterEnv, CompilerEnv, PreviewEnv {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
+  private logger: Logger;
   private ngMultiCompiler: Compiler | undefined;
   private ngEnvOptions: DefaultAngularEnvOptions = {
     useAngularElementsPreview: false,
@@ -93,20 +97,22 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     protected compiler: CompilerMain,
     private tester: TesterMain,
     protected eslint: ESLintMain,
-    protected ngMultiCompilerMain: NgMultiCompilerMain,
     private isolator: IsolatorMain,
     protected workspace: Workspace | undefined,
     generator: GeneratorMain,
-    application: ApplicationMain,
+    private application: ApplicationMain,
     private aspectLoader: AspectLoaderMain,
     dependencyResolver: DependencyResolverMain,
+    private loggerMain: LoggerMain,
+    private compositions: CompositionsMain,
+    private babelMain: BabelMain,
     protected options: AngularEnvOptions,
-    private angularElements?: any
   ) {
     generator.registerComponentTemplate(angularBaseTemplates);
     generator.registerWorkspaceTemplate(workspaceTemplates);
-    application.registerAppType(new AngularAppType(NG_APP_NAME, this));
+    this.application.registerAppType(new AngularAppType(NG_APP_NAME, this));
     dependencyResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
+    this.logger = loggerMain.createLogger(this.getDevEnvId());
     if (options.useAngularElementsPreview) {
       this.ngEnvOptions.useAngularElementsPreview = true;
     }
@@ -141,7 +147,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
 
   private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
     const nodeModulesPaths = this.getNodeModulesPaths(false);
-    return this.ngMultiCompilerMain.createCompiler(this.ngPackagr, this.useNgElementsPreview(ngEnvOptions), this.readDefaultTsConfig, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths, this.angularElements);
+    return new NgMultiCompiler(this.ngPackagr, this.useNgElementsPreview(ngEnvOptions), this.babelMain, this.readDefaultTsConfig, this.logger, this.workspace, this.compositions, this.application, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
   }
 
   /**
