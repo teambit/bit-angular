@@ -1,6 +1,7 @@
 import { babel } from '@rollup/plugin-babel';
 import rollupJson from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
+import virtual from '@rollup/plugin-virtual';
 import { Logger } from '@teambit/logger';
 import * as rollup from 'rollup';
 import { TransformHook } from 'rollup';
@@ -10,11 +11,7 @@ import { TransformHook } from 'rollup';
 import { ngcPlugin } from './ngc-plugin';
 // import { ensureUnixPath } from './utils/path';
 import { generateKey, readCacheEntry, saveCacheEntry } from './utils/cache';
-import {
-  ngBabelLinker,
-  ngccCompilerCli,
-  getNodeJSFileSystem
-} from './utils/ng-compiler-cli';
+import { getNodeJSFileSystem, ngBabelLinker, ngccCompilerCli } from './utils/ng-compiler-cli';
 
 export type OutputFileCache = Map<string, { version: string; content: string }>;
 
@@ -28,6 +25,7 @@ export interface RollupOptions {
   entries: string[];
   dest: string;
   sourceRoot: string;
+  virtual?: { [key: string]: string };
   transform?: TransformHook;
   cache?: rollup.RollupCache;
   cacheDirectory?: string | false;
@@ -74,6 +72,7 @@ export class RollupCompiler {
       cache: opts.cache ?? (cacheDirectory ? await readCacheEntry(cacheDirectory, opts.cacheKey!) : undefined),
       input: opts.entries,
       plugins: [
+        opts.virtual ? virtual(opts.virtual): undefined,
         nodeResolve({
           moduleDirectories: opts.nodeModulesPaths ?? ['node_modules'],
           dedupe: [
@@ -99,7 +98,7 @@ export class RollupCompiler {
         rollupJson(),
         await ngcPlugin({ rootDir: opts.sourceRoot }, this.logger),
         babel({ plugins: [linkerPlugin], babelHelpers: 'bundled', compact: false }), // TODO set compact false only for dev
-        opts.transform ? { transform: opts.transform, name: 'downlevel-ts' } : undefined,
+        opts.transform ? { transform: opts.transform, name: 'downlevel-ts' } : undefined
         // minify({legalComments: "none"}),
         // html()
       ],
@@ -155,7 +154,9 @@ export class RollupCompiler {
       cacheDirectory: opts.cacheDirectory,
       fileCache,
       cacheKey: await generateKey(...opts.entries, opts.moduleName, opts.dest, compilationMode),
-      nodeModulesPaths: opts.nodeModulesPaths
+      nodeModulesPaths: opts.nodeModulesPaths,
+      transform: opts.transform,
+      virtual: opts.virtual,
     });
 
     if (watch) {
