@@ -96,7 +96,7 @@ export class RollupCompiler {
         //   },
         // }),
         rollupJson(),
-        await ngcPlugin({ rootDir: opts.sourceRoot }, this.logger),
+        await ngcPlugin({ rootDir: opts.sourceRoot, internals: opts.internals, externals: opts.externals }, this.logger),
         babel({ plugins: [linkerPlugin], babelHelpers: 'bundled', compact: false }), // TODO set compact false only for dev
         opts.transform ? { transform: opts.transform, name: 'downlevel-ts' } : undefined
         // minify({legalComments: "none"}),
