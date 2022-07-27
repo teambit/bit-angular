@@ -30,6 +30,8 @@ export interface RollupOptions {
   fileCache?: OutputFileCache;
   cacheKey?: string;
   nodeModulesPaths?: string[];
+  internals?: string[];
+  externals?: string[];
 }
 
 type CompilationMode = 'full' | 'partial';
@@ -40,8 +42,9 @@ export class RollupCompiler {
   constructor(private logger: Logger) {
   }
 
-  isExternalDependency(moduleId: string) {
-    return moduleId.includes('node_modules');
+  isExternalDependency(moduleId: string, externals: string[] = [], internals: string[] = []): boolean {
+    return internals.every(exception => !moduleId.includes(exception))
+      && (externals.some(external => moduleId.includes(external)) || moduleId.includes('node_modules'));
   }
 
   async bundleFiles(opts: RollupOptions) {
@@ -65,7 +68,7 @@ export class RollupCompiler {
 
     const bundle = await rollup.rollup({
       context: 'this',
-      external: moduleId => this.isExternalDependency(moduleId),
+      external: moduleId => this.isExternalDependency(moduleId, opts.externals, opts.internals),
       inlineDynamicImports: false,
       cache: opts.cache ?? (cacheDirectory ? await readCacheEntry(cacheDirectory, opts.cacheKey!) : undefined),
       input: opts.entries,
@@ -153,6 +156,8 @@ export class RollupCompiler {
       cacheKey: await generateKey(...opts.entries, opts.moduleName, opts.dest, compilationMode),
       nodeModulesPaths: opts.nodeModulesPaths,
       transform: opts.transform,
+      internals: opts.internals,
+      externals: opts.externals,
     });
 
     if (watch) {

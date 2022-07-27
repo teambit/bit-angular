@@ -18,6 +18,7 @@ export interface Options {
   rootDir: string;
   sourceMap?: boolean;
   target?: string;
+  internals?: string[];
   // buildOptimizer?: OptimizerOptions;
 }
 
@@ -26,6 +27,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
   const files = new Map();
   // let sideEffectFreeModules: string[];
   const { createCompilerHost } = await ngCompilerCli();
+  const internals = options.internals || [];
 
   const { target = 'es2018', rootDir, sourceMap = true } = options;
   const scriptTarget = ScriptTarget[Number(target.toLocaleUpperCase())] as any;
@@ -55,7 +57,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
     resolveId: resolver(),
     async transform(code: string, id: string) {
       logger.setStatusLine(`Transforming ${id}`);
-      if (!id.includes('node_modules')) {
+      if (!id.includes('node_modules') || internals.some(exception => id.includes(exception))) {
         // eslint-disable-next-line @typescript-eslint/return-await
         return await compile({ id: resolve(id).replace(/\\/g, '/'), host, options: opts, files });
       }
