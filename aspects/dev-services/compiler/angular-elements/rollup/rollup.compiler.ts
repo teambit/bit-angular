@@ -1,7 +1,6 @@
 import { babel } from '@rollup/plugin-babel';
 import rollupJson from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import virtual from '@rollup/plugin-virtual';
 import { Logger } from '@teambit/logger';
 import * as rollup from 'rollup';
 import { TransformHook } from 'rollup';
@@ -25,7 +24,6 @@ export interface RollupOptions {
   entries: string[];
   dest: string;
   sourceRoot: string;
-  virtual?: { [key: string]: string };
   transform?: TransformHook;
   cache?: rollup.RollupCache;
   cacheDirectory?: string | false;
@@ -72,7 +70,6 @@ export class RollupCompiler {
       cache: opts.cache ?? (cacheDirectory ? await readCacheEntry(cacheDirectory, opts.cacheKey!) : undefined),
       input: opts.entries,
       plugins: [
-        opts.virtual ? virtual(opts.virtual): undefined,
         nodeResolve({
           moduleDirectories: opts.nodeModulesPaths ?? ['node_modules'],
           dedupe: [
@@ -156,7 +153,6 @@ export class RollupCompiler {
       cacheKey: await generateKey(...opts.entries, opts.moduleName, opts.dest, compilationMode),
       nodeModulesPaths: opts.nodeModulesPaths,
       transform: opts.transform,
-      virtual: opts.virtual,
     });
 
     if (watch) {
