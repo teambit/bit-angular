@@ -2,7 +2,7 @@ import { Type } from '@angular/core';
 import { RenderingContext } from '@teambit/preview';
 import DocsRoot from '@teambit/react.ui.docs-app';
 import React from 'react';
-import { ngToReact } from './loader';
+import { ngToReact } from '@teambit/angular-elements-loader';
 
 export type DocsRootProps = {
   Provider: Type<any> | undefined,

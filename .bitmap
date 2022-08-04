@@ -21,6 +21,12 @@
         "mainFile": "index.ts",
         "rootDir": "aspects/dev-services/compiler/angular-elements"
     },
+    "dev-services/compiler/angular-elements-loader": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "aspects/dev-services/compiler/angular-elements-loader"
+    },
     "dev-services/compiler/ng-multi-compiler": {
         "scope": "teambit.angular",
         "version": "0.1.1",
