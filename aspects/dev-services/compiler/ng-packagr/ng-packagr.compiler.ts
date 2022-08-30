@@ -12,8 +12,6 @@ import { Component } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
 import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
-import AbstractVinyl from '@teambit/legacy/dist/consumer/component/sources/abstract-vinyl';
-import DataToPersist from '@teambit/legacy/dist/consumer/component/sources/data-to-persist';
 import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
@@ -257,14 +255,12 @@ export class NgPackagrCompiler implements Compiler {
         }
 
         if (this.shouldCopyNonSupportedFiles) {
-          const dataToPersist = new DataToPersist();
+          const distPath = join(capsule.path, this.distDir);
           capsule.component.filesystem.files.forEach(file => {
             if (!this.isFileSupported(file.path)) {
-              dataToPersist.addFile(file as any as AbstractVinyl);
+              writeFileSync(join(distPath, file.relative), file.contents);
             }
           });
-          dataToPersist.addBasePath(join(capsule.path, this.distDir));
-          await dataToPersist.persistAllToFS();
         }
       }
 
