@@ -35,6 +35,7 @@
           "@types/cacache": "^15.0.1",
           "cacache": "^15.3.0",
           "esbuild": "^0.14.9",
+          "react-dom": "^17.0.2",
           "rollup": "~2.58.0",
           "terser": "^5.8.0",
           "typescript": "-"
@@ -47,6 +48,7 @@
           "@angular/elements": ">= 8.0.0",
           "@angular/platform-browser": ">= 8.0.0",
           "@angular/platform-browser-dynamic": ">= 8.0.0",
+          "react-dom": "-",
           "typescript": ">= 3.5.3"
         }
       }

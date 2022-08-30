@@ -31,7 +31,7 @@
     /**
      * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
      */
-    "packageManager": "teambit.dependencies/yarn",
+    "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
         "@teambit/toolbox.network.get-port": "0.0.112",
@@ -94,7 +94,7 @@
   "teambit.angular/versions/angular-v9": {},
   "teambit.angular/versions/angular-v8": {},
   // Add angular apps (until this is no longer necessary)
-  "examples/demo-app": {},
+//  "examples/demo-app": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a
