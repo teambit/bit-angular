@@ -165,8 +165,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns the component build pipeline
    * Required for `bit build`
    */
-  getBuildPipe(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): BuildTask[] {
-    const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions);
+  getBuildPipe(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): BuildTask[] {
+    const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions);
     const compilerTask = this.compiler.createTask('NgPackagrCompiler', compiler);
     return [compilerTask, this.tester.task];
   }

@@ -122,14 +122,16 @@ export class AngularV13Main extends AngularBaseMain {
       tsCompilerOptions = opts;
     }
 
+    this.tsCompilerOptions = tsCompilerOptions;
+    this.bitCompilerOptions = bitCompilerOptions;
     return this.envs.override({
       getCompiler: () => {
         // @ts-ignore
-        return this.angularEnv.getCompiler(tsCompilerOptions, bitCompilerOptions);
+        return this.angularEnv.getCompiler(tsCompilerOptions, bitCompilerOptions, this.ngEnvOptions);
       },
       getBuildPipe: () => {
         // @ts-ignore
-        return this.angularEnv.getBuildPipe(tsCompilerOptions, bitCompilerOptions);
+        return this.angularEnv.getBuildPipe(tsCompilerOptions, bitCompilerOptions, this.ngEnvOptions);
       }
     });
   }
