@@ -20,6 +20,7 @@ export interface Options {
   target?: string;
   internals?: string[];
   externals?: string[];
+  tsCompilerOptions?: AngularCompilerOptions;
   // buildOptimizer?: OptimizerOptions;
 }
 
@@ -32,7 +33,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
   const externals = options.externals || [];
 
   const { target = 'es2018', rootDir, sourceMap = true } = options;
-  const scriptTarget = ScriptTarget[Number(target.toLocaleUpperCase())] as any;
+  const scriptTarget = ScriptTarget[Number(target.toLocaleUpperCase())] as any || ScriptTarget.ESNext;
 
   const opts = {
     target: scriptTarget,
@@ -45,7 +46,8 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
     experimentalDecorators: true,
     emitDecoratorMetadata: true,
     enableIvy: true,
-    sourceMap
+    sourceMap,
+    ...options.tsCompilerOptions,
   } as any as AngularCompilerOptions;
 
   return {

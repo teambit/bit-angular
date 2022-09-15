@@ -11,6 +11,7 @@ import { ngcPlugin } from './ngc-plugin';
 // import { ensureUnixPath } from './utils/path';
 import { generateKey, readCacheEntry, saveCacheEntry } from './utils/cache';
 import { getNodeJSFileSystem, ngBabelLinker, ngccCompilerCli } from './utils/ng-compiler-cli';
+import type { AngularCompilerOptions } from '@angular/compiler-cli';
 
 export type OutputFileCache = Map<string, { version: string; content: string }>;
 
@@ -32,6 +33,7 @@ export interface RollupOptions {
   nodeModulesPaths?: string[];
   internals?: string[];
   externals?: string[];
+  compilationMode?: CompilationMode;
 }
 
 type CompilationMode = 'full' | 'partial';
@@ -39,7 +41,7 @@ type CompilationMode = 'full' | 'partial';
 export class RollupCompiler {
   cache?: rollup.RollupCache;
 
-  constructor(private logger: Logger) {
+  constructor(private tsCompilerOptions: AngularCompilerOptions = {}, private logger: Logger) {
   }
 
   isExternalDependency(moduleId: string, externals: string[] = [], internals: string[] = []): boolean {
@@ -96,7 +98,7 @@ export class RollupCompiler {
         //   },
         // }),
         rollupJson(),
-        await ngcPlugin({ rootDir: opts.sourceRoot, internals: opts.internals, externals: opts.externals }, this.logger),
+        await ngcPlugin({ rootDir: opts.sourceRoot, internals: opts.internals, externals: opts.externals, tsCompilerOptions: this.tsCompilerOptions }, this.logger),
         babel({ plugins: [linkerPlugin], babelHelpers: 'bundled', compact: false }), // TODO set compact false only for dev
         opts.transform ? { transform: opts.transform, name: 'downlevel-ts' } : undefined
         // minify({legalComments: "none"}),
@@ -158,6 +160,7 @@ export class RollupCompiler {
       transform: opts.transform,
       internals: opts.internals,
       externals: opts.externals,
+      compilationMode
     });
 
     if (watch) {

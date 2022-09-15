@@ -36,7 +36,7 @@ export class AngularElementsCompiler implements Compiler {
     private tsCompilerOptions: AngularCompilerOptions = {},
     private nodeModulesPaths: string[] = []
   ) {
-    this.rollupCompiler = new RollupCompiler(this.logger);
+    this.rollupCompiler = new RollupCompiler(this.tsCompilerOptions, this.logger);
   }
 
   async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false, build = false) {

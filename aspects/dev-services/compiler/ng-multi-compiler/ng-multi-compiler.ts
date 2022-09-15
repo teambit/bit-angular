@@ -65,7 +65,7 @@ export class NgMultiCompiler implements Compiler {
       this.distGlobPatterns,
       this.shouldCopyNonSupportedFiles,
       this.artifactName,
-      tsCompilerOptions,
+      this.tsCompilerOptions,
       nodeModulesPaths
     ) as NgPackagrCompiler;
 
@@ -79,7 +79,7 @@ export class NgMultiCompiler implements Compiler {
         this.distGlobPatterns,
         this.shouldCopyNonSupportedFiles,
         this.artifactName,
-        tsCompilerOptions,
+        this.tsCompilerOptions,
         nodeModulesPaths
       ) as AngularElementsCompiler;
       this.mainCompiler = this.angularElementsCompiler;
