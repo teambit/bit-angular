@@ -25,7 +25,6 @@
           "@angular/platform-browser": "-",
           "@angular/platform-browser-dynamic": "-",
           "react": "-",
-          "react-dom": "-",
           "typescript": "-",
           "zone.js": "-"
         },
@@ -36,7 +35,6 @@
           "@angular/platform-browser": ">= 8.0.0",
           "@angular/platform-browser-dynamic": ">= 8.0.0",
           "react": ">= 17.0.2",
-          "react-dom": ">= 17.0.2",
           "typescript": ">= 3.5.3",
           "zone.js": ">= 0.9.1"
         }
