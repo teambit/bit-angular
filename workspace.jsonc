@@ -103,7 +103,7 @@
   "teambit.workspace/variants": {
     "aspects": {
       "defaultScope": "teambit.angular",
-      "teambit.harmony/aspect": {},
+      "teambit.envs/env": {},
       "teambit.pkg/pkg": {
         "packageManagerPublishArgs": [
           "--access public"
@@ -118,7 +118,7 @@
       }
     },
     "examples/custom-env": {
-      "teambit.harmony/aspect": {}
+      "teambit.envs/env": {}
     },
     "examples/demo-app": {
       "teambit.angular/angular": {}
