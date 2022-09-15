@@ -235,7 +235,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getAdditionalHostDependencies(ngEnvOptions?: AngularEnvOptions): string[] {
-    return [];
+    return ['@teambit/mdx.ui.mdx-scope-context', '@mdx-js/react', 'react'];
   }
 
   /**
