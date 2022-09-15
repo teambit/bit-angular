@@ -36,7 +36,7 @@ export interface RollupOptions {
   compilationMode?: CompilationMode;
 }
 
-type CompilationMode = 'full' | 'partial';
+export type CompilationMode = 'full' | 'partial';
 
 export class RollupCompiler {
   cache?: rollup.RollupCache;
@@ -98,7 +98,7 @@ export class RollupCompiler {
         //   },
         // }),
         rollupJson(),
-        await ngcPlugin({ rootDir: opts.sourceRoot, internals: opts.internals, externals: opts.externals, tsCompilerOptions: this.tsCompilerOptions }, this.logger),
+        await ngcPlugin({ rootDir: opts.sourceRoot, internals: opts.internals, externals: opts.externals, compilationMode: opts.compilationMode || 'partial', tsCompilerOptions: this.tsCompilerOptions }, this.logger),
         babel({ plugins: [linkerPlugin], babelHelpers: 'bundled', compact: false }), // TODO set compact false only for dev
         opts.transform ? { transform: opts.transform, name: 'downlevel-ts' } : undefined
         // minify({legalComments: "none"}),

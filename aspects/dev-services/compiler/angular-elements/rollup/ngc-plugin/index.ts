@@ -10,6 +10,7 @@ import {
 } from 'typescript';
 import { ngCompilerCli } from '../utils/ng-compiler-cli';
 import { compile } from './compile';
+import type { CompilationMode } from '../rollup.compiler';
 // import { defautSideEffects, optimizer, OptimizerOptions } from './optimizer';
 
 import { resolver } from './resolver';
@@ -21,6 +22,7 @@ export interface Options {
   internals?: string[];
   externals?: string[];
   tsCompilerOptions?: AngularCompilerOptions;
+  compilationMode: CompilationMode;
   // buildOptimizer?: OptimizerOptions;
 }
 
@@ -48,6 +50,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
     enableIvy: true,
     sourceMap,
     ...options.tsCompilerOptions,
+    compilationMode: options.compilationMode,
   } as any as AngularCompilerOptions;
 
   return {

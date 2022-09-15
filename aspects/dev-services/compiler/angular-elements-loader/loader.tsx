@@ -1,6 +1,5 @@
 // Only load those if we are in the browser
 if(typeof window !== 'undefined') {
-  require('@angular/compiler');
   require('./native-shim.js');
   require('zone.js/dist/zone');
 }
