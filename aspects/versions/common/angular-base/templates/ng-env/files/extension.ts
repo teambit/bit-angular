@@ -1,11 +1,11 @@
 import { ComponentContext } from '@teambit/generator';
 
 export function extensionFile({ namePascalCase: Name }: ComponentContext) {
-  return `import { EnvsMain, EnvsAspect } from '@teambit/envs'
-import { AngularAspect, AngularMain } from '@teambit/angular'
+  return `import { EnvsMain, EnvsAspect } from '@teambit/envs';
+import { AngularAspect, AngularMain } from '@teambit/angular';
 
 export class ${Name}Extension {
-  static dependencies: any = [EnvsAspect, AngularAspect]
+  static dependencies: any = [EnvsAspect, AngularAspect];
 
   static async provider([envs, angular]: [EnvsMain, AngularMain]) {
     // Use any of the "angular.override..." or "angular.use..." transformers, for example:

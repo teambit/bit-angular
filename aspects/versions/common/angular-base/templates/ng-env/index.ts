@@ -23,4 +23,10 @@ export const ngEnvTemplate: ComponentTemplate = {
       },
     ];
   },
+  config: {
+    'teambit.envs/env': {},
+    'teambit.envs/envs': {
+      env: 'teambit.envs/env',
+    },
+  },
 };
