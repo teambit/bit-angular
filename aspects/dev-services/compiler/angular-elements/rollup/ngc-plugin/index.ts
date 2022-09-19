@@ -66,7 +66,10 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
       logger.setStatusLine(`Transforming ${id}`);
       if ((!id.includes('node_modules') || internals.some(exception => id.includes(exception))) && externals.every(external => !id.includes(external))) {
         // eslint-disable-next-line @typescript-eslint/return-await
-        return await compile({ id: resolve(id).replace(/\\/g, '/'), host, options: opts, files });
+        const res = await compile({ id: resolve(id).replace(/\\/g, '/'), host, options: opts, files });
+        // Manually force import the jit compiler at the beginning of the files
+        res.code = "import '@angular/compiler';\n" + res.code;
+        return res;
       }
       // TODO: optimize for prod only
       /*return optimizer(code, id, {
