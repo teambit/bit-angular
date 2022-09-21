@@ -16,7 +16,7 @@ export async function compile(opts: CompileOptions) {
   const program = createProgram({ rootNames: [id], options, host });
   program.emit();
 
-  const file = id.replace('.ts', '');
+  const file = id.replace(/\.tsx?/, '');
 
   const map = files.get(`${ file }.js.map`);
   const code = files.get(`${ file }.js`);
