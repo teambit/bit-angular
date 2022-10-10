@@ -61,7 +61,8 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
       host = createCompilerHost({ options: opts }) as CompilerHost & TsCompilerHost;
       host.writeFile = (fileName: string, contents: string) => files.set(fileName, contents)
     },
-    resolveId: resolver(),
+    // Disabling this as it rewrites import paths and breaks the build, not sure why it could be needed ?
+    // resolveId: resolver(),
     async transform(code: string, id: string) {
       logger.setStatusLine(`Transforming ${id}`);
       if ((!id.includes('node_modules') || internals.some(exception => id.includes(exception))) && externals.every(external => !id.includes(external))) {
