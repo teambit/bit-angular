@@ -1,4 +1,4 @@
-import type { CompilerHost, AngularCompilerOptions } from '@angular/compiler-cli';
+import type { AngularCompilerOptions, CompilerHost } from '@angular/compiler-cli';
 import { Logger } from '@teambit/logger';
 import { resolve } from 'path';
 import { Plugin } from 'rollup';
@@ -8,12 +8,12 @@ import {
   ModuleResolutionKind,
   ScriptTarget
 } from 'typescript';
+import type { CompilationMode } from '../rollup.compiler';
 import { ngCompilerCli } from '../utils/ng-compiler-cli';
 import { compile } from './compile';
-import type { CompilationMode } from '../rollup.compiler';
 // import { defautSideEffects, optimizer, OptimizerOptions } from './optimizer';
-
 import { resolver } from './resolver';
+
 
 export interface Options {
   rootDir: string;
@@ -48,6 +48,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
     experimentalDecorators: true,
     emitDecoratorMetadata: true,
     enableIvy: true,
+    allowJs: true,
     sourceMap,
     ...options.tsCompilerOptions,
     compilationMode: options.compilationMode,
@@ -61,8 +62,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
       host = createCompilerHost({ options: opts }) as CompilerHost & TsCompilerHost;
       host.writeFile = (fileName: string, contents: string) => files.set(fileName, contents)
     },
-    // Disabling this as it rewrites import paths and breaks the build, not sure why it could be needed ?
-    // resolveId: resolver(),
+    resolveId: resolver(),
     async transform(code: string, id: string) {
       logger.setStatusLine(`Transforming ${id}`);
       if ((!id.includes('node_modules') || internals.some(exception => id.includes(exception))) && externals.every(external => !id.includes(external))) {
