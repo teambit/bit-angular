@@ -52,7 +52,7 @@ export class NgMultiCompiler implements Compiler {
     this.distDir = bitCompilerOptions.distDir || 'dist';
     this.distGlobPatterns = bitCompilerOptions.distGlobPatterns || [`${this.distDir}/**`];
     this.shouldCopyNonSupportedFiles =
-      typeof bitCompilerOptions.shouldCopyNonSupportedFiles === 'boolean' ? bitCompilerOptions.shouldCopyNonSupportedFiles : true;
+      typeof bitCompilerOptions.shouldCopyNonSupportedFiles === 'boolean' ? bitCompilerOptions.shouldCopyNonSupportedFiles : false;
     this.artifactName = bitCompilerOptions.artifactName || 'dist';
     this.ngPackagrCompiler = new NgPackagrCompiler(
       ngPackagrPath,
