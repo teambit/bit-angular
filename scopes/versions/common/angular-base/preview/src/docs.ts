@@ -19,7 +19,7 @@ export type DocsRootProps = {
 
 async function docsRoot({docs}: DocsRootProps): Promise<void> {
   if (docs) {
-    window.onDocsLoad$.next((docs as DocsFile).default ?? docs);
+    window.onDocsLoad$.next((docs as DocsFile).default ?? docs as string);
   }
 }
 

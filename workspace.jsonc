@@ -84,9 +84,9 @@
    * new set of dependencies.
    **/
   "teambit.workspace/variants": {
-    "aspects": {
+    // Set the default variant configs to be used for all components (except examples).
+    "scopes": {
       "defaultScope": "teambit.angular",
-      "teambit.envs/env": {},
       "teambit.pkg/pkg": {
         "packageManagerPublishArgs": [
           "--access public"
@@ -99,6 +99,22 @@
           }
         }
       }
+    },
+    // Special rules for all aspect envs
+    "scopes/angular, scopes/versions/angular-v8, scopes/versions/angular-v9, scopes/versions/angular-v10, scopes/versions/angular-v11, scopes/versions/angular-v12, scopes/versions/angular-v13": {
+      "teambit.harmony/aspect": "-",
+      // Set the env env for all core envs
+      "teambit.envs/env": {},
+      "teambit.envs/envs": {
+        "env": "teambit.envs/env"
+      }
+    },
+    // All the other components use node env
+    "scopes/dev-services, scopes/versions/common": {
+      "teambit.envs/envs": {
+        "env": "teambit.harmony/node"
+      },
+      "teambit.harmony/node": {}
     },
     "examples/custom-env": {
       "teambit.envs/env": {}
