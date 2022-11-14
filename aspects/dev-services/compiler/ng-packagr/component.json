@@ -20,7 +20,9 @@
       "policy": {
         "dependencies": {
           "@angular/compiler-cli": "-",
-          "ng-packagr": "-"
+          "@types/fs-extra": "~9.0.7",
+          "ng-packagr": "-",
+          "fs-extra": "9.1.0"
         },
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0",

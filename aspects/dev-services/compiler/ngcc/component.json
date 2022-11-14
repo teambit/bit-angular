@@ -19,7 +19,9 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@angular/compiler-cli": "-"
+          "@angular/compiler-cli": "-",
+          "@types/fs-extra": "~9.0.7",
+          "fs-extra": "9.1.0"
         },
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0"
