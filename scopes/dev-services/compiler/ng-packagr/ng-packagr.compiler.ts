@@ -105,7 +105,9 @@ export class NgPackagrCompiler implements Compiler {
     };
     const props = ['main', 'metadata', 'module', 'es2015', 'es2020', 'esm2015', 'esm2020', 'fesm2015', 'fesm2020', 'typings', 'types', 'node', 'default'];
     props.forEach(prop => {
-      if (packageJson[prop]) {
+      // Angular v13+ doesn't generate umd bundles anymore, so we don't want to update the main entry point
+      // as it will cause the component to fail to load with jest
+      if (packageJson[prop] && (prop !== 'main' || packageJson[prop].includes('.umd.js'))) {
         updatePackageJson[prop] = posix.join(this.distDir, packageJson[prop]);
       }
     });
