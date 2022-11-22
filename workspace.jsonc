@@ -60,6 +60,7 @@
   "teambit.generator/generator": {
     "aspects": [
       "teambit.angular/angular",
+      "teambit.angular/versions/angular-v14",
       "teambit.angular/versions/angular-v13",
       "teambit.angular/versions/angular-v12",
       "teambit.angular/versions/angular-v11",
@@ -69,13 +70,14 @@
     ]
   },
   // Add angular templates to the list
-  "teambit.angular/angular": {},
-  "teambit.angular/versions/angular-v13": {},
-  "teambit.angular/versions/angular-v12": {},
-  "teambit.angular/versions/angular-v11": {},
-  "teambit.angular/versions/angular-v10": {},
-  "teambit.angular/versions/angular-v9": {},
-  "teambit.angular/versions/angular-v8": {},
+//  "teambit.angular/angular": {},
+  "teambit.angular/versions/angular-v14": {},
+//  "teambit.angular/versions/angular-v13": {},
+//  "teambit.angular/versions/angular-v12": {},
+//  "teambit.angular/versions/angular-v11": {},
+//  "teambit.angular/versions/angular-v10": {},
+//  "teambit.angular/versions/angular-v9": {},
+//  "teambit.angular/versions/angular-v8": {},
   // Add angular apps (until this is no longer necessary)
 //  "examples/demo-app": {},
   /**
@@ -101,7 +103,7 @@
       }
     },
     // Special rules for all aspect envs
-    "scopes/angular, scopes/versions/angular-v8, scopes/versions/angular-v9, scopes/versions/angular-v10, scopes/versions/angular-v11, scopes/versions/angular-v12, scopes/versions/angular-v13": {
+    "scopes/angular, scopes/versions/angular-v8, scopes/versions/angular-v9, scopes/versions/angular-v10, scopes/versions/angular-v11, scopes/versions/angular-v12, scopes/versions/angular-v13, scopes/versions/angular-v14": {
       "teambit.harmony/aspect": "-",
       // Set the env env for all core envs
       "teambit.envs/env": {},
@@ -120,10 +122,13 @@
       "teambit.envs/env": {}
     },
     "examples/demo-app": {
-      "teambit.angular/angular": {}
+      "teambit.angular/versions/angular-v13": {}
     },
     "examples/demo-lib": {
       "teambit.angular/angular": {}
+    },
+    "examples/demo-lib-v14": {
+      "teambit.angular/versions/angular-v14": {}
     },
     "examples/demo-lib-v13": {
       "teambit.angular/versions/angular-v13": {}

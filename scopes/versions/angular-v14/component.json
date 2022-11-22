@@ -1,6 +1,6 @@
 {
   "componentId": {
-    "name": "angular"
+    "name": "versions/angular-v14"
   },
   "propagate": true,
   "extensions": {
@@ -9,7 +9,7 @@
         "--access public"
       ],
       "packageJson": {
-        "name": "@teambit/angular",
+        "name": "@teambit/angular-v14",
         "private": false,
         "engines": {
           "node": ">=14.15.0"

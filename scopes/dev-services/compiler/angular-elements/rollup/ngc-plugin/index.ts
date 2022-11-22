@@ -72,11 +72,6 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
         res.code = "import '@angular/compiler';\n" + res.code;
         return res;
       }
-      // TODO: optimize for prod only
-      /*return optimizer(code, id, {
-        sideEffectFreeModules,
-        angularCoreModules: options?.buildOptimizer?.angularCoreModules
-      })*/
     }
   }
 }

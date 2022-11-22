@@ -77,7 +77,7 @@ export abstract class AngularBaseMain {
   overrideWebpackOptions(serveOpts: Partial<WebpackConfigWithDevServer>, buildOpts: Partial<Configuration>): EnvTransformer;
   overrideWebpackOptions(serveOpts: Partial<WebpackConfigWithDevServer>, buildOpts?: Partial<Configuration>): EnvTransformer {
     if (typeof buildOpts === 'undefined') {
-      buildOpts = serveOpts as Partial<Configuration>;
+      buildOpts = serveOpts as unknown as Partial<Configuration>;
     }
     const angularWebpack = this.angularEnv.angularWebpack;
     angularWebpack.webpackServeOptions = serveOpts;

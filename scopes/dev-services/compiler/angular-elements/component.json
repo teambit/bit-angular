@@ -44,7 +44,6 @@
           "typescript": "-"
         },
         "peerDependencies": {
-          "@angular-devkit/build-optimizer": ">= 0.0.1",
           "@angular/compiler": ">= 8.0.0",
           "@angular/compiler-cli": ">= 8.0.0",
           "@angular/core": ">= 8.0.0",

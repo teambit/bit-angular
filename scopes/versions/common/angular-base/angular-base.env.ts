@@ -79,6 +79,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     docsTemplatePath: require.resolve('./preview/src/docs'),
     mountTemplatePath: require.resolve('./preview/src/mount'),
   };
+  readonly applicationType = 'angular';
 
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;
