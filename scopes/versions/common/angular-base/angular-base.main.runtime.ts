@@ -1,12 +1,12 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-import { BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
+import { BrowserOptions, DevServerOptions, AngularEnvOptions } from '@teambit/angular-apps';
 import { BuildTask } from '@teambit/builder';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Compiler, CompilerOptions } from '@teambit/compiler';
 import { Environment, EnvsMain, EnvTransformer } from '@teambit/envs';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { Configuration } from 'webpack';
-import { AngularBaseEnv, AngularEnvOptions } from './angular-base.env';
+import { AngularBaseEnv } from './angular-base.env';
 
 
 export abstract class AngularBaseMain {

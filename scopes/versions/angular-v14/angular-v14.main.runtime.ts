@@ -18,9 +18,12 @@ import { ReactAspect, ReactMain } from '@teambit/react';
 import { TesterAspect, TesterMain } from '@teambit/tester';
 import { WebpackAspect, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
 import { AngularV14Aspect } from './angular-v14.aspect';
 import { AngularV14Env } from './angular-v14.env';
 
+// Disable v8-caching because it breaks ESM loaders
+NativeCompileCache.uninstall();
 export class AngularV14Main extends AngularBaseMain {
   static slots = [];
   static runtime: any = MainRuntime;
@@ -82,6 +85,7 @@ export class AngularV14Main extends AngularBaseMain {
     BabelMain,
   ], options: AngularEnvOptions): Promise<AngularBaseMain> {
     options.useAngularElementsPreview = true;
+    options.useNgcc = false;
     const angularv14Env = new AngularV14Env(
       jestAspect,
       compiler,

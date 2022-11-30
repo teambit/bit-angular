@@ -8,6 +8,7 @@
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Compiler } from 'webpack';
 import { NgccProcessor } from '@teambit/ngcc';
+import { AngularEnvOptions } from '@teambit/angular-apps';
 import { NodeJSFileSystem } from './nodejs-file-system';
 
 interface ResourceData {
@@ -120,7 +121,7 @@ export class BitDedupeModuleResolvePlugin {
   private fs = new NodeJSFileSystem();
   private ngccProcessor?: NgccProcessor;
 
-  constructor(private nodeModulesPaths: string[], private workspaceDir: string, private tempFolder: string) {
+  constructor(private nodeModulesPaths: string[], private workspaceDir: string, private tempFolder: string, private ngEnvOptions: AngularEnvOptions) {
   }
 
   guessTypingsFromPackageJson(
@@ -176,13 +177,16 @@ export class BitDedupeModuleResolvePlugin {
   }
 
   apply(compiler: Compiler) {
-    if(!this.ngccProcessor) {
-      this.ngccProcessor = new NgccProcessor();
-    }
-    const needsNgcc = this.ngccProcessor.needsProcessing(this.workspaceDir, this.tempFolder, this.nodeModulesPaths);
-    if(needsNgcc) {
-      // Process all node_modules folders (only works if the modules are hoisted)
-      this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path, this.tempFolder));
+    let needsNgcc = false;
+    if (this.ngEnvOptions.useNgcc) {
+      if (!this.ngccProcessor) {
+        this.ngccProcessor = new NgccProcessor();
+      }
+      needsNgcc = this.ngccProcessor.needsProcessing(this.workspaceDir, this.tempFolder, this.nodeModulesPaths);
+      if (needsNgcc) {
+        // Process all node_modules folders (only works if the modules are hoisted)
+        this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path, this.tempFolder));
+      }
     }
 
     compiler.hooks.compilation.tap(

@@ -1,5 +1,6 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
+import type { AngularEnvOptions } from '@teambit/angular-apps';
 import { RollupCompiler } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import {
@@ -10,7 +11,7 @@ import {
 } from '@teambit/builder';
 import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
-import { CompositionsMain, Composition } from '@teambit/compositions';
+import { Composition, CompositionsMain } from '@teambit/compositions';
 import { Timer } from '@teambit/legacy/dist/toolbox/timer';
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
@@ -21,7 +22,7 @@ import { join, extname } from 'path';
 export class AngularElementsCompiler implements Compiler {
   readonly id = 'teambit.angular/dev-services/compiler/angular-elements';
   displayName = 'Angular elements compiler';
-  ngccProcessor = new NgccProcessor();
+  ngccProcessor?: NgccProcessor;
   rollupCompiler: RollupCompiler;
 
   constructor(
@@ -34,15 +35,22 @@ export class AngularElementsCompiler implements Compiler {
     public shouldCopyNonSupportedFiles: boolean,
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
-    private nodeModulesPaths: string[] = []
+    private nodeModulesPaths: string[] = [],
+    private ngEnvOptions: AngularEnvOptions = {},
   ) {
     this.rollupCompiler = new RollupCompiler(this.tsCompilerOptions, this.logger);
+    if (this.ngEnvOptions.useNgcc) {
+      this.ngccProcessor = new NgccProcessor();
+    }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false, build = false) {
     // Process all node_modules folders (only works if the modules are hoisted)
-    for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-      await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+    if (this.ngEnvOptions.useNgcc) {
+      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
+        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+      }
     }
     // Build compositions with rollup
     this.logger.console('\nBuilding compositions');
@@ -79,8 +87,10 @@ Built Angular Compositions
     }
     // if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       // Process all node_modules folders (only works if the modules are hoisted)
-      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-        await this.ngccProcessor.process(this.nodeModulesPaths[i]);
+      if (this.ngEnvOptions.useNgcc) {
+        for (let i = 0; i < this.nodeModulesPaths.length; i++) {
+          await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+        }
       }
       // Build compositions
       await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true, false);
@@ -106,8 +116,10 @@ Built Angular Compositions
     const componentsResults: ComponentResult[] = [];
 
     // Process all node_modules folders (only works if the modules are hoisted)
-    for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-      await this.ngccProcessor.process(this.nodeModulesPaths[i]);
+    if (this.ngEnvOptions.useNgcc) {
+      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
+        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+      }
     }
 
     for (let i = 0; i < context.components.length; i++) {

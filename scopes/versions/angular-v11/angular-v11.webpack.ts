@@ -21,7 +21,12 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { AngularBaseWebpack, WebpackConfig, WebpackSetup } from '@teambit/angular-base';
+import {
+  AngularBaseWebpack,
+  AngularEnvOptions,
+  WebpackConfig,
+  WebpackSetup
+} from '@teambit/angular-base';
 import { PkgMain } from '@teambit/pkg';
 import { Workspace } from '@teambit/workspace';
 import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
@@ -42,8 +47,8 @@ export class AngularV11Webpack extends AngularBaseWebpack {
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain) {
-    super(workspace, webpackMain, pkg, application, AngularV11Aspect);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain, ngEnvOptions: AngularEnvOptions) {
+    super(workspace, webpackMain, pkg, application, AngularV11Aspect, ngEnvOptions);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');
