@@ -7,7 +7,7 @@ import {
   BuiltTaskResult,
   ComponentResult
 } from '@teambit/builder';
-import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
+import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
 import { DependencyResolverMain } from '@teambit/dependency-resolver';
@@ -197,7 +197,9 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit compile`
    */
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
-    const isApp = componentIsApp(params.component, this.application);
+    // We do not need to compile using ng-packagr (except for builds)
+    return;
+    /*const isApp = componentIsApp(params.component, this.application);
     // No need to compile an app
     if (isApp) {
       return;
@@ -217,7 +219,7 @@ export class NgPackagrCompiler implements Compiler {
     this.logger.off();
     // Build component package
     await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
-    this.logger.on();
+    this.logger.on();*/
   }
 
   private getArtifactDefinition(): ArtifactDefinition[] {
