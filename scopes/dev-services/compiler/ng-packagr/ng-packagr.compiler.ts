@@ -10,6 +10,8 @@ import {
 import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
+import { DependencyResolverMain } from '@teambit/dependency-resolver';
+import { CyclicError } from '@teambit/graph.cleargraph';
 import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import removeFilesAndEmptyDirsRecursively
@@ -63,6 +65,7 @@ export class NgPackagrCompiler implements Compiler {
     private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
     private application: ApplicationMain,
+    private depResolver: DependencyResolverMain,
     public distDir: string,
     public distGlobPatterns: string[],
     public shouldCopyNonSupportedFiles: boolean,
@@ -229,20 +232,28 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit build`
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
-    const capsules = context.capsuleNetwork.seedersCapsules;
-    const componentsResults: ComponentResult[] = [];
-
     // Process all node_modules folders (only works if the modules are hoisted)
     for (let i = 0; i < this.nodeModulesPaths.length; i++) {
       await this.ngccProcessor.process(this.nodeModulesPaths[i]);
     }
 
-    for (let i = 0; i < context.components.length; i++) {
-      const component = context.components[i];
-      const capsule = capsules.getCapsule(component.id);
-      if (!capsule) {
-        throw new Error(`No capsule found for ${component.id} in network graph`);
+    let capsules = context.capsuleNetwork.seedersCapsules;
+    if (typeof capsules.toposort !== 'undefined') {
+      try {
+        // try to sort the capsules by the dependency graph, can fail if there is a circular dependency
+        capsules = await capsules.toposort(this.depResolver);
+      } catch (err) {
+        if (err instanceof CyclicError) {
+          this.logger.consoleWarning(`Warning: ${err.message}, unable to sort components for compilation, the capsules will be built in an arbitrary order`);
+        }
       }
+    }
+    const componentIds = context.components.map(component => component.id.toString());
+    const componentCapsules = capsules.filter(capsule => componentIds.includes(capsule.component.id.toString()));
+    const componentsResults: ComponentResult[] = [];
+
+    for (const capsule of componentCapsules) {
+      const component = capsule.component;
       const currentComponentResult: ComponentResult = {
         component
       };
@@ -260,7 +271,7 @@ export class NgPackagrCompiler implements Compiler {
 
         if (this.shouldCopyNonSupportedFiles) {
           const distPath = join(capsule.path, this.distDir);
-          capsule.component.filesystem.files.forEach(file => {
+          component.filesystem.files.forEach(file => {
             if (!this.isFileSupported(file.path)) {
               writeFileSync(join(distPath, file.relative), file.contents);
             }

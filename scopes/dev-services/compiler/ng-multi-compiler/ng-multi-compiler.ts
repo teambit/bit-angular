@@ -14,6 +14,7 @@ import {
 } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
+import { DependencyResolverMain } from '@teambit/dependency-resolver';
 import { Logger } from '@teambit/logger';
 import { NgPackagrCompiler } from '@teambit/ng-packagr';
 import { Workspace } from '@teambit/workspace';
@@ -45,6 +46,7 @@ export class NgMultiCompiler implements Compiler {
     private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
     private application: ApplicationMain,
+    private depResolver: DependencyResolverMain,
     private tsCompilerOptions: AngularCompilerOptions = {},
     bitCompilerOptions: Partial<CompilerOptions> = {},
     private nodeModulesPaths: string[] = []
@@ -61,6 +63,7 @@ export class NgMultiCompiler implements Compiler {
       this.workspace,
       this.compositions,
       this.application,
+      this.depResolver,
       this.distDir,
       this.distGlobPatterns,
       this.shouldCopyNonSupportedFiles,

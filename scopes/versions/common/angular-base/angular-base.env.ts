@@ -102,7 +102,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     generator: GeneratorMain,
     private application: ApplicationMain,
     private aspectLoader: AspectLoaderMain,
-    dependencyResolver: DependencyResolverMain,
+    private depResolver: DependencyResolverMain,
     private loggerMain: LoggerMain,
     private compositions: CompositionsMain,
     private babelMain: BabelMain,
@@ -111,7 +111,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     generator.registerComponentTemplate(angularBaseTemplates);
     generator.registerWorkspaceTemplate(workspaceTemplates);
     this.application.registerAppType(new AngularAppType(NG_APP_NAME, this));
-    dependencyResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
+    depResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
     this.logger = loggerMain.createLogger(this.getDevEnvId());
     if (options.useAngularElementsPreview) {
       this.ngEnvOptions.useAngularElementsPreview = true;
@@ -147,7 +147,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
 
   private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
     const nodeModulesPaths = this.getNodeModulesPaths(false);
-    return new NgMultiCompiler(this.ngPackagr, this.useNgElementsPreview(ngEnvOptions), this.babelMain, this.readDefaultTsConfig, this.logger, this.workspace, this.compositions, this.application, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
+    return new NgMultiCompiler(this.ngPackagr, this.useNgElementsPreview(ngEnvOptions), this.babelMain, this.readDefaultTsConfig, this.logger, this.workspace, this.compositions, this.application, this.depResolver, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
   }
 
   /**

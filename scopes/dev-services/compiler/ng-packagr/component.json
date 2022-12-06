@@ -20,6 +20,7 @@
       "policy": {
         "dependencies": {
           "@angular/compiler-cli": "-",
+          "@teambit/graph.cleargraph": "^0.0.1",
           "@types/fs-extra": "~9.0.7",
           "ng-packagr": "-",
           "fs-extra": "9.1.0"
