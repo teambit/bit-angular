@@ -1,5 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+// required here to make sure that this is loaded before the compositions file
+import '@angular/compiler';
 import { ngToCustomElements } from '@teambit/angular-elements-loader';
 
 const root = document.getElementById('root') as HTMLElement;

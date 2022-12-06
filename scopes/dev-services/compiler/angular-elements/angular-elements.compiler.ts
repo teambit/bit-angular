@@ -8,7 +8,7 @@ import {
   BuiltTaskResult,
   ComponentResult
 } from '@teambit/builder';
-import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
+import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { CompositionsMain, Composition } from '@teambit/compositions';
 import { Timer } from '@teambit/legacy/dist/toolbox/timer';
@@ -16,7 +16,7 @@ import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
-import { join, parse } from 'path';
+import { join, extname } from 'path';
 
 export class AngularElementsCompiler implements Compiler {
   readonly id = 'teambit.angular/dev-services/compiler/angular-elements';
@@ -48,22 +48,22 @@ export class AngularElementsCompiler implements Compiler {
     this.logger.console('\nBuilding compositions');
     const timer = Timer.create();
     timer.start();
-    const compositions = this.compositions.readCompositions(component);
-    const compositionFiles = compositions.map((composition: Composition) => join(componentDir, composition.filepath || ''));
-    const compositionsDist = join(outputDir, 'dist/compositions');
+    const entryFiles = component.filesystem.files.map((file) => join(componentDir, file.relative))
+      .filter((file) => this.isFileSupported(file));
+    const dist = join(outputDir, this.distDir);
     // TODO use a worker
     // TODO use build options for build setup
     await this.rollupCompiler.compile({
-      entries: compositionFiles,
+      entries: entryFiles,
       sourceRoot: componentDir,
-      dest: join(outputDir, 'dist/compositions'),
+      dest: dist,
       moduleName: component.id.fullName
     }, watch, 'full');
     const duration = timer.stop();
     this.logger.console(chalk.green(`\n------------------------------------------------------------------------------
 Built Angular Compositions
  - from: ${componentDir}
- - to:   ${compositionsDist}
+ - to:   ${dist}
 ------------------------------------------------------------------------------`));
     this.logger.console(`\nBuild completed in ${chalk.bold(duration.elapsed)}ms`);
   }
@@ -77,7 +77,7 @@ Built Angular Compositions
     if (isApp) {
       return;
     }
-    if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
+    // if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       // Process all node_modules folders (only works if the modules are hoisted)
       for (let i = 0; i < this.nodeModulesPaths.length; i++) {
         await this.ngccProcessor.process(this.nodeModulesPaths[i]);
@@ -85,9 +85,9 @@ Built Angular Compositions
       // Build compositions
       await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true, false);
       return;
-    }
+    // }
     // TODO: implement compilation of components as webcomponents
-    throw new Error('not implemented');
+    // throw new Error('not implemented');
   }
 
   private getArtifactDefinition(): ArtifactDefinition[] {
@@ -143,7 +143,7 @@ Built Angular Compositions
    */
   getDistPathBySrcPath(srcPath: string): string {
     if (this.isFileSupported(srcPath) && this.compositions.isCompositionFile(srcPath)) {
-      return join('dist/compositions', `${parse(srcPath).name}.js`);
+      return join('dist', srcPath.replace(extname(srcPath), '.js'));
     }
     return srcPath;
   }

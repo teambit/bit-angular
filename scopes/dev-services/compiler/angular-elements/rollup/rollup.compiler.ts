@@ -1,4 +1,5 @@
 import { babel } from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
 import rollupJson from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import { Logger } from '@teambit/logger';
@@ -10,7 +11,7 @@ import { TransformHook } from 'rollup';
 import { ngcPlugin } from './ngc-plugin';
 // import { ensureUnixPath } from './utils/path';
 import { generateKey, readCacheEntry, saveCacheEntry } from './utils/cache';
-import { getNodeJSFileSystem, ngBabelLinker, ngccCompilerCli } from './utils/ng-compiler-cli';
+import { getNodeJSFileSystem, ngBabelLinker, ngCompilerCli } from './utils/ng-compiler-cli';
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 
 export type OutputFileCache = Map<string, { version: string; content: string }>;
@@ -22,7 +23,7 @@ export type OutputFileCache = Map<string, { version: string; content: string }>;
  */
 export interface RollupOptions {
   moduleName: string;
-  entries: string[];
+  entries: string[] | string | { [entryAlias: string]: string };
   dest: string;
   sourceRoot: string;
   transform?: TransformHook;
@@ -57,7 +58,7 @@ export class RollupCompiler {
     const fileSystem = new NodeJSFileSystem();
 
     /** Logger used by the Angular linker plugin. */
-    const { ConsoleLogger, LogLevel } = await ngccCompilerCli();
+    const { ConsoleLogger, LogLevel } = await ngCompilerCli();
     const logger = new ConsoleLogger(LogLevel.info);
 
     /** Linker babel plugin. */
@@ -71,10 +72,10 @@ export class RollupCompiler {
     const bundle = await rollup.rollup({
       context: 'this',
       external: moduleId => this.isExternalDependency(moduleId, opts.externals, opts.internals),
-      inlineDynamicImports: false,
       cache: opts.cache ?? (cacheDirectory ? await readCacheEntry(cacheDirectory, opts.cacheKey!) : undefined),
       input: opts.entries,
       plugins: [
+        commonjs(),
         nodeResolve({
           moduleDirectories: opts.nodeModulesPaths ?? ['node_modules'],
           dedupe: [
@@ -124,11 +125,13 @@ export class RollupCompiler {
     // Output the bundle to disk
     const output = await bundle.write({
       name: opts.moduleName,
+      inlineDynamicImports: false,
+      preserveModules: true,
       format: 'es',
       dir: opts.dest,
       banner: '',
       sourcemap: true,
-      manualChunks: (moduleId: string) => this.isExternalDependency(moduleId) ? 'vendor' : 'main'
+      // manualChunks: (moduleId: string) => this.isExternalDependency(moduleId) ? 'vendor' : 'main'
     });
 
     if (cacheDirectory) {
@@ -155,7 +158,7 @@ export class RollupCompiler {
       cache: opts.cache ? opts.cache : (watch && this.cache ? this.cache : undefined),
       cacheDirectory: opts.cacheDirectory,
       fileCache,
-      cacheKey: await generateKey(...opts.entries, opts.moduleName, opts.dest, compilationMode),
+      cacheKey: await generateKey(JSON.stringify(opts.entries), opts.moduleName, opts.dest, compilationMode),
       nodeModulesPaths: opts.nodeModulesPaths,
       transform: opts.transform,
       internals: opts.internals,

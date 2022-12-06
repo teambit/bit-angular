@@ -13,7 +13,7 @@ export async function ngCompilerCli(): Promise<typeof import('@angular/compiler-
 // returns typeof import('@angular/compiler-cli/linker/babel'), but doesn't work on old versions of Angular
 export async function ngBabelLinker(): Promise<any> {
   try {
-    // Angular v13
+    // Angular v13+
     return await loadEsmModule(`@angular/compiler-cli/linker/babel`);
   } catch (e) {
     // Angular v12
@@ -21,12 +21,8 @@ export async function ngBabelLinker(): Promise<any> {
   }
 }
 
-export async function ngccCompilerCli(): Promise<typeof import('@angular/compiler-cli/ngcc')> {
-  return loadEsmModule(`@angular/compiler-cli/ngcc`);
-}
-
 export async function getNodeJSFileSystem(): Promise<any> {
-  // Angular v13
+  // Angular v13+
   // @ts-ignore
   const { NodeJSFileSystem} = await ngCompilerCli();
   if (typeof NodeJSFileSystem !== 'undefined') {

@@ -18,8 +18,12 @@ import { ReactAspect, ReactMain } from '@teambit/react';
 import { TesterAspect, TesterMain } from '@teambit/tester';
 import { WebpackAspect, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
 import { AngularV13Aspect } from './angular-v13.aspect';
 import { AngularV13Env } from './angular-v13.env';
+
+// Disable v8-caching because it breaks ESM loaders
+NativeCompileCache.uninstall();
 
 export class AngularV13Main extends AngularBaseMain {
   static slots = [];

@@ -2,6 +2,8 @@ import { Type } from '@angular/core';
 import { RenderingContext } from '@teambit/preview';
 import DocsRoot from '@teambit/react.ui.docs-app';
 import React from 'react';
+// required here to make sure that this is loaded before the compositions file
+import '@angular/compiler';
 import { ngToReact } from '@teambit/angular-elements-loader';
 
 export type DocsRootProps = {
