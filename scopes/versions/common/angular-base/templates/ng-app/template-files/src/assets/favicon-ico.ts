@@ -3,7 +3,7 @@ import { ComponentContext, ComponentFile } from '@teambit/generator';
 export const faviconFile = (context: ComponentContext): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
-    relativePath: `src/favicon.ico`,
+    relativePath: `src/assets/favicon.ico`,
     content: `ʐNG
 
 

@@ -11,7 +11,7 @@ const angularOptions: BrowserOptions & DevServerOptions = {
   polyfills: 'src/polyfills.ts',
   index: 'src/index.html',
   tsConfig: 'tsconfig.app.json',
-  assets: ['src/favicon.ico', 'src/assets'],
+  assets: ['src/assets/**/*'],
   styles: ['src/styles.scss'],
 };
 

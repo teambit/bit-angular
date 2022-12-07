@@ -51,7 +51,7 @@ export class AngularV11Env extends AngularBaseEnv {
     options: AngularEnvOptions,
   ) {
     super(jestAspect, compiler, tester, eslint, isolator, workspace, generator, application, aspectLoader, dependencyResolver, loggerMain, compositions, babel, options);
-    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg, application);
+    this.angularWebpack = new AngularV11Webpack(this.workspace, this.webpackMain, this.pkg, application, this.getNgEnvOptions());
   }
 
   /**

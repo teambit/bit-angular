@@ -26,7 +26,12 @@ import {
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/angular-cli-files/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { NodeJsSyncHost } from '@angular-devkit/core/node';
-import { AngularBaseWebpack, WebpackConfig, WebpackSetup } from '@teambit/angular-base';
+import {
+  AngularBaseWebpack,
+  AngularEnvOptions,
+  WebpackConfig,
+  WebpackSetup
+} from '@teambit/angular-base';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
@@ -55,8 +60,8 @@ export class AngularV10Webpack extends AngularBaseWebpack {
   webpackBuildConfigFactory = webpack4BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain) {
-    super(workspace, webpackMain, pkg, application, AngularV10Aspect);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain, ngEnvOptions: AngularEnvOptions) {
+    super(workspace, webpackMain, pkg, application, AngularV10Aspect, ngEnvOptions);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');

@@ -37,6 +37,9 @@ jobs:
       - name: Keep default
         run: npm i replace-in-file && node scripts/keep-env.js --version=13 --default
 
+      - name: Remove v13
+        run: bit remove versions/angular-v13 -s -f --log
+
       - name: Remove v12
         run: bit remove versions/angular-v12 -s -f --log
 
@@ -88,6 +91,73 @@ jobs:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
 
+  # Test angular-v14
+  v14:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: docker://bitcli/bit:latest
+    steps:
+      - uses:  teambit/setup-action@v1
+        with:
+          name: angular-github-actions
+          BIT_TOKEN: ${{ env.BIT_TOKEN }}
+
+      - uses: actions/checkout@v2
+
+      - name: Keep v14
+        run: npm i replace-in-file && node scripts/keep-env.js --version=14
+
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
+      - name: Remove v13
+        run: bit remove versions/angular-v13 -s -f --log
+
+      - name: Remove v12
+        run: bit remove versions/angular-v12 -s -f --log
+
+      - name: Remove v11
+        run: bit remove versions/angular-v11 -s -f --log
+
+      - name: Remove v10
+        run: bit remove versions/angular-v10 -s -f --log
+
+      - name: Remove v9
+        run: bit remove versions/angular-v9 -s -f --log
+
+      - name: Remove v8
+        run: bit remove versions/angular-v8 -s -f --log
+
+      - name: Add example component
+        run: bit add examples/demo-lib-v14 --log
+
+      - name: Install dependencies
+        run: bit install --log
+
+      # Compile the aspects
+      - name: Bit compile aspects
+        run: bit compile --log
+
+      # Run bit link to regenerate the package.json of the example component
+      - name: Bit link
+        run: bit link --log
+
+      # Compile the example component
+      - name: Bit compile example
+        run: bit compile demo-lib-v14 --log
+
+      - name: Bit test
+        run: bit test --log
+
+      - name: Bit build
+        run: bit build --log
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: debug-log
+          path: $HOME/Library/Caches/Bit/logs
+
   # Test angular-v13
   v13:
     runs-on: ubuntu-latest
@@ -107,6 +177,9 @@ jobs:
 
       - name: Remove default
         run: bit remove angular -s -f --log
+
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
 
       - name: Remove v12
         run: bit remove versions/angular-v12 -s -f --log
@@ -172,6 +245,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
+
       - name: Remove v13
         run: bit remove versions/angular-v13 -s -f --log
 
@@ -235,6 +311,9 @@ jobs:
 
       - name: Remove default
         run: bit remove angular -s -f --log
+
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
 
       - name: Remove v13
         run: bit remove versions/angular-v13 -s -f --log
@@ -300,6 +379,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
+
       - name: Remove v13
         run: bit remove versions/angular-v13 -s -f --log
 
@@ -364,6 +446,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
+
       - name: Remove v13
         run: bit remove versions/angular-v13 -s -f --log
 
@@ -427,6 +512,9 @@ jobs:
 
       - name: Remove default
         run: bit remove angular -s -f --log
+
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
 
       - name: Remove v13
         run: bit remove versions/angular-v13 -s -f --log

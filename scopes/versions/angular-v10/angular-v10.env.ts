@@ -51,7 +51,7 @@ export class AngularV10Env extends AngularBaseEnv {
     options: AngularEnvOptions,
   ) {
     super(jestAspect, compiler, tester, eslint, isolator, workspace, generator, application, aspectLoader, dependencyResolver, loggerMain, compositions, babel, options);
-    this.angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.pkg, application);
+    this.angularWebpack = new AngularV10Webpack(this.workspace, this.webpackMain, this.pkg, application, this.getNgEnvOptions());
   }
 
   /**

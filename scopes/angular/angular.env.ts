@@ -1,3 +1,3 @@
-import { AngularV13Env } from '@teambit/angular-v13';
+import { AngularV14Env } from '@teambit/angular-v14';
 
-export const AngularEnv = AngularV13Env;
+export const AngularEnv = AngularV14Env;

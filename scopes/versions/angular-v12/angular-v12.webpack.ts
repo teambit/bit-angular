@@ -21,7 +21,12 @@ import {
 } from '@angular-devkit/build-angular/src/webpack/configs';
 import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { WebpackSetup, AngularBaseWebpack, WebpackConfig } from '@teambit/angular-base';
+import {
+  WebpackSetup,
+  AngularBaseWebpack,
+  WebpackConfig,
+  AngularEnvOptions
+} from '@teambit/angular-base';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
@@ -42,8 +47,8 @@ export class AngularV12Webpack extends AngularBaseWebpack {
   webpackBuildConfigFactory = webpack5BuildConfigFactory;
   webpack: typeof webpack;
 
-  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain) {
-    super(workspace, webpackMain, pkg, application, AngularV12Aspect);
+  constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain, ngEnvOptions: AngularEnvOptions) {
+    super(workspace, webpackMain, pkg, application, AngularV12Aspect, ngEnvOptions);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');

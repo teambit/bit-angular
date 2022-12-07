@@ -1,5 +1,6 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp, NG_APP_PATTERN } from '@teambit/angular-apps';
+import type { AngularEnvOptions } from '@teambit/angular-apps';
 import { AngularElementsCompiler } from '@teambit/angular-elements';
 import { ApplicationMain } from '@teambit/application';
 import { BabelCompiler, BabelMain } from '@teambit/babel';
@@ -9,8 +10,8 @@ import {
   Compiler,
   CompilerOptions,
   TranspileComponentParams,
-  TranspileFileParams,
-  TranspileFileOutput
+  TranspileFileOutput,
+  TranspileFileParams
 } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { CompositionsMain } from '@teambit/compositions';
@@ -39,7 +40,7 @@ export class NgMultiCompiler implements Compiler {
 
   constructor(
     ngPackagrPath: string,
-    private useElements: boolean,
+    private ngEnvOptions: AngularEnvOptions,
     private babelMain: BabelMain,
     readDefaultTsConfig: string,
     private logger: Logger,
@@ -69,10 +70,11 @@ export class NgMultiCompiler implements Compiler {
       this.shouldCopyNonSupportedFiles,
       this.artifactName,
       this.tsCompilerOptions,
-      nodeModulesPaths
+      nodeModulesPaths,
+      this.ngEnvOptions,
     ) as NgPackagrCompiler;
 
-    if (this.useElements) {
+    if (this.ngEnvOptions.useAngularElementsPreview) {
       this.angularElementsCompiler = new AngularElementsCompiler(
         this.logger,
         this.workspace,
@@ -83,7 +85,8 @@ export class NgMultiCompiler implements Compiler {
         this.shouldCopyNonSupportedFiles,
         this.artifactName,
         this.tsCompilerOptions,
-        nodeModulesPaths
+        nodeModulesPaths,
+        this.ngEnvOptions,
       ) as AngularElementsCompiler;
       this.mainCompiler = this.angularElementsCompiler;
     } else {
@@ -133,7 +136,7 @@ export class NgMultiCompiler implements Compiler {
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
     const result = await this.ngPackagrCompiler.build(context);
-    if (this.useElements && this.angularElementsCompiler) {
+    if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
       return this.angularElementsCompiler.build(context);
     }
     return result;

@@ -10,7 +10,7 @@ import { appModuleFile } from './template-files/src/app/app.module';
 import { gitKeepFile } from './template-files/src/assets/gitkeep';
 import { environmentFile } from './template-files/src/environments/environment';
 import { environmentProdFile } from './template-files/src/environments/environment.prod';
-import { faviconFile } from './template-files/src/favicon-ico';
+import { faviconFile } from './template-files/src/assets/favicon-ico';
 import { indexHtmlFile } from './template-files/src/index-html';
 import { mainNgAppFile } from './template-files/src/main';
 import { polyfillFile } from './template-files/src/polyfills';

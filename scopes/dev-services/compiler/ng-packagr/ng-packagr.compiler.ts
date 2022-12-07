@@ -1,5 +1,6 @@
 import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
+import type { AngularEnvOptions } from '@teambit/angular-apps';
 import { ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -56,7 +57,7 @@ export class NgPackagrCompiler implements Compiler {
   displayName = 'NgPackagr compiler';
   readDefaultTsConfig: () => Promise<ParsedConfiguration>;
   ngPackagr: NgPackagr;
-  ngccProcessor = new NgccProcessor();
+  ngccProcessor?: NgccProcessor;
 
   constructor(
     ngPackagrPath: string,
@@ -71,10 +72,12 @@ export class NgPackagrCompiler implements Compiler {
     public shouldCopyNonSupportedFiles: boolean,
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
-    private nodeModulesPaths: string[] = []
+    private nodeModulesPaths: string[] = [],
+    private ngEnvOptions: AngularEnvOptions = {},
   ) {
-    // TODO only do that if necessary
-    // NativeCompileCache.uninstall();
+    if (this.ngEnvOptions.useNgcc) {
+      this.ngccProcessor = new NgccProcessor();
+    }
     this.ngPackagr = require(ngPackagrPath).ngPackagr();
 
     const module = require(readDefaultTsConfig);
@@ -206,8 +209,10 @@ export class NgPackagrCompiler implements Compiler {
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       // Process all node_modules folders (only works if the modules are hoisted)
-      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-        await this.ngccProcessor.process(this.nodeModulesPaths[i]);
+      if (this.ngEnvOptions.useNgcc) {
+        for (let i = 0; i < this.nodeModulesPaths.length; i++) {
+          await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+        }
       }
       return;
     }
@@ -235,8 +240,10 @@ export class NgPackagrCompiler implements Compiler {
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
     // Process all node_modules folders (only works if the modules are hoisted)
-    for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-      await this.ngccProcessor.process(this.nodeModulesPaths[i]);
+    if (this.ngEnvOptions.useNgcc) {
+      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
+        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
+      }
     }
 
     let capsules = context.capsuleNetwork.seedersCapsules;

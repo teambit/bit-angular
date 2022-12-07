@@ -1,6 +1,6 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import {
-  AngularAppType,
+  AngularAppType, AngularEnvOptions,
   BrowserOptions,
   DevServerOptions,
   NG_APP_NAME
@@ -44,29 +44,6 @@ import { angularBaseTemplates, workspaceTemplates } from './angular-base.templat
 import { AngularBaseWebpack } from './angular-base.webpack';
 import { getNodeModulesPaths } from './webpack-plugins/utils';
 
-export interface AngularEnvOptions {
-  /**
-   * Use Rollup & Angular Elements to compile compositions instead of webpack.
-   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
-   */
-  useAngularElementsPreview?: boolean;
-
-  /**
-   * Override the default Angular docs template path
-   */
-  docsTemplatePath?: string;
-
-  /**
-   * Override the default Angular mount template path
-   */
-  mountTemplatePath?: string;
-}
-interface DefaultAngularEnvOptions {
-  useAngularElementsPreview: boolean;
-  docsTemplatePath: string;
-  mountTemplatePath: string;
-}
-
 /**
  * a component environment built for [Angular](https://angular.io).
  */
@@ -74,11 +51,13 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
   private logger: Logger;
   private ngMultiCompiler: Compiler | undefined;
-  private ngEnvOptions: DefaultAngularEnvOptions = {
+  private ngEnvOptions: AngularEnvOptions = {
     useAngularElementsPreview: false,
     docsTemplatePath: require.resolve('./preview/src/docs'),
     mountTemplatePath: require.resolve('./preview/src/mount'),
+    useNgcc: true
   };
+  readonly applicationType = 'angular';
 
   /** Abstract functions & properties specific to the adapter **/
   abstract name: string;
@@ -106,15 +85,15 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     private loggerMain: LoggerMain,
     private compositions: CompositionsMain,
     private babelMain: BabelMain,
-    protected options: AngularEnvOptions,
+    private options: AngularEnvOptions
   ) {
     generator.registerComponentTemplate(angularBaseTemplates);
     generator.registerWorkspaceTemplate(workspaceTemplates);
     this.application.registerAppType(new AngularAppType(NG_APP_NAME, this));
-    depResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
     this.logger = loggerMain.createLogger(this.getDevEnvId());
-    if (options.useAngularElementsPreview) {
-      this.ngEnvOptions.useAngularElementsPreview = true;
+    Object.assign(this.ngEnvOptions, options);
+    if (this.ngEnvOptions.useNgcc) {
+      this.depResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
     }
   }
 
@@ -142,12 +121,16 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
   }
 
   protected useNgElementsPreview(ngEnvOptions?: AngularEnvOptions): boolean {
-    return !!ngEnvOptions?.useAngularElementsPreview ?? this.ngEnvOptions.useAngularElementsPreview;
+    return !!this.getNgEnvOptions(ngEnvOptions).useAngularElementsPreview;
   }
 
-  private createNgMultiCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
+  protected getNgEnvOptions(ngEnvOptions: AngularEnvOptions = {}): AngularEnvOptions {
+    return Object.assign({}, this.ngEnvOptions, ngEnvOptions);
+  }
+
+  private createNgMultiCompiler(ngEnvOptions: AngularEnvOptions, tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {
     const nodeModulesPaths = this.getNodeModulesPaths(false);
-    return new NgMultiCompiler(this.ngPackagr, this.useNgElementsPreview(ngEnvOptions), this.babelMain, this.readDefaultTsConfig, this.logger, this.workspace, this.compositions, this.application, this.depResolver, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
+    return new NgMultiCompiler(this.ngPackagr, ngEnvOptions, this.babelMain, this.readDefaultTsConfig, this.logger, this.workspace, this.compositions, this.application, this.depResolver, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
   }
 
   /**
@@ -155,8 +138,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Required for making and reading dists, especially for `bit compile`
    */
   getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
-    if(!this.ngMultiCompiler) {
-      this.ngMultiCompiler = this.createNgMultiCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions);
+    if (!this.ngMultiCompiler) {
+      this.ngMultiCompiler = this.createNgMultiCompiler(this.getNgEnvOptions(ngEnvOptions), tsCompilerOptions, bitCompilerOptions);
     }
     return this.ngMultiCompiler;
   }
@@ -175,7 +158,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns a paths to a function which mounts a given component to DOM
    * Required for `bit build`
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // @ts-ignore
   getMounter(ngEnvOptions?: AngularEnvOptions) {
     return ngEnvOptions?.mountTemplatePath ?? this.ngEnvOptions.mountTemplatePath;
   }
@@ -184,7 +167,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns a path to a docs template.
    * Required for `bit build`
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // @ts-ignore
   getDocsTemplate(ngEnvOptions?: AngularEnvOptions) {
     return ngEnvOptions?.docsTemplatePath ?? this.ngEnvOptions.docsTemplatePath;
   }
@@ -207,7 +190,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     return this.eslint.createLinter(context, {
       config: eslintConfig as any,
       // resolve all plugins from the angular environment.
-      pluginPath: __dirname,
+      pluginPath: __dirname
     }, transformers);
   }
 
@@ -246,6 +229,6 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     return {
       strategyName: 'env',
       splitComponentBundle: false
-    }
+    };
   }
 }

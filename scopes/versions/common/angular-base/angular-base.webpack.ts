@@ -1,10 +1,17 @@
+import {
+  AngularEnvOptions,
+  BrowserOptions,
+  componentIsApp,
+  DevServerOptions
+} from '@teambit/angular-apps';
+import { AppBuildContext, AppContext, ApplicationMain } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext, Target } from '@teambit/bundler';
-import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { Component, ComponentID } from '@teambit/component';
-import { PkgMain } from '@teambit/pkg';
+import { Aspect } from '@teambit/harmony';
+import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Logger } from '@teambit/logger';
-import { Aspect } from '@teambit/harmony';
+import { PkgMain } from '@teambit/pkg';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   runTransformersWithContext,
@@ -13,7 +20,7 @@ import {
   WebpackConfigTransformer,
   WebpackConfigWithDevServer,
   WebpackDevServer,
-  WebpackMain,
+  WebpackMain
 } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
@@ -21,8 +28,6 @@ import objectHash from 'object-hash';
 import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
 import { Configuration, WebpackPluginInstance } from 'webpack';
-import { AppBuildContext, AppContext, ApplicationMain } from '@teambit/application';
-import { componentIsApp, BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export enum WebpackSetup {
@@ -34,12 +39,36 @@ export type WebpackConfig = Configuration;
 
 export type WebpackPlugin = WebpackPluginInstance;
 
+export type WebpackServeConfigFactory = (
+  devServerID: string,
+  workspaceDir: string,
+  entryFiles: string[],
+  publicRoot: string,
+  publicPath: string,
+  pubsub: PubsubMain,
+  nodeModulesPaths: string[],
+  tempFolder: string,
+  plugins: WebpackPlugin[],
+  IsApp: boolean,
+  ngEnvOptions: AngularEnvOptions
+) => WebpackConfigWithDevServer;
+
+export type WebpackBuildConfigFactory = (
+  entryFiles: string[],
+  outputPath: string,
+  nodeModulesPaths: string[],
+  workspaceDir: string,
+  tempFolder: string,
+  plugins: WebpackPlugin[],
+  ngEnvOptions: AngularEnvOptions
+) => Configuration;
+
 export abstract class AngularBaseWebpack {
   private timestamp = Date.now();
   private writeHash = new Map<string, string>();
   private readonly tempFolder: string;
-  webpackServeOptions: Partial<WebpackConfigWithDevServer> = {}
-  webpackBuildOptions: Partial<WebpackConfig> = {}
+  webpackServeOptions: Partial<WebpackConfigWithDevServer> = {};
+  webpackBuildOptions: Partial<WebpackConfig> = {};
   angularServeOptions: Partial<BrowserOptions & DevServerOptions> = {};
   angularBuildOptions: Partial<BrowserOptions> = {};
   sourceRoot = 'src';
@@ -50,6 +79,7 @@ export abstract class AngularBaseWebpack {
     private pkg: PkgMain,
     private application: ApplicationMain,
     angularAspect: Aspect,
+    private ngEnvOptions: AngularEnvOptions
   ) {
     if (workspace) {
       this.tempFolder = workspace.getTempDir(angularAspect.id);
@@ -60,6 +90,7 @@ export abstract class AngularBaseWebpack {
 
   /** Abstract functions & properties specific to the adapter **/
   abstract enableIvy: boolean;
+
   abstract getWebpackConfig(
     context: DevServerContext | BundlerContext,
     entryFiles: string[],
@@ -69,28 +100,18 @@ export abstract class AngularBaseWebpack {
     setup: WebpackSetup,
     webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig>,
     angularOptions: any,
-    sourceRoot?: string,
+    sourceRoot?: string
   ): Promise<WebpackConfigWithDevServer | Configuration>;
+
   abstract webpack: any;
   abstract webpackDevServer: any;
-  abstract webpackServeConfigFactory: (
-    devServerID: string,
-    workspaceDir: string,
-    entryFiles: string[],
-    publicRoot: string,
-    publicPath: string,
-    pubsub: PubsubMain,
-    nodeModulesPaths: string[],
-    tempFolder: string,
-    plugins?: WebpackPlugin[],
-    IsApp?: boolean
-  ) => WebpackConfigWithDevServer;
-  abstract webpackBuildConfigFactory: (entryFiles: string[], outputPath: string, nodeModulesPaths: string[], workspaceDir: string, tempFolder: string, plugins?: WebpackPlugin[]) => Configuration;
+  abstract webpackServeConfigFactory: WebpackServeConfigFactory;
+  abstract webpackBuildConfigFactory: WebpackBuildConfigFactory;
 
   /**
    * Add the list of files to include into the typescript compilation as absolute paths
    */
-  private generateTsConfig(appPath: string, includePaths: string[], excludePaths: string[] = [], tsPaths: {[key: string]: string[]}): string {
+  private generateTsConfig(appPath: string, includePaths: string[], excludePaths: string[] = [], tsPaths: { [key: string]: string[] }): string {
     const tsconfigPath = join(appPath, 'tsconfig.app.json');
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile);
     const pAppPath = pathNormalizeToLinux(appPath);
@@ -99,12 +120,12 @@ export abstract class AngularBaseWebpack {
     tsconfigJSON.config.files = [posix.join(pAppPath, 'src/main.ts'), posix.join(pAppPath, 'src/polyfills.ts')];
     tsconfigJSON.config.include = [
       posix.join(pAppPath, 'src/app/**/*.ts'),
-      ...includePaths.map((path) => posix.join(path, '**/*.ts')),
+      ...includePaths.map((path) => posix.join(path, '**/*.ts'))
     ];
     tsconfigJSON.config.exclude = [
       posix.join(pAppPath, '**/*.spec.ts'),
       ...excludePaths,
-      ...includePaths.map((path) => posix.join(path, '**/*.spec.ts')),
+      ...includePaths.map((path) => posix.join(path, '**/*.spec.ts'))
     ];
     tsconfigJSON.config.compilerOptions.paths = tsPaths;
 
@@ -127,7 +148,7 @@ export abstract class AngularBaseWebpack {
    * write a link to load custom modules dynamically.
    */
   writeTsconfig(context: DevServerContext | BundlerContext, rootSpace: string): string {
-    const tsPaths: {[key: string]: string[]} = {};
+    const tsPaths: { [key: string]: string[] } = {};
     const includePaths = new Set<string>();
     const dirPath = join(this.tempFolder, context.id);
     if (!existsSync(dirPath)) {
@@ -139,7 +160,7 @@ export abstract class AngularBaseWebpack {
       let outputPath: string;
 
       const isApp = componentIsApp(component, this.application);
-      if(isApp) {
+      if (isApp) {
         return;
       }
       if (this.isBuildContext(context)) {
@@ -150,7 +171,10 @@ export abstract class AngularBaseWebpack {
         }
         outputPath = pathNormalizeToLinux(capsule.path);
       } else {
-        outputPath = pathNormalizeToLinux(this.workspace?.componentDir(component.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '');
+        outputPath = pathNormalizeToLinux(this.workspace?.componentDir(component.id, {
+          ignoreScopeAndVersion: true,
+          ignoreVersion: true
+        }) || '');
       }
       // map the package names to the workspace component paths for typescript in case a package references another local package
       tsPaths[`${this.pkg.getPackageName(component)}`] = [`${outputPath}/public-api.ts`];
@@ -179,7 +203,7 @@ export abstract class AngularBaseWebpack {
         ignoreVersion: true
       }, { relative: false }) || '';
       return join(rootPath, 'preview');
-    } catch(e) {
+    } catch (e) {
       return resolve(require.resolve('@teambit/angular-base'), '../../preview/');
     }
   }
@@ -188,8 +212,11 @@ export abstract class AngularBaseWebpack {
     let appRootPath, tsconfigPath;
     const plugins: WebpackPluginInstance[] = [];
     let isApp = false;
-    if(this.isAppContext(context)) { // When you use `bit run <app>`
-      appRootPath = this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';
+    if (this.isAppContext(context)) { // When you use `bit run <app>`
+      appRootPath = this.workspace?.componentDir(context.appComponent.id, {
+        ignoreScopeAndVersion: true,
+        ignoreVersion: true
+      }) || '';
       tsconfigPath = join(appRootPath, 'tsconfig.app.json');
       isApp = true;
     } else { // When you use `bit start`
@@ -223,7 +250,8 @@ export abstract class AngularBaseWebpack {
       nodeModulesPaths,
       this.tempFolder,
       plugins,
-      isApp
+      isApp,
+      this.ngEnvOptions
     );
     const configMutator = new WebpackConfigMutator(config);
 
@@ -238,17 +266,17 @@ export abstract class AngularBaseWebpack {
 
   private createPreviewConfig(context: BundlerContext | (BundlerContext & AppBuildContext), nodeModulesPaths: string[]): Configuration[] {
     let plugins: WebpackPluginInstance[] = [];
-    if(this.isAppBuildContext(context)) {
+    if (this.isAppBuildContext(context)) {
       plugins = [new StatsLoggerPlugin()];
     }
     return context.targets.map((target) => {
-      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, nodeModulesPaths, this.workspace?.path || '', this.tempFolder, plugins);
+      return this.webpackBuildConfigFactory(target.entries as string[], target.outputPath, nodeModulesPaths, this.workspace?.path || '', this.tempFolder, plugins, this.ngEnvOptions);
     });
   }
 
   async createBundler(context: BundlerContext | (BundlerContext & AppBuildContext), transformers: any[], nodeModulesPaths: string[], angularBuildOptions: Partial<BrowserOptions> = {}, sourceRoot?: string): Promise<Bundler> {
     let appRootPath, tsconfigPath;
-    if(this.isAppBuildContext(context)) {
+    if (this.isAppBuildContext(context)) {
       appRootPath = context.capsule.path;// this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';
       tsconfigPath = join(appRootPath, 'tsconfig.app.json');
     } else {
