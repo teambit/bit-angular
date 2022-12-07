@@ -83,10 +83,11 @@ If you want to use a specific version of Angular, you can use one those env vers
 - [v12: `teambit.angular/versions/angular-v12`](https://bit.cloud/teambit/angular/versions/angular-v12)
 - [v13: `teambit.angular/versions/angular-v13`](https://bit.cloud/teambit/angular/versions/angular-v13)
 - [v14: `teambit.angular/versions/angular-v14`](https://bit.cloud/teambit/angular/versions/angular-v14)
+- [v15: `teambit.angular/versions/angular-v15`](https://bit.cloud/teambit/angular/versions/angular-v15)
 
-You can quickly switch between these versions with the `bit env set` command. For example to use v12 instead of the default, you would use the following command:
+You can quickly switch between these versions with the `bit env set` command. For example to use v14 instead of the default, you would use the following command:
 ```bash
-bit env replace teambit.angular/angular teambit.angular/angular-v12
+bit env replace teambit.angular/angular teambit.angular/angular-v14
 ```
 
 ## Angular applications

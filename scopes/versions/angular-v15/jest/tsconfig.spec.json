@@ -3,7 +3,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc/app",
+    "outDir": "./dist/out-tsc/spec",
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitReturns": true,
@@ -12,19 +12,18 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
+    "esModuleInterop": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "allowJs": true,
-    "target": "es5",
+    "target": "es2020",
     "module": "esnext",
-    "preserveSymlinks": false,
     "lib": [
       "es2018",
-      "dom",
-      "esnext.asynciterable"
+      "dom"
     ],
-    "types": ["node"]
+    "types": ["jest", "node"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -33,14 +32,5 @@
     "strictTemplates": true,
     "enableIvy": true
   },
-  "files": [
-    "./src/main.ts",
-    "./src/polyfills.ts"
-  ],
-  "include": [
-    "./src/app/**/*.ts",
-  ],
-  "exclude": [
-    "./src/app/**/*.spec.ts"
-  ]
+  "include": ["**/*.spec.+(js|ts)", "**/*.test.+(js|ts)", "**/*.d.ts"]
 }

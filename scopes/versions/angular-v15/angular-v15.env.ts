@@ -17,17 +17,18 @@ import { PkgMain } from '@teambit/pkg';
 import { EnvPreviewConfig } from '@teambit/preview';
 import { ReactMain } from '@teambit/react';
 import { TesterMain } from '@teambit/tester';
+import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
 import { WebpackConfigTransformer, WebpackMain } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
-import { AngularV12Aspect } from './angular-v12.aspect';
-import { AngularV12Webpack } from './angular-v12.webpack';
+import { AngularV15Aspect } from './angular-v15.aspect';
+import { AngularV15Webpack } from './angular-v15.webpack';
 
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-export class AngularV12Env extends AngularBaseEnv {
-  name = 'Angular-v12';
-  angularWebpack: AngularV12Webpack;
+export class AngularV15Env extends AngularBaseEnv {
+  name = 'Angular-v15';
+  angularWebpack: AngularV15Webpack;
   ngPackagr = require.resolve('ng-packagr');
   elements = require.resolve('@angular/elements');
   readDefaultTsConfig = require.resolve('ng-packagr/lib/ts/tsconfig');
@@ -54,7 +55,10 @@ export class AngularV12Env extends AngularBaseEnv {
     options: AngularEnvOptions,
   ) {
     super(jestAspect, compiler, tester, eslint, isolator, workspace, generator, application, aspectLoader, dependencyResolver, loggerMain, compositions, babel, options);
-    this.angularWebpack = new AngularV12Webpack(this.workspace, this.webpackMain, this.pkg, application, this.getNgEnvOptions());
+    this.angularWebpack = new AngularV15Webpack(this.workspace, this.webpackMain, this.pkg, application, this.getNgEnvOptions());
+
+    // Disable v8-caching because it breaks ESM loaders
+    NativeCompileCache.uninstall();
   }
 
   /**
@@ -63,7 +67,7 @@ export class AngularV12Env extends AngularBaseEnv {
    */
   async __getDescriptor(): Promise<EnvDescriptor> {
     return {
-      type: 'angular-v12',
+      type: 'angular-v15'
     };
   }
 
@@ -71,8 +75,8 @@ export class AngularV12Env extends AngularBaseEnv {
    * Required for `bit start`
    */
   getDevEnvId(id?: string) {
-    if (typeof id !== 'string') return AngularV12Aspect.id;
-    return id || AngularV12Aspect.id;
+    if (typeof id !== 'string') return AngularV15Aspect.id;
+    return id || AngularV15Aspect.id;
   }
 
   /**
@@ -84,28 +88,28 @@ export class AngularV12Env extends AngularBaseEnv {
       dependencies: {
         '@angular/common': '-',
         '@angular/core': '-',
-        'tslib': '^2.2.0',
+        'tslib': '^2.4.1',
         'rxjs': '-',
-        'zone.js': '-',
+        'zone.js': '-'
       },
       devDependencies: {
-        '@angular/compiler': '^12.2.16',
-        '@angular/compiler-cli': '^12.2.16',
-        '@types/jest': '~27.0.2',
-        '@types/node': '^12.11.1',
-        'jest': '~27.0.4',
-        'jest-preset-angular': '~10.0.1',
-        'typescript': '-',
+        '@angular/compiler': '~15.0.2',
+        '@angular/compiler-cli': '~15.0.2',
+        '@types/jest': '^29.2.4',
+        '@types/node': '^14.15.0',
+        'jest': '^29.3.1',
+        'jest-preset-angular': '~12.2.3',
+        'typescript': '-'
       },
       peerDependencies: {
-        '@angular/common': '^12.2.16',
-        '@angular/core': '^12.2.16',
-        '@angular/platform-browser': '^12.2.16',
-        '@angular/platform-browser-dynamic': '^12.2.16',
-        'rxjs': '^6.6.7',
-        'zone.js': '~0.11.4',
-        'typescript': '~4.3.2',
-      },
+        '@angular/common': '~15.0.2',
+        '@angular/core': '~15.0.2',
+        '@angular/platform-browser': '~15.0.2',
+        '@angular/platform-browser-dynamic': '~15.0.2',
+        'rxjs': '~7.5.7',
+        'zone.js': '~0.12.0',
+        'typescript': '~4.8.2'
+      }
     };
   }
 
@@ -163,7 +167,7 @@ export class AngularV12Env extends AngularBaseEnv {
       return super.getAdditionalHostDependencies(ngEnvOptions);
     }
     // Add react as a shared peer dependency
-    return super.getAdditionalHostDependencies(ngEnvOptions).concat(['react']);
+    return super.getAdditionalHostDependencies().concat(['react']);
   }
 
   /**

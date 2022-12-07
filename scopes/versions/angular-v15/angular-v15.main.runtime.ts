@@ -19,13 +19,12 @@ import { TesterAspect, TesterMain } from '@teambit/tester';
 import { WebpackAspect, WebpackMain } from '@teambit/webpack';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
-import { AngularV13Aspect } from './angular-v13.aspect';
-import { AngularV13Env } from './angular-v13.env';
+import { AngularV15Aspect } from './angular-v15.aspect';
+import { AngularV15Env } from './angular-v15.env';
 
 // Disable v8-caching because it breaks ESM loaders
 NativeCompileCache.uninstall();
-
-export class AngularV13Main extends AngularBaseMain {
+export class AngularV15Main extends AngularBaseMain {
   static slots = [];
   static runtime: any = MainRuntime;
   static dependencies: any = [
@@ -73,7 +72,7 @@ export class AngularV13Main extends AngularBaseMain {
     ESLintMain,
     GeneratorMain,
     WebpackMain,
-    Workspace | undefined,
+      Workspace | undefined,
     EnvsMain,
     IsolatorMain,
     PkgMain,
@@ -85,7 +84,9 @@ export class AngularV13Main extends AngularBaseMain {
     CompositionsMain,
     BabelMain,
   ], options: AngularEnvOptions): Promise<AngularBaseMain> {
-    const angularV13Env = new AngularV13Env(
+    options.useAngularElementsPreview = true;
+    options.useNgcc = false;
+    const angularv15Env = new AngularV15Env(
       jestAspect,
       compiler,
       tester,
@@ -105,7 +106,7 @@ export class AngularV13Main extends AngularBaseMain {
       options,
     );
     // @ts-ignore
-    return new AngularV13Main(envs, angularV13Env);
+    return new AngularV15Main(envs, angularv15Env);
   }
 
   /**
@@ -126,7 +127,7 @@ export class AngularV13Main extends AngularBaseMain {
       tsCompilerOptions = opts;
     }
 
-    this.tsCompilerOptions = tsCompilerOptions as any;
+    this.tsCompilerOptions = tsCompilerOptions  as any;
     this.bitCompilerOptions = bitCompilerOptions;
     return this.envs.override({
       getCompiler: () => {
@@ -141,4 +142,4 @@ export class AngularV13Main extends AngularBaseMain {
   }
 }
 
-AngularV13Aspect.addRuntime(AngularV13Main);
+AngularV15Aspect.addRuntime(AngularV15Main);

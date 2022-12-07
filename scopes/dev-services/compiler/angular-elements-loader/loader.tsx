@@ -26,8 +26,15 @@ function maybeUnwrapFn<T>(value: T | (() => T)): T {
 async function loadComponents<C, M>(components: Type<C>[], parentModule?: Type<M>): Promise<string[]> {
   const selectors: string[] = [];
   const ngModuleRef = await bootstrap(parentModule || AppModule);
+  let rootInjector: Injector;
   // @ts-ignore
-  const rootInjector = ngModuleRef.get(Injector);
+  if (typeof ngModuleRef.get === 'function') {
+    // @ts-ignore
+    rootInjector = ngModuleRef.get(Injector);
+  } else {
+    // Angular v15+
+    rootInjector = ngModuleRef.injector;
+  }
   components.forEach((component) => {
     const definedSelector = DEFINED_ELEMENTS.get(component);
     // That component has already been defined as a custom element

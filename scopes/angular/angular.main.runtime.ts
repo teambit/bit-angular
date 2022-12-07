@@ -1,5 +1,5 @@
 import { AngularBaseMain, AngularEnvOptions } from '@teambit/angular-base';
-import { AngularV14Main } from '@teambit/angular-v14';
+import { AngularV15Main } from '@teambit/angular-v15';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { AspectLoaderAspect, AspectLoaderMain } from '@teambit/aspect-loader';
 import { BabelAspect, BabelMain } from '@teambit/babel';
@@ -21,7 +21,7 @@ import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { AngularAspect } from './angular.aspect';
 import { AngularEnv } from './angular.env';
 
-export class AngularMain extends AngularV14Main {
+export class AngularMain extends AngularV15Main {
   static slots = [];
   static runtime: any = MainRuntime;
   static dependencies: any = [

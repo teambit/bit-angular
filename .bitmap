@@ -15,12 +15,6 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/angular"
     },
-    "demo-lib-v14": {
-        "scope": "",
-        "version": "",
-        "mainFile": "public-api.ts",
-        "rootDir": "examples/demo-lib-v14"
-    },
     "dev-services/compiler/angular-elements": {
         "scope": "teambit.angular",
         "version": "0.1.19",
@@ -86,6 +80,12 @@
         "version": "",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v14"
+    },
+    "versions/angular-v15": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/versions/angular-v15"
     },
     "versions/angular-v8": {
         "scope": "teambit.angular",

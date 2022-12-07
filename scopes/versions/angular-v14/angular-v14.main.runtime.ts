@@ -127,7 +127,7 @@ export class AngularV14Main extends AngularBaseMain {
       tsCompilerOptions = opts;
     }
 
-    this.tsCompilerOptions = tsCompilerOptions;
+    this.tsCompilerOptions = tsCompilerOptions  as any;
     this.bitCompilerOptions = bitCompilerOptions;
     return this.envs.override({
       getCompiler: () => {

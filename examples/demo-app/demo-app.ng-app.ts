@@ -1,12 +1,12 @@
 import { AngularAppOptions, BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
 
 const angularOptions: BrowserOptions & DevServerOptions = {
-  main: 'src/main.ts',
-  polyfills: 'src/polyfills.ts',
-  index: 'src/index.html',
+  main: './src/main.ts',
+  polyfills: './src/polyfills.ts',
+  index: './src/index.html',
   tsConfig: 'tsconfig.app.json',
-  assets: ['src/favicon.ico', 'src/assets'],
-  styles: ['src/styles.scss'],
+  assets: ['./src/favicon.ico', './src/assets'],
+  styles: ['./src/styles.scss'],
 };
 
 export const DemoAppOptions: AngularAppOptions = {
