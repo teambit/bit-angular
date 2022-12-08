@@ -92,6 +92,7 @@ export abstract class AngularBaseMain {
    */
   overrideAngularEnvOptions(ngEnvOptions: AngularEnvOptions): EnvTransformer {
     this.ngEnvOptions = ngEnvOptions;
+    this.angularEnv.setNgEnvOptions(ngEnvOptions);
     return this.envs.override({
       getAdditionalHostDependencies: () => this.angularEnv.getAdditionalHostDependencies(ngEnvOptions),
       getBuildPipe: (): BuildTask[] => this.angularEnv.getBuildPipe(this.tsCompilerOptions, this.bitCompilerOptions, ngEnvOptions),

@@ -91,10 +91,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     generator.registerWorkspaceTemplate(workspaceTemplates);
     this.application.registerAppType(new AngularAppType(NG_APP_NAME, this));
     this.logger = loggerMain.createLogger(this.getDevEnvId());
-    Object.assign(this.ngEnvOptions, options);
-    if (this.ngEnvOptions.useNgcc) {
-      this.depResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
-    }
+    this.setNgEnvOptions(options);
   }
 
   isAppContext(context: DevServerContext | AppContext): context is DevServerContext & AppContext {
@@ -124,8 +121,15 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     return !!this.getNgEnvOptions(ngEnvOptions).useAngularElementsPreview;
   }
 
-  protected getNgEnvOptions(ngEnvOptions: AngularEnvOptions = {}): AngularEnvOptions {
+  public getNgEnvOptions(ngEnvOptions: AngularEnvOptions = {}): AngularEnvOptions {
     return Object.assign({}, this.ngEnvOptions, ngEnvOptions);
+  }
+
+  public setNgEnvOptions(ngEnvOptions: AngularEnvOptions): void {
+    Object.assign(this.ngEnvOptions, ngEnvOptions);
+    if (this.ngEnvOptions.useNgcc) {
+      this.depResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
+    }
   }
 
   private createNgMultiCompiler(ngEnvOptions: AngularEnvOptions, tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {

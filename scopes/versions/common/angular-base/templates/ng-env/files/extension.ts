@@ -1,7 +1,7 @@
 import { ComponentContext } from '@teambit/generator';
 
 export function extensionFile({ namePascalCase: Name }: ComponentContext) {
-  return `import { EnvsMain, EnvsAspect } from '@teambit/envs';
+  return `import { EnvsMain, EnvsAspect, EnvTransformer } from '@teambit/envs';
 import { AngularAspect, AngularMain } from '@teambit/angular';
 
 export class ${Name}Extension {
@@ -11,8 +11,8 @@ export class ${Name}Extension {
     // Use any of the "angular.override..." or "angular.use..." transformers, for example:
     // const compilerOptions = await angular.overrideCompilerOptions({ fullTemplateTypeCheck: false });
     // const overrideAngularEnvOptions = angular.overrideAngularEnvOptions({ useAngularElementsPreview: true });
-    // const transformers = [compilerOptions, overrideAngularEnvOptions];
-    const transformers = [];
+    // const transformers: EnvTransformer[] = [compilerOptions, overrideAngularEnvOptions];
+    const transformers: EnvTransformer[] = [];
 
     const ${Name}Env = angular.compose(transformers);
     envs.registerEnv(${Name}Env);
