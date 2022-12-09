@@ -5,7 +5,6 @@ if(typeof window !== 'undefined') {
 }
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
-import { BrowserModule } from '@angular/platform-browser';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import React from 'react';
 import { AppModule } from './main';
@@ -69,7 +68,7 @@ async function getModuleComponents<M>(module: Type<M>): Promise<Type<any>[]> {
   if (!module.prototype.ngDoBootstrap) {
     module.prototype.ngDoBootstrap = AppModule.prototype.ngDoBootstrap;
   }
-  if (!moduleProps.imports.includes(BrowserModule)) {
+  if (!moduleProps.imports.some((module: Type<any>) => module.prototype.constructor.name === 'BrowserModule')) {
     // eslint-disable-next-line no-console
     console.warn(`Automatically injecting "BrowserModule" into your composition for retro-compatibility, please add it to the imports of your module "${module.name}"`);
     const moduleInjector = Reflect.get(module, 'ɵinj');

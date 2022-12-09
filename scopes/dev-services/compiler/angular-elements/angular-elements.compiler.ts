@@ -11,7 +11,7 @@ import {
 } from '@teambit/builder';
 import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
-import { Composition, CompositionsMain } from '@teambit/compositions';
+import { CompositionsMain } from '@teambit/compositions';
 import { Timer } from '@teambit/legacy/dist/toolbox/timer';
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
@@ -65,7 +65,8 @@ export class AngularElementsCompiler implements Compiler {
       entries: entryFiles,
       sourceRoot: componentDir,
       dest: dist,
-      moduleName: component.id.fullName
+      moduleName: component.id.fullName,
+      nodeModulesPaths: this.nodeModulesPaths
     }, watch, 'full');
     const duration = timer.stop();
     this.logger.console(chalk.green(`\n------------------------------------------------------------------------------

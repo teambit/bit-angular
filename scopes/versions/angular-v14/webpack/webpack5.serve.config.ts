@@ -1,6 +1,7 @@
 import {
   AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
+  getModuleRulesConfig,
   StatsLoggerPlugin,
   WebpackPlugin
 } from '@teambit/angular-base';
@@ -18,9 +19,6 @@ import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
-import RemarkFrontmatter from 'remark-frontmatter';
-import RemarkHTML from 'remark-html';
-import RemarkPrism from 'remark-prism';
 import { ProvidePlugin } from 'webpack';
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
@@ -36,7 +34,7 @@ export function webpack5ServeConfigFactory(
   tempFolder: string,
   plugins: WebpackPlugin[] = [],
   isApp = false,
-  ngEnvOptions: AngularEnvOptions,
+  ngEnvOptions: AngularEnvOptions
 ): any {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
@@ -48,8 +46,8 @@ export function webpack5ServeConfigFactory(
 
   const publicDirectory = posix.join(publicRoot, publicPath);
 
-  if(isApp) {
-    plugins.push(new StatsLoggerPlugin() as any)
+  if (isApp) {
+    plugins.push(new StatsLoggerPlugin() as any);
   }
 
   const config = {
@@ -72,7 +70,7 @@ export function webpack5ServeConfigFactory(
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: (info: any) => pathNormalizeToLinux(resolve(info.absoluteResourcePath)),
+      devtoolModuleFilenameTemplate: (info: any) => pathNormalizeToLinux(resolve(info.absoluteResourcePath))
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.
@@ -81,7 +79,7 @@ export function webpack5ServeConfigFactory(
     },
 
     infrastructureLogging: {
-      level: 'error',
+      level: 'error'
     },
 
     stats: 'errors-only',
@@ -101,8 +99,8 @@ export function webpack5ServeConfigFactory(
           serveIndex: true,
           // Can be:
           // watch: {} (options for the `watch` option you can find https://github.com/paulmillr/chokidar)
-          watch: false,
-        },
+          watch: false
+        }
       ],
 
       // Enable compression
@@ -117,7 +115,7 @@ export function webpack5ServeConfigFactory(
 
       historyApiFallback: {
         disableDotRule: true,
-        index: resolveWorkspacePath(publicDirectory),
+        index: resolveWorkspacePath(publicDirectory)
       },
 
       client: {
@@ -126,9 +124,9 @@ export function webpack5ServeConfigFactory(
 
       webSocketServer: {
         options: {
-          path: `/_hmr/${devServerID}`,
+          path: `/_hmr/${devServerID}`
           // port automatically matches WDS
-        },
+        }
       },
 
       onBeforeSetupMiddleware(devServer: any) {
@@ -154,8 +152,8 @@ export function webpack5ServeConfigFactory(
 
       devMiddleware: {
         // Public path is root of content base
-        publicPath: join('/', publicRoot),
-      },
+        publicPath: join('/', publicRoot)
+      }
     },
 
     resolve: {
@@ -166,35 +164,17 @@ export function webpack5ServeConfigFactory(
     },
 
     module: {
-      rules: [
-        {
-          test: /\.md$/,
-          use: [
-            {
-              loader: 'html-loader',
-            },
-            {
-              loader: 'remark-loader',
-              options: {
-                removeFrontMatter: false,
-                remarkOptions: {
-                  plugins: [RemarkPrism, RemarkHTML, RemarkFrontmatter],
-                },
-              },
-            },
-          ],
-        },
-      ],
+      rules: getModuleRulesConfig(false)
     },
 
     plugins: [
       new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, ngEnvOptions),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
-        options: { pubsub, devServerID },
+        options: { pubsub, devServerID }
       }),
       ...plugins
-    ],
+    ]
   };
 
   return config;

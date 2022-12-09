@@ -1,15 +1,13 @@
 import {
   AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
+  getModuleRulesConfig,
   WebpackConfig,
   WebpackPlugin
 } from '@teambit/angular-base';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
-import RemarkFrontmatter from 'remark-frontmatter';
-import RemarkHTML from 'remark-html';
-import RemarkPrism from 'remark-prism';
-import webpack  from 'webpack';
+import webpack from 'webpack';
 
 export function webpack5BuildConfigFactory(
   entryFiles: string[],
@@ -52,25 +50,7 @@ export function webpack5BuildConfigFactory(
     },
 
     module: {
-      rules: [
-        {
-          test: /\.md$/,
-          use: [
-            {
-              loader: 'html-loader',
-            },
-            {
-              loader: 'remark-loader',
-              options: {
-                removeFrontMatter: false,
-                remarkOptions: {
-                  plugins: [RemarkPrism, RemarkHTML, RemarkFrontmatter],
-                },
-              },
-            },
-          ],
-        },
-      ],
+      rules: getModuleRulesConfig(true),
     },
 
     plugins: [

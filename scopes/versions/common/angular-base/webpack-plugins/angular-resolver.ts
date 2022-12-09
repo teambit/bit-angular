@@ -79,6 +79,8 @@ export interface PackageJsonFormatPropertiesMap {
   module?: string;   // if exists then it is actually FESM5
   types?: string;    // Synonymous to `typings` property - see https://bit.ly/2OgWp2H
   typings?: string;  // TypeScript .d.ts files
+  node?: string;
+  default?: string;
 }
 export type PackageJsonFormatProperties = keyof PackageJsonFormatPropertiesMap;
 
@@ -87,7 +89,8 @@ export type EntryPointJsonProperty = Exclude<PackageJsonFormatProperties, 'types
 export const SUPPORTED_FORMAT_PROPERTIES: EntryPointJsonProperty[] =
   ['fesm2020', 'fesm2015', 'fesm5', 'es2015', 'es2020', 'es2015', 'esm2020', 'esm2015', 'esm5', 'main', 'module', 'browser'];
 
-const ANGULAR_FORMATS: EntryPointJsonProperty[] = ['fesm2020', 'fesm2015', 'fesm5'];
+const OLD_ANGULAR_FORMATS: EntryPointJsonProperty[] = ['fesm2020', 'fesm2015', 'fesm5'];
+const POST_IVY_ANGULAR_FORMATS: PackageJsonFormatProperties[] = ['types', 'esm2020', 'es2020', 'es2015', 'default'];
 
 export type JsonPrimitive = string|number|boolean|null;
 export type JsonValue = JsonPrimitive|Array<JsonValue>|JsonObject|undefined;
@@ -163,13 +166,18 @@ export class BitDedupeModuleResolvePlugin {
     }
 
     // An entry-point is assumed to be compiled by Angular if there is either:
-    // * a `metadata.json` file next to the typings entry-point
     // * files processed by ngcc
     // * one of the angular formats in package.json
-    const metadataPath = this.fs.resolve(entryPointPath, typings.replace(/\.d\.ts$/, '') + '.metadata.json');
-    return entryPointPackageJson.__processed_by_ivy_ngcc__ !== undefined
-      || ANGULAR_FORMATS.some(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
-      || this.fs.exists(metadataPath);
+    // * a `metadata.json` file next to the typings entry-point
+    if(entryPointPackageJson.__processed_by_ivy_ngcc__ !== undefined
+      || OLD_ANGULAR_FORMATS.some(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
+      || POST_IVY_ANGULAR_FORMATS.every(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
+    ) {
+      return true;
+    } else {
+      const metadataPath = this.fs.resolve(entryPointPath, typings.replace(/\.d\.ts$/, '') + '.metadata.json');
+      return this.fs.exists(metadataPath);
+    }
   }
 
   getIssuer(result: any) {

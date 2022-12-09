@@ -116,7 +116,7 @@ export class AngularV15Webpack extends AngularBaseWebpack {
     setup: WebpackSetup,
     webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
     angularOptions: Partial<BrowserBuilderOptions> = {},
-    sourceRoot = './src',
+    sourceRoot = 'src',
   ): Promise<WebpackConfigWithDevServer | WebpackConfig> {
     // Options from angular.json
     const browserOptions: BrowserBuilderOptions = {
@@ -124,9 +124,9 @@ export class AngularV15Webpack extends AngularBaseWebpack {
       baseHref: angularOptions.baseHref ?? './',
       preserveSymlinks: false,
       outputPath: 'public', // doesn't matter because it will be deleted from the config
-      index: angularOptions.index ?? join(sourceRoot, `index.html`),
-      main: angularOptions.main ?? join(sourceRoot, `main.ts`),
-      polyfills: angularOptions.polyfills ?? join(sourceRoot, `polyfills.ts`),
+      index: angularOptions.index ?? `./${join(sourceRoot, `index.html`)}`,
+      main: angularOptions.main ?? `./${join(sourceRoot, `main.ts`)}`,
+      polyfills: angularOptions.polyfills ?? `./${join(sourceRoot, `polyfills.ts`)}`,
       tsConfig: angularOptions.tsConfig ?? tsconfigPath,
       assets: [...new Set([path.posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])])], // using set to remove duplicates
       styles: [...new Set([path.posix.join(sourceRoot, `styles.scss`), ...(angularOptions.styles ?? [])])], // using set to remove duplicates
@@ -140,7 +140,7 @@ export class AngularV15Webpack extends AngularBaseWebpack {
       sourceMap: angularOptions.sourceMap ?? true,
       outputHashing: angularOptions.outputHashing ?? (setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
       watch: setup === WebpackSetup.Serve,
-      allowedCommonJsDependencies: ['@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
+      allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
     };
     const normalizedWorkspaceRoot = normalize(workspaceRoot);
     const projectRoot = normalize('');

@@ -102,7 +102,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     return (context as any).appName !== undefined;
   }
 
-  private getNodeModulesPaths(build: boolean): string[] {
+  protected getNodeModulesPaths(build: boolean): string[] {
     if (!this.workspace) {
       return [];
     }

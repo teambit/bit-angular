@@ -84,7 +84,6 @@ export class AngularV14Main extends AngularBaseMain {
     CompositionsMain,
     BabelMain,
   ], options: AngularEnvOptions): Promise<AngularBaseMain> {
-    options.useAngularElementsPreview = true;
     options.useNgcc = false;
     const angularv14Env = new AngularV14Env(
       jestAspect,
