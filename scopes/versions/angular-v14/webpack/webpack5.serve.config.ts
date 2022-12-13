@@ -1,7 +1,6 @@
 import {
   AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
-  getModuleRulesConfig,
   StatsLoggerPlugin,
   WebpackPlugin
 } from '@teambit/angular-base';
@@ -20,6 +19,7 @@ import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
 import { ProvidePlugin } from 'webpack';
+import { getModuleRulesConfig } from './module-rules.config';
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 

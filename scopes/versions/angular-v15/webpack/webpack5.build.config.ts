@@ -1,13 +1,13 @@
 import {
   AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
-  getModuleRulesConfig,
   WebpackConfig,
   WebpackPlugin
 } from '@teambit/angular-base';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
 import webpack from 'webpack';
+import { getModuleRulesConfig } from './module-rules.config';
 
 export function webpack5BuildConfigFactory(
   entryFiles: string[],
