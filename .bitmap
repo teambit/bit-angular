@@ -11,7 +11,7 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "2.0.4",
+        "version": "2.0.5",
         "mainFile": "index.ts",
         "rootDir": "scopes/angular"
     },
@@ -53,49 +53,49 @@
     },
     "versions/angular-v10": {
         "scope": "teambit.angular",
-        "version": "1.2.25",
+        "version": "1.2.26",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v10"
     },
     "versions/angular-v11": {
         "scope": "teambit.angular",
-        "version": "1.2.25",
+        "version": "1.2.26",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v11"
     },
     "versions/angular-v12": {
         "scope": "teambit.angular",
-        "version": "1.2.26",
+        "version": "1.2.27",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v12"
     },
     "versions/angular-v13": {
         "scope": "teambit.angular",
-        "version": "1.2.26",
+        "version": "1.2.27",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v13"
     },
     "versions/angular-v14": {
         "scope": "teambit.angular",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v14"
     },
     "versions/angular-v15": {
         "scope": "teambit.angular",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v15"
     },
     "versions/angular-v8": {
         "scope": "teambit.angular",
-        "version": "1.2.25",
+        "version": "1.2.26",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v8"
     },
     "versions/angular-v9": {
         "scope": "teambit.angular",
-        "version": "1.2.25",
+        "version": "1.2.26",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v9"
     },
@@ -107,7 +107,7 @@
     },
     "versions/common/angular-base": {
         "scope": "teambit.angular",
-        "version": "0.2.25",
+        "version": "0.2.26",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/common/angular-base"
     },
