@@ -132,8 +132,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
     }
   }
 
-  private createNgMultiCompiler(ngEnvOptions: AngularEnvOptions, tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>): Compiler {
-    const nodeModulesPaths = this.getNodeModulesPaths(false);
+  private createNgMultiCompiler(ngEnvOptions: AngularEnvOptions, tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, isBuild = false): Compiler {
+    const nodeModulesPaths = this.getNodeModulesPaths(isBuild);
     return new NgMultiCompiler(this.ngPackagr, ngEnvOptions, this.babelMain, this.readDefaultTsConfig, this.logger, this.workspace, this.compositions, this.application, this.depResolver, tsCompilerOptions, bitCompilerOptions, nodeModulesPaths);
   }
 
@@ -141,10 +141,8 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Returns a compiler
    * Required for making and reading dists, especially for `bit compile`
    */
-  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): Compiler {
-    if (!this.ngMultiCompiler) {
-      this.ngMultiCompiler = this.createNgMultiCompiler(this.getNgEnvOptions(ngEnvOptions), tsCompilerOptions, bitCompilerOptions);
-    }
+  getCompiler(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions, isBuild = false): Compiler {
+    this.ngMultiCompiler = this.createNgMultiCompiler(this.getNgEnvOptions(ngEnvOptions), tsCompilerOptions, bitCompilerOptions, isBuild);
     return this.ngMultiCompiler;
   }
 
@@ -153,7 +151,7 @@ export abstract class AngularBaseEnv implements LinterEnv, DependenciesEnv, DevE
    * Required for `bit build`
    */
   getBuildPipe(tsCompilerOptions?: AngularCompilerOptions, bitCompilerOptions?: Partial<CompilerOptions>, ngEnvOptions?: AngularEnvOptions): BuildTask[] {
-    const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions);
+    const compiler = this.getCompiler(tsCompilerOptions, bitCompilerOptions, ngEnvOptions, true);
     const compilerTask = this.compiler.createTask('NgPackagrCompiler', compiler);
     return [compilerTask, this.tester.task];
   }
