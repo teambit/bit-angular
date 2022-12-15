@@ -1,8 +1,7 @@
 import {
   AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
-  StatsLoggerPlugin,
-  WebpackPlugin
+  StatsLoggerPlugin
 } from '@teambit/angular-base';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
@@ -32,7 +31,7 @@ export function webpack5ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tempFolder: string,
-  plugins: WebpackPlugin[] = [],
+  plugins: any[] = [],
   isApp = false,
   ngEnvOptions: AngularEnvOptions
 ): any {
