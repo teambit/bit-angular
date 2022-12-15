@@ -1,7 +1,6 @@
 import { generateStyleLoaders } from '@teambit/webpack.modules.generate-style-loaders';
 import * as stylesRegexps from '@teambit/webpack.modules.style-regexps';
 import { merge } from 'lodash';
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
@@ -36,7 +35,7 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 
 export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
   const baseStyleLoadersOptions = {
-    injectingLoader: isEnvProduction ? MiniCssExtractPlugin.loader : styleLoaderPath,
+    injectingLoader: styleLoaderPath,
     cssLoaderPath: require.resolve('css-loader'),
     postCssLoaderPath: require.resolve('postcss-loader'),
     postCssConfig
