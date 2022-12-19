@@ -1,7 +1,11 @@
-import { ReplaySubject } from 'rxjs';
+// required here to make sure that this is loaded before the compositions file
+import '@angular/compiler';
 
-window.onComponentLoad$ = window.onComponentLoad$ || new ReplaySubject<any>();
-window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
+// import { ReplaySubject } from 'rxjs';
+//
+// window.onComponentLoad$ = window.onComponentLoad$ || new ReplaySubject<any>();
+// window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
+import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 /**
  * this mounts compositions into the DOM in the component preview.
@@ -9,13 +13,18 @@ window.onModuleLoad$ = window.onModuleLoad$ || new ReplaySubject<any>();
  * to apply custom logic for component DOM mounting.
  */
 export default function(composition: any/*, previewContext: RenderingContext*/) {
-  if (Reflect.get(composition, 'ɵcmp')) {
-    window.onComponentLoad$.next(composition);
-  } else if (Reflect.get(composition, 'ɵmod') || Reflect.get(composition, 'ngInjectorDef')) {
-    window.onModuleLoad$.next(composition);
-  } else {
-    console.info(
-      `Unknown type of composition for ${composition}, the Angular aspect only supports modules or components (for v9+)`
-    );
-  }
+  // if (Reflect.get(composition, 'ɵcmp')) {
+  //   window.onComponentLoad$.next(composition);
+  // } else if (Reflect.get(composition, 'ɵmod') || Reflect.get(composition, 'ngInjectorDef')) {
+  //   window.onModuleLoad$.next(composition);
+
+  // console.log(composition);
+  platformBrowserDynamic()
+    .bootstrapModule(composition)
+    .catch((err) => console.error(err));
+  // } else {
+  //   console.info(
+  //     `Unknown type of composition for ${composition}, the Angular aspect only supports modules or components (for v9+)`
+  //   );
+  // }
 }

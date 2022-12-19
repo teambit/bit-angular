@@ -237,6 +237,23 @@ export abstract class AngularBaseWebpack {
       mergedAngularServeOptions,
       sourceRoot ?? this.sourceRoot
     );
+
+    defaultConfig.module.rules.forEach((rule: any) => {
+      if(rule.rules) {
+        rule.rules.forEach((rule2: any) => {
+            if(rule2.oneOf) {
+              console.log(rule2);
+              rule2.oneOf.forEach((rule3: any) => {
+                  if(rule3.resourceQuery.toString() === '/\\?ngResource/') {
+                    delete rule3.resourceQuery;
+                  }
+              });
+              console.log(rule2);
+            }
+        });
+      }
+    });
+
     const defaultTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
       configMutator.merge([defaultConfig]);
 
@@ -253,13 +270,20 @@ export abstract class AngularBaseWebpack {
       isApp,
       this.ngEnvOptions
     );
-    const configMutator = new WebpackConfigMutator(config);
+
+    const serveTransformer: WebpackConfigTransformer = (configMutator: WebpackConfigMutator) =>
+      configMutator.merge([config]);
+
+    const configMutator = new WebpackConfigMutator({});
 
     const afterMutation = runTransformersWithContext(
       configMutator.clone(),
-      [defaultTransformer, ...transformers],
+      [serveTransformer, defaultTransformer, ...transformers],
       { mode: 'dev' }
     );
+
+    // afterMutation.raw.module.rules.reverse();
+    // console.log(afterMutation.raw.module.rules);
 
     return new WebpackDevServer(afterMutation.raw as WebpackConfigWithDevServer, this.webpack as any, this.webpackDevServer as any);
   }

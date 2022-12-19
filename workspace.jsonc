@@ -31,7 +31,7 @@
     /**
      * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
      */
-    "packageManager": "teambit.dependencies/yarn",
+    "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
         "@types/jasmine": "~3.7.0",
@@ -49,6 +49,8 @@
       },
       "peerDependencies": {}
     },
+//    "linkCoreAspects": true,
+    "nodeLinker": "hoisted",
     "packageManagerArgs": [],
     "devFilePatterns": [
       "**/*.spec.ts"
@@ -59,29 +61,29 @@
   },
   "teambit.generator/generator": {
     "aspects": [
-      "teambit.angular/angular",
-      "teambit.angular/versions/angular-v15",
-      "teambit.angular/versions/angular-v14",
-      "teambit.angular/versions/angular-v13",
-      "teambit.angular/versions/angular-v12",
-      "teambit.angular/versions/angular-v11",
-      "teambit.angular/versions/angular-v10",
-      "teambit.angular/versions/angular-v9",
-      "teambit.angular/versions/angular-v8"
+      //      "teambit.angular/angular",
+            "teambit.angular/versions/angular-v15"
+//      "teambit.angular/versions/angular-v14"
+      //      "teambit.angular/versions/angular-v13",
+      //      "teambit.angular/versions/angular-v12",
+      //      "teambit.angular/versions/angular-v11",
+      //      "teambit.angular/versions/angular-v10",
+      //      "teambit.angular/versions/angular-v9",
+      //      "teambit.angular/versions/angular-v8"
     ]
   },
   // Add angular templates to the list
-  "teambit.angular/angular": {},
-  "teambit.angular/versions/angular-v15": {},
-  "teambit.angular/versions/angular-v14": {},
-  "teambit.angular/versions/angular-v13": {},
-  "teambit.angular/versions/angular-v12": {},
-  "teambit.angular/versions/angular-v11": {},
-  "teambit.angular/versions/angular-v10": {},
-  "teambit.angular/versions/angular-v9": {},
-  "teambit.angular/versions/angular-v8": {},
+  //  "teambit.angular/angular": {},
+    "teambit.angular/versions/angular-v15": {},
+//  "teambit.angular/versions/angular-v14": {},
+  //  "teambit.angular/versions/angular-v13": {},
+  //  "teambit.angular/versions/angular-v12": {},
+  //  "teambit.angular/versions/angular-v11": {},
+  //  "teambit.angular/versions/angular-v10": {},
+  //  "teambit.angular/versions/angular-v9": {},
+  //  "teambit.angular/versions/angular-v8": {},
   // Add angular apps (until this is no longer necessary)
-//  "examples/demo-app": {},
+  //  "examples/demo-app": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a

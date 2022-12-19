@@ -9,12 +9,18 @@
  */
 
 {
-    "angular": {
+    "demo-lib-v15": {
+        "scope": "",
+        "version": "",
+        "mainFile": "public-api.ts",
+        "rootDir": "examples/demo-lib-v15"
+    },
+    /*"angular": {
         "scope": "teambit.angular",
         "version": "2.0.7",
         "mainFile": "index.ts",
         "rootDir": "scopes/angular"
-    },
+    },*/
     "dev-services/compiler/angular-elements": {
         "scope": "teambit.angular",
         "version": "0.1.22",
@@ -51,7 +57,7 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/linter/eslint-config"
     },
-    "versions/angular-v10": {
+    /*"versions/angular-v10": {
         "scope": "teambit.angular",
         "version": "1.2.26",
         "mainFile": "index.ts",
@@ -80,13 +86,13 @@
         "version": "1.0.5",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v14"
-    },
+    },*/
     "versions/angular-v15": {
         "scope": "teambit.angular",
         "version": "1.0.5",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v15"
-    },
+    },/*
     "versions/angular-v8": {
         "scope": "teambit.angular",
         "version": "1.2.26",
@@ -98,7 +104,7 @@
         "version": "1.2.26",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v9"
-    },
+    },*/
     "versions/common/angular-apps": {
         "scope": "teambit.angular",
         "version": "0.1.6",

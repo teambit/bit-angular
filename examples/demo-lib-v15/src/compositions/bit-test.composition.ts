@@ -1,4 +1,6 @@
+import '@angular/compiler';
 import { Component, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { BitTestModule } from '../bit-test.module';
 
 @Component({
@@ -9,8 +11,8 @@ class CompositionComponent {}
 
 @NgModule({
   declarations: [CompositionComponent],
-  imports: [BitTestModule],
+  imports: [BrowserModule, BitTestModule],
   bootstrap: [CompositionComponent]
 })
-export class CompositionModule {
+export default class CompositionModule {
 }

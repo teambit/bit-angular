@@ -1,6 +1,7 @@
 import { generateStyleLoaders } from '@teambit/webpack.modules.generate-style-loaders';
 import * as stylesRegexps from '@teambit/webpack.modules.style-regexps';
 import { merge } from 'lodash';
+import { resolve } from 'path';
 import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
@@ -32,6 +33,8 @@ const styleLoaderPath = require.resolve('style-loader');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
+
+const teambitAlias = resolve(require.resolve('@teambit/angular-base'), '../../../');
 
 export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
   const baseStyleLoadersOptions = {
@@ -88,10 +91,55 @@ export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
             })
           )
         },
+        // Opt-in support for SASS (using .scss or .sass extensions).
+        // By default we support SASS Modules with the
+        // extensions .module.scss or .module.sass
+        {
+          test: stylesRegexps.sassNoModuleRegex,
+          // include: [teambitAlias],
+          use: generateStyleLoaders(
+            merge({}, baseStyleLoadersOptions, {
+              cssLoaderOpts: {
+                importLoaders: 3,
+                sourceMap: isEnvProduction || shouldUseSourceMap,
+              },
+              shouldUseSourceMap: isEnvProduction || shouldUseSourceMap,
+              preProcessOptions: {
+                resolveUrlLoaderPath: require.resolve('resolve-url-loader'),
+                preProcessorPath: require.resolve('sass-loader'),
+              },
+            })
+          ),
+          // Don't consider CSS imports dead code even if the
+          // containing package claims to have no side effects.
+          // Remove this when webpack adds a warning or an error for this.
+          // See https://github.com/webpack/webpack/issues/6571
+          sideEffects: true,
+        },
         // Adds support for CSS Modules, but using SASS
         // using the extension .module.scss or .module.sass
         {
           test: stylesRegexps.sassModuleRegex,
+          use: generateStyleLoaders(
+            merge({}, baseStyleLoadersOptions, {
+              cssLoaderOpts: {
+                importLoaders: 3,
+                sourceMap: isEnvProduction || shouldUseSourceMap,
+                modules: {
+                  getLocalIdent: getCSSModuleLocalIdent
+                }
+              },
+              shouldUseSourceMap: isEnvProduction || shouldUseSourceMap,
+              preProcessOptions: {
+                resolveUrlLoaderPath: require.resolve('resolve-url-loader'),
+                preProcessorPath: require.resolve('sass-loader')
+              }
+            })
+          )
+        },
+        {
+          test: stylesRegexps.sassRegex,
+          // include: [teambitAlias],
           use: generateStyleLoaders(
             merge({}, baseStyleLoadersOptions, {
               cssLoaderOpts: {

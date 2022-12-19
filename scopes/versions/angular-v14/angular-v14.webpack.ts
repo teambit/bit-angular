@@ -193,7 +193,7 @@ export class AngularV14Webpack extends AngularBaseWebpack {
     }
 
     // Add bit generated files to the list of entries
-    webpackConfig.entry.main.unshift(...entryFiles);
+    webpackConfig.entry.main = entryFiles;
 
     const { scripts = [], styles = [] } = browserOptions;
     const entrypoints = generateEntryPoints({ scripts, styles });
