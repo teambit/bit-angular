@@ -9,7 +9,8 @@
   "devDependencies": {},
   "scripts": {
     "format": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md|mdx)\" --write",
-    "format:check": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md)\" --check"
+    "format:check": "prettier \"./packages/**/*.+(ts|js|jsx|css|scss|tsx|md)\" --check",
+    "clean": "bit capsule delete --scope-aspects && rm node_modules -rf && rm yarn.lock"
   },
   "repository": {
     "type": "git",

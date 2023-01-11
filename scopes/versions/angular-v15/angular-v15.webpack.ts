@@ -103,6 +103,8 @@ export class AngularV15Webpack extends AngularBaseWebpack {
     });
 
     delete webpackConfig.devServer.devMiddleware.publicPath;
+    delete webpackConfig.devServer.webSocketServer;
+    delete webpackConfig.client;
 
     return webpackConfig;
   }
