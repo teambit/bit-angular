@@ -72,12 +72,12 @@
       "teambit.angular/versions/angular-v13",
       "teambit.angular/versions/angular-v12",
     ],
-    "aspects": [
-      "teambit.angular/versions/angular-v11",
-      "teambit.angular/versions/angular-v10",
-      "teambit.angular/versions/angular-v9",
-      "teambit.angular/versions/angular-v8"
-    ]
+//    "aspects": [
+//      "teambit.angular/versions/angular-v11",
+//      "teambit.angular/versions/angular-v10",
+//      "teambit.angular/versions/angular-v9",
+//      "teambit.angular/versions/angular-v8"
+//    ]
   },
   // Add angular templates to the list
     "teambit.angular/angular": {},
@@ -85,10 +85,10 @@
     "teambit.angular/versions/angular-v14": {},
     "teambit.angular/versions/angular-v13": {},
     "teambit.angular/versions/angular-v12": {},
-    "teambit.angular/versions/angular-v11": {},
-    "teambit.angular/versions/angular-v10": {},
-    "teambit.angular/versions/angular-v9": {},
-    "teambit.angular/versions/angular-v8": {},
+//    "teambit.angular/versions/angular-v11": {},
+//    "teambit.angular/versions/angular-v10": {},
+//    "teambit.angular/versions/angular-v9": {},
+//    "teambit.angular/versions/angular-v8": {},
   // Add angular apps (until this is no longer necessary)
     "examples/demo-app": {},
   /**
