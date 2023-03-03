@@ -83,13 +83,13 @@
     },
     "versions/angular-v10": {
         "scope": "teambit.angular",
-        "version": "1.2.27",
+        "version": "1.2.28",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v10"
     },
     "versions/angular-v11": {
         "scope": "teambit.angular",
-        "version": "1.2.27",
+        "version": "1.2.28",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v11"
     },
@@ -119,13 +119,13 @@
     },
     "versions/angular-v8": {
         "scope": "teambit.angular",
-        "version": "1.2.27",
+        "version": "1.2.28",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v8"
     },
     "versions/angular-v9": {
         "scope": "teambit.angular",
-        "version": "1.2.27",
+        "version": "1.2.28",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v9"
     },

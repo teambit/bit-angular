@@ -62,7 +62,7 @@ export class AngularV8Webpack extends AngularBaseWebpack {
   webpack: typeof webpack;
 
   constructor(workspace: Workspace | undefined, webpackMain: WebpackMain, pkg: PkgMain, application: ApplicationMain, ngEnvOptions: AngularEnvOptions) {
-    super(workspace, webpackMain, pkg, application, AngularV8Aspect, ngEnvOptions);
+    super(workspace, webpackMain, pkg, application, AngularV8Aspect as any, ngEnvOptions);
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
     const buildAngular = require.resolve('@angular-devkit/build-angular');

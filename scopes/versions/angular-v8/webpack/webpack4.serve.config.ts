@@ -1,15 +1,7 @@
-import {
-  AngularEnvOptions,
-  BitDedupeModuleResolvePlugin,
-  StatsLoggerPlugin,
-  WebpackPlugin
-} from '@teambit/angular-base';
+import { AngularEnvOptions, BitDedupeModuleResolvePlugin } from '@teambit/angular-base';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
-import {
-  fallbacksAliases,
-  WebpackBitReporterPlugin
-} from '@teambit/webpack';
+import { fallbacksAliases, WebpackBitReporterPlugin } from '@teambit/webpack';
 import path from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
 import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
@@ -35,7 +27,7 @@ export function webpack4ServeConfigFactory(
   pubsub: PubsubMain,
   nodeModulesPaths: string[],
   tempFolder: string,
-  plugins: WebpackPlugin[] = [],
+  plugins: any[] = [],
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   isApp = false,
   ngEnvOptions: AngularEnvOptions,

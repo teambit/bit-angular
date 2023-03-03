@@ -1,4 +1,4 @@
-import { AngularEnvOptions, BitDedupeModuleResolvePlugin, WebpackConfig, WebpackPlugin } from '@teambit/angular-base';
+import { AngularEnvOptions, BitDedupeModuleResolvePlugin, WebpackConfig } from '@teambit/angular-base';
 import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
@@ -11,7 +11,7 @@ export function webpack4BuildConfigFactory(
   nodeModulesPaths: string[],
   workspaceDir: string,
   tempFolder: string,
-  plugins: WebpackPlugin[] = [],
+  plugins: any[] = [],
   ngEnvOptions: AngularEnvOptions,
 ): WebpackConfig {
   const config = {
