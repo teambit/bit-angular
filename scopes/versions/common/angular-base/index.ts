@@ -1,8 +1,4 @@
-export { AngularBaseWebpack, WebpackSetup, WebpackConfig, WebpackPlugin, WebpackBuildConfigFactory, WebpackServeConfigFactory } from './angular-base.webpack';
-export { AngularBaseEnv } from './angular-base.env';
-export type { AngularEnvOptions } from '@teambit/angular-apps';
-export { BitDedupeModuleResolvePlugin } from './webpack-plugins/angular-resolver';
+export { AngularBaseEnv } from './angular-base.bit-env';
 export { NgccProcessor } from '@teambit/ngcc';
-export { StatsLoggerPlugin } from './webpack-plugins/stats-logger'
-export { AngularBaseMain } from './angular-base.main.runtime';
-export * from './utils';
+export { AngularEnvInterface } from './angular-env.interface';
+export { default as prettierConfig } from './config/prettier.config';

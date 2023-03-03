@@ -1,9 +1,4 @@
-import {
-  AngularEnvOptions,
-  BitDedupeModuleResolvePlugin,
-  WebpackConfig,
-  WebpackPlugin
-} from '@teambit/angular-base';
+import { AngularEnvOptions, BitDedupeModuleResolvePlugin, WebpackConfig, WebpackPlugin } from '@teambit/angular-base';
 import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';

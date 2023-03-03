@@ -6,6 +6,10 @@ async function loadEsmModule<T>(modulePath: string): Promise<T> {
   }
 }
 
+export async function ngccCompilerCli(): Promise<typeof import('@angular/compiler-cli/ngcc')> {
+  return loadEsmModule(`@angular/compiler-cli/ngcc`);
+}
+
 export async function ngCompilerCli(): Promise<typeof import('@angular/compiler-cli')> {
   return loadEsmModule(`@angular/compiler-cli`);
 }

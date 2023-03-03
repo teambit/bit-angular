@@ -1,7 +1,8 @@
 import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
-import type { AngularEnvOptions } from '@teambit/angular-apps';
-import { ApplicationMain } from '@teambit/application';
+import type { AngularEnvOptions } from '@teambit/angular-common';
+import { getNodeModulesPaths } from '@teambit/angular-common';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
   BuildContext,
@@ -10,16 +11,17 @@ import {
 } from '@teambit/builder';
 import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
-import { CompositionsMain } from '@teambit/compositions';
-import { DependencyResolverMain } from '@teambit/dependency-resolver';
+import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
+import { EnvContext, EnvHandler } from '@teambit/envs';
 import { CyclicError } from '@teambit/graph.cleargraph';
+import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
 import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
-import { Workspace } from '@teambit/workspace';
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { writeFileSync } from 'fs-extra';
 import { join, posix, resolve } from 'path';
 
@@ -52,6 +54,17 @@ export interface NgPackagr {
 }
 
 
+interface NgPackagrCompilerOptions {
+  ngPackagrModulePath?: string;
+  ngEnvOptions: AngularEnvOptions;
+  tsCompilerOptions?: AngularCompilerOptions;
+  name?: string;
+  distDir: string;
+  distGlobPatterns: string[];
+  shouldCopyNonSupportedFiles: boolean;
+  artifactName: string;
+}
+
 export class NgPackagrCompiler implements Compiler {
   readonly id = 'teambit.angular/dev-services/compiler/ng-packagr';
   displayName = 'NgPackagr compiler';
@@ -59,12 +72,10 @@ export class NgPackagrCompiler implements Compiler {
   ngPackagr: NgPackagr;
   ngccProcessor?: NgccProcessor;
 
-  constructor(
+  private constructor(
     ngPackagrPath: string,
-    readDefaultTsConfig: string,
     private logger: Logger,
     private workspace: Workspace | undefined,
-    private compositions: CompositionsMain,
     private application: ApplicationMain,
     private depResolver: DependencyResolverMain,
     public distDir: string,
@@ -73,14 +84,14 @@ export class NgPackagrCompiler implements Compiler {
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
     private nodeModulesPaths: string[] = [],
-    private ngEnvOptions: AngularEnvOptions = {},
+    private ngEnvOptions: AngularEnvOptions,
   ) {
     if (this.ngEnvOptions.useNgcc) {
       this.ngccProcessor = new NgccProcessor();
     }
     this.ngPackagr = require(ngPackagrPath).ngPackagr();
 
-    const module = require(readDefaultTsConfig);
+    const module = require(ngEnvOptions.readDefaultTsConfig);
     if (typeof module.readDefaultTsConfig !== 'undefined') {
       // Angular v8 to v12
       this.readDefaultTsConfig = module.readDefaultTsConfig;
@@ -131,7 +142,8 @@ export class NgPackagrCompiler implements Compiler {
   async ngPackagrCompilation(
     pathToComponent: string,
     pathToOutputFolder: string,
-    tsCompilerOptions: AngularCompilerOptions
+    tsCompilerOptions: AngularCompilerOptions,
+    isBuild = true
   ): Promise<void> {
     // create ng-package.json config file for ngPackagr
     const ngPackageJson = {
@@ -189,7 +201,7 @@ export class NgPackagrCompiler implements Compiler {
           return this.ngPackagrCompilation(pathToComponent, pathToOutputFolder, {
             ...tsCompilerOptions,
             fullTemplateTypeCheck: false
-          });
+          }, isBuild);
         }
         // eslint-disable-next-line no-console
         console.error(err);
@@ -223,7 +235,7 @@ export class NgPackagrCompiler implements Compiler {
     // disable logger temporarily so that it doesn't mess up with ngPackagr logs
     this.logger.off();
     // Build component package
-    await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions);
+    await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions, false);
     this.logger.on();*/
   }
 
@@ -271,7 +283,7 @@ export class NgPackagrCompiler implements Compiler {
         try {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();
-          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions);
+          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, true);
           this.logger.on();
           // @ts-ignore
         } catch (e: any) {
@@ -327,5 +339,33 @@ export class NgPackagrCompiler implements Compiler {
   version(): string {
     // eslint-disable-next-line global-require
     return require('ng-packagr/package.json').version;
+  }
+
+  static from(options: NgPackagrCompilerOptions): EnvHandler<NgPackagrCompiler> {
+    return (context: EnvContext) => {
+      const name = options.name || 'ng-packagr-compiler';
+      const ngPackagrModulePath = options.ngPackagrModulePath || require.resolve('ng-packagr');
+      const logger = context.createLogger(name);
+      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
+      const depResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
+      const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
+      const nodeModulesPaths = getNodeModulesPaths(true, isolator, workspace);
+
+      return new NgPackagrCompiler(
+        ngPackagrModulePath,
+        logger,
+        workspace,
+        application,
+        depResolver,
+        options.distDir,
+        options.distGlobPatterns,
+        options.shouldCopyNonSupportedFiles,
+        options.artifactName,
+        options.tsCompilerOptions,
+        nodeModulesPaths,
+        options.ngEnvOptions,
+      );
+    };
   }
 }

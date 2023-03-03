@@ -1,25 +1,30 @@
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { getCompilerConfig } from '@angular-devkit/build-angular/src/browser';
-import { Schema as BrowserBuilderSchema, OutputHashing } from '@angular-devkit/build-angular/src/browser/schema';
+import {
+  OutputHashing,
+  Schema as BrowserBuilderSchema
+} from '@angular-devkit/build-angular/src/browser/schema';
 import {
   BuildBrowserFeatures,
   normalizeBrowserSchema,
-  normalizeOptimization,
+  normalizeOptimization
 } from '@angular-devkit/build-angular/src/utils';
 import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
 import {
   BrowserWebpackConfigOptions,
   generateWebpackConfig,
-  getIndexOutputFile,
+  getIndexOutputFile
 } from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
 import {
   getBrowserConfig,
   getCommonConfig,
   getDevServerConfig,
   getStatsConfig,
-  getStylesConfig,
+  getStylesConfig
 } from '@angular-devkit/build-angular/src/webpack/configs';
-import { IndexHtmlWebpackPlugin } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
+import {
+  IndexHtmlWebpackPlugin
+} from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import {
   AngularBaseWebpack,
@@ -27,18 +32,18 @@ import {
   WebpackConfig,
   WebpackSetup
 } from '@teambit/angular-base';
-import { PkgMain } from '@teambit/pkg';
-import { Workspace } from '@teambit/workspace';
-import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
-import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
+import { ApplicationMain } from '@teambit/application';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
+import { PkgMain } from '@teambit/pkg';
 import { WebpackConfigWithDevServer, WebpackMain } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
 import path, { join } from 'path';
-import webpack  from 'webpack';
+import webpack from 'webpack';
 import WsDevServer, { addDevServerEntrypoints } from 'webpack-dev-server';
 import { AngularV11Aspect } from './angular-v11.aspect';
-import { ApplicationMain } from '@teambit/application';
+import { webpack4BuildConfigFactory } from './webpack/webpack4.build.config';
+import { webpack4ServeConfigFactory } from './webpack/webpack4.serve.config';
 
 export class AngularV11Webpack extends AngularBaseWebpack {
   enableIvy = true;

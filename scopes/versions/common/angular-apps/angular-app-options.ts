@@ -1,6 +1,6 @@
+import { BrowserOptions, DevServerOptions } from '@teambit/angular-common';
 import { Bundler } from '@teambit/bundler';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-import { BrowserOptions, DevServerOptions } from './generic-angular-env';
 import { AngularDeployContext } from './deploy-context';
 
 
@@ -21,9 +21,14 @@ export type AngularAppOptions = {
   bundler?: Bundler;
 
   /**
-   * Set webpack transformers
+   * Set webpack build transformers
    */
-  webpackTransformers?: WebpackConfigTransformer[];
+  webpackBuildTransformers?: WebpackConfigTransformer[];
+
+  /**
+   * Set webpack serve transformers
+   */
+  webpackServeTransformers?: WebpackConfigTransformer[];
 
   /**
    * Deploy function.

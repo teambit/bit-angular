@@ -72,7 +72,7 @@ bit create <template-name> <component-name> --env teambit.angular/angular
 ```
 
 ## Angular versions
-The Angular env (teambit.angular/angular) uses the latest stable versions of Angular and its dependencies.
+The Angular env (teambit.angular/angular) uses the latest stable version of Angular and its dependencies.
 Whenever a new major version of Angular is released, a new major version of the Angular env is created.
 
 If you want to use a specific version of Angular, you can use one those env versions instead of `teambit.angular/angular`:

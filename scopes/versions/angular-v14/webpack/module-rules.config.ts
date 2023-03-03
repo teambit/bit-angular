@@ -108,25 +108,6 @@ export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
               }
             })
           )
-        },
-        {
-          test: stylesRegexps.lessModuleRegex,
-          use: generateStyleLoaders(
-            merge({}, baseStyleLoadersOptions, {
-              cssLoaderOpts: {
-                importLoaders: 1,
-                sourceMap: isEnvProduction || shouldUseSourceMap,
-                modules: {
-                  getLocalIdent: getCSSModuleLocalIdent
-                }
-              },
-              shouldUseSourceMap: isEnvProduction || shouldUseSourceMap,
-              preProcessOptions: {
-                resolveUrlLoaderPath: require.resolve('resolve-url-loader'),
-                preProcessorPath: require.resolve('less-loader')
-              }
-            })
-          )
         }
       ]
     }

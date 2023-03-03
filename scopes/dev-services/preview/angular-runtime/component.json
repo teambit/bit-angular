@@ -1,0 +1,34 @@
+{
+  "componentId": {
+    "name": "dev-services/preview/angular-runtime"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-runtime",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "peerDependencies": {
+          "@angular/compiler": ">= 8.0.0",
+          "@angular/core": ">= 8.0.0",
+          "@angular/elements": ">= 8.0.0",
+          "@angular/platform-browser": ">= 8.0.0",
+          "@angular/platform-browser-dynamic": ">= 8.0.0",
+          "react": "^17.0.2",
+          "typescript": ">= 3.5.3",
+          "zone.js": ">= 0.9.1"
+        }
+      }
+    }
+  }
+}

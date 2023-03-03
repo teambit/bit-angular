@@ -1,9 +1,8 @@
 import {
-  AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
   StatsLoggerPlugin,
   WebpackPlugin
-} from '@teambit/angular-base';
+} from '@teambit/angular-webpack';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
@@ -36,7 +35,7 @@ export function webpack5ServeConfigFactory(
   tempFolder: string,
   plugins: WebpackPlugin[] = [],
   isApp = false,
-  ngEnvOptions: AngularEnvOptions,
+  useNgcc: boolean,
 ): any {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
@@ -188,7 +187,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, ngEnvOptions),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, useNgcc),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID },

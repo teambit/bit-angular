@@ -89,7 +89,7 @@ module.exports = {
     'no-unused-expressions': 'off',
     'max-len': [
       2,
-      120,
+      200,
       2,
       {
         ignoreUrls: true,

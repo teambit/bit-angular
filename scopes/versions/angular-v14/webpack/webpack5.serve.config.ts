@@ -1,15 +1,12 @@
-import {
-  AngularEnvOptions,
-  BitDedupeModuleResolvePlugin,
-  StatsLoggerPlugin
-} from '@teambit/angular-base';
+import { BitDedupeModuleResolvePlugin, StatsLoggerPlugin } from '@teambit/angular-webpack';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   fallbacks,
   fallbacksAliases,
   fallbacksProvidePluginConfig,
-  WebpackBitReporterPlugin
+  WebpackBitReporterPlugin,
+  WebpackConfigWithDevServer
 } from '@teambit/webpack';
 import { join, posix, resolve } from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
@@ -33,8 +30,8 @@ export function webpack5ServeConfigFactory(
   tempFolder: string,
   plugins: any[] = [],
   isApp = false,
-  ngEnvOptions: AngularEnvOptions
-): any {
+  useNgcc: boolean
+): WebpackConfigWithDevServer {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
   // Host
@@ -167,7 +164,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, ngEnvOptions),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, useNgcc),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID }
@@ -176,5 +173,5 @@ export function webpack5ServeConfigFactory(
     ]
   };
 
-  return config;
+  return config as WebpackConfigWithDevServer;
 }

@@ -1,9 +1,9 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp, NG_APP_PATTERN } from '@teambit/angular-apps';
-import type { AngularEnvOptions } from '@teambit/angular-apps';
+import type { AngularEnvOptions } from '@teambit/angular-common';
 import { AngularElementsCompiler } from '@teambit/angular-elements';
-import { ApplicationMain } from '@teambit/application';
-import { BabelCompiler, BabelMain } from '@teambit/babel';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
+import { BabelAspect, BabelCompiler, BabelMain } from '@teambit/babel';
 import { BuildContext, BuiltTaskResult } from '@teambit/builder';
 import {
   CompilationInitiator,
@@ -14,11 +14,8 @@ import {
   TranspileFileParams
 } from '@teambit/compiler';
 import { Component } from '@teambit/component';
-import { CompositionsMain } from '@teambit/compositions';
-import { DependencyResolverMain } from '@teambit/dependency-resolver';
-import { Logger } from '@teambit/logger';
+import { EnvContext, EnvHandler } from '@teambit/envs';
 import { NgPackagrCompiler } from '@teambit/ng-packagr';
-import { Workspace } from '@teambit/workspace';
 import minimatch from 'minimatch';
 
 const presets = [
@@ -27,67 +24,27 @@ const presets = [
 ];
 const plugins = [require.resolve('@babel/plugin-proposal-class-properties')];
 
+export interface NgMultiCompilerOptions {
+  bitCompilerOptions?: Partial<CompilerOptions>;
+  name?: string;
+  ngEnvOptions: AngularEnvOptions;
+  tsCompilerOptions?: AngularCompilerOptions;
+}
+
 export class NgMultiCompiler implements Compiler {
   readonly id = 'teambit.angular/dev-services/compiler/ng-multi-compiler';
-  displayName = 'Angular multi-compiler';
-  distDir: string;
-  distGlobPatterns: string[];
-  shouldCopyNonSupportedFiles: boolean;
-  artifactName: string;
-  ngPackagrCompiler: NgPackagrCompiler;
-  angularElementsCompiler: AngularElementsCompiler | undefined;
   mainCompiler: NgPackagrCompiler | AngularElementsCompiler;
 
-  constructor(
-    ngPackagrPath: string,
-    private ngEnvOptions: AngularEnvOptions,
+  private constructor(
+    public displayName = 'angular-multi-compiler',
     private babelMain: BabelMain,
-    readDefaultTsConfig: string,
-    private logger: Logger,
-    private workspace: Workspace | undefined,
-    private compositions: CompositionsMain,
     private application: ApplicationMain,
-    private depResolver: DependencyResolverMain,
-    private tsCompilerOptions: AngularCompilerOptions = {},
-    bitCompilerOptions: Partial<CompilerOptions> = {},
-    private nodeModulesPaths: string[] = []
+    private ngEnvOptions: AngularEnvOptions,
+    private ngPackagrCompiler: NgPackagrCompiler,
+    private angularElementsCompiler: AngularElementsCompiler | undefined,
+    public distDir = 'dist',
   ) {
-    this.distDir = bitCompilerOptions.distDir || 'dist';
-    this.distGlobPatterns = bitCompilerOptions.distGlobPatterns || [`${this.distDir}/**`];
-    this.shouldCopyNonSupportedFiles =
-      typeof bitCompilerOptions.shouldCopyNonSupportedFiles === 'boolean' ? bitCompilerOptions.shouldCopyNonSupportedFiles : false;
-    this.artifactName = bitCompilerOptions.artifactName || 'dist';
-    this.ngPackagrCompiler = new NgPackagrCompiler(
-      ngPackagrPath,
-      readDefaultTsConfig,
-      this.logger,
-      this.workspace,
-      this.compositions,
-      this.application,
-      this.depResolver,
-      this.distDir,
-      this.distGlobPatterns,
-      this.shouldCopyNonSupportedFiles,
-      this.artifactName,
-      this.tsCompilerOptions,
-      nodeModulesPaths,
-      this.ngEnvOptions,
-    ) as NgPackagrCompiler;
-
-    if (this.ngEnvOptions.useAngularElementsPreview) {
-      this.angularElementsCompiler = new AngularElementsCompiler(
-        this.logger,
-        this.workspace,
-        this.compositions,
-        this.application,
-        this.distDir,
-        this.distGlobPatterns,
-        this.shouldCopyNonSupportedFiles,
-        this.artifactName,
-        this.tsCompilerOptions,
-        nodeModulesPaths,
-        this.ngEnvOptions,
-      ) as AngularElementsCompiler;
+    if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
       this.mainCompiler = this.angularElementsCompiler;
     } else {
       this.mainCompiler = this.ngPackagrCompiler;
@@ -181,5 +138,51 @@ export class NgMultiCompiler implements Compiler {
 
   version(): string {
     return this.mainCompiler.version();
+  }
+
+  static from(options: NgMultiCompilerOptions): EnvHandler<NgMultiCompiler> {
+    return (context: EnvContext) => {
+      const name = options.name || 'angular-multi-compiler';
+      const ngPackagrModulePath = options.ngEnvOptions.ngPackagrModulePath || require.resolve('ng-packagr');
+      const distDir = options.bitCompilerOptions?.distDir ?? 'dist';
+      const distGlobPatterns = options.bitCompilerOptions?.distGlobPatterns ?? [`${distDir}/**`];
+      const shouldCopyNonSupportedFiles = options.bitCompilerOptions?.shouldCopyNonSupportedFiles ?? false;
+      const artifactName = options.bitCompilerOptions?.artifactName ?? 'dist';
+      const babelMain = context.getAspect<BabelMain>(BabelAspect.id);
+      const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
+
+      const ngPackagrCompiler = NgPackagrCompiler.from({
+        artifactName: artifactName,
+        distDir: distDir,
+        distGlobPatterns: distGlobPatterns,
+        ngEnvOptions: options.ngEnvOptions,
+        ngPackagrModulePath,
+        shouldCopyNonSupportedFiles: shouldCopyNonSupportedFiles,
+        tsCompilerOptions: options.tsCompilerOptions
+      })(context);
+
+      let angularElementsCompiler: AngularElementsCompiler | undefined;
+
+      if (options.ngEnvOptions.useAngularElementsPreview) {
+        angularElementsCompiler = AngularElementsCompiler.from({
+          artifactName,
+          distDir,
+          distGlobPatterns,
+          ngEnvOptions: options.ngEnvOptions,
+          shouldCopyNonSupportedFiles,
+          tsCompilerOptions: options.tsCompilerOptions
+        })(context);
+      }
+
+      return new NgMultiCompiler(
+        name,
+        babelMain,
+        application,
+        options.ngEnvOptions,
+        ngPackagrCompiler,
+        angularElementsCompiler,
+        distDir,
+      );
+    };
   }
 }

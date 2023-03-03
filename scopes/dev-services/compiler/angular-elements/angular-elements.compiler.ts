@@ -1,8 +1,9 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
-import type { AngularEnvOptions } from '@teambit/angular-apps';
+import type { AngularEnvOptions } from '@teambit/angular-common';
+import { getNodeModulesPaths } from '@teambit/angular-common';
 import { RollupCompiler } from '@teambit/angular-elements';
-import { ApplicationMain } from '@teambit/application';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
   BuildContext,
@@ -11,13 +12,26 @@ import {
 } from '@teambit/builder';
 import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
-import { CompositionsMain } from '@teambit/compositions';
+import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
+import { EnvContext, EnvHandler } from '@teambit/envs';
+import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { Timer } from '@teambit/legacy/dist/toolbox/timer';
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
-import { Workspace } from '@teambit/workspace';
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import chalk from 'chalk';
-import { join, extname } from 'path';
+import { extname, join } from 'path';
+
+interface AngularElementsCompilerOptions {
+  ngPackagrModulePath?: string;
+  ngEnvOptions: AngularEnvOptions;
+  tsCompilerOptions?: AngularCompilerOptions;
+  name?: string;
+  distDir: string;
+  distGlobPatterns: string[];
+  shouldCopyNonSupportedFiles: boolean;
+  artifactName: string;
+}
 
 export class AngularElementsCompiler implements Compiler {
   readonly id = 'teambit.angular/dev-services/compiler/angular-elements';
@@ -25,7 +39,7 @@ export class AngularElementsCompiler implements Compiler {
   ngccProcessor?: NgccProcessor;
   rollupCompiler: RollupCompiler;
 
-  constructor(
+  private constructor(
     private logger: Logger,
     private workspace: Workspace | undefined,
     private compositions: CompositionsMain,
@@ -36,7 +50,7 @@ export class AngularElementsCompiler implements Compiler {
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
     private nodeModulesPaths: string[] = [],
-    private ngEnvOptions: AngularEnvOptions = {},
+    private ngEnvOptions: AngularEnvOptions
   ) {
     this.rollupCompiler = new RollupCompiler(this.tsCompilerOptions, this.logger);
     if (this.ngEnvOptions.useNgcc) {
@@ -45,7 +59,7 @@ export class AngularElementsCompiler implements Compiler {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false, build = false) {
+  async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false) {
     // Process all node_modules folders (only works if the modules are hoisted)
     if (this.ngEnvOptions.useNgcc) {
       for (let i = 0; i < this.nodeModulesPaths.length; i++) {
@@ -87,15 +101,15 @@ Built Angular Compositions
       return;
     }
     // if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
-      // Process all node_modules folders (only works if the modules are hoisted)
-      if (this.ngEnvOptions.useNgcc) {
-        for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-          await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-        }
+    // Process all node_modules folders (only works if the modules are hoisted)
+    if (this.ngEnvOptions.useNgcc) {
+      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
+        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
       }
-      // Build compositions
-      await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true, false);
-      return;
+    }
+    // Build compositions
+    await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true);
+    return;
     // }
     // TODO: implement compilation of components as webcomponents
     // throw new Error('not implemented');
@@ -135,7 +149,7 @@ Built Angular Compositions
       const isApp = componentIsApp(component, this.application);
       if (!isApp) { // No need to compile an app
         try {
-          await this.compositionsCompilation(component, capsule.path, capsule.path, false, true);
+          await this.compositionsCompilation(component, capsule.path, capsule.path, false);
         } catch (e: any) {
           currentComponentResult.errors = [e];
         }
@@ -180,5 +194,31 @@ Built Angular Compositions
   version(): string {
     // eslint-disable-next-line global-require
     return require('@angular/elements/package.json').version;
+  }
+
+  static from(options: AngularElementsCompilerOptions): EnvHandler<AngularElementsCompiler> {
+    return (context: EnvContext) => {
+      const name = options.name || 'angular-elements-compiler';
+      const logger = context.createLogger(name);
+      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const compositions = context.getAspect<CompositionsMain>(CompositionsAspect.id);
+      const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
+      const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
+      const nodeModulesPaths = getNodeModulesPaths(true, isolator, workspace);
+
+      return new AngularElementsCompiler(
+        logger,
+        workspace,
+        compositions,
+        application,
+        options.distDir,
+        options.distGlobPatterns,
+        options.shouldCopyNonSupportedFiles,
+        options.artifactName,
+        options.tsCompilerOptions,
+        nodeModulesPaths,
+        options.ngEnvOptions
+      );
+    };
   }
 }

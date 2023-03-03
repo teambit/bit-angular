@@ -11,26 +11,3 @@ export function componentIsApp(component: Component, application: ApplicationMai
     // In this case we check all the existing files for the ng app pattern
     || component.filesystem.byGlob([NG_APP_PATTERN]).length > 0;
 }
-
-export interface AngularEnvOptions {
-  /**
-   * Use Rollup & Angular Elements to compile compositions instead of webpack.
-   * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
-   */
-  useAngularElementsPreview?: boolean;
-
-  /**
-   * Override the default Angular docs template path
-   */
-  docsTemplatePath?: string;
-
-  /**
-   * Override the default Angular mount template path
-   */
-  mountTemplatePath?: string;
-
-  /**
-   * Whether ngcc should be run as part of postinstall / compile / build ...
-   */
-  useNgcc?: boolean;
-}

@@ -1,0 +1,28 @@
+{
+  "componentId": {
+    "name": "dev-services/compiler/webpack"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.pkg/pkg": {
+      "packageManagerPublishArgs": [
+        "--access public"
+      ],
+      "packageJson": {
+        "name": "@teambit/angular-webpack",
+        "private": false,
+        "engines": {
+          "node": ">=12.15.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+        },
+        "peerDependencies": {
+        }
+      }
+    }
+  }
+}

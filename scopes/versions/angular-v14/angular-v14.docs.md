@@ -4,3 +4,5 @@ labels: ['angular', 'environment', 'env', 'aspect', 'extension']
 ---
 
 Adds Angular v14 support to your Bit workspace.
+
+Get more information about Bit & Angular in [the Bit Angular documentation](https://bit.dev/docs/angular-introduction).

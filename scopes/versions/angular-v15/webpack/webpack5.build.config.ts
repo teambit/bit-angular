@@ -1,8 +1,4 @@
-import {
-  AngularEnvOptions,
-  BitDedupeModuleResolvePlugin,
-  WebpackConfig
-} from '@teambit/angular-base';
+import { BitDedupeModuleResolvePlugin, WebpackConfig } from '@teambit/angular-webpack';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
 import webpack from 'webpack';
@@ -15,7 +11,7 @@ export function webpack5BuildConfigFactory(
   workspaceDir: string,
   tempFolder: string,
   plugins: any[] = [],
-  ngEnvOptions: AngularEnvOptions,
+  useNgcc: boolean,
 ): WebpackConfig {
   const config = {
     mode: 'production',
@@ -53,7 +49,7 @@ export function webpack5BuildConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, ngEnvOptions),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, useNgcc),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
       ...plugins
     ],

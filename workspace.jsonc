@@ -22,7 +22,7 @@
     /**
      * default scope for all components in workspace.
      **/
-    "defaultScope": "examples"
+    "defaultScope": "teambit.angular"
   },
   /**
    * main configuration for component dependency resolution.
@@ -34,6 +34,11 @@
     "packageManager": "teambit.dependencies/yarn",
     "policy": {
       "dependencies": {
+        "@teambit/compilation.compiler-task": "0.0.3",
+        "@teambit/defender.eslint-linter": "0.0.6",
+        "@teambit/defender.jest-tester": "0.0.7",
+        "@teambit/defender.prettier-formatter": "0.0.4",
+        "@teambit/webpack.webpack-bundler": "0.0.3",
         "@types/jasmine": "~3.7.0",
         "eslint-config-airbnb-typescript": {
           "version": "5.1.0",
@@ -45,10 +50,12 @@
         "prettier": "2.3.2",
         "process": "0.11.10",
         "react-dev-utils": "10.2.1",
-        "replace-in-file": "6.3.2",
+        "replace-in-file": "6.3.2"
       },
       "peerDependencies": {}
     },
+    "linkCoreAspects": true,
+    "packageImportMethod": "copy",
     "packageManagerArgs": [],
     "devFilePatterns": [
       "**/*.spec.ts"
@@ -58,7 +65,7 @@
     "savePrefix": ""
   },
   "teambit.generator/generator": {
-    "aspects": [
+    "envs": [
       "teambit.angular/angular",
       "teambit.angular/versions/angular-v15",
       "teambit.angular/versions/angular-v14",
@@ -71,17 +78,17 @@
     ]
   },
   // Add angular templates to the list
-  "teambit.angular/angular": {},
-  "teambit.angular/versions/angular-v15": {},
-  "teambit.angular/versions/angular-v14": {},
-  "teambit.angular/versions/angular-v13": {},
-  "teambit.angular/versions/angular-v12": {},
-  "teambit.angular/versions/angular-v11": {},
-  "teambit.angular/versions/angular-v10": {},
-  "teambit.angular/versions/angular-v9": {},
-  "teambit.angular/versions/angular-v8": {},
+    "teambit.angular/angular": {},
+    "teambit.angular/versions/angular-v15": {},
+    "teambit.angular/versions/angular-v14": {},
+    "teambit.angular/versions/angular-v13": {},
+    "teambit.angular/versions/angular-v12": {},
+    "teambit.angular/versions/angular-v11": {},
+    "teambit.angular/versions/angular-v10": {},
+    "teambit.angular/versions/angular-v9": {},
+    "teambit.angular/versions/angular-v8": {},
   // Add angular apps (until this is no longer necessary)
-//  "examples/demo-app": {},
+    "examples/demo-app": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a
@@ -114,7 +121,7 @@
       }
     },
     // All the other components use node env
-    "scopes/dev-services, scopes/versions/common": {
+    "scopes/dev-services, scopes/generators, scopes/versions/common": {
       "teambit.envs/envs": {
         "env": "teambit.harmony/node"
       },
@@ -124,7 +131,8 @@
       "teambit.envs/env": {}
     },
     "examples/demo-app": {
-      "teambit.angular/angular": {}
+      "teambit.angular/angular": {},
+//      "teambit.angular/versions/angular-v15": {}
     },
     "examples/demo-lib": {
       "teambit.angular/angular": {}

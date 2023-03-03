@@ -1,23 +1,34 @@
+import { GenericAngularEnv } from '@teambit/angular-common';
 import { AppBuildContext, AppContext, Application } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
+import { EnvContext, EnvHandler } from '@teambit/envs';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Port } from '@teambit/toolbox.network.get-port';
+import { cloneDeep } from 'lodash';
+import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
 import { AngularAppOptions } from './angular-app-options';
 import { AngularAppBuildResult } from './angular-build-result';
-import { cloneDeep } from 'lodash';
-import { GenericAngularEnv } from './generic-angular-env';
+import { Preview } from '@teambit/preview';
+import { join } from 'path';
 
 export class AngularApp implements Application {
   readonly name: string;
+  readonly preview: EnvHandler<Preview>;
 
   constructor(
     private angularEnv: GenericAngularEnv,
+    private envContext: EnvContext,
     readonly options: AngularAppOptions
   ) {
     this.name = options.name;
+    this.preview = this.getPreview();
   }
 
   readonly publicDir = 'public';
+
+  private getPublicDir(artifactsDir: string) {
+    return join(artifactsDir, this.name);
+  }
 
   private getDevServerContext(context: AppContext): DevServerContext {
     return Object.assign(cloneDeep(context), {
@@ -28,10 +39,22 @@ export class AngularApp implements Application {
     });
   }
 
+  private getPreview(): EnvHandler<Preview> {
+    const ngEnvOptions = this.angularEnv.getNgEnvOptions();
+    const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.angularEnv.getDevServer(devServerContext, ngEnvOptions, this.options.webpackServeTransformers, this.options.angularServeOptions, {}, this.options.sourceRoot);
+    const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.angularEnv.getBundler(bundlerContext, ngEnvOptions, this.options.webpackBuildTransformers, this.options.angularBuildOptions, {}, this.options.sourceRoot);
+    return AngularPreview.from({
+      devServerProvider,
+      bundlerProvider,
+      ngEnvOptions
+    });
+  }
+
   async getDevServer(context: AppContext): Promise<DevServer> {
     const devServerContext = this.getDevServerContext(context);
-    const angularServeOptions = { ...this.angularEnv.angularWebpack.angularServeOptions, ...this.options.angularServeOptions };
-    return this.angularEnv.getDevServer(devServerContext, this.options.webpackTransformers, angularServeOptions, this.options.sourceRoot);
+    const preview = this.preview(this.envContext);
+
+    return preview.getDevServer(devServerContext)(this.envContext);
   }
 
   async run(context: AppContext): Promise<number> {
@@ -47,8 +70,10 @@ export class AngularApp implements Application {
       return this.options.bundler;
     }
 
-    const { capsule } = context;
-    const outputPath = pathNormalizeToLinux(capsule.path);
+    const { capsule, artifactsDir } = context;
+    const publicDir = this.getPublicDir(artifactsDir);
+    const outputPath = pathNormalizeToLinux(join(capsule.path, publicDir));
+    const preview = this.preview(this.envContext) as AngularPreview;
 
     const bundlerContext: BundlerContext = Object.assign(cloneDeep(context), {
       targets: [{
@@ -60,13 +85,14 @@ export class AngularApp implements Application {
       rootPath: '/',
       appName: this.options.name
     });
-    const angularBuildOptions = { ...this.angularEnv.angularWebpack.angularBuildOptions, ...this.options.angularBuildOptions };
-    return this.angularEnv.getBundler(bundlerContext, this.options.webpackTransformers, angularBuildOptions, this.options.sourceRoot);
+    return preview.getBundler(bundlerContext)(this.envContext);
   }
 
   async build(context: AppBuildContext): Promise<AngularAppBuildResult> {
     const bundler = await this.getBundler(context);
     await bundler.run();
-    return { publicDir: this.publicDir };
+    return {
+      publicDir: `${this.getPublicDir(context.artifactsDir)}/${this.publicDir}`
+    };
   }
 }

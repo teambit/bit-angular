@@ -1,15 +1,14 @@
 import {
-  AngularEnvOptions,
   BitDedupeModuleResolvePlugin,
   WebpackConfig,
   WebpackPlugin
-} from '@teambit/angular-base';
+} from '@teambit/angular-webpack';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
-import webpack  from 'webpack';
+import webpack from 'webpack';
 
 export function webpack5BuildConfigFactory(
   entryFiles: string[],
@@ -18,7 +17,7 @@ export function webpack5BuildConfigFactory(
   workspaceDir: string,
   tempFolder: string,
   plugins: WebpackPlugin[] = [],
-  ngEnvOptions: AngularEnvOptions,
+  useNgcc: boolean,
 ): WebpackConfig {
   const config = {
     mode: 'production',
@@ -74,7 +73,7 @@ export function webpack5BuildConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, ngEnvOptions),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, useNgcc),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
       ...plugins
     ],

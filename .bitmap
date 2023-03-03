@@ -21,12 +21,6 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/compiler/angular-elements"
     },
-    "dev-services/compiler/angular-elements-loader": {
-        "scope": "teambit.angular",
-        "version": "0.0.10",
-        "mainFile": "index.ts",
-        "rootDir": "scopes/dev-services/compiler/angular-elements-loader"
-    },
     "dev-services/compiler/ng-multi-compiler": {
         "scope": "teambit.angular",
         "version": "0.1.25",
@@ -45,11 +39,47 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/compiler/ngcc"
     },
+    "dev-services/compiler/webpack": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/dev-services/compiler/webpack"
+    },
     "dev-services/linter/angular-eslint-config": {
         "scope": "teambit.angular",
         "version": "1.0.2",
-        "mainFile": "index.ts",
+        "mainFile": "index.js",
         "rootDir": "scopes/dev-services/linter/eslint-config"
+    },
+    "dev-services/preview/angular-runtime": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/dev-services/preview/angular-runtime"
+    },
+    "dev-services/preview/mounter": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/dev-services/preview/mounter"
+    },
+    "dev-services/preview/preview": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/dev-services/preview/preview"
+    },
+    "generators/angular-starters": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/generators/angular-starters"
+    },
+    "generators/angular-templates": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/generators/angular-templates"
     },
     "versions/angular-v10": {
         "scope": "teambit.angular",
@@ -110,6 +140,12 @@
         "version": "0.2.27",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/common/angular-base"
+    },
+    "versions/common/angular-common": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/versions/common/angular-common"
     },
     "$schema-version": "15.0.0"
 }

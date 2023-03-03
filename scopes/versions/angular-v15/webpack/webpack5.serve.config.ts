@@ -1,15 +1,12 @@
-import {
-  AngularEnvOptions,
-  BitDedupeModuleResolvePlugin,
-  StatsLoggerPlugin
-} from '@teambit/angular-base';
+import { BitDedupeModuleResolvePlugin, StatsLoggerPlugin } from '@teambit/angular-webpack';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   fallbacks,
   fallbacksAliases,
   fallbacksProvidePluginConfig,
-  WebpackBitReporterPlugin
+  WebpackBitReporterPlugin,
+  WebpackConfigWithDevServer
 } from '@teambit/webpack';
 import { join, posix, resolve } from 'path';
 import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
@@ -33,8 +30,8 @@ export function webpack5ServeConfigFactory(
   tempFolder: string,
   plugins: any[] = [],
   isApp = false,
-  ngEnvOptions: AngularEnvOptions
-): any {
+  useNgcc: boolean
+): WebpackConfigWithDevServer {
   const resolveWorkspacePath = (relativePath: string) => resolve(workspaceDir, relativePath);
 
   // Host
@@ -128,25 +125,24 @@ export function webpack5ServeConfigFactory(
         }
       },
 
-      onBeforeSetupMiddleware(devServer: any) {
+      setupMiddlewares(middlewares: any, devServer: any) {
         // Keep `evalSourceMapMiddleware` and `errorOverlayMiddleware`
         // middlewares before `redirectServedPath` otherwise will not have any effect
         // This lets us fetch source contents from webpack for the error overlay
-        devServer.app.use(evalSourceMapMiddleware(devServer));
+        middlewares.unshift(evalSourceMapMiddleware(devServer));
         // This lets us open files from the runtime error overlay.
-        devServer.app.use(errorOverlayMiddleware());
-      },
+        middlewares.unshift(errorOverlayMiddleware());
 
-      onAfterSetupMiddleware(devServer: any) {
         // Redirect to `PUBLIC_URL` or `homepage` from `package.json` if url not match
-        devServer.app.use(redirectServedPath(publicUrlOrPath));
-
+        middlewares.push(redirectServedPath(publicUrlOrPath));
         // This service worker file is effectively a 'no-op' that will reset any
         // previous service worker registered for the same host:port combination.
         // We do this in development to avoid hitting the production cache if
         // it used the same host and port.
         // https://github.com/facebook/create-react-app/issues/2272#issuecomment-302832432
-        devServer.app.use(noopServiceWorkerMiddleware(publicUrlOrPath));
+        middlewares.push(noopServiceWorkerMiddleware(publicUrlOrPath));
+
+        return middlewares;
       },
 
       devMiddleware: {
@@ -167,7 +163,7 @@ export function webpack5ServeConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, ngEnvOptions),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, useNgcc),
       new ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID }
@@ -176,5 +172,5 @@ export function webpack5ServeConfigFactory(
     ]
   };
 
-  return config;
+  return config as WebpackConfigWithDevServer;
 }

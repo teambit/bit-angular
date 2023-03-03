@@ -1,4 +1,5 @@
-import { AngularAppOptions, BrowserOptions, DevServerOptions } from '@teambit/angular-apps';
+import { AngularAppOptions } from '@teambit/angular-apps';
+import { BrowserOptions, DevServerOptions } from '@teambit/angular-common';
 
 const angularOptions: BrowserOptions & DevServerOptions = {
   main: './src/main.ts',
@@ -6,7 +7,7 @@ const angularOptions: BrowserOptions & DevServerOptions = {
   index: './src/index.html',
   tsConfig: 'tsconfig.app.json',
   assets: ['./src/favicon.ico', './src/assets'],
-  styles: ['./src/styles.scss'],
+  styles: ['./src/styles.scss']
 };
 
 export const DemoAppOptions: AngularAppOptions = {
