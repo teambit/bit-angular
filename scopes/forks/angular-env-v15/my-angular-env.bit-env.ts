@@ -1,9 +1,4 @@
-import { cmpIdToPkgName } from '@teambit/angular-common';
-import { ComponentContext } from '@teambit/generator';
-
-export function envFile({ namePascalCase: Name, name, componentId }: ComponentContext, envName: string, packageName: string) {
-  // language=TypeScript
-  return `import { ${ envName } } from '${packageName}';
+import { AngularV15Env } from '@teambit/angular-v15';
 import { EnvHandler } from '@teambit/envs';
 import { Tester } from '@teambit/tester';
 import { Preview } from '@teambit/preview';
@@ -19,11 +14,11 @@ import { workspaceStarters } from '@teambit/angular-starters';
 import { angularBaseTemplates } from '@teambit/angular-templates';
 import hostDependencies from './preview/host-dependencies';
 
-export class ${Name} extends ${envName} {
+export class MyAngularEnv extends AngularV15Env {
   // Name of the environment, used for friendly mentions across bit
-  name = '${name}';
+  name = 'my-angular-env';
   // Package name of the environment, used for generators & starters
-  packageName = '${cmpIdToPkgName(componentId)}';
+  packageName = '@my-org/my-scope.envs.my-angular-env';
 
   getTesterConfig() {
     return {
@@ -34,7 +29,7 @@ export class ${Name} extends ${envName} {
 
   /**
    * Returns a tester to use during development
-   * Required for \`bit start\` & \`bit test\`
+   * Required for `bit start` & `bit test`
    */
   override tester(): EnvHandler<Tester> {
     /**
@@ -112,7 +107,7 @@ export class ${Name} extends ${envName} {
   }
 
   /**
-   * Defines the component generators (templates) available with the command \`bit templates\`.
+   * Defines the component generators (templates) available with the command `bit templates`.
    * @see https://bit.dev/docs/angular-env/component-generators
    */
   override generators(): EnvHandler<TemplateList> {
@@ -122,7 +117,7 @@ export class ${Name} extends ${envName} {
   }
 
   /**
-   * Defines the Angular workspace starters available with the command \`bit new\`.
+   * Defines the Angular workspace starters available with the command `bit new`.
    * @see https://bit.dev/docs/angular-env/workspace-starters
    */
   override starters(): EnvHandler<StarterList> {
@@ -132,6 +127,4 @@ export class ${Name} extends ${envName} {
   }
 }
 
-export default new ${Name}();
-`;
-}
+export default new MyAngularEnv();

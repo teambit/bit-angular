@@ -1,8 +1,4 @@
-import {
-  BitDedupeModuleResolvePlugin,
-  WebpackConfig,
-  WebpackPlugin
-} from '@teambit/angular-webpack';
+import { BitDedupeModuleResolvePlugin, WebpackConfig } from '@teambit/angular-webpack';
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
 import RemarkFrontmatter from 'remark-frontmatter';
@@ -16,7 +12,7 @@ export function webpack5BuildConfigFactory(
   nodeModulesPaths: string[],
   workspaceDir: string,
   tempFolder: string,
-  plugins: WebpackPlugin[] = [],
+  plugins: any[] = [],
   useNgcc: boolean,
 ): WebpackConfig {
   const config = {

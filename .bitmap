@@ -69,6 +69,50 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/preview/preview"
     },
+    "forks/angular-env-v12": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env-v12",
+        "config": {
+            "teambit.envs/envs": {
+                "env": "teambit.angular/versions/angular-v12"
+            }
+        }
+    },
+    "forks/angular-env-v13": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env-v13",
+        "config": {
+            "teambit.envs/envs": {
+                "env": "teambit.angular/versions/angular-v13"
+            }
+        }
+    },
+    "forks/angular-env-v14": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env-v14",
+        "config": {
+            "teambit.envs/envs": {
+                "env": "teambit.angular/versions/angular-v14"
+            }
+        }
+    },
+    "forks/angular-env-v15": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env-v15",
+        "config": {
+            "teambit.envs/envs": {
+                "env": "teambit.envs/env"
+            }
+        }
+    },
     "generators/angular-starters": {
         "scope": "teambit.angular",
         "version": "1.0.0",

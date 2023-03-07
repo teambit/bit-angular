@@ -7,7 +7,7 @@ export interface MounterOptions extends Omit<NgBootstrapOptions, "wrapper"| "hos
   hostElement?: HTMLElement;
 }
 
-export function createMounter<C>(WrapperCmp?: Type<C>, options: MounterOptions = {}) {
+export function createMounter<C>(Wrapper?: Type<C>, options: MounterOptions = {}) {
   return async (Composition: Type<any>) => {
     const root = options.hostElement ?? document.getElementById('root');
     if (!root) {
@@ -16,7 +16,7 @@ export function createMounter<C>(WrapperCmp?: Type<C>, options: MounterOptions =
     await ngBootstrap(Composition, {
       ...options,
       hostElement: root,
-      wrapper: WrapperCmp,
+      wrapper: Wrapper,
     });
   };
 }
