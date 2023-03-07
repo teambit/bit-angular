@@ -45,7 +45,7 @@ export class NgWorkspaceTemplate implements WorkspaceTemplate {
 
   fork() {
     return [{
-      id: `teambit.angular/forks.angular-env-v${this.angularVersion}`,
+      id: `teambit.angular/forks/angular-env-v${this.angularVersion}`,
       targetName: FORKED_ENV_NAME
     }];
   }
