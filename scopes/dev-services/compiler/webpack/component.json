@@ -19,6 +19,7 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
+          "@teambit/webpack.webpack-bundler": "0.0.3"
         },
         "peerDependencies": {
         }

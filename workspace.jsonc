@@ -34,11 +34,6 @@
     "packageManager": "teambit.dependencies/yarn",
     "policy": {
       "dependencies": {
-        "@teambit/compilation.compiler-task": "0.0.3",
-        "@teambit/defender.eslint-linter": "0.0.6",
-        "@teambit/defender.jest-tester": "0.0.7",
-        "@teambit/defender.prettier-formatter": "0.0.4",
-        "@teambit/webpack.webpack-bundler": "0.0.3",
         "@types/jasmine": "~3.7.0",
         "eslint-config-airbnb-typescript": {
           "version": "5.1.0",

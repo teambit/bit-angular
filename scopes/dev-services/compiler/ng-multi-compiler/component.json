@@ -23,6 +23,7 @@
           "@babel/plugin-proposal-class-properties": "7.12.13",
           "@babel/preset-env": "7.12.17",
           "@babel/preset-typescript": "7.12.7",
+          "@teambit/compilation.compiler-task": "0.0.3",
           "minimatch": "~3.0.4"
         },
         "devDependencies": {
