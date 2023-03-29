@@ -22,7 +22,7 @@ import {
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
-import { join } from 'path';
+import { join, posix } from 'path';
 import { Configuration } from 'webpack';
 import {
   getPreviewRootPath,
@@ -98,7 +98,7 @@ export class NgWebpackDevServer {
           ignoreScopeAndVersion: true,
           ignoreVersion: true
         }) || '';
-        tsconfigPath = join(appRootPath, 'tsconfig.app.json');
+        tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(appRootPath, 'tsconfig.app.json');
         isApp = true;
       } else { // When you use `bit start`
         appRootPath = getPreviewRootPath(workspace);

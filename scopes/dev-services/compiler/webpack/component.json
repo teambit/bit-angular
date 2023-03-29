@@ -19,7 +19,9 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@teambit/webpack.webpack-bundler": "0.0.3"
+          "@teambit/webpack.webpack-bundler": "0.0.3",
+          "@types/object-hash": "~2.1.0",
+          "object-hash": "~2.1.1"
         },
         "peerDependencies": {
         }

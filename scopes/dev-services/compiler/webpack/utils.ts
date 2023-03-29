@@ -79,23 +79,23 @@ export function generateTsConfig(
   tsPaths: { [key: string]: string[] }
 ): string {
   const tsconfigPath = join(appPath, 'tsconfig.app.json');
-  const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile);
+  const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile).config;
   const pAppPath = pathNormalizeToLinux(appPath);
 
   // tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
-  tsconfigJSON.config.files = [posix.join(pAppPath, 'src/main.ts'), posix.join(pAppPath, 'src/polyfills.ts')];
-  tsconfigJSON.config.include = [
-    posix.join(pAppPath, 'src/app/**/*.ts'),
+  tsconfigJSON.files = tsconfigJSON.files.map((file: string) => posix.join(pAppPath, file));
+  tsconfigJSON.include = [
+    ...tsconfigJSON.include.map((file: string) => posix.join(pAppPath, file)),
     ...includePaths.map((path) => posix.join(path, '**/*.ts'))
   ];
-  tsconfigJSON.config.exclude = [
-    posix.join(pAppPath, '**/*.spec.ts'),
+  tsconfigJSON.exclude = [
+    ...tsconfigJSON.exclude.map((file: string) => posix.join(pAppPath, file)),
     ...excludePaths,
     ...includePaths.map((path) => posix.join(path, '**/*.spec.ts'))
   ];
-  tsconfigJSON.config.compilerOptions.paths = tsPaths;
+  tsconfigJSON.compilerOptions.paths = tsPaths;
 
-  return JSON.stringify(tsconfigJSON.config, undefined, 2);
+  return JSON.stringify(tsconfigJSON, undefined, 2);
 }
 
 /**
@@ -154,5 +154,5 @@ export function writeTsconfig(
     writeHash.set(targetPath, hash);
   }
 
-  return targetPath;
+  return pathNormalizeToLinux(targetPath);
 }
