@@ -11,25 +11,25 @@
 {
     "angular": {
         "scope": "teambit.angular",
-        "version": "3.0.3",
+        "version": "3.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/angular"
     },
     "dev-services/compiler/angular-elements": {
         "scope": "teambit.angular",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/compiler/angular-elements"
     },
     "dev-services/compiler/ng-multi-compiler": {
         "scope": "teambit.angular",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/compiler/ng-multi-compiler"
     },
     "dev-services/compiler/ng-packagr": {
         "scope": "teambit.angular",
-        "version": "2.0.1",
+        "version": "2.0.2",
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/compiler/ng-packagr"
     },
@@ -41,7 +41,7 @@
     },
     "dev-services/compiler/webpack": {
         "scope": "teambit.angular",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/compiler/webpack"
     },
@@ -65,31 +65,31 @@
     },
     "dev-services/preview/preview": {
         "scope": "teambit.angular",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/preview/preview"
     },
     "forks/angular-env-v12": {
         "scope": "teambit.angular",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/forks/angular-env-v12"
     },
     "forks/angular-env-v13": {
         "scope": "teambit.angular",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/forks/angular-env-v13"
     },
     "forks/angular-env-v14": {
         "scope": "teambit.angular",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/forks/angular-env-v14"
     },
     "forks/angular-env-v15": {
         "scope": "teambit.angular",
-        "version": "0.0.3",
+        "version": "0.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/forks/angular-env-v15"
     },
@@ -107,37 +107,37 @@
     },
     "versions/angular-v12": {
         "scope": "teambit.angular",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v12"
     },
     "versions/angular-v13": {
         "scope": "teambit.angular",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v13"
     },
     "versions/angular-v14": {
         "scope": "teambit.angular",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v14"
     },
     "versions/angular-v15": {
         "scope": "teambit.angular",
-        "version": "2.0.3",
+        "version": "2.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v15"
     },
     "versions/common/angular-apps": {
         "scope": "teambit.angular",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/common/angular-apps"
     },
     "versions/common/angular-base": {
         "scope": "teambit.angular",
-        "version": "1.0.3",
+        "version": "1.0.4",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/common/angular-base"
     },
