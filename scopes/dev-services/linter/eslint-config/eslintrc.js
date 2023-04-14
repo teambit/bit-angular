@@ -15,7 +15,7 @@ module.exports = {
     {
       files: ['*.ts', '*.tsx', '*.js', '*.jsx', '*.mjs'],
       parserOptions: {
-        project: require.resolve('./tsconfig.json'),
+        project: require.resolve('./config/tsconfig.json'),
         createDefaultProgram: true,
       },
       extends: ['plugin:@angular-eslint/recommended', 'plugin:@angular-eslint/template/process-inline-templates'],

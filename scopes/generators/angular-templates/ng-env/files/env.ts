@@ -45,7 +45,7 @@ export class ${Name} extends ${envName} {
 
   getLinterConfig() {
     return {
-      tsconfig: require.resolve('@teambit/angular-eslint-config/tsconfig.json'),
+      tsconfig: require.resolve('@teambit/angular-eslint-config/config/tsconfig.json'),
       eslint: ESLintLib,
       configPath: require.resolve('./config/eslintrc'),
       // resolve all plugins from the angular environment.
