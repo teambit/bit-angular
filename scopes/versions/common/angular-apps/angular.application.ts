@@ -29,9 +29,9 @@ export class AngularApp implements Application {
   constructor(
     private angularEnv: GenericAngularEnv,
     private envContext: EnvContext,
+    readonly options: AngularAppOptions,
     private depsResolver: DependencyResolverMain,
-    private workspace: Workspace,
-    readonly options: AngularAppOptions
+    private workspace?: Workspace,
   ) {
     this.name = options.name;
 

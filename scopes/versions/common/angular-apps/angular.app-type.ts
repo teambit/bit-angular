@@ -13,15 +13,15 @@ interface AngularAppTypeOptions {
 }
 
 export class AngularAppType implements ApplicationType<AngularAppOptions> {
-  constructor(readonly name: string, private angularEnv: GenericAngularEnv, private context: EnvContext, private depsResolver: DependencyResolverMain, private workspace: Workspace) {}
+  constructor(readonly name: string, private angularEnv: GenericAngularEnv, private context: EnvContext, private depsResolver: DependencyResolverMain, private workspace?: Workspace) {}
 
   createApp(options: AngularAppOptions): Application {
     return new AngularApp(
       this.angularEnv,
       this.context,
+      options,
       this.depsResolver,
       this.workspace,
-      options,
     );
   }
 
@@ -29,7 +29,10 @@ export class AngularAppType implements ApplicationType<AngularAppOptions> {
     return (context: EnvContext) => {
       const name = options.name || NG_APP_NAME;
       const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
-      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      let workspace: Workspace | undefined;
+      try {
+        workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      } catch (err) {}
       return new AngularAppType(name, options.angularEnv, context, depsResolver, workspace);
     };
   }
