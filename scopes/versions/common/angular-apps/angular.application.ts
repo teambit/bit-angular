@@ -24,7 +24,7 @@ export class AngularApp implements Application {
   readonly name: string;
   readonly preview: EnvHandler<Preview>;
   readonly tempFolder: string;
-  readonly tsConfigPath: string;
+  readonly tsconfigPath: string;
 
   constructor(
     private angularEnv: GenericAngularEnv,
@@ -41,8 +41,8 @@ export class AngularApp implements Application {
       mkdirSync(this.tempFolder, { recursive: true });
     }
 
-    this.tsConfigPath = pathNormalizeToLinux(join(this.tempFolder, `__tsconfig-${Date.now()}.json`));
-    this.preview = this.getPreview(this.tsConfigPath);
+    this.tsconfigPath = pathNormalizeToLinux(join(this.tempFolder, `__tsconfig-${Date.now()}.json`));
+    this.preview = this.getPreview(this.tsconfigPath);
   }
 
   readonly publicDir = 'public';
@@ -63,10 +63,10 @@ export class AngularApp implements Application {
   private getPreview(tsconfigPath: string): EnvHandler<Preview> {
     const ngEnvOptions = this.angularEnv.getNgEnvOptions();
 
-    const serveOptions = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsConfigPath});
+    const serveOptions = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsconfigPath});
     const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.angularEnv.getDevServer(devServerContext, ngEnvOptions, this.options.webpackServeTransformers, serveOptions, {}, this.options.sourceRoot);
 
-    const buildOptions = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsConfigPath});
+    const buildOptions = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.angularEnv.getBundler(bundlerContext, ngEnvOptions, this.options.webpackBuildTransformers, buildOptions, {}, this.options.sourceRoot);
 
     return AngularPreview.from({
@@ -76,12 +76,7 @@ export class AngularApp implements Application {
     });
   }
 
-  private async generateTsConfig(context: AppContext | AppBuildContext): Promise<string> {
-    const appRootPath = this.workspace?.componentDir(context.appComponent.id, {
-      ignoreScopeAndVersion: true,
-      ignoreVersion: true
-    }) || '';
-    const tsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
+  private async generateTsConfig(context: AppContext | AppBuildContext, appRootPath: string, tsconfigPath: string): Promise<string> {
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile).config;
 
     // Add the paths to tsconfig to remap bit components to local folders
@@ -102,20 +97,25 @@ export class AngularApp implements Application {
       }
     });
 
-    const tsconfigContent = expandIncludeExclude(tsconfigJSON, this.tsConfigPath, [appRootPath]);
+    const tsconfigContent = expandIncludeExclude(tsconfigJSON, this.tsconfigPath, [appRootPath]);
     const hash = objectHash(tsconfigContent);
 
-    // // write only if link has changed (prevents triggering fs watches)
-    if (writeHash.get(this.tsConfigPath) !== hash) {
-      writeFileSync(this.tsConfigPath, tsconfigContent);
-      writeHash.set(this.tsConfigPath, hash);
+    // write only if link has changed (prevents triggering fs watches)
+    if (writeHash.get(this.tsconfigPath) !== hash) {
+      writeFileSync(this.tsconfigPath, tsconfigContent);
+      writeHash.set(this.tsconfigPath, hash);
     }
 
     return tsconfigContent;
   }
 
   async getDevServer(context: AppContext): Promise<DevServer> {
-    await this.generateTsConfig(context);
+    const appRootPath = this.workspace?.componentDir(context.appComponent.id, {
+      ignoreScopeAndVersion: true,
+      ignoreVersion: true
+    }) || '';
+    const tsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
+    await this.generateTsConfig(context, appRootPath, tsconfigPath);
     const devServerContext = this.getDevServerContext(context);
     const preview = this.preview(this.envContext);
 
@@ -138,7 +138,9 @@ export class AngularApp implements Application {
     const { capsule, artifactsDir } = context;
     const publicDir = this.getPublicDir(artifactsDir);
     const outputPath = pathNormalizeToLinux(join(capsule.path, publicDir));
-    await this.generateTsConfig(context);
+    const appRootPath = context.capsule.path;
+    const tsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
+    await this.generateTsConfig(context, appRootPath, tsconfigPath);
     const preview = this.preview(this.envContext) as AngularPreview;
 
     const bundlerContext: BundlerContext = Object.assign(cloneDeep(context), {
