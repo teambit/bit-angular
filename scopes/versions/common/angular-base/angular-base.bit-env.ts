@@ -1,8 +1,8 @@
 import { AngularAppType, NG_APP_NAME } from '@teambit/angular-apps';
 import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@teambit/angular-common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
-import { workspaceStarters } from '@teambit/angular-starters';
-import { angularBaseTemplates } from '@teambit/angular-templates';
+import { NgWorkspaceTemplate } from '@teambit/angular-starters';
+import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
 import { NgWebpackBundler, NgWebpackDevServer } from '@teambit/angular-webpack';
 import { AppTypeList } from '@teambit/application';
 import { Pipeline } from '@teambit/builder';
@@ -37,7 +37,6 @@ import { AngularEnvInterface } from './angular-env.interface';
   /** Abstract functions & properties specific to the adapter **/
   abstract ngEnvOptions: AngularEnvOptions;
   abstract name: string;
-  abstract readonly packageName: string;
   abstract readonly angularVersion: number;
 
   [key: string]: any;
@@ -185,12 +184,28 @@ import { AngularEnvInterface } from './angular-env.interface';
     return Pipeline.from([]);
   }
 
+  /**
+   * Defines the component generators (templates) available with the command `bit templates`.
+   * @see https://bit.dev/docs/angular-env/component-generators
+   */
   generators(): EnvHandler<TemplateList> {
-    return TemplateList.from(angularBaseTemplates(this.constructor.name, this.packageName, this.angularVersion));
+    const envName = this.constructor.name;
+    const angularVersion = this.angularVersion;
+    return TemplateList.from([
+      NgModuleTemplate.from({envName, angularVersion}),
+      NgEnvTemplate.from({envName, angularVersion}),
+      NgAppTemplate.from({envName, angularVersion})
+    ]);
   }
 
+  /**
+   * Defines the Angular workspace starters available with the command `bit new`.
+   * @see https://bit.dev/docs/angular-env/workspace-starters
+   */
   starters(): EnvHandler<StarterList> {
-    return StarterList.from(workspaceStarters(this.constructor.name, this.packageName, this.angularVersion));
+    return StarterList.from([
+      NgWorkspaceTemplate.from({envName: this.constructor.name, angularVersion: this.angularVersion})
+    ]);
   }
 
   /**

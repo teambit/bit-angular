@@ -1,24 +1,22 @@
-import { AngularV12Env } from '@teambit/angular-v12';
-import { EnvHandler } from '@teambit/envs';
-import { Tester } from '@teambit/tester';
-import { Preview } from '@teambit/preview';
-import { Linter } from '@teambit/linter';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
+import { NgWorkspaceTemplate } from '@teambit/angular-starters';
+import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
+import { AngularV12Env } from '@teambit/angular-v12';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
-import { ESLint as ESLintLib } from 'eslint';
+import { EnvHandler } from '@teambit/envs';
 import { StarterList, TemplateList } from '@teambit/generator';
-import { workspaceStarters } from '@teambit/angular-starters';
-import { angularBaseTemplates } from '@teambit/angular-templates';
+import { Linter } from '@teambit/linter';
+import { Preview } from '@teambit/preview';
+import { Tester } from '@teambit/tester';
+import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
 
 export class MyAngularEnv extends AngularV12Env {
   // Name of the environment, used for friendly mentions across bit
   name = 'my-angular-env';
-  // Package name of the environment, used for generators & starters
-  packageName = '@my-org/my-scope.envs.my-angular-env';
 
   getTesterConfig() {
     return {
@@ -111,8 +109,12 @@ export class MyAngularEnv extends AngularV12Env {
    * @see https://bit.dev/docs/angular-env/component-generators
    */
   override generators(): EnvHandler<TemplateList> {
+    const envName = this.constructor.name;
+    const angularVersion = this.angularVersion;
     return TemplateList.from([
-      ...angularBaseTemplates(this.constructor.name, this.packageName, this.angularVersion)
+      NgModuleTemplate.from({envName, angularVersion}),
+      NgEnvTemplate.from({envName, angularVersion}),
+      NgAppTemplate.from({envName, angularVersion})
     ]);
   }
 
@@ -122,7 +124,7 @@ export class MyAngularEnv extends AngularV12Env {
    */
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      ...workspaceStarters(this.constructor.name, this.packageName, this.angularVersion)
+      NgWorkspaceTemplate.from({envName: this.constructor.name, angularVersion: this.angularVersion})
     ]);
   }
 }

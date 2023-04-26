@@ -11,7 +11,6 @@ export class AngularV15Env extends AngularBaseEnv {
    * name of the environment. used for friendly mentions across bit.
    */
   name = 'Angular-v15';
-  packageName = '@teambit/angular-v15';
   angularVersion = 15;
 
   ngEnvOptions: AngularEnvOptions = {

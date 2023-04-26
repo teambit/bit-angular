@@ -14,7 +14,6 @@ import { hostDependenciesFile } from './files/preview/host-dependencies';
 export class NgEnvTemplate implements ComponentTemplate {
   private constructor(
     readonly envName: string,
-    readonly packageName: string,
     readonly angularVersion: number,
     readonly name = 'ng-env',
     readonly description = 'create a customized Angular env with your configs and tools',
@@ -35,7 +34,7 @@ export class NgEnvTemplate implements ComponentTemplate {
         content: docFile(context),
       }, {
         relativePath: `${context.name}.bit-env.ts`,
-        content: envFile(context, this.envName, this.packageName),
+        content: envFile(context, this.envName, this.angularVersion),
       },
       eslintConfigFile(),
       jestConfigFile(this.angularVersion),
@@ -54,11 +53,10 @@ export class NgEnvTemplate implements ComponentTemplate {
     };
   }
 
-  static from(options: AngularComponentTemplateOptions & { envName: string; packageName: string; angularVersion: number; }) {
+  static from(options: AngularComponentTemplateOptions & { envName: string; angularVersion: number; }) {
     return () =>
       new NgEnvTemplate(
         options.envName,
-        options.packageName,
         options.angularVersion,
         options.name,
         options.description,

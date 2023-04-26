@@ -11,7 +11,6 @@ export class AngularV13Env extends AngularBaseEnv {
    * name of the environment. used for friendly mentions across bit.
    */
   name = 'Angular-v13';
-  packageName = '@teambit/angular-v13';
   angularVersion = 13;
 
   ngEnvOptions: AngularEnvOptions = {

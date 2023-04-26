@@ -7,7 +7,6 @@ export class AngularV12Env extends AngularBaseEnv {
    * name of the environment. used for friendly mentions across bit.
    */
   name = 'Angular-v12';
-  packageName = '@teambit/angular-v12';
   angularVersion = 12;
 
   ngEnvOptions: AngularEnvOptions = {

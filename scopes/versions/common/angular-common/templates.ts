@@ -4,6 +4,5 @@ export interface AngularComponentTemplateOptions {
   // whether to hide the template from the `bit templates` command.
   hidden?: boolean;
   envName?: string;
-  packageName?: string;
   angularVersion?: number;
 }

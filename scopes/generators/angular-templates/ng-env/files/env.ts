@@ -1,9 +1,9 @@
 import { cmpIdToPkgName } from '@teambit/angular-common';
 import { ComponentContext } from '@teambit/generator';
 
-export function envFile({ namePascalCase: Name, name, componentId }: ComponentContext, envName: string, packageName: string) {
+export function envFile({ namePascalCase: Name, name, componentId }: ComponentContext, envName: string, angularVersion: number) {
   // language=TypeScript
-  return `import { ${ envName } } from '${packageName}';
+  return `import { ${ envName } } from '@teambit/angular-v${angularVersion}';
 import { EnvHandler } from '@teambit/envs';
 import { Tester } from '@teambit/tester';
 import { Preview } from '@teambit/preview';
