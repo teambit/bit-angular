@@ -22,7 +22,7 @@ import removeFilesAndEmptyDirsRecursively
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
-import { writeFileSync } from 'fs-extra';
+import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
 import { join, posix, resolve } from 'path';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
@@ -212,7 +212,12 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit compile`
    */
   async transpileComponent(params: TranspileComponentParams): Promise<void> {
-    // We do not need to compile using ng-packagr (except for builds)
+    // Create dist if it doesn't exist to avoid a warning with `bit status`
+    const dist = join(params.outputDir, this.distDir);
+    if (!existsSync(dist)) {
+      mkdirSync(dist);
+    }
+    // We do not need to compile using ng-packagr (except for builds) because Angular reads the source files directly
     return;
     /*const isApp = componentIsApp(params.component, this.application);
     // No need to compile an app
