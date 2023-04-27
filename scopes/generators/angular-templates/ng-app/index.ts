@@ -1,4 +1,4 @@
-import { ComponentContext, ComponentTemplate } from '@teambit/generator';
+import { ComponentConfig, ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
 import { indexFile } from './template-files';
 import { docsFile } from './template-files/docs';
@@ -25,6 +25,20 @@ export class NgAppTemplate implements ComponentTemplate {
     readonly description = 'create an Angular application',
     readonly hidden = false
   ) {}
+
+  config: ComponentConfig = {
+    propagate: true,
+    extensions: {
+      "teambit.dependencies/dependency-resolver": {
+        policy: {
+          devDependencies: {
+            "@teambit/angular-apps": ">= 1.0.4",
+            "@teambit/angular-common": ">= 1.0.0",
+          }
+        }
+      }
+    }
+  };
 
   generateFiles(context: ComponentContext) {
     return [
