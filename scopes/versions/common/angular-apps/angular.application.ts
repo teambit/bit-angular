@@ -1,4 +1,4 @@
-import { GenericAngularEnv } from '@teambit/angular-common';
+import { BrowserOptions, GenericAngularEnv } from '@teambit/angular-common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
 import { AppBuildContext, AppContext, Application } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
@@ -66,7 +66,7 @@ export class AngularApp implements Application {
     const serveOptions = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsconfigPath});
     const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.angularEnv.getDevServer(devServerContext, ngEnvOptions, this.options.webpackServeTransformers, serveOptions, {}, this.options.sourceRoot);
 
-    const buildOptions = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
+    const buildOptions: BrowserOptions = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.angularEnv.getBundler(bundlerContext, ngEnvOptions, this.options.webpackBuildTransformers, buildOptions, {}, this.options.sourceRoot);
 
     return AngularPreview.from({
