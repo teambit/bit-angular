@@ -1,3 +1,6 @@
+import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
+const packagesToExclude: string[] = ['@angular', '@ngrx'];
+
 export default {
   preset: 'jest-preset-angular',
   globalSetup: 'jest-preset-angular/global-setup',
@@ -13,5 +16,12 @@ export default {
     }
   },
   resolver: require.resolve('./jest.resolver.js'),
-  moduleDirectories: ['<rootDir>/node_modules', 'node_modules']
+  moduleDirectories: ['<rootDir>/node_modules', 'node_modules'],
+  transformIgnorePatterns: [
+    '^.+.module.(css|sass|scss)$',
+    generateNodeModulesPattern({
+      packages: packagesToExclude,
+      excludeComponents: true,
+    }),
+  ],
 };
