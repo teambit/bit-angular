@@ -11,6 +11,10 @@ export default {
       tsconfig: require.resolve('./tsconfig.spec.json'),
     },
   },
+  moduleNameMapper: {
+    // map angular modules to avoid duplicated modules
+    "(@angular\/.*)$": ["<rootDir>/node_modules/$1", "$1"]
+  },
   transformIgnorePatterns: [
     '^.+.module.(css|sass|scss)$',
     generateNodeModulesPattern({
