@@ -130,7 +130,8 @@ async function getWebpackConfig(
     allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])]
   };
   const normalizedWorkspaceRoot = normalize(workspaceRoot);
-  const projectRoot = normalize('');
+  // used to load component config files, such as tailwind config, ...
+  const projectRoot = normalize(workspaceRoot);
   const normalizedSourceRoot = normalize(sourceRoot);
 
   const loggerApi = {
