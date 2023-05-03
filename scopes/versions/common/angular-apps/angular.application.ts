@@ -66,7 +66,7 @@ export class AngularApp implements Application {
     const serveOptions = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsconfigPath});
     const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.angularEnv.getDevServer(devServerContext, ngEnvOptions, this.options.webpackServeTransformers, serveOptions, {}, this.options.sourceRoot);
 
-    const buildOptions: BrowserOptions = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
+    const buildOptions: Partial<BrowserOptions> = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.angularEnv.getBundler(bundlerContext, ngEnvOptions, this.options.webpackBuildTransformers, buildOptions, {}, this.options.sourceRoot);
 
     return AngularPreview.from({
