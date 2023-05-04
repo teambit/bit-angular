@@ -11,7 +11,6 @@ import {
 import type { CompilationMode } from '../rollup.compiler';
 import { ngCompilerCli } from '../utils/ng-compiler-cli';
 import { compile } from './compile';
-// import { defautSideEffects, optimizer, OptimizerOptions } from './optimizer';
 import { resolver } from './resolver';
 
 
@@ -23,7 +22,6 @@ export interface Options {
   externals?: string[];
   tsCompilerOptions?: AngularCompilerOptions;
   compilationMode: CompilationMode;
-  // buildOptimizer?: OptimizerOptions;
 }
 
 export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugin> {
@@ -58,7 +56,6 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
     name: 'ngc',
     buildStart: () => {
       logger.setStatusLine('Starting ngc compilation');
-      // sideEffectFreeModules = defautSideEffects(options?.buildOptimizer?.sideEffectFreeModules)
       host = createCompilerHost({ options: opts }) as CompilerHost & TsCompilerHost;
       host.writeFile = (fileName: string, contents: string) => files.set(fileName, contents)
     },

@@ -1,6 +1,6 @@
 {
   "componentId": {
-    "name": "angular"
+    "name": "versions/angular-v16"
   },
   "propagate": true,
   "extensions": {
@@ -9,7 +9,7 @@
         "--access public"
       ],
       "packageJson": {
-        "name": "@teambit/angular",
+        "name": "@teambit/angular-v16",
         "private": false,
         "engines": {
           "node": "^16.13.0 || >=18.10.0"

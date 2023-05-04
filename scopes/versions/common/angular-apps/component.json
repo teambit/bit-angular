@@ -22,10 +22,12 @@
           "@angular-devkit/build-angular": "-",
           "@teambit/toolbox.network.get-port": "0.0.112",
           "@types/object-hash": "~2.1.0",
-          "object-hash": "~2.1.1"
+          "object-hash": "~2.1.1",
+          "typescript": "-"
         },
         "peerDependencies": {
-          "@angular-devkit/build-angular": ">= 0.0.1"
+          "@angular-devkit/build-angular": ">= 0.0.1",
+          "typescript": ">= 3.5.3"
         }
       }
     }

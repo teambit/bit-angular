@@ -68,11 +68,14 @@ export interface PackageJsonFormatPropertiesMap {
   browser?: string;
   fesm2015?: string;
   fesm2020?: string;
+  fesm2022?: string;
   fesm5?: string;
   es2015?: string;  // if exists then it is actually FESM2015
   es2020?: string;
+  es2022?: string;
   esm2015?: string;
   esm2020?: string;
+  esm2022?: string;
   esm5?: string;
   main?: string;     // UMD
   module?: string;   // if exists then it is actually FESM5
@@ -86,10 +89,11 @@ export type PackageJsonFormatProperties = keyof PackageJsonFormatPropertiesMap;
 export type EntryPointJsonProperty = Exclude<PackageJsonFormatProperties, 'types'|'typings'>;
 // We need to keep the elements of this const and the `EntryPointJsonProperty` type in sync.
 export const SUPPORTED_FORMAT_PROPERTIES: EntryPointJsonProperty[] =
-  ['fesm2020', 'fesm2015', 'fesm5', 'es2015', 'es2020', 'es2015', 'esm2020', 'esm2015', 'esm5', 'main', 'module', 'browser'];
+  ['fesm2022', 'fesm2020', 'fesm2015', 'fesm5', 'es2022', 'es2015', 'es2020', 'es2015', 'esm2022', 'esm2020', 'esm2015', 'esm5', 'main', 'module', 'browser'];
 
 const OLD_ANGULAR_FORMATS: EntryPointJsonProperty[] = ['fesm2020', 'fesm2015', 'fesm5'];
 const POST_IVY_ANGULAR_FORMATS: PackageJsonFormatProperties[] = ['types', 'esm2020', 'es2020', 'es2015', 'default'];
+const V16_ANGULAR_FORMATS: PackageJsonFormatProperties[] = ['types', 'fesm2022', 'es2022', 'default'];
 
 export type JsonPrimitive = string|number|boolean|null;
 export type JsonValue = JsonPrimitive|Array<JsonValue>|JsonObject|undefined;
@@ -171,6 +175,7 @@ export class BitDedupeModuleResolvePlugin {
     if(entryPointPackageJson.__processed_by_ivy_ngcc__ !== undefined
       || OLD_ANGULAR_FORMATS.some(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
       || POST_IVY_ANGULAR_FORMATS.every(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
+      || V16_ANGULAR_FORMATS.every(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
     ) {
       return true;
     } else {

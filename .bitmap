@@ -93,6 +93,12 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/forks/angular-env-v15"
     },
+    "forks/angular-env-v16": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env-v16"
+    },
     "generators/angular-starters": {
         "scope": "teambit.angular",
         "version": "1.1.3",
@@ -128,6 +134,12 @@
         "version": "2.1.6",
         "mainFile": "index.ts",
         "rootDir": "scopes/versions/angular-v15"
+    },
+    "versions/angular-v16": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/versions/angular-v16"
     },
     "versions/common/angular-apps": {
         "scope": "teambit.angular",

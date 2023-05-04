@@ -120,7 +120,7 @@ export class NgPackagrCompiler implements Compiler {
     const updatePackageJson: any = {
       sideEffects: packageJson.sideEffects === 'true'
     };
-    const props = ['main', 'metadata', 'module', 'es2015', 'es2020', 'esm2015', 'esm2020', 'fesm2015', 'fesm2020', 'typings', 'types', 'node', 'default'];
+    const props = ['main', 'metadata', 'module', 'es2015', 'es2020', 'es2022', 'esm2015', 'esm2020', 'esm2022', 'fesm2015', 'fesm2020', 'fesm2022', 'typings', 'types', 'node', 'default'];
     props.forEach(prop => {
       // Angular v13+ doesn't generate umd bundles anymore, so we don't want to update the main entry point
       // as it will cause the component to fail to load with jest
