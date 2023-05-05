@@ -1,5 +1,5 @@
 import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
-import presets from 'jest-preset-angular/presets';
+const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 const packagesToExclude: string[] = ['@angular', '@ngrx'];
 
 export default {
@@ -18,16 +18,16 @@ export default {
     '^.+\\.(ts|js|mjs|html|svg)$': [
       'jest-preset-angular',
       {
-        ...presets.defaultTransformerOptions,
+        ...defaultTransformerOptions,
         tsconfig: require.resolve('./tsconfig.spec.json')
-      },
-    ],
+      }
+    ]
   },
   transformIgnorePatterns: [
     '^.+.module.(css|sass|scss)$',
     generateNodeModulesPattern({
       packages: packagesToExclude,
-      excludeComponents: true,
-    }),
-  ],
+      excludeComponents: true
+    })
+  ]
 };
