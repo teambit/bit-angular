@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: docker://bitcli/bit:latest-node-16.15.0
     steps:
       - uses: teambit/setup-action@v2.02
         with:
@@ -30,9 +30,6 @@ jobs:
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
-
-      - name: Install ubuntu packages
-        run: apt-get update && apt-get -y install sudo && sudo apt-get install -y libgtk2.0-0 libgtk-3-0 libgbm-dev libnotify-dev libgconf-2-4 libnss3 libxss1 libasound2 libxtst6 xauth xvfb
 
       - name: Keep default
         run: npm i replace-in-file && node scripts/keep-env.js --version=15 --default
@@ -45,18 +42,6 @@ jobs:
 
       - name: Remove v12
         run: bit remove versions/angular-v12 -s -f --log
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f --log
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f --log
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f --log
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f --log
 
       - name: Add example component
         run: bit add examples/demo-lib --log
@@ -94,25 +79,28 @@ jobs:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
 
-  # Test angular-v15
-  v15:
+  # Test angular-v16
+  v16:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: docker://bitcli/bit:latest-node-16.15.0
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.02
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
       - uses: actions/checkout@v2
 
-      - name: Keep v15
-        run: npm i replace-in-file && node scripts/keep-env.js --version=14
+      - name: Keep v16
+        run: npm i replace-in-file && node scripts/keep-env.js --version=16
 
       - name: Remove default
         run: bit remove angular -s -f --log
+
+      - name: Remove v15
+        run: bit remove versions/angular-v15 -s -f --log
 
       - name: Remove v14
         run: bit remove versions/angular-v14 -s -f --log
@@ -123,17 +111,67 @@ jobs:
       - name: Remove v12
         run: bit remove versions/angular-v12 -s -f --log
 
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f --log
+      - name: Add example component
+        run: bit add examples/demo-lib-v15 --log
 
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f --log
+      - name: Install dependencies
+        run: bit install --log
 
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f --log
+      # Compile the aspects
+      - name: Bit compile aspects
+        run: bit compile --log
 
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f --log
+      # Run bit link to regenerate the package.json of the example component
+      - name: Bit link
+        run: bit link --log
+
+      # Compile the example component
+      - name: Bit compile example
+        run: bit compile demo-lib-v15 --log
+
+      - name: Bit test
+        run: bit test --log
+
+      - name: Bit build
+        run: bit build --log
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: debug-log
+          path: $HOME/Library/Caches/Bit/logs
+
+
+  # Test angular-v15
+  v15:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: docker://bitcli/bit:latest-node-16.15.0
+    steps:
+      - uses:  teambit/setup-action@v2.02
+        with:
+          name: angular-github-actions
+          BIT_TOKEN: ${{ env.BIT_TOKEN }}
+
+      - uses: actions/checkout@v2
+
+      - name: Keep v15
+        run: npm i replace-in-file && node scripts/keep-env.js --version=15
+
+      - name: Remove default
+        run: bit remove angular -s -f --log
+
+      - name: Remove v16
+        run: bit remove versions/angular-v16 -s -f --log
+
+      - name: Remove v14
+        run: bit remove versions/angular-v14 -s -f --log
+
+      - name: Remove v13
+        run: bit remove versions/angular-v13 -s -f --log
+
+      - name: Remove v12
+        run: bit remove versions/angular-v12 -s -f --log
 
       - name: Add example component
         run: bit add examples/demo-lib-v15 --log
@@ -169,9 +207,9 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: docker://bitcli/bit:latest-node-16.15.0
     steps:
-      - uses:  teambit/setup-action@v1
+      - uses:  teambit/setup-action@v2.02
         with:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
@@ -184,6 +222,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove v16
+        run: bit remove versions/angular-v16 -s -f --log
+
       - name: Remove v15
         run: bit remove versions/angular-v15 -s -f --log
 
@@ -192,18 +233,6 @@ jobs:
 
       - name: Remove v12
         run: bit remove versions/angular-v12 -s -f --log
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f --log
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f --log
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f --log
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f --log
 
       - name: Add example component
         run: bit add examples/demo-lib-v14 --log
@@ -239,7 +268,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: docker://bitcli/bit:latest-node-16.15.0
     steps:
       - uses:  teambit/setup-action@v2.02
         with:
@@ -254,6 +283,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove v16
+        run: bit remove versions/angular-v16 -s -f --log
+
       - name: Remove v15
         run: bit remove versions/angular-v15 -s -f --log
 
@@ -262,18 +294,6 @@ jobs:
 
       - name: Remove v12
         run: bit remove versions/angular-v12 -s -f --log
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f --log
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f --log
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f --log
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f --log
 
       - name: Add example component
         run: bit add examples/demo-lib-v13 --log
@@ -309,7 +329,7 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: docker://bitcli/bit:latest-node-16.15.0
     steps:
       - uses:  teambit/setup-action@v2.02
         with:
@@ -324,6 +344,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove v16
+        run: bit remove versions/angular-v16 -s -f --log
+
       - name: Remove v15
         run: bit remove versions/angular-v15 -s -f --log
 
@@ -332,18 +355,6 @@ jobs:
 
       - name: Remove v13
         run: bit remove versions/angular-v13 -s -f --log
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f --log
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f --log
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f --log
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f --log
 
       - name: Add example component
         run: bit add examples/demo-lib-v12 --log
@@ -362,286 +373,6 @@ jobs:
       # Compile the example component
       - name: Bit compile example
         run: bit compile demo-lib-v12 --log
-
-      - name: Bit test
-        run: bit test --log
-
-      - name: Bit build
-        run: bit build --log
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: debug-log
-          path: $HOME/Library/Caches/Bit/logs
-
-  # Test angular-v11
-  v11:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-ci')"
-    container:
-      image: docker://bitcli/bit:latest
-    steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
-      - uses: actions/checkout@v2
-
-      - name: Keep v11
-        run: npm i replace-in-file && node scripts/keep-env.js --version=11
-
-      - name: Remove default
-        run: bit remove angular -s -f --log
-
-      - name: Remove v15
-        run: bit remove versions/angular-v15 -s -f --log
-
-      - name: Remove v14
-        run: bit remove versions/angular-v14 -s -f --log
-
-      - name: Remove v13
-        run: bit remove versions/angular-v13 -s -f --log
-
-      - name: Remove v12
-        run: bit remove versions/angular-v12 -s -f
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f
-
-      - name: Add example component
-        run: bit add examples/demo-lib-v11
-
-      - name: Install dependencies
-        run: bit install
-
-      # Compile the aspects
-      - name: Bit compile aspects
-        run: bit compile --log
-
-      # Run bit link to regenerate the package.json of the example component
-      - name: Bit link
-        run: bit link
-
-      # Compile the example component
-      - name: Bit compile example
-        run: bit compile demo-lib-v11 --log
-
-      - name: Bit test
-        run: bit test --log
-
-      - name: Bit build
-        run: bit build --log
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: debug-log
-          path: $HOME/Library/Caches/Bit/logs
-
-  # Test angular-v10
-  v10:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-ci')"
-    container:
-      image: docker://bitcli/bit:latest
-    steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
-      - uses: actions/checkout@v2
-
-      - name: Keep v10
-        run: npm i replace-in-file && node scripts/keep-env.js --version=10
-
-      - name: Remove default
-        run: bit remove angular -s -f --log
-
-      - name: Remove v15
-        run: bit remove versions/angular-v15 -s -f --log
-
-      - name: Remove v14
-        run: bit remove versions/angular-v14 -s -f --log
-
-      - name: Remove v13
-        run: bit remove versions/angular-v13 -s -f --log
-
-      - name: Remove v12
-        run: bit remove versions/angular-v12 -s -f
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f
-
-      - name: Add example component
-        run: bit add examples/demo-lib-v10
-
-      - name: Install dependencies
-        run: bit install
-
-      # Compile the aspects
-      - name: Bit compile aspects
-        run: bit compile --log
-
-      # Run bit link to regenerate the package.json of the example component
-      - name: Bit link
-        run: bit link
-
-      # Compile the example component
-      - name: Bit compile example
-        run: bit compile demo-lib-v10 --log
-
-      - name: Bit test
-        run: bit test --log
-
-      - name: Bit build
-        run: bit build --log
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: debug-log
-          path: $HOME/Library/Caches/Bit/logs
-
-  # Test angular-v9
-  v9:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-ci')"
-    container:
-      image: docker://bitcli/bit:latest
-    steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
-      - uses: actions/checkout@v2
-
-      - name: Keep v9
-        run: npm i replace-in-file && node scripts/keep-env.js --version=9
-
-      - name: Remove default
-        run: bit remove angular -s -f --log
-
-      - name: Remove v15
-        run: bit remove versions/angular-v15 -s -f --log
-
-      - name: Remove v14
-        run: bit remove versions/angular-v14 -s -f --log
-
-      - name: Remove v13
-        run: bit remove versions/angular-v13 -s -f --log
-
-      - name: Remove v12
-        run: bit remove versions/angular-v12 -s -f
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f
-
-      - name: Remove v8
-        run: bit remove versions/angular-v8 -s -f
-
-      - name: Add example component
-        run: bit add examples/demo-lib-v9
-
-      - name: Install dependencies
-        run: bit install
-
-      # Compile the aspects
-      - name: Bit compile aspects
-        run: bit compile --log
-
-      # Run bit link to regenerate the package.json of the example component
-      - name: Bit link
-        run: bit link
-
-      # Compile the example component
-      - name: Bit compile example
-        run: bit compile demo-lib-v9 --log
-
-      - name: Bit test
-        run: bit test --log
-
-      - name: Bit build
-        run: bit build --log
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: debug-log
-          path: $HOME/Library/Caches/Bit/logs
-
-  # Test angular-v8
-  v8:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-ci')"
-    container:
-      image: docker://bitcli/bit:latest
-    steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
-      - uses: actions/checkout@v2
-
-      - name: Keep v8
-        run: npm i replace-in-file && node scripts/keep-env.js --version=8
-
-      - name: Remove default
-        run: bit remove angular -s -f --log
-
-      - name: Remove v15
-        run: bit remove versions/angular-v15 -s -f --log
-
-      - name: Remove v14
-        run: bit remove versions/angular-v14 -s -f --log
-
-      - name: Remove v13
-        run: bit remove versions/angular-v13 -s -f --log
-
-      - name: Remove v12
-        run: bit remove versions/angular-v12 -s -f
-
-      - name: Remove v11
-        run: bit remove versions/angular-v11 -s -f
-
-      - name: Remove v10
-        run: bit remove versions/angular-v10 -s -f
-
-      - name: Remove v9
-        run: bit remove versions/angular-v9 -s -f
-
-      - name: Add example component
-        run: bit add examples/demo-lib-v8
-
-      - name: Install dependencies
-        run: bit install
-
-      # Compile the aspects
-      - name: Bit compile aspects
-        run: bit compile --log
-
-      # Run bit link to regenerate the package.json of the example component
-      - name: Bit link
-        run: bit link
-
-      # Compile the example component
-      - name: Bit compile example
-        run: bit compile demo-lib-v8 --log
 
       - name: Bit test
         run: bit test --log
