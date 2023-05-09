@@ -61,12 +61,12 @@
   },
   "teambit.generator/generator": {
     "envs": [
-      "teambit.angular/angular",
-      "teambit.angular/versions/angular-v16",
-      "teambit.angular/versions/angular-v15",
-      "teambit.angular/versions/angular-v14",
-      "teambit.angular/versions/angular-v13",
-      "teambit.angular/versions/angular-v12",
+//      "teambit.angular/angular",
+//      "teambit.angular/versions/angular-v16",
+//      "teambit.angular/versions/angular-v15",
+//      "teambit.angular/versions/angular-v14",
+//      "teambit.angular/versions/angular-v13",
+//      "teambit.angular/versions/angular-v12",
     ],
     //    "aspects": [
     //      "teambit.angular/versions/angular-v11",
