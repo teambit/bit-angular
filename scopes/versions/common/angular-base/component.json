@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "versions/common/angular-base"
+    "name": "versions/common/angular-base",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -30,10 +31,10 @@
           "@babel/preset-env": "7.12.17",
           "@babel/preset-typescript": "7.12.7",
           "@babel/runtime": "^7.12.18",
-          "@teambit/defender.eslint-linter": "0.0.6",
-          "@teambit/defender.jest-tester": "0.0.7",
-          "@teambit/defender.prettier-formatter": "0.0.4",
-          "@teambit/dependencies.modules.packages-excluder": "^0.0.68",
+          "@teambit/defender.eslint-linter": "0.0.10",
+          "@teambit/defender.jest-tester": "0.0.9",
+          "@teambit/defender.prettier-formatter": "0.0.6",
+          "@teambit/dependencies.modules.packages-excluder": "^0.0.70",
           "@types/dompurify": "^2.2.2",
           "@types/enhanced-resolve": "~3.0.7",
           "@types/fs-extra": "~9.0.7",

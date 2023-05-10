@@ -34,18 +34,8 @@
     "packageManager": "teambit.dependencies/yarn",
     "policy": {
       "dependencies": {
-        "@types/jasmine": "~3.7.0",
-        "eslint-config-airbnb-typescript": {
-          "version": "5.1.0",
-          "preserve": true
-        },
-        "eslint-import-resolver-node": "^0.3.6",
-        "eslint-plugin-import": "^2.25.3",
-        "jasmine-core": "~3.7.1",
         "prettier": "2.3.2",
-        "process": "0.11.10",
-        "react-dev-utils": "10.2.1",
-        "replace-in-file": "6.3.2"
+        "react-dev-utils": "10.2.1"
       },
       "peerDependencies": {}
     },

@@ -133,7 +133,7 @@ import { AngularEnvInterface } from './angular-env.interface';
       ngEnvOptions,
       sourceRoot,
       transformers,
-      webpackOptions
+      webpackOptions: webpackOptions as any
     });
   }
 
@@ -151,7 +151,7 @@ import { AngularEnvInterface } from './angular-env.interface';
       ngEnvOptions,
       sourceRoot,
       transformers,
-      webpackOptions
+      webpackOptions: webpackOptions as any
     });
   }
 

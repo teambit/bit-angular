@@ -63,10 +63,10 @@ export class AngularApp implements Application {
   private getPreview(tsconfigPath: string): EnvHandler<Preview> {
     const ngEnvOptions = this.angularEnv.getNgEnvOptions();
 
-    const serveOptions = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsconfigPath});
+    const serveOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsconfigPath});
     const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.angularEnv.getDevServer(devServerContext, ngEnvOptions, this.options.webpackServeTransformers, serveOptions, {}, this.options.sourceRoot);
 
-    const buildOptions: Partial<BrowserOptions> = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
+    const buildOptions: any = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.angularEnv.getBundler(bundlerContext, ngEnvOptions, this.options.webpackBuildTransformers, buildOptions, {}, this.options.sourceRoot);
 
     return AngularPreview.from({
@@ -82,7 +82,7 @@ export class AngularApp implements Application {
     // Add the paths to tsconfig to remap bit components to local folders
     tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
     const bitDeps = (await this.depsResolver.getComponentDependencies(context.appComponent))
-      .filter((dep) => {
+      .filter((dep: ComponentDependency) => {
         return !dep.isExtension && dep.componentId.scope !== 'teambit.angular';
       });
     bitDeps.forEach((depId: ComponentDependency) => {

@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/compiler/webpack"
+    "name": "dev-services/compiler/webpack",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -19,14 +20,14 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@teambit/webpack.webpack-bundler": "0.0.3",
+          "@teambit/webpack.webpack-bundler": "0.0.8",
           "@types/object-hash": "~2.1.0",
           "object-hash": "~2.1.1",
           "typescript": "-"
         },
         "peerDependencies": {
-        "typescript": ">= 3.5.3"
-      }
+          "typescript": ">= 3.5.3"
+        }
       }
     }
   }
