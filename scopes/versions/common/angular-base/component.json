@@ -42,6 +42,7 @@
           "@types/trusted-types": "~2.0.1",
           "dompurify": "^2.2.9",
           "enhanced-resolve": "5.8.3",
+          "eslint": ">= 7.0.0",
           "events": "3.3.0",
           "fs-extra": "9.1.0",
           "graphql": "14.7.0",
