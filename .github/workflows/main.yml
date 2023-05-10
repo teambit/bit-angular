@@ -29,7 +29,7 @@ jobs:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Keep default
         run: npm i replace-in-file && node scripts/keep-env.js --version=16 --default
@@ -98,7 +98,7 @@ jobs:
       - name: Bit build
         run: bit build --log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
@@ -115,7 +115,7 @@ jobs:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Keep v16
         run: npm i replace-in-file && node scripts/keep-env.js --version=16
@@ -180,7 +180,7 @@ jobs:
       - name: Bit build
         run: bit build --log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
@@ -198,7 +198,7 @@ jobs:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Keep v15
         run: npm i replace-in-file && node scripts/keep-env.js --version=15
@@ -263,7 +263,7 @@ jobs:
       - name: Bit build
         run: bit build --log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
@@ -280,7 +280,7 @@ jobs:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Keep v14
         run: npm i replace-in-file && node scripts/keep-env.js --version=14
@@ -345,7 +345,7 @@ jobs:
       - name: Bit build
         run: bit build --log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
@@ -362,7 +362,7 @@ jobs:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Keep v13
         run: npm i replace-in-file && node scripts/keep-env.js --version=13
@@ -427,7 +427,7 @@ jobs:
       - name: Bit build
         run: bit build --log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
@@ -445,7 +445,7 @@ jobs:
           name: angular-github-actions
           BIT_TOKEN: ${{ env.BIT_TOKEN }}
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Keep v12
         run: npm i replace-in-file && node scripts/keep-env.js --version=12
@@ -510,7 +510,7 @@ jobs:
       - name: Bit build
         run: bit build --log
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
