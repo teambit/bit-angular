@@ -9,7 +9,7 @@ export async function workspaceConfig({ name, defaultScope, aspectComponent }: W
   configParsed['teambit.workspace/workspace'].name = name;
   configParsed['teambit.workspace/workspace'].defaultScope = scope;
   configParsed['teambit.dependencies/dependency-resolver'].packageManager = 'teambit.dependencies/pnpm';
-  configParsed['teambit.dependencies/dependency-resolver'].rootComponents = false;
+  configParsed['teambit.dependencies/dependency-resolver'].rootComponents = true;
   configParsed['teambit.dependencies/dependency-resolver'].policy = {
     "dependencies": {
       [envPkgName]: `^${envVersion}`
