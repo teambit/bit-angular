@@ -2,9 +2,11 @@ import { componentIsApp } from '@teambit/angular-apps';
 import { AppBuildContext, AppContext, ApplicationMain } from '@teambit/application';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Component, ComponentID } from '@teambit/component';
+import { DevFilesMain } from '@teambit/dev-files';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { Logger } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
+import { TesterAspect } from '@teambit/tester';
 import { WebpackConfigWithDevServer } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
 import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
@@ -91,7 +93,6 @@ export function generateTsConfig(
   tsconfigJSON.exclude = [
     ...tsconfigJSON.exclude.map((file: string) => posix.join(pAppPath, file)),
     ...excludePaths,
-    ...includePaths.map((path) => posix.join(path, '**/*.spec.ts'))
   ];
   tsconfigJSON.compilerOptions.paths = tsPaths;
 
@@ -107,10 +108,12 @@ export function writeTsconfig(
   tempFolder: string,
   application: ApplicationMain,
   pkg: PkgMain,
+  devFilesMain: DevFilesMain,
   workspace?: Workspace
 ): string {
   const tsPaths: { [key: string]: string[] } = {};
   const includePaths = new Set<string>();
+  const excludePaths = new Set<string>();
   const dirPath = join(tempFolder, context.id);
   if (!existsSync(dirPath)) {
     mkdirSync(dirPath, { recursive: true });
@@ -138,13 +141,20 @@ export function writeTsconfig(
       }) || '');
     }
     // map the package names to the workspace component paths for typescript in case a package references another local package
-    tsPaths[`${pkg.getPackageName(component)}`] = [`${outputPath}/public-api.ts`];
-    tsPaths[`${pkg.getPackageName(component)}/*`] = [`${outputPath}/*`];
+    const pkgName = pkg.getPackageName(component);
+    tsPaths[pkgName] = [`${outputPath}/public-api.ts`];
+    tsPaths[`${pkgName}/*`] = [`${outputPath}/*`];
 
     includePaths.add(outputPath);
+
+    // get the list of spec patterns
+    const devPatterns: string[] = devFilesMain.getDevPatterns(component, TesterAspect.id);
+    devPatterns.forEach(specPattern => {
+      excludePaths.add(posix.join(outputPath, specPattern));
+    });
   });
 
-  const content = generateTsConfig(rootSpace, Array.from(includePaths), [], tsPaths);
+  const content = generateTsConfig(rootSpace, Array.from(includePaths), Array.from(excludePaths), tsPaths);
   const hash = objectHash(content);
   const targetPath = join(dirPath, `__tsconfig-${timestamp}.json`);
 

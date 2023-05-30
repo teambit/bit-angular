@@ -6,6 +6,7 @@ import {
 } from '@teambit/angular-common';
 import { AppBuildContext, ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BundlerContext } from '@teambit/bundler';
+import { DevFilesAspect, DevFilesMain } from '@teambit/dev-files';
 import { AsyncEnvHandler, EnvContext } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
@@ -79,6 +80,7 @@ export class NgWebpackBundler {
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
       const webpackMain = context.getAspect<WebpackMain>(WebpackAspect.id);
+      const devFilesMain = context.getAspect<DevFilesMain>(DevFilesAspect.id);
 
       let tempFolder: string;
       const idName = `teambit.angular/${name}`;
@@ -96,7 +98,7 @@ export class NgWebpackBundler {
         plugins = [new StatsLoggerPlugin()];
       } else { // When you use `bit build`
         appRootPath = getPreviewRootPath(workspace);
-        tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, workspace);
+        tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
       }
 
       const transformers = options.transformers || [];
