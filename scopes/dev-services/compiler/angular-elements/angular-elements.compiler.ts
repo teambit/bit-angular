@@ -2,7 +2,7 @@ import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
 import type { AngularEnvOptions } from '@teambit/angular-common';
 import { getNodeModulesPaths } from '@teambit/angular-common';
-import { RollupCompiler } from '@teambit/angular-elements';
+import { RollupCompiler } from './rollup/rollup.compiler';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
