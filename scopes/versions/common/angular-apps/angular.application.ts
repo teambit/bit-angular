@@ -123,8 +123,7 @@ export class AngularApp implements Application {
   }
 
   async run(context: AppContext): Promise<number> {
-    const [from, to] = this.options.portRange || [3000, 4000];
-    const port = await Port.getPort(from, to);
+    const port = context.port ?? await Port.getPortFromRange(this.options.portRange || [3000, 4000]);
     const devServer = await this.getDevServer(context);
     await devServer.listen(port);
     return port;
