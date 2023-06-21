@@ -31,7 +31,7 @@ export class AngularApp implements Application {
     private envContext: EnvContext,
     readonly options: AngularAppOptions,
     private depsResolver: DependencyResolverMain,
-    private workspace?: Workspace,
+    private workspace?: Workspace
   ) {
     this.name = options.name;
 
@@ -63,10 +63,10 @@ export class AngularApp implements Application {
   private getPreview(tsconfigPath: string): EnvHandler<Preview> {
     const ngEnvOptions = this.angularEnv.getNgEnvOptions();
 
-    const serveOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), {tsConfig: this.tsconfigPath});
+    const serveOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), { tsConfig: this.tsconfigPath });
     const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.angularEnv.getDevServer(devServerContext, ngEnvOptions, this.options.webpackServeTransformers, serveOptions, {}, this.options.sourceRoot);
 
-    const buildOptions: any = Object.assign(cloneDeep(this.options.angularBuildOptions), {tsConfig: this.tsconfigPath});
+    const buildOptions: any = Object.assign(cloneDeep(this.options.angularBuildOptions), { tsConfig: this.tsconfigPath });
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.angularEnv.getBundler(bundlerContext, ngEnvOptions, this.options.webpackBuildTransformers, buildOptions, {}, this.options.sourceRoot);
 
     return AngularPreview.from({
@@ -81,19 +81,19 @@ export class AngularApp implements Application {
 
     // Add the paths to tsconfig to remap bit components to local folders
     tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
-    const bitDeps = (await this.depsResolver.getComponentDependencies(context.appComponent))
-      .filter((dep: ComponentDependency) => {
-        return !dep.isExtension && dep.componentId.scope !== 'teambit.angular';
-      });
+    const bitDeps = await this.depsResolver.getComponentDependencies(context.appComponent);
     bitDeps.forEach((depId: ComponentDependency) => {
-      let componentDir = this.workspace?.componentDir(depId.componentId, {
-        ignoreScopeAndVersion: true,
-        ignoreVersion: true
-      });
-      if (componentDir) {
-        componentDir = pathNormalizeToLinux(componentDir);
-        tsconfigJSON.compilerOptions.paths[depId.getPackageName()] = [`${componentDir}/public-api.ts`];
-        tsconfigJSON.compilerOptions.paths[`${depId.getPackageName()}/*`] = [`${componentDir}/*`];
+      if (!depId.isExtension) {
+        let componentDir = this.workspace?.componentDir(depId.componentId, {
+          ignoreScopeAndVersion: true,
+          ignoreVersion: true
+        });
+        if (componentDir) {
+          componentDir = pathNormalizeToLinux(componentDir);
+          // TODO we should find a way to use the real entry file based on the component config because people can change it
+          tsconfigJSON.compilerOptions.paths[depId.getPackageName()] = [`${componentDir}/public-api.ts`, `${componentDir}`];
+          tsconfigJSON.compilerOptions.paths[`${depId.getPackageName()}/*`] = [`${componentDir}/*`];
+        }
       }
     });
 
@@ -123,7 +123,7 @@ export class AngularApp implements Application {
   }
 
   async run(context: AppContext): Promise<number> {
-    const port = context.port ?? await Port.getPortFromRange(this.options.portRange || [3000, 4000]);
+    const port = context.port || (await Port.getPortFromRange(this.options.portRange || [3000, 4000]));
     const devServer = await this.getDevServer(context);
     await devServer.listen(port);
     return port;
