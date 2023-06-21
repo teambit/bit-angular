@@ -11,7 +11,6 @@ export class AngularV16Env extends AngularBaseEnv {
    * name of the environment. used for friendly mentions across bit.
    */
   name = 'Angular-v16';
-  packageName = '@teambit/angular-v16';
   angularVersion = 16;
 
   ngEnvOptions: AngularEnvOptions = {

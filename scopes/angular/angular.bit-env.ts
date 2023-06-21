@@ -6,7 +6,6 @@ NativeCompileCache.uninstall();
 
 export class AngularEnv extends AngularV16Env {
   name = 'Angular';
-  packageName = '@teambit/angular';
 }
 
 export default new AngularEnv();

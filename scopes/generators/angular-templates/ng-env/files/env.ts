@@ -1,9 +1,8 @@
-import { cmpIdToPkgName } from '@teambit/angular-common';
 import { ComponentContext } from '@teambit/generator';
 
-export function envFile({ namePascalCase: Name, name, componentId }: ComponentContext, envName: string, angularVersion: number) {
+export function envFile({ namePascalCase: Name, name, componentId }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
   // language=TypeScript
-  return `import { ${ envName } } from '@teambit/angular-v${angularVersion}';
+  return `import { ${envName} } from '${envPkgName}';
 import { EnvHandler } from '@teambit/envs';
 import { Tester } from '@teambit/tester';
 import { Preview } from '@teambit/preview';
@@ -15,15 +14,13 @@ import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
 import { ESLint as ESLintLib } from 'eslint';
 import { StarterList, TemplateList } from '@teambit/generator';
-import { workspaceStarters } from '@teambit/angular-starters';
-import { angularBaseTemplates } from '@teambit/angular-templates';
+import { NgWorkspaceTemplate } from '@teambit/angular-starters';
+import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
 import hostDependencies from './preview/host-dependencies';
 
 export class ${Name} extends ${envName} {
   // Name of the environment, used for friendly mentions across bit
   name = '${name}';
-  // Package name of the environment, used for generators & starters
-  packageName = '${cmpIdToPkgName(componentId)}';
 
   getTesterConfig() {
     return {
@@ -116,8 +113,12 @@ export class ${Name} extends ${envName} {
    * @see https://bit.dev/docs/angular-env/component-generators
    */
   override generators(): EnvHandler<TemplateList> {
+    const envName = this.constructor.name;
+    const angularVersion = this.angularVersion;
     return TemplateList.from([
-      ...angularBaseTemplates(this.constructor.name, this.packageName, this.angularVersion)
+      NgModuleTemplate.from({ envName, angularVersion }),
+      NgEnvTemplate.from({ envName, angularVersion }),
+      NgAppTemplate.from({ envName, angularVersion })
     ]);
   }
 
@@ -127,7 +128,7 @@ export class ${Name} extends ${envName} {
    */
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      ...workspaceStarters(this.constructor.name, this.packageName, this.angularVersion)
+      NgWorkspaceTemplate.from({envName: this.constructor.name, angularVersion: this.angularVersion})
     ]);
   }
 }

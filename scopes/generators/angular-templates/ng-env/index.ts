@@ -1,15 +1,18 @@
-import { ComponentContext, ComponentTemplate, ConfigContext } from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
+import { EnvContext } from '@teambit/envs';
+import { ComponentContext, ComponentTemplate, ConfigContext } from '@teambit/generator';
+import { PkgAspect, PkgMain } from '@teambit/pkg';
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { eslintConfigFile } from './files/config/eslintrc';
 import { jestConfigFile } from './files/config/jest.config';
 import { prettierConfigFile } from './files/config/prettier.config';
 import { tsConfigFile } from './files/config/tsconfig.json';
 import { docFile } from './files/doc';
 import { envFile } from './files/env';
-import { indexFile } from './files/index';
 import { envJsoncFile } from './files/env-jsonc';
-import { mounterFile } from './files/preview/mounter';
+import { indexFile } from './files/index';
 import { hostDependenciesFile } from './files/preview/host-dependencies';
+import { mounterFile } from './files/preview/mounter';
 
 export class NgEnvTemplate implements ComponentTemplate {
   private constructor(
@@ -17,10 +20,14 @@ export class NgEnvTemplate implements ComponentTemplate {
     readonly angularVersion: number,
     readonly name = 'ng-env',
     readonly description = 'create a customized Angular env with your configs and tools',
-    readonly hidden = false
+    readonly hidden = false,
+    private pkg: PkgMain,
+    private workspace: Workspace,
   ) {}
 
-  generateFiles(context: ComponentContext) {
+  async generateFiles(context: ComponentContext) {
+    const envComponent = await this.workspace.get(context.aspectId);
+    const envPkgName = this.pkg.getPackageName(envComponent);
     return [
       {
         relativePath: 'index.ts',
@@ -34,10 +41,10 @@ export class NgEnvTemplate implements ComponentTemplate {
         content: docFile(context),
       }, {
         relativePath: `${context.name}.bit-env.ts`,
-        content: envFile(context, this.envName, this.angularVersion),
+        content: envFile(context, this.envName, this.angularVersion, envPkgName),
       },
       eslintConfigFile(),
-      jestConfigFile(this.angularVersion),
+      jestConfigFile(this.angularVersion, envPkgName),
       prettierConfigFile(),
       tsConfigFile(),
       mounterFile(),
@@ -54,13 +61,18 @@ export class NgEnvTemplate implements ComponentTemplate {
   }
 
   static from(options: AngularComponentTemplateOptions & { envName: string; angularVersion: number; }) {
-    return () =>
-      new NgEnvTemplate(
+    return (context: EnvContext) => {
+      const pkg = context.getAspect<PkgMain>(PkgAspect.id);
+      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      return new NgEnvTemplate(
         options.envName,
         options.angularVersion,
         options.name,
         options.description,
-        options.hidden
+        options.hidden,
+        pkg,
+        workspace,
       );
+    }
   }
 }

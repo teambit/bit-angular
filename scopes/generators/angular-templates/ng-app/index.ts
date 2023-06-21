@@ -1,10 +1,5 @@
-import {
-  ComponentConfig,
-  ComponentContext,
-  ComponentTemplate,
-  ConfigContext
-} from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
+import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { indexFile } from './template-files';
 import { docsFile } from './template-files/docs';
 import { ngAppFile } from './template-files/ng-app';
@@ -13,10 +8,10 @@ import { appComponentHtmlFile } from './template-files/src/app/app.component-htm
 import { appComponentScssFile } from './template-files/src/app/app.component-scss';
 import { appComponentSpecFile } from './template-files/src/app/app.component-spec';
 import { appModuleFile } from './template-files/src/app/app.module';
+import { faviconFile } from './template-files/src/assets/favicon-ico';
 import { gitKeepFile } from './template-files/src/assets/gitkeep';
 import { environmentFile } from './template-files/src/environments/environment';
 import { environmentProdFile } from './template-files/src/environments/environment.prod';
-import { faviconFile } from './template-files/src/assets/favicon-ico';
 import { indexHtmlFile } from './template-files/src/index-html';
 import { mainNgAppFile } from './template-files/src/main';
 import { polyfillFile } from './template-files/src/polyfills';
