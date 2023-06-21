@@ -98,6 +98,11 @@
         "version": "0.1.8",
         "mainFile": "index.ts",
         "rootDir": "scopes/forks/angular-env-v16"
+    "forks/angular-env": {
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env"
     },
     "generators/angular-starters": {
         "scope": "teambit.angular",
