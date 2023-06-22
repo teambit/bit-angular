@@ -11,7 +11,6 @@ export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, work
   const scopeAspectsRootDir = isolator.getCapsulesRootDir(workspace.scope.getAspectCapsulePath());
   const workspaceCapsulesRootDir = build ? isolator.getCapsulesRootDir(workspace.path) : undefined;
 
-
   const nodeModulesPaths: string[] = [];
   const workspaceNodeModules = resolve(workspaceDir, 'node_modules');
 

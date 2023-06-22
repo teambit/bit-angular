@@ -1,13 +1,13 @@
-import { WorkspaceContext, WorkspaceTemplate } from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
-import { eslintConfig } from './files/eslint-config';
-import { launchJson } from './files/launch-json';
-import { prettierConfig } from './files/prettier-config';
-import { tsConfig } from './files/ts-config';
-import { workspaceConfig } from './files/workspace-config';
-import { gitIgnore } from './files/git-ignore';
 import { EnvContext, EnvHandler } from '@teambit/envs';
-import PkgAspect, { PkgMain } from '@teambit/pkg';
+import { WorkspaceContext, WorkspaceTemplate } from '@teambit/generator';
+import { PkgAspect, PkgMain } from '@teambit/pkg';
+import { eslintConfig } from '../common/eslint-config';
+import { gitIgnore } from '../common/git-ignore';
+import { launchJson } from '../common/launch-json';
+import { prettierConfig } from '../common/prettier-config';
+import { tsConfig } from '../common/ts-config';
+import { workspaceConfig } from '../common/workspace-config';
 import { FORKED_ENV_NAME } from '../constants';
 
 export class NgWorkspaceTemplate implements WorkspaceTemplate {

@@ -1,6 +1,6 @@
 import { WorkspaceContext } from '@teambit/generator';
 import { getWorkspaceConfigTemplateParsed, stringifyWorkspaceConfig } from '@teambit/config';
-import { DEFAULT_SCOPE_NAME, FORKED_ENV_NAME } from '../../constants';
+import { DEFAULT_SCOPE_NAME, FORKED_ENV_NAME } from '../constants';
 
 export async function workspaceConfig({ name, defaultScope, aspectComponent }: WorkspaceContext, envPkgName: string) {
   const scope = defaultScope || DEFAULT_SCOPE_NAME;
