@@ -8,6 +8,7 @@ export async function workspaceConfig({ name, defaultScope, aspectComponent }: W
   const configParsed = await getWorkspaceConfigTemplateParsed();
   configParsed['teambit.workspace/workspace'].name = name;
   configParsed['teambit.workspace/workspace'].defaultScope = scope;
+  configParsed['teambit.workspace/workspace'].resolveEnvsFromRoots = true;
   configParsed['teambit.dependencies/dependency-resolver'].packageManager = 'teambit.dependencies/pnpm';
   configParsed['teambit.dependencies/dependency-resolver'].rootComponents = true;
   configParsed['teambit.dependencies/dependency-resolver'].policy = {
