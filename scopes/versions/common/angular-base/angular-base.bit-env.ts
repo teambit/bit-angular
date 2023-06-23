@@ -26,6 +26,7 @@ import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash';
 import { Configuration } from 'webpack';
 import { AngularEnvInterface } from './angular-env.interface';
+import hostDependencies from './preview/host-dependencies';
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -162,7 +163,9 @@ import { AngularEnvInterface } from './angular-env.interface';
     return AngularPreview.from({
       devServerProvider,
       bundlerProvider,
-      ngEnvOptions
+      ngEnvOptions,
+      hostDependencies,
+      mounterPath: require.resolve('./preview/mounter'),
     });
   }
 

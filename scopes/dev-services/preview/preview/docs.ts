@@ -2,8 +2,8 @@ import { RenderingContext } from '@teambit/preview';
 import { Type } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
-
 window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<string>();
+const root = document.getElementById('root');
 
 export type DocsFile = {
   default: string;
@@ -18,7 +18,10 @@ export type DocsRootProps = {
 }
 
 async function docsRoot({docs}: DocsRootProps): Promise<void> {
-  if (docs) {
+  if (docs && root) {
+    const appRoot = document.createElement('app-root');
+    root.replaceChildren(appRoot);
+    await window.ngMainStart();
     window.onDocsLoad$.next((docs as DocsFile).default ?? docs as string);
   }
 }

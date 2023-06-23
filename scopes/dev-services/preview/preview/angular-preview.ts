@@ -79,8 +79,8 @@ export class AngularPreview implements Preview {
     private ngEnvOptions: AngularEnvOptions,
     private devServerProvider: DevServerProvider,
     private bundlerProvider: BundlerProvider,
-    private docsTemplatePath: string = require.resolve('./preview-app/src/docs'),
-    private mountPath: string = require.resolve('./preview-app/src/mount'),
+    private docsTemplatePath: string = require.resolve('./docs'),
+    private mounterPath: string = require.resolve('./mounter'),
     private previewConfig: EnvPreviewConfig = {},
     private hostDependencies?: string[],
   ) {}
@@ -121,7 +121,7 @@ export class AngularPreview implements Preview {
   }
 
   getMounter(): string {
-    return this.mountPath;
+    return this.mounterPath;
   }
 
   getDocsTemplate(): string {
