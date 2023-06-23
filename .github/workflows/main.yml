@@ -129,6 +129,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove default fork
+        run: bit remove forks/angular-env -s -f --log
+
       - name: Remove v15
         run: bit remove versions/angular-v15 -s -f --log
 
@@ -212,6 +215,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove default fork
+        run: bit remove forks/angular-env -s -f --log
+
       - name: Remove v16
         run: bit remove versions/angular-v16 -s -f --log
 
@@ -293,6 +299,9 @@ jobs:
 
       - name: Remove default
         run: bit remove angular -s -f --log
+
+      - name: Remove default fork
+        run: bit remove forks/angular-env -s -f --log
 
       - name: Remove v16
         run: bit remove versions/angular-v16 -s -f --log
@@ -376,6 +385,9 @@ jobs:
       - name: Remove default
         run: bit remove angular -s -f --log
 
+      - name: Remove default fork
+        run: bit remove forks/angular-env -s -f --log
+
       - name: Remove v16
         run: bit remove versions/angular-v16 -s -f --log
 
@@ -458,6 +470,9 @@ jobs:
 
       - name: Remove default
         run: bit remove angular -s -f --log
+
+      - name: Remove default fork
+        run: bit remove forks/angular-env -s -f --log
 
       - name: Remove v16
         run: bit remove versions/angular-v16 -s -f --log
