@@ -28,6 +28,7 @@ export class NgEnvTemplate implements ComponentTemplate {
   async generateFiles(context: ComponentContext) {
     const envComponent = await this.workspace.get(context.aspectId);
     const envPkgName = this.pkg.getPackageName(envComponent);
+    const envId = envComponent.id.toStringWithoutVersion();
     return [
       {
         relativePath: 'index.ts',
@@ -38,7 +39,7 @@ export class NgEnvTemplate implements ComponentTemplate {
         content: envJsoncFile(context, this.angularVersion),
       }, {
         relativePath: `${context.name}.docs.mdx`,
-        content: docFile(context),
+        content: docFile(context, this.angularVersion, envId),
       }, {
         relativePath: `${context.name}.bit-env.ts`,
         content: envFile(context, this.envName, this.angularVersion, envPkgName),
