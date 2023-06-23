@@ -1,1 +1,1 @@
-export { MyAngularEnv, MyAngularEnv as default } from './my-angular-env.bit-env';
+export { MyNgEnv, MyNgEnv as default } from './my-ng-env.bit-env';

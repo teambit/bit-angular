@@ -14,9 +14,9 @@ import { Tester } from '@teambit/tester';
 import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
 
-export class MyAngularEnv extends AngularEnv {
+export class MyNgEnv extends AngularEnv {
   // Name of the environment, used for friendly mentions across bit
-  name = 'my-angular-env';
+  name = 'my-ng-env';
 
   getTesterConfig() {
     return {
@@ -129,4 +129,4 @@ export class MyAngularEnv extends AngularEnv {
   }
 }
 
-export default new MyAngularEnv();
+export default new MyNgEnv();
