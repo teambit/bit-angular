@@ -5,7 +5,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
  * Provide your component compositions (preview) with the context they need to run.
  * for example, a router, a theme, a data provider, etc.
  * components added here as providers, should be listed as host-dependencies in your host-dependencies.ts file.
- * @see https://bit.dev/docs/angular-env/components-preview#compositions-providers
+ * @see https://bit.dev/docs/angular-env-default-default/components-preview#compositions-providers
  */
 @Component({
   selector: 'bit-wrapper',
@@ -21,6 +21,6 @@ import { Component, ViewEncapsulation } from '@angular/core';
 /**
  * the entry for the app (preview runtime) that renders your component previews.
  * use the default template or create your own.
- * @see https://bit.dev/docs/angular-env/components-preview#compositions-mounter
+ * @see https://bit.dev/docs/angular-env-default-default/components-preview#compositions-mounter
  */
 export default createMounter(WrapperComponent);

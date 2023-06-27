@@ -69,6 +69,12 @@
         "mainFile": "index.ts",
         "rootDir": "scopes/dev-services/preview/preview"
     },
+    "forks/angular-env-default": {
+        "scope": "teambit.angular",
+        "version": "0.0.1",
+        "mainFile": "index.ts",
+        "rootDir": "scopes/forks/angular-env-default"
+    },
     "forks/angular-env-v12": {
         "scope": "teambit.angular",
         "version": "0.1.12",

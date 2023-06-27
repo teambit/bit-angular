@@ -14,9 +14,9 @@ import { Tester } from '@teambit/tester';
 import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
 
-export class MyNgEnv extends AngularEnv {
+export class MyAngularEnv extends AngularEnv {
   // Name of the environment, used for friendly mentions across bit
-  name = 'my-ng-env';
+  name = 'my-angular-env';
 
   getTesterConfig() {
     return {
@@ -95,7 +95,7 @@ export class MyNgEnv extends AngularEnv {
    * Pipelines are optimized for performance and consistency, making sure every component is
    * independently built and tested.
    * This is a set of processes to be performed before a component is snapped, during its build phase
-   * @see https://bit.dev/docs/angular-env/build-pipelines
+   * @see https://bit.dev/docs/angular-env-default-default/build-pipelines
    */
   override build() {
     return super.build().replace([
@@ -106,7 +106,7 @@ export class MyNgEnv extends AngularEnv {
 
   /**
    * Defines the component generators (templates) available with the command `bit templates`.
-   * @see https://bit.dev/docs/angular-env/component-generators
+   * @see https://bit.dev/docs/angular-env-default-default/component-generators
    */
   override generators(): EnvHandler<TemplateList> {
     const envName = this.constructor.name;
@@ -120,7 +120,7 @@ export class MyNgEnv extends AngularEnv {
 
   /**
    * Defines the Angular workspace starters available with the command `bit new`.
-   * @see https://bit.dev/docs/angular-env/workspace-starters
+   * @see https://bit.dev/docs/angular-env-default-default/workspace-starters
    */
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
@@ -129,4 +129,4 @@ export class MyNgEnv extends AngularEnv {
   }
 }
 
-export default new MyNgEnv();
+export default new MyAngularEnv();
