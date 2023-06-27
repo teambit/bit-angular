@@ -39,7 +39,6 @@
           "@teambit/defender.eslint-linter": "0.0.10",
           "@teambit/defender.jest-tester": "0.0.9",
           "@teambit/defender.prettier-formatter": "0.0.6",
-          "@teambit/envs.docs.env-overview-template": "^0.0.2",
           "@teambit/toolbox.performance.v8-cache": "0.0.27",
           "@teambit/ui-foundation.ui.constants.z-indexes": "0.0.498",
           "@teambit/webpack.modules.generate-style-loaders": "0.0.110",
