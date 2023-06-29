@@ -10,7 +10,7 @@ import { tsConfig } from '../common/ts-config';
 import { workspaceConfig } from '../common/workspace-config';
 import { FORKED_ENV_NAME } from '../constants';
 
-export class NgWorkspaceTemplate implements WorkspaceTemplate {
+export class AngularStarter implements WorkspaceTemplate {
   private constructor(
     readonly angularVersion: number,
     readonly name = 'angular',
@@ -60,7 +60,7 @@ export class NgWorkspaceTemplate implements WorkspaceTemplate {
   static from(options: AngularComponentTemplateOptions & { angularVersion: number }): EnvHandler<WorkspaceTemplate> {
     return (context: EnvContext) => {
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
-      return new NgWorkspaceTemplate(
+      return new AngularStarter(
         options.angularVersion,
         options.name,
         options.description,

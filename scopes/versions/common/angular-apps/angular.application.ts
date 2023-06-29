@@ -1,4 +1,4 @@
-import { BrowserOptions, GenericAngularEnv } from '@teambit/angular-common';
+import { GenericAngularEnv } from '@teambit/angular-common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
 import { AppBuildContext, AppContext, Application } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';

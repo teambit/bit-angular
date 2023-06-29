@@ -1,3 +1,3 @@
-import { NgWorkspaceTemplate } from './ng-workspace';
-
-export { NgWorkspaceTemplate } from './ng-workspace';
+import { AngularStarter } from './ng-workspace';
+export { AngularStarter, /** @deprecated */ AngularStarter as NgWorkspaceTemplate } from './ng-workspace';
+export { DesignSystemStarter } from './design-system';

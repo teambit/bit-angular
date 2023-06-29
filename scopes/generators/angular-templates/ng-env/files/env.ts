@@ -14,7 +14,7 @@ import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
 import { ESLint as ESLintLib } from 'eslint';
 import { StarterList, TemplateList } from '@teambit/generator';
-import { NgWorkspaceTemplate } from '@teambit/angular-starters';
+import { AngularStarter, DesignSystemStarter } from '@teambit/angular-starters';
 import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
 import hostDependencies from './preview/host-dependencies';
 
@@ -128,7 +128,8 @@ export class ${Name} extends ${envName} {
    */
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      NgWorkspaceTemplate.from({envName: this.constructor.name, angularVersion: this.angularVersion})
+      AngularStarter.from({envName: this.constructor.name, angularVersion: this.angularVersion}),
+      DesignSystemStarter.from({envName: this.constructor.name})
     ]);
   }
 }

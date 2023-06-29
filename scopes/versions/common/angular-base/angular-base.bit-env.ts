@@ -1,7 +1,7 @@
 import { AngularAppType, NG_APP_NAME } from '@teambit/angular-apps';
 import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@teambit/angular-common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
-import { NgWorkspaceTemplate } from '@teambit/angular-starters';
+import { AngularStarter, DesignSystemStarter } from '@teambit/angular-starters';
 import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
 import { NgWebpackBundler, NgWebpackDevServer } from '@teambit/angular-webpack';
 import { AppTypeList } from '@teambit/application';
@@ -207,7 +207,8 @@ import hostDependencies from './preview/host-dependencies';
    */
   starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      NgWorkspaceTemplate.from({envName: this.constructor.name, angularVersion: this.angularVersion})
+      AngularStarter.from({envName: this.constructor.name, angularVersion: this.angularVersion}),
+      DesignSystemStarter.from({envName: this.constructor.name})
     ]);
   }
 

@@ -1,5 +1,5 @@
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
-import { NgWorkspaceTemplate } from '@teambit/angular-starters';
+import { AngularStarter } from '@teambit/angular-starters';
 import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
 import { AngularEnv } from '@teambit/angular';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
@@ -124,7 +124,7 @@ export class MyAngularEnv extends AngularEnv {
    */
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      NgWorkspaceTemplate.from({envName: this.constructor.name, angularVersion: this.angularVersion})
+      AngularStarter.from({envName: this.constructor.name, angularVersion: this.angularVersion})
     ]);
   }
 }
