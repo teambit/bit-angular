@@ -2,7 +2,8 @@ import { GenericAngularEnv } from '@teambit/angular-common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
 import { AppBuildContext, AppContext, Application } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
-import { ComponentDependency, DependencyResolverMain } from '@teambit/dependency-resolver';
+import { Component } from '@teambit/component';
+import { DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
@@ -76,26 +77,28 @@ export class AngularApp implements Application {
     });
   }
 
-  private async generateTsConfig(context: AppContext | AppBuildContext, appRootPath: string, tsconfigPath: string): Promise<string> {
+  private async generateTsConfig(appRootPath: string, tsconfigPath: string): Promise<string> {
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile).config;
 
     // Add the paths to tsconfig to remap bit components to local folders
     tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
-    const bitDeps = await this.depsResolver.getComponentDependencies(context.appComponent);
-    bitDeps.forEach((depId: ComponentDependency) => {
-      if (!depId.isExtension) {
-        let componentDir = this.workspace?.componentDir(depId.componentId, {
-          ignoreScopeAndVersion: true,
-          ignoreVersion: true
-        });
-        if (componentDir) {
-          componentDir = pathNormalizeToLinux(componentDir);
-          // TODO we should find a way to use the real entry file based on the component config because people can change it
-          tsconfigJSON.compilerOptions.paths[depId.getPackageName()] = [`${componentDir}/public-api.ts`, `${componentDir}`];
-          tsconfigJSON.compilerOptions.paths[`${depId.getPackageName()}/*`] = [`${componentDir}/*`];
-        }
-      }
-    });
+    if (this.workspace) {
+      const workspaceCmpsIDs = await this.workspace.listIds();
+      const bitCmps = await this.workspace.getMany(workspaceCmpsIDs);
+      bitCmps.forEach((dep: Component) => {
+          let componentDir = this.workspace?.componentDir(dep.id, {
+            ignoreScopeAndVersion: true,
+            ignoreVersion: true
+          });
+          if (componentDir) {
+            componentDir = pathNormalizeToLinux(componentDir);
+            const pkgName = this.depsResolver.getPackageName(dep);
+            // TODO we should find a way to use the real entry file based on the component config because people can change it
+            tsconfigJSON.compilerOptions.paths[pkgName] = [`${componentDir}/public-api.ts`, `${componentDir}`];
+            tsconfigJSON.compilerOptions.paths[`${pkgName}/*`] = [`${componentDir}/*`];
+          }
+      });
+    }
 
     const tsconfigContent = expandIncludeExclude(tsconfigJSON, this.tsconfigPath, [appRootPath]);
     const hash = objectHash(tsconfigContent);
@@ -115,7 +118,7 @@ export class AngularApp implements Application {
       ignoreVersion: true
     }) || '';
     const tsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
-    await this.generateTsConfig(context, appRootPath, tsconfigPath);
+    await this.generateTsConfig(appRootPath, tsconfigPath);
     const devServerContext = this.getDevServerContext(context);
     const preview = this.preview(this.envContext);
 
@@ -139,7 +142,7 @@ export class AngularApp implements Application {
     const outputPath = pathNormalizeToLinux(join(capsule.path, publicDir));
     const appRootPath = context.capsule.path;
     const tsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
-    await this.generateTsConfig(context, appRootPath, tsconfigPath);
+    await this.generateTsConfig(appRootPath, tsconfigPath);
     const preview = this.preview(this.envContext) as AngularPreview;
 
     const bundlerContext: BundlerContext = Object.assign(cloneDeep(context), {
