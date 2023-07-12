@@ -8,7 +8,6 @@ import { appComponentHtmlFile } from './template-files/src/app/app.component-htm
 import { appComponentScssFile } from './template-files/src/app/app.component-scss';
 import { appComponentSpecFile } from './template-files/src/app/app.component-spec';
 import { appModuleFile } from './template-files/src/app/app.module';
-import { faviconFile } from './template-files/src/assets/favicon-ico';
 import { gitKeepFile } from './template-files/src/assets/gitkeep';
 import { environmentFile } from './template-files/src/environments/environment';
 import { environmentProdFile } from './template-files/src/environments/environment.prod';
@@ -17,7 +16,6 @@ import { mainNgAppFile } from './template-files/src/main';
 import { polyfillFile } from './template-files/src/polyfills';
 import { stylesFile } from './template-files/src/styles';
 import { tsconfigFile } from './template-files/tsconfig.app';
-
 
 export class NgAppTemplate implements ComponentTemplate {
   private constructor(
@@ -32,7 +30,6 @@ export class NgAppTemplate implements ComponentTemplate {
       indexFile(context),
       ngAppFile(context),
       tsconfigFile(),
-      faviconFile(context),
       indexHtmlFile(context),
       mainNgAppFile(context),
       polyfillFile(context),
