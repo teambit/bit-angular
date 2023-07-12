@@ -23,7 +23,7 @@ export class DesignSystemStarter implements WorkspaceTemplate {
     const envPkgName = this.pkg.getPackageName(context.aspectComponent!);
     return [{
       relativePath: 'workspace.jsonc',
-      content: await workspaceConfig(context, envPkgName)
+      content: await workspaceConfig(context, envPkgName, 'apps/my-angular-app')
     }, {
       relativePath: '.gitignore',
       content: gitIgnore()
