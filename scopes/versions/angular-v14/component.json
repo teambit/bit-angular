@@ -44,6 +44,7 @@
           "@teambit/ui-foundation.ui.constants.z-indexes": "0.0.498",
           "@teambit/webpack.modules.generate-style-loaders": "0.0.110",
           "@teambit/webpack.modules.style-regexps": "0.0.139",
+          "@types/eslint": "^8.21.0",
           "@types/jest": "^28.0.0",
           "@types/react-dev-utils": "~9.0.8",
           "@types/remark-prism": "~1.3.0",
