@@ -1,16 +1,20 @@
 import { AngularAppType, NG_APP_NAME } from '@teambit/angular-apps';
 import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@teambit/angular-common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@teambit/angular-preview';
-import { AngularStarter, DesignSystemStarter, MaterialDesignSystemStarter } from '@teambit/angular-starters';
+import {
+  AngularStarter,
+  DesignSystemStarter,
+  MaterialDesignSystemStarter
+} from '@teambit/angular-starters';
 import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@teambit/angular-templates';
 import { NgWebpackBundler, NgWebpackDevServer } from '@teambit/angular-webpack';
 import { AppTypeList } from '@teambit/application';
 import { Pipeline } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { Compiler } from '@teambit/compiler';
-import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
+import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
-import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
+import { PrettierConfigWriter, PrettierFormatter } from '@teambit/defender.prettier-formatter';
 import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
 import { Formatter } from '@teambit/formatter';
 import { StarterList, TemplateList } from '@teambit/generator';
@@ -21,7 +25,9 @@ import { Preview } from '@teambit/preview';
 import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
 import { TypeScriptExtractor } from '@teambit/typescript';
+import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
+import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash';
 import { Configuration } from 'webpack';
@@ -31,7 +37,7 @@ import hostDependencies from './preview/host-dependencies';
 /**
  * a component environment built for [Angular](https://angular.io).
  */
-  export abstract class AngularBaseEnv implements AngularEnvInterface {
+export abstract class AngularBaseEnv implements AngularEnvInterface {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
   private ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
@@ -220,6 +226,21 @@ import hostDependencies from './preview/host-dependencies';
    */
   tag() {
     return Pipeline.from([]);
+  }
+
+  workspaceConfig(): ConfigWriterList {
+    return ConfigWriterList.from([
+      TypescriptConfigWriter.from({
+        tsconfig: require.resolve('./config/tsconfig.json')
+      }),
+      EslintConfigWriter.from({
+        configPath: require.resolve('./config/eslintrc'),
+        tsconfig: require.resolve('./config/tsconfig.json')
+      }),
+      PrettierConfigWriter.from({
+        configPath: require.resolve('./config/prettier.config')
+      })
+    ]);
   }
 
   getTesterConfig() {

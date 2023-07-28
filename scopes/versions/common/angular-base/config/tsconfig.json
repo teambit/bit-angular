@@ -15,6 +15,6 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "react-jsx"
   },
-  "exclude": ["artifacts", "public", "dist", "node_modules", "package.json"],
+  "exclude": ["artifacts", "public", "dist", "node_modules", "package.json", "**/*.cjs"],
   "include": ["**/*", "**/*.json"]
 }

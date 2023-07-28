@@ -1,9 +1,6 @@
 import { WorkspaceContext, WorkspaceTemplate } from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
-import { eslintConfig } from '../common/eslint-config';
 import { launchJson } from '../common/launch-json';
-import { prettierConfig } from '../common/prettier-config';
-import { tsConfig } from '../common/ts-config';
 import { workspaceConfig } from '../common/workspace-config';
 import { gitIgnore } from '../common/git-ignore';
 import { EnvContext, EnvHandler } from '@teambit/envs';
@@ -30,15 +27,6 @@ export class MaterialDesignSystemStarter implements WorkspaceTemplate {
     }, {
       relativePath: '.vscode/launch.json',
       content: launchJson(context)
-    }, {
-      relativePath: `.eslintrc.js`,
-      content: eslintConfig
-    }, {
-      relativePath: `tsconfig.json`,
-      content: tsConfig
-    }, {
-      relativePath: `.prettierrc.js`,
-      content: prettierConfig
     }];
   }
 

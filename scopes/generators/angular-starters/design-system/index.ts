@@ -1,9 +1,6 @@
 import { WorkspaceContext, WorkspaceTemplate } from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
-import { eslintConfig } from '../common/eslint-config';
 import { launchJson } from '../common/launch-json';
-import { prettierConfig } from '../common/prettier-config';
-import { tsConfig } from '../common/ts-config';
 import { workspaceConfig } from '../common/workspace-config';
 import { gitIgnore } from '../common/git-ignore';
 import { EnvContext, EnvHandler } from '@teambit/envs';
@@ -30,15 +27,6 @@ export class DesignSystemStarter implements WorkspaceTemplate {
     }, {
       relativePath: '.vscode/launch.json',
       content: launchJson(context)
-    }, {
-      relativePath: `.eslintrc.js`,
-      content: eslintConfig
-    }, {
-      relativePath: `tsconfig.json`,
-      content: tsConfig
-    }, {
-      relativePath: `.prettierrc.js`,
-      content: prettierConfig
     }];
   }
 
@@ -53,7 +41,7 @@ export class DesignSystemStarter implements WorkspaceTemplate {
       { id: `learnbit-angular.design-system/theme/my-light-theme` },
       { id: `learnbit-angular.design-system/ui/my-button` },
       { id: `learnbit-angular.design-system/ui/my-dialog`, env },
-      { id: `learnbit-angular.design-system/ui/my-toggle-theme`, env },
+      { id: `learnbit-angular.design-system/ui/my-theme-picker`, env },
     ];
   }
 
