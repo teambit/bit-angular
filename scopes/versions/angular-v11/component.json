@@ -50,7 +50,6 @@
           "jest-preset-angular": "~10.0.1",
           "ng-packagr": "~11.2.4",
           "path-browserify": "1.0.1",
-          "react-dev-utils": "10.2.1",
           "remark": "~13.0.0",
           "remark-frontmatter": "~3.0.0",
           "remark-html": "13.0.1",

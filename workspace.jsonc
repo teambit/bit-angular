@@ -34,8 +34,32 @@
     "packageManager": "teambit.dependencies/yarn",
     "policy": {
       "dependencies": {
+        "@teambit/compilation.compiler-task": "1.0.2",
+        "@teambit/defender.eslint-linter": "1.0.7",
+        "@teambit/defender.jest-tester": "1.0.2",
+        "@teambit/defender.prettier-formatter": "1.0.2",
+        "@teambit/dependencies.modules.packages-excluder": "1.0.2",
+        "@teambit/envs.docs.env-overview-template": "0.0.2",
+        "@teambit/graph.cleargraph": "^0.0.7",
+        "@teambit/react.ui.docs-app": "1.0.1",
+        "@teambit/toolbox.network.get-port": "1.0.0",
+        "@teambit/toolbox.performance.v8-cache": "0.0.27",
+        "@teambit/typescript.typescript-compiler": "2.0.6",
+        "@teambit/ui-foundation.ui.constants.z-indexes": "0.0.499",
+        "@teambit/webpack.modules.generate-style-loaders": "1.0.0",
+        "@teambit/webpack.modules.style-regexps": "1.0.0",
+        "@teambit/webpack.webpack-bundler": "1.0.1",
+        "@types/fs-extra": "~9.0.7",
+        "@types/lodash": "4.14.165",
+        "@types/object-hash": "~2.1.0",
+        "fs-extra": "9.1.0",
+        "lodash": "4.17.21",
+        "object-hash": "~2.1.1",
         "prettier": "2.3.2",
-        "react-dev-utils": "10.2.1"
+        "react-dev-utils": "10.2.1",
+        "remark-frontmatter": "~3.0.0",
+        "remark-html": "13.0.1",
+        "remark-prism": "~1.3.6"
       },
       "peerDependencies": {}
     },

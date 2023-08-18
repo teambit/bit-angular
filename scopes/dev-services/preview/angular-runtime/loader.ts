@@ -16,7 +16,8 @@ import { bootstrapApplication } from "@angular/platform-browser";
 import { createComponent, NgZone, StaticProvider } from '@angular/core';
 // @ts-ignore unavailable until Angular 14
 import { createApplication } from '@angular/platform-browser';
-import { AppModule } from './main';
+// @ts-ignore
+const AppModule = require('./main').AppModule as any;
 
 const enum RenderStrategy {
   Elements = 'element',

@@ -21,9 +21,6 @@
       "policy": {
         "dependencies": {
           "@angular-devkit/build-angular": "-",
-          "@teambit/toolbox.network.get-port": "0.0.121",
-          "@types/object-hash": "~2.1.0",
-          "object-hash": "~2.1.1",
           "typescript": "-"
         },
         "peerDependencies": {
