@@ -24,6 +24,8 @@ import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { mkdirsSync, outputFileSync } from 'fs-extra';
 import { join, posix, resolve } from 'path';
+import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
+import chalk from 'chalk';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -84,7 +86,7 @@ export class NgPackagrCompiler implements Compiler {
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
     private nodeModulesPaths: string[] = [],
-    private ngEnvOptions: AngularEnvOptions,
+    private ngEnvOptions: AngularEnvOptions
   ) {
     if (this.ngEnvOptions.useNgcc) {
       this.ngccProcessor = new NgccProcessor();
@@ -143,36 +145,47 @@ export class NgPackagrCompiler implements Compiler {
     pathToComponent: string,
     pathToOutputFolder: string,
     tsCompilerOptions: AngularCompilerOptions,
+    // component ids of other angular components in the workspace
+    componentIds: string[],
     isBuild = true
   ): Promise<void> {
-    // create ng-package.json config file for ngPackagr
-    const ngPackageJson = {
-      dest: this.distDir,
-      lib: {
-        entryFile: posix.join(pathToComponent, 'public-api.ts')
-      }
-    };
-    outputFileSync(join(pathToOutputFolder, NG_PACKAGE_JSON), JSON.stringify(ngPackageJson, null, 2));
-
     // check for dependencies other than tslib and move them to peer dependencies
     // see https://github.com/ng-packagr/ng-packagr/blob/master/docs/dependencies.md#general-recommendation-use-peerdependencies-whenever-possible
     const packageJson = PackageJsonFile.loadFromPathSync(pathToOutputFolder, '');
     const dependencies = packageJson.packageJsonObject.dependencies;
-    const peerDependencies = packageJson.packageJsonObject.peerDependencies;
-    const dependenciesKeys = Object.keys(dependencies);
-    if (dependenciesKeys.length > 1) {
-      dependenciesKeys.forEach((dep: string) => {
-        if (dep !== 'tslib') {
-          peerDependencies[dep] = dependencies[dep];
-          delete dependencies[dep];
+    // const peerDependencies = packageJson.packageJsonObject.peerDependencies;
+    const allowedNonPeerDependencies: string[] = [];
+    const depKeys = Object.keys(dependencies).filter(dep => dep !== 'tslib'); // only tslib is allowed in dependencies
+    if (depKeys.length) {
+      depKeys.forEach((dep: string) => {
+        if (!componentIds.includes(dep)) {
+          allowedNonPeerDependencies.push(dep);
+        } else {
+          // peerDependencies[dep] = dependencies[dep];
+          // delete dependencies[dep];
         }
       });
-      packageJson.addOrUpdateProperty('dependencies', dependencies);
-      packageJson.addOrUpdateProperty('peerDependencies', peerDependencies);
+      // packageJson.addOrUpdateProperty('dependencies', dependencies);
+      // packageJson.addOrUpdateProperty('peerDependencies', peerDependencies);
     }
 
     // update package.json
     await packageJson.write();
+
+    // create ng-package.json config file for ngPackagr
+    const ngPackageJson: NgPackageConfig = {
+      dest: this.distDir,
+      lib: {
+        entryFile: posix.join(pathToComponent, 'public-api.ts')
+      },
+      allowedNonPeerDependencies
+    };
+
+    if (allowedNonPeerDependencies.length) {
+      console.warn(chalk.yellow(`\nWARNING: The following dependencies ("${allowedNonPeerDependencies.join('", "')}") seem to not be Angular components and have been allowed as runtime "dependencies". You should probably move them to "peerDependencies" to avoid potential issues.\n`));
+    }
+
+    outputFileSync(join(pathToOutputFolder, NG_PACKAGE_JSON), JSON.stringify(ngPackageJson, null, 2));
 
     // add all node modules paths to TypeScript paths to ensure that it finds all existing dependencies
     tsCompilerOptions.paths = tsCompilerOptions.paths || {};
@@ -197,11 +210,11 @@ export class NgPackagrCompiler implements Compiler {
       }, (err: Error) => {
         if (err.message === ViewEngineTemplateError && !tsCompilerOptions.fullTemplateTypeCheck) {
           // eslint-disable-next-line no-console
-          console.warn(`\nError "${err.message}" triggered by the Angular compiler, retrying compilation without "fullTemplateTypeCheck" (you should probably create a custom environment using "bit create ng-env my-custom-angular-env" to set this option by default and avoid this error message)\n`);
+          console.warn(chalk.yellow(`\nError "${err.message}" triggered by the Angular compiler, retrying compilation without "fullTemplateTypeCheck" (you should probably create a custom environment using "bit create ng-env my-custom-angular-env" to set this option by default and avoid this error message)\n`));
           return this.ngPackagrCompilation(pathToComponent, pathToOutputFolder, {
             ...tsCompilerOptions,
             fullTemplateTypeCheck: false
-          }, isBuild);
+          }, componentIds, isBuild);
         }
         // eslint-disable-next-line no-console
         console.error(err);
@@ -286,7 +299,7 @@ export class NgPackagrCompiler implements Compiler {
         try {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();
-          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, true);
+          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, componentIds, true);
           this.logger.on();
           // @ts-ignore
         } catch (e: any) {
@@ -367,7 +380,7 @@ export class NgPackagrCompiler implements Compiler {
         options.artifactName,
         options.tsCompilerOptions,
         nodeModulesPaths,
-        options.ngEnvOptions,
+        options.ngEnvOptions
       );
     };
   }

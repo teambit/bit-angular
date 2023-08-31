@@ -21,6 +21,7 @@
       "policy": {
         "dependencies": {
           "@angular/compiler-cli": "-",
+          "chalk": "^4.1.2",
           "ng-packagr": "-"
         },
         "peerDependencies": {
