@@ -53,7 +53,7 @@ export class NgMultiCompiler implements Compiler {
     private angularElementsCompiler: AngularElementsCompiler | undefined,
     public artifactName: string,
     public distGlobPatterns: string[],
-    public distDir = 'dist',
+    public distDir = 'dist'
   ) {
     if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
       this.mainCompiler = this.angularElementsCompiler;
@@ -109,7 +109,7 @@ export class NgMultiCompiler implements Compiler {
 
   compileAppEntryFile(appComponent: Component, appComponentDir: string): TranspileFileOutput {
     const appEntryFile = appComponent.state.filesystem.files.find(file => minimatch(file.relative, NG_APP_PATTERN))!;
-    const transpileFileOutput = this.transpileFile(appComponent.mainFile.contents.toString(), {filePath: appEntryFile.relative, componentDir: appComponentDir});
+    const transpileFileOutput = this.transpileFile(appEntryFile.contents.toString(), { filePath: appEntryFile.relative, componentDir: appComponentDir });
     const distPath = join(appComponentDir, this.distDir);
     transpileFileOutput?.forEach((fileOutput: TranspileFileOutputOneFile) => {
       outputFileSync(join(distPath, fileOutput.outputPath), fileOutput.outputText);
@@ -128,7 +128,7 @@ export class NgMultiCompiler implements Compiler {
     appComponentCapsules.forEach((capsule: Capsule) => {
       const appComponent = capsule.component;
       this.compileAppEntryFile(appComponent, capsule.path);
-      componentsResults.push({component: appComponent});
+      componentsResults.push({ component: appComponent });
     });
 
     // compile all the other components with ng-packagr
@@ -231,7 +231,7 @@ export class NgMultiCompiler implements Compiler {
         angularElementsCompiler,
         artifactName,
         distGlobPatterns,
-        distDir,
+        distDir
       );
     };
   }
