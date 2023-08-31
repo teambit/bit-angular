@@ -22,7 +22,7 @@ import removeFilesAndEmptyDirsRecursively
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
-import { mkdirsSync, writeFileSync } from 'fs-extra';
+import { mkdirsSync, outputFileSync } from 'fs-extra';
 import { join, posix, resolve } from 'path';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
@@ -152,7 +152,7 @@ export class NgPackagrCompiler implements Compiler {
         entryFile: posix.join(pathToComponent, 'public-api.ts')
       }
     };
-    writeFileSync(join(pathToOutputFolder, NG_PACKAGE_JSON), JSON.stringify(ngPackageJson, null, 2));
+    outputFileSync(join(pathToOutputFolder, NG_PACKAGE_JSON), JSON.stringify(ngPackageJson, null, 2));
 
     // check for dependencies other than tslib and move them to peer dependencies
     // see https://github.com/ng-packagr/ng-packagr/blob/master/docs/dependencies.md#general-recommendation-use-peerdependencies-whenever-possible
@@ -297,7 +297,7 @@ export class NgPackagrCompiler implements Compiler {
           const distPath = join(capsule.path, this.distDir);
           component.filesystem.files.forEach(file => {
             if (!this.isFileSupported(file.path)) {
-              writeFileSync(join(distPath, file.relative), file.contents);
+              outputFileSync(join(distPath, file.relative), file.contents);
             }
           });
         }

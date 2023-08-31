@@ -4,19 +4,28 @@ import type { AngularEnvOptions } from '@teambit/angular-common';
 import { AngularElementsCompiler } from '@teambit/angular-elements';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BabelAspect, BabelCompiler, BabelMain } from '@teambit/babel';
-import { BuildContext, BuiltTaskResult } from '@teambit/builder';
+import {
+  ArtifactDefinition,
+  BuildContext,
+  BuiltTaskResult,
+  ComponentResult
+} from '@teambit/builder';
 import {
   CompilationInitiator,
   Compiler,
   CompilerOptions,
   TranspileComponentParams,
   TranspileFileOutput,
+  TranspileFileOutputOneFile,
   TranspileFileParams
 } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
+import { Capsule } from '@teambit/isolator';
 import { NgPackagrCompiler } from '@teambit/ng-packagr';
+import { outputFileSync } from 'fs-extra';
 import minimatch from 'minimatch';
+import { join } from 'path';
 
 const presets = [
   require.resolve('@babel/preset-env'),
@@ -42,6 +51,8 @@ export class NgMultiCompiler implements Compiler {
     private ngEnvOptions: AngularEnvOptions,
     private ngPackagrCompiler: NgPackagrCompiler,
     private angularElementsCompiler: AngularElementsCompiler | undefined,
+    public artifactName: string,
+    public distGlobPatterns: string[],
     public distDir = 'dist',
   ) {
     if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
@@ -63,6 +74,14 @@ export class NgMultiCompiler implements Compiler {
       });
     }
     return this._babelCompiler;
+  }
+
+  private getArtifactDefinition(): ArtifactDefinition[] {
+    return [{
+      generatedBy: this.id,
+      name: this.artifactName,
+      globPatterns: this.distGlobPatterns
+    }];
   }
 
   /**
@@ -88,15 +107,44 @@ export class NgMultiCompiler implements Compiler {
     return null;
   }
 
+  compileAppEntryFile(appComponent: Component, appComponentDir: string): TranspileFileOutput {
+    const appEntryFile = appComponent.state.filesystem.files.find(file => minimatch(file.relative, NG_APP_PATTERN))!;
+    const transpileFileOutput = this.transpileFile(appComponent.mainFile.contents.toString(), {filePath: appEntryFile.relative, componentDir: appComponentDir});
+    const distPath = join(appComponentDir, this.distDir);
+    transpileFileOutput?.forEach((fileOutput: TranspileFileOutputOneFile) => {
+      outputFileSync(join(distPath, fileOutput.outputPath), fileOutput.outputText);
+    });
+    return transpileFileOutput;
+  }
+
   /**
    * used by `bit build`
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
-    const result = await this.ngPackagrCompiler.build(context);
+    const componentsResults: ComponentResult[] = [];
+    let capsules = context.capsuleNetwork.seedersCapsules;
+    // compile all app entry files with babel
+    const appComponentCapsules = capsules.filter(capsule => componentIsApp(capsule.component, this.application));
+    appComponentCapsules.forEach((capsule: Capsule) => {
+      const appComponent = capsule.component;
+      this.compileAppEntryFile(appComponent, capsule.path);
+      componentsResults.push({component: appComponent});
+    });
+
+    // compile all the other components with ng-packagr
+    const ngPackagrResult = await this.ngPackagrCompiler.build(context);
+    componentsResults.push(...ngPackagrResult.componentsResults);
+
+    // and eventually with angular elements too
     if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
-      return this.angularElementsCompiler.build(context);
+      const angularElementsResult = await this.angularElementsCompiler.build(context);
+      componentsResults.push(...angularElementsResult.componentsResults);
     }
-    return result;
+
+    return {
+      artifacts: this.getArtifactDefinition(),
+      componentsResults
+    };
   }
 
   /**
@@ -181,6 +229,8 @@ export class NgMultiCompiler implements Compiler {
         options.ngEnvOptions,
         ngPackagrCompiler,
         angularElementsCompiler,
+        artifactName,
+        distGlobPatterns,
         distDir,
       );
     };
