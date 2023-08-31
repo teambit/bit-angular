@@ -182,7 +182,7 @@ export class NgPackagrCompiler implements Compiler {
     };
 
     if (allowedNonPeerDependencies.length) {
-      console.warn(chalk.yellow(`\nWARNING: The following dependencies ("${allowedNonPeerDependencies.join('", "')}") seem to not be Angular components and have been allowed as runtime "dependencies". You should probably move them to "peerDependencies" to avoid potential issues.\n`));
+      console.warn(chalk.yellow(`\nWARNING: You have dependencies declared as "runtime dependencies" ("${allowedNonPeerDependencies.join('", "')}"). In most cases Angular recommends using peer dependencies instead (see: https://github.com/ng-packagr/ng-packagr/blob/main/docs/dependencies.md).\n`));
     }
 
     outputFileSync(join(pathToOutputFolder, NG_PACKAGE_JSON), JSON.stringify(ngPackageJson, null, 2));
