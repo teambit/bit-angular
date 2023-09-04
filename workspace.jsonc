@@ -22,7 +22,8 @@
     /**
      * default scope for all components in workspace.
      **/
-    "defaultScope": "teambit.angular"
+    "defaultScope": "teambit.angular",
+    "resolveEnvsFromRoots": false,
   },
   /**
    * main configuration for component dependency resolution.
@@ -31,7 +32,7 @@
     /**
      * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
      */
-    "packageManager": "teambit.dependencies/yarn",
+    "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
         "@teambit/compilation.compiler-task": "1.0.2",
@@ -49,6 +50,7 @@
         "@teambit/webpack.modules.generate-style-loaders": "1.0.0",
         "@teambit/webpack.modules.style-regexps": "1.0.0",
         "@teambit/webpack.webpack-bundler": "1.0.1",
+        "@teambit/workspace-config-files": "^0.0.128",
         "@types/fs-extra": "~9.0.7",
         "@types/lodash": "4.14.165",
         "@types/object-hash": "~2.1.0",
@@ -64,6 +66,7 @@
       "peerDependencies": {}
     },
     "linkCoreAspects": true,
+    "rootComponents": false,
     "packageImportMethod": "copy",
     "packageManagerArgs": [],
     "devFilePatterns": [
