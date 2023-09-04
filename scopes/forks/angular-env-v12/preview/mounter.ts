@@ -4,7 +4,7 @@ import { Component, NgModule, ViewEncapsulation } from '@angular/core';
 /**
  * Provide your component compositions (preview) with the context they need to run.
  * for example, a router, a theme, a data provider, etc.
- * components added here as providers, should be listed as host-dependencies in your host-dependencies.ts file.
+ * components added here as providers should be listed as host-dependencies in your host-dependencies.ts file.
  * @see https://bit.dev/docs/angular-env/components-preview#compositions-providers
  */
 @Component({
