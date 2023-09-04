@@ -13,6 +13,7 @@ import { envJsoncFile } from './files/env-jsonc';
 import { indexFile } from './files/index';
 import { hostDependenciesFile } from './files/preview/host-dependencies';
 import { mounterFile } from './files/preview/mounter';
+import { Component, ComponentID } from '@teambit/component';
 
 export class NgEnvTemplate implements ComponentTemplate {
   private constructor(
@@ -26,7 +27,8 @@ export class NgEnvTemplate implements ComponentTemplate {
   ) {}
 
   async generateFiles(context: ComponentContext) {
-    const envComponent = await this.workspace.get(context.aspectId);
+    const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
+    const envComponent = await this.workspace.get(aspectId);
     const envPkgName = this.pkg.getPackageName(envComponent);
     const envId = envComponent.id.toStringWithoutVersion();
     return [
