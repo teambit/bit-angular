@@ -14,6 +14,8 @@ import objectHash from 'object-hash';
 import { join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
 import { Configuration, WebpackPluginInstance } from 'webpack';
+// Make sure bit recognizes the dependencies
+import "@teambit/angular-preview";
 
 
 export type WebpackConfig = Configuration;
@@ -46,6 +48,8 @@ const writeHash = new Map<string, string>();
 const timestamp = Date.now();
 
 export function getPreviewRootPath(workspace?: Workspace): string {
+  const defaultPath = () => resolve(require.resolve('@teambit/angular-preview'), '../../preview-app/');
+  if(!workspace) return defaultPath();
   try {
     const rootPath = workspace?.componentDir(ComponentID.fromString('teambit.angular/dev-services/preview/preview'), {
       ignoreScopeAndVersion: true,
@@ -53,7 +57,7 @@ export function getPreviewRootPath(workspace?: Workspace): string {
     }, { relative: false }) || '';
     return join(rootPath, 'preview-app');
   } catch (e) {
-    return resolve(require.resolve('@teambit/angular-preview'), '../../preview-app/');
+    return defaultPath();
   }
 }
 
@@ -158,7 +162,7 @@ export function writeTsconfig(
   const hash = objectHash(content);
   const targetPath = join(dirPath, `__tsconfig-${timestamp}.json`);
 
-  // write only if link has changed (prevents triggering fs watches)
+  // write only if the link has changed (prevents triggering fs watches)
   if (writeHash.get(targetPath) !== hash) {
     writeFileSync(targetPath, content);
     writeHash.set(targetPath, hash);

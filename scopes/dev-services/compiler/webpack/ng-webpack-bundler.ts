@@ -22,7 +22,6 @@ import {
   WebpackMain
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { join } from 'path';
 import { Configuration, WebpackPluginInstance } from 'webpack';
 import {
