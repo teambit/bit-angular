@@ -2,7 +2,8 @@ import {
   AngularEnvOptions,
   BrowserOptions,
   DevServerOptions,
-  getNodeModulesPaths
+  getNodeModulesPaths,
+  getWorkspace
 } from '@teambit/angular-common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { DevServer, DevServerContext } from '@teambit/bundler';
@@ -22,7 +23,6 @@ import {
   WebpackMain
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { join, posix } from 'path';
 import { Configuration } from 'webpack';
 import {
@@ -78,7 +78,7 @@ export class NgWebpackDevServer {
       const name = options.name || 'ng-webpack-dev-server';
       const logger = context.createLogger(name);
       const devServerContext = options.devServerContext;
-      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const workspace = getWorkspace(context);
       const webpackMain = context.getAspect<WebpackMain>(WebpackAspect.id);
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);

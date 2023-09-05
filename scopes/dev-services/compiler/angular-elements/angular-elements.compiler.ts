@@ -1,7 +1,7 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
 import type { AngularEnvOptions } from '@teambit/angular-common';
-import { getNodeModulesPaths } from '@teambit/angular-common';
+import { getNodeModulesPaths, getWorkspace } from '@teambit/angular-common';
 import { RollupCompiler } from './rollup/rollup.compiler';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
@@ -200,7 +200,7 @@ Built Angular Compositions
     return (context: EnvContext) => {
       const name = options.name || 'angular-elements-compiler';
       const logger = context.createLogger(name);
-      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const workspace = getWorkspace(context);
       const compositions = context.getAspect<CompositionsMain>(CompositionsAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);

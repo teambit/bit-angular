@@ -1,8 +1,8 @@
-import { GenericAngularEnv } from '@teambit/angular-common';
+import { GenericAngularEnv, getWorkspace } from '@teambit/angular-common';
 import { Application, ApplicationType } from '@teambit/application';
 import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import { Workspace } from '@teambit/workspace';
 import { AngularAppOptions } from './angular-app-options';
 import { AngularApp } from './angular.application';
 import { NG_APP_NAME } from './utils';
@@ -29,10 +29,7 @@ export class AngularAppType implements ApplicationType<AngularAppOptions> {
     return (context: EnvContext) => {
       const name = options.name || NG_APP_NAME;
       const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
-      let workspace: Workspace | undefined;
-      try {
-        workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
-      } catch (err) {}
+      const workspace = getWorkspace(context);
       return new AngularAppType(name, options.angularEnv, context, depsResolver, workspace);
     };
   }

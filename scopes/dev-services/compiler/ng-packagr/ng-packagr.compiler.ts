@@ -1,7 +1,6 @@
 import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
-import type { AngularEnvOptions } from '@teambit/angular-common';
-import { getNodeModulesPaths } from '@teambit/angular-common';
+import { AngularEnvOptions, getNodeModulesPaths, getWorkspace } from '@teambit/angular-common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -21,11 +20,11 @@ import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
 import { NgccProcessor } from '@teambit/ngcc';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
-import { mkdirsSync, outputFileSync } from 'fs-extra';
-import { join, posix, resolve } from 'path';
-import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
+import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
+import { mkdirsSync, outputFileSync } from 'fs-extra';
+import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
+import { join, posix, resolve } from 'path';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -336,7 +335,7 @@ export class NgPackagrCompiler implements Compiler {
   /**
    * given a component, returns the path to the source folder to use for the preview, uses the one
    * in node_modules by default
-   * used by `bit start`
+   * used by `bit start` (so workspace is always available)
    */
   getPreviewComponentRootPath(component: Component): string {
     return this.workspace!.componentDir(component.id, {
@@ -362,7 +361,7 @@ export class NgPackagrCompiler implements Compiler {
       const name = options.name || 'ng-packagr-compiler';
       const ngPackagrModulePath = options.ngPackagrModulePath || require.resolve('ng-packagr');
       const logger = context.createLogger(name);
-      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const workspace = getWorkspace(context);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const depResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);

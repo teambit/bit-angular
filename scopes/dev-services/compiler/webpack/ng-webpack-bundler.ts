@@ -2,7 +2,8 @@ import {
   AngularEnvOptions,
   BrowserOptions,
   DevServerOptions,
-  getNodeModulesPaths
+  getNodeModulesPaths,
+  getWorkspace
 } from '@teambit/angular-common';
 import { AppBuildContext, ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BundlerContext } from '@teambit/bundler';
@@ -75,7 +76,7 @@ export class NgWebpackBundler {
       const name = options.name || 'ng-webpack-bundler';
       const logger = context.createLogger(name);
       const bundlerContext = options.bundlerContext;
-      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const workspace = getWorkspace(context);
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);

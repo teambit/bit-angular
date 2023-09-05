@@ -1,7 +1,21 @@
 import { ComponentID } from "@teambit/component";
+import { EnvContext } from "@teambit/envs";
 import { IsolatorMain } from "@teambit/isolator";
-import { Workspace } from "@teambit/workspace";
+import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import { resolve } from 'path';
+
+/**
+ * Returns the workspace instance from the context, if it's available, or undefined otherwise.
+ */
+export function getWorkspace(context: EnvContext): Workspace | undefined {
+  // TODO: replace this try catch with context.hasAspect once it's available from harmony
+  try {
+    return context.getAspect<Workspace>(WorkspaceAspect.id);
+  } catch (err) {
+    // Ignore this. We might be running not from within a workspace, for example, when using bit sign.
+  }
+  return undefined;
+}
 
 export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, workspace?: Workspace): string[] {
   if (!workspace) {

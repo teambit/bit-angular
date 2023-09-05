@@ -1,8 +1,9 @@
-import { AngularComponentTemplateOptions } from '@teambit/angular-common';
+import { AngularComponentTemplateOptions, getWorkspace } from '@teambit/angular-common';
+import { ComponentID } from '@teambit/component';
 import { EnvContext } from '@teambit/envs';
 import { ComponentContext, ComponentTemplate, ConfigContext } from '@teambit/generator';
 import { PkgAspect, PkgMain } from '@teambit/pkg';
-import { Workspace, WorkspaceAspect } from '@teambit/workspace';
+import { Workspace } from '@teambit/workspace';
 import { eslintConfigFile } from './files/config/eslintrc';
 import { jestConfigFile } from './files/config/jest.config';
 import { prettierConfigFile } from './files/config/prettier.config';
@@ -13,7 +14,6 @@ import { envJsoncFile } from './files/env-jsonc';
 import { indexFile } from './files/index';
 import { hostDependenciesFile } from './files/preview/host-dependencies';
 import { mounterFile } from './files/preview/mounter';
-import { Component, ComponentID } from '@teambit/component';
 
 export class NgEnvTemplate implements ComponentTemplate {
   private constructor(
@@ -23,12 +23,12 @@ export class NgEnvTemplate implements ComponentTemplate {
     readonly description = 'create a customized Angular env with your configs and tools',
     readonly hidden = false,
     private pkg: PkgMain,
-    private workspace: Workspace,
+    private workspace: Workspace | undefined,
   ) {}
 
   async generateFiles(context: ComponentContext) {
     const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
-    const envComponent = await this.workspace.get(aspectId);
+    const envComponent = await this.workspace!.get(aspectId);
     const envPkgName = this.pkg.getPackageName(envComponent);
     const envId = envComponent.id.toStringWithoutVersion();
     return [
@@ -66,7 +66,7 @@ export class NgEnvTemplate implements ComponentTemplate {
   static from(options: AngularComponentTemplateOptions & { envName: string; angularVersion: number; }) {
     return (context: EnvContext) => {
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
-      const workspace = context.getAspect<Workspace>(WorkspaceAspect.id);
+      const workspace = getWorkspace(context);
       return new NgEnvTemplate(
         options.envName,
         options.angularVersion,
