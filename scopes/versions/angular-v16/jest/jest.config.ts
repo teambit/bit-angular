@@ -1,5 +1,7 @@
 import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
+
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
+
 const packagesToExclude: string[] = ['@angular', '@ngrx'];
 
 export default {

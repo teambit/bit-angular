@@ -155,9 +155,9 @@ export async function ngToCustomElements(modulesOrComponents: Type<any>[], appli
     // elements detached from the DOM when we unmount them. We need to keep the appRef alive to be able to reattach.
     appRef = null;
     return createCustomElements(componentsToLoad, rootInjector);
-  } else {
-    throw new Error('Unable to load any composition, the Angular env can only load modules or components');
   }
+    throw new Error('Unable to load any composition, the Angular env can only load modules or components');
+
 }
 
 export interface NgBootstrapOptions {
@@ -196,7 +196,7 @@ export async function ngBootstrap<C>(modulesOrComponents: Type<any> | Type<any>[
           console.warn('wrapperComponentSelector is only used for Angular v13 and below, starting with v14 you need to use a standalone component wrapper with `<ng-content>`');
         }
         return wrapComponent(options.hostElement, options.wrapper, componentsToLoad, options.appConfig);
-      } else {
+      }
         const selectors: string[] = [];
         componentsToLoad.forEach((component: Type<any>) => {
           const selector = getCmpSelector(component);
@@ -214,10 +214,10 @@ export async function ngBootstrap<C>(modulesOrComponents: Type<any> | Type<any>[
         }
 
         return bootstrap(parentModule || AppModule, undefined, options.appConfig);
-      }
-    } else {
-      throw new Error('Unable to load any composition, the Angular env can only load modules or components');
+
     }
+      throw new Error('Unable to load any composition, the Angular env can only load modules or components');
+
   } else { // for v13 and below we need to use angular elements to be able to load standalone components
     // if (options.wrapperComponent) {
     //   throw new Error('WrapperComponent is only supported in Angular v14 and above');

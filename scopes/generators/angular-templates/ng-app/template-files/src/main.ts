@@ -1,7 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const mainNgAppFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/main.ts`,
     content: `import { enableProdMode } from '@angular/core';

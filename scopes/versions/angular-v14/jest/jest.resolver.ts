@@ -23,8 +23,8 @@ module.exports = (path: string, options: any) => {
       ]);
 
       if (pkgNamesToTarget.has(pkg.name)) {
-        delete pkg['exports'];
-        delete pkg['module'];
+        delete pkg.exports;
+        delete pkg.module;
       }
 
       return pkg;

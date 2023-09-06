@@ -74,7 +74,7 @@ export class NgWebpackBundler {
       const webpackBuildConfigFactory: WebpackBuildConfigFactory = options.ngEnvOptions.webpackConfigFactory;
       const name = options.name || 'ng-webpack-bundler';
       const logger = context.createLogger(name);
-      const bundlerContext = options.bundlerContext;
+      const {bundlerContext} = options;
       const workspace = getWorkspace(context);
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
@@ -90,7 +90,7 @@ export class NgWebpackBundler {
         tempFolder = join(CACHE_ROOT, idName);
       }
 
-      let appRootPath: string, tsconfigPath: string;
+      let appRootPath: string; let tsconfigPath: string;
       let plugins: WebpackPluginInstance[] = [];
       if (isAppBuildContext(bundlerContext)) { // When you use `bit run <app>`
         appRootPath = bundlerContext.capsule.path;// this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';

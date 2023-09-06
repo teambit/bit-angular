@@ -1,6 +1,6 @@
 import { ComponentContext } from '@teambit/generator';
 
-export function docFile({ namePascalCase: Name }: ComponentContext, angularVersion: number, envId: string) {
+export function docFile({ }: ComponentContext, angularVersion: number, envId: string) {
   // language=Markdown
   return `---
 description: A Bit development environment for Angular Components

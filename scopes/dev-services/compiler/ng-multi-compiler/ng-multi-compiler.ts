@@ -63,6 +63,7 @@ export class NgMultiCompiler implements Compiler {
   }
 
   private _babelCompiler!: BabelCompiler;
+
   get babelCompiler(): BabelCompiler {
     if (!this._babelCompiler) {
       this._babelCompiler = this.babelMain.createCompiler({
@@ -95,9 +96,9 @@ export class NgMultiCompiler implements Compiler {
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       return this.mainCompiler.transpileComponent(params);
-    } else {
+    } 
       return this.ngPackagrCompiler.transpileComponent(params);
-    }
+    
   }
 
   transpileFile(fileContent: string, params: TranspileFileParams): TranspileFileOutput {
@@ -122,7 +123,7 @@ export class NgMultiCompiler implements Compiler {
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
     const componentsResults: ComponentResult[] = [];
-    let capsules = context.capsuleNetwork.seedersCapsules;
+    const capsules = context.capsuleNetwork.seedersCapsules;
     // compile all app entry files with babel
     const appComponentCapsules = capsules.filter(capsule => componentIsApp(capsule.component, this.application));
     appComponentCapsules.forEach((capsule: Capsule) => {
@@ -200,12 +201,12 @@ export class NgMultiCompiler implements Compiler {
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
 
       const ngPackagrCompiler = NgPackagrCompiler.from({
-        artifactName: artifactName,
-        distDir: distDir,
-        distGlobPatterns: distGlobPatterns,
+        artifactName,
+        distDir,
+        distGlobPatterns,
         ngEnvOptions: options.ngEnvOptions,
         ngPackagrModulePath,
-        shouldCopyNonSupportedFiles: shouldCopyNonSupportedFiles,
+        shouldCopyNonSupportedFiles,
         tsCompilerOptions: options.tsCompilerOptions
       })(context);
 

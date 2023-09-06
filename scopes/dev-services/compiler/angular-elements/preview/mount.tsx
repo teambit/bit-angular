@@ -11,7 +11,7 @@ const root = document.getElementById('root') as HTMLElement;
  * this function can be overridden through ReactAspect.overrideCompositionsMounter() API
  * to apply custom logic for component DOM mounting.
  */
-export default async (composition: any/*, previewContext: RenderingContext*/) => {
+export default async (composition: any/* , previewContext: RenderingContext */) => {
   ReactDOM.render(
     <div>{await ngToReact([composition])}</div>,
     root

@@ -8,7 +8,7 @@ class AppComponent {
 // @ts-ignore
 AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(); };
 // @ts-ignore
-AppComponent.ɵcmp = /*@__PURE__*/ i0.ɵɵdefineComponent({ type: AppComponent, selectors: [["app-root"]], decls: 0, vars: 0, template: function AppComponent_Template(rf, ctx) { }, encapsulation: 2 });
+AppComponent.ɵcmp = /* @__PURE__ */ i0.ɵɵdefineComponent({ type: AppComponent, selectors: [["app-root"]], decls: 0, vars: 0, template: function AppComponent_Template(rf, ctx) { }, encapsulation: 2 });
 (function () { // @ts-ignore
   (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AppComponent, [{
   type: i0.Component,
@@ -24,9 +24,9 @@ class AppModule {
 // @ts-ignore
 AppModule.ɵfac = function AppModule_Factory(t) { return new (t || AppModule)(); };
 // @ts-ignore
-AppModule.ɵmod = /*@__PURE__*/ i0.ɵɵdefineNgModule({ type: AppModule });
+AppModule.ɵmod = /* @__PURE__ */ i0.ɵɵdefineNgModule({ type: AppModule });
 // @ts-ignore
-AppModule.ɵinj = /*@__PURE__*/ i0.ɵɵdefineInjector({ imports: [[BrowserModule]] });
+AppModule.ɵinj = /* @__PURE__ */ i0.ɵɵdefineInjector({ imports: [[BrowserModule]] });
 (function () { // @ts-ignore
   (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AppModule, [{
   type: i0.NgModule,

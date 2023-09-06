@@ -1,4 +1,5 @@
 import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
+
 const packagesToExclude: string[] = ['@angular', '@ngrx'];
 
 export default {

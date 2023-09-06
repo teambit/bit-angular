@@ -2,7 +2,6 @@ import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { componentIsApp } from '@teambit/angular-apps';
 import type { AngularEnvOptions } from '@teambit/angular-common';
 import { getNodeModulesPaths, getWorkspace } from '@teambit/angular-common';
-import { RollupCompiler } from './rollup/rollup.compiler';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -21,6 +20,7 @@ import { NgccProcessor } from '@teambit/ngcc';
 import { Workspace, WorkspaceAspect } from '@teambit/workspace';
 import chalk from 'chalk';
 import { extname, join } from 'path';
+import { RollupCompiler } from './rollup/rollup.compiler';
 
 interface AngularElementsCompilerOptions {
   ngPackagrModulePath?: string;
@@ -109,7 +109,7 @@ Built Angular Compositions
     }
     // Build compositions
     await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true);
-    return;
+    
     // }
     // TODO: implement compilation of components as webcomponents
     // throw new Error('not implemented');

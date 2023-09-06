@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { createMounter } from '@teambit/angular-mounter';
 import { Component, NgModule, ViewEncapsulation } from '@angular/core';
 

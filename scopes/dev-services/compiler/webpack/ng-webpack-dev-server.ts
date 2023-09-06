@@ -77,7 +77,7 @@ export class NgWebpackDevServer {
 
       const name = options.name || 'ng-webpack-dev-server';
       const logger = context.createLogger(name);
-      const devServerContext = options.devServerContext;
+      const {devServerContext} = options;
       const workspace = getWorkspace(context);
       const webpackMain = context.getAspect<WebpackMain>(WebpackAspect.id);
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
@@ -93,7 +93,7 @@ export class NgWebpackDevServer {
         tempFolder = join(CACHE_ROOT, idName);
       }
 
-      let appRootPath: string, tsconfigPath: string;
+      let appRootPath: string; let tsconfigPath: string;
       let isApp = false;
       if (isAppContext(devServerContext)) { // When you use `bit run <app>`
         appRootPath = workspace?.componentDir(devServerContext.appComponent.id, {

@@ -1,7 +1,7 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const indexHtmlFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
+  const { namePascalCase: Name } = context;
   return {
     relativePath: `src/index.html`,
     content: `<!doctype html>
@@ -17,6 +17,6 @@ export const indexHtmlFile = (context: ComponentContext): ComponentFile => {
   <app-root></app-root>
 </body>
 </html>
-`,
+`
   };
 };

@@ -1,10 +1,10 @@
 import { WorkspaceContext, WorkspaceTemplate } from '@teambit/generator';
 import { AngularComponentTemplateOptions } from '@teambit/angular-common';
+import { EnvContext, EnvHandler } from '@teambit/envs';
+import PkgAspect, { PkgMain } from '@teambit/pkg';
 import { launchJson } from '../common/launch-json';
 import { workspaceConfig } from '../common/workspace-config';
 import { gitIgnore } from '../common/git-ignore';
-import { EnvContext, EnvHandler } from '@teambit/envs';
-import PkgAspect, { PkgMain } from '@teambit/pkg';
 import { DEFAULT_SCOPE_NAME } from '../constants';
 
 export class MaterialDesignSystemStarter implements WorkspaceTemplate {

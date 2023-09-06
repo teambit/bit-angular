@@ -41,7 +41,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
   private ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
-  /** Abstract functions & properties specific to the adapter **/
+  /** Abstract functions & properties specific to the adapter * */
   abstract ngEnvOptions: AngularEnvOptions;
   abstract name: string;
   abstract readonly angularVersion: number;
@@ -49,7 +49,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   [key: string]: any;
 
   public getNgEnvOptions(): AngularEnvOptions {
-    return Object.assign({}, this.ngEnvOptions);
+    return { ...this.ngEnvOptions};
   }
 
   /**
@@ -199,11 +199,10 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   generators(): EnvHandler<TemplateList> {
     const envName = this.constructor.name;
-    const angularVersion = this.angularVersion;
     return TemplateList.from([
-      NgModuleTemplate.from({envName, angularVersion}),
-      NgEnvTemplate.from({envName, angularVersion}),
-      NgAppTemplate.from({envName, angularVersion})
+      NgModuleTemplate.from({envName, angularVersion: this.angularVersion}),
+      NgEnvTemplate.from({envName, angularVersion: this.angularVersion}),
+      NgAppTemplate.from({envName, angularVersion: this.angularVersion})
     ]);
   }
 

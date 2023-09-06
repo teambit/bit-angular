@@ -55,7 +55,7 @@ export class NgEnvTemplate implements ComponentTemplate {
     ];
   }
 
-  config(context: ConfigContext) {
+  config() {
     return {
       'teambit.envs/envs': {
         env: 'teambit.envs/env',

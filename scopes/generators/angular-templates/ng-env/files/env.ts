@@ -1,6 +1,6 @@
 import { ComponentContext } from '@teambit/generator';
 
-export function envFile({ namePascalCase: Name, name, componentId }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
+export function envFile({ namePascalCase: Name, name }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
   // language=TypeScript
   return `import { ${envName} } from '${envPkgName}';
 import { EnvHandler } from '@teambit/envs';

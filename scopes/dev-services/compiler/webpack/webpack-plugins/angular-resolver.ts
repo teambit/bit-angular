@@ -178,10 +178,10 @@ export class BitDedupeModuleResolvePlugin {
       || V16_ANGULAR_FORMATS.every(f => Object.keys(entryPointPackageJson as JsonObject).includes(f))
     ) {
       return true;
-    } else {
-      const metadataPath = this.fs.resolve(entryPointPath, typings.replace(/\.d\.ts$/, '') + '.metadata.json');
+    } 
+      const metadataPath = this.fs.resolve(entryPointPath, `${typings.replace(/\.d\.ts$/, '')  }.metadata.json`);
       return this.fs.exists(metadataPath);
-    }
+    
   }
 
   getIssuer(result: any) {

@@ -59,7 +59,7 @@ export class NgccProcessor {
 
       // The hash is used directly in the file name to mitigate potential read/write race
       // conditions as well as to only require a file existence check
-      this.runHashFilePath = path.join(tempFolder, runHash + '.lock');
+      this.runHashFilePath = path.join(tempFolder, `${runHash  }.lock`);
 
       // If the run hash lock file exists, then ngcc was already run against this project state
       if (existsSync(this.runHashFilePath)) {
@@ -101,7 +101,7 @@ export class NgccProcessor {
 
     if (status !== 0) {
       const errorMessage = error?.message || '';
-      throw new Error(errorMessage + `NGCC failed${errorMessage ? ', see above' : ''}.`);
+      throw new Error(`${errorMessage  }NGCC failed${errorMessage ? ', see above' : ''}.`);
     }
 
     // ngcc was successful so if a run hash was generated, write it for next time

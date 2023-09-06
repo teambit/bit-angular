@@ -1,7 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const appComponentHtmlFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/app/app.component.html`,
     content: `<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->

@@ -16,7 +16,7 @@ export const NgMultiCompilerTask = {
     const description = options.description || 'compiling components using NgMultiCompiler';
 
     return CompilerTask.from({
-      name: name,
+      name,
       description,
       compiler: options.ngMultiCompiler
     });

@@ -1,7 +1,7 @@
 export const mounterFile = () => {
   return {
     relativePath: './preview/mounter.ts',
-    content: `import { createMounter } from '@teambit/angular-mounter';
+    content: `// eslint-disable-next-lineimport { createMounter } from '@teambit/angular-mounter';
 import { Component, ViewEncapsulation } from '@angular/core';
 
 /**

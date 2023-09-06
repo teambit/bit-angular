@@ -1,7 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const environmentFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/environments/environment.ts`,
     content: `// This file can be replaced during build by using the \`fileReplacements\` array.

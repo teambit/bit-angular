@@ -66,7 +66,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
         // eslint-disable-next-line @typescript-eslint/return-await
         const res = await compile({ id: resolve(id).replace(/\\/g, '/'), host, options: opts, files });
         // Manually force import the jit compiler at the beginning of the files
-        res.code = "import '@angular/compiler';\n" + res.code;
+        res.code = `import '@angular/compiler';\n${  res.code}`;
         return res;
       }
     }

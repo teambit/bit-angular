@@ -99,7 +99,7 @@ export class NgPackagrCompiler implements Compiler {
     } else {
       // Angular v13+
       this.readDefaultTsConfig = async() => {
-        const initializeTsConfig = module.initializeTsConfig;
+        const {initializeTsConfig} = module;
         const entryPoints: any = [{
           data: {
             entryPoint: {
@@ -133,7 +133,7 @@ export class NgPackagrCompiler implements Compiler {
       updatePackageJson.exports = packageJson.exports;
       props.forEach(prop => {
         if (packageJson.exports['.'][prop]) {
-          updatePackageJson.exports['.'][prop] = './' + posix.join(this.distDir, packageJson.exports['.'][prop]);
+          updatePackageJson.exports['.'][prop] = `./${  posix.join(this.distDir, packageJson.exports['.'][prop])}`;
         }
       });
     }
@@ -151,7 +151,7 @@ export class NgPackagrCompiler implements Compiler {
     // check for dependencies other than tslib and move them to peer dependencies
     // see https://github.com/ng-packagr/ng-packagr/blob/master/docs/dependencies.md#general-recommendation-use-peerdependencies-whenever-possible
     const packageJson = PackageJsonFile.loadFromPathSync(pathToOutputFolder, '');
-    const dependencies = packageJson.packageJsonObject.dependencies;
+    const {dependencies} = packageJson.packageJsonObject;
     // const peerDependencies = packageJson.packageJsonObject.peerDependencies;
     const allowedNonPeerDependencies: string[] = [];
     const depKeys = Object.keys(dependencies).filter(dep => dep !== 'tslib'); // only tslib is allowed in dependencies
@@ -228,8 +228,8 @@ export class NgPackagrCompiler implements Compiler {
     const dist = join(params.outputDir, this.distDir);
     mkdirsSync(dist);
     // We do not need to compile using ng-packagr (except for builds) because Angular reads the source files directly
-    return;
-    /*const isApp = componentIsApp(params.component, this.application);
+    
+    /* const isApp = componentIsApp(params.component, this.application);
     // No need to compile an app
     if (isApp) {
       return;
@@ -251,7 +251,7 @@ export class NgPackagrCompiler implements Compiler {
     this.logger.off();
     // Build component package
     await this.ngPackagrCompilation(params.componentDir, params.outputDir, this.tsCompilerOptions, false);
-    this.logger.on();*/
+    this.logger.on(); */
   }
 
   private getArtifactDefinition(): ArtifactDefinition[] {
@@ -289,7 +289,7 @@ export class NgPackagrCompiler implements Compiler {
     const componentsResults: ComponentResult[] = [];
 
     for (const capsule of componentCapsules) {
-      const component = capsule.component;
+      const {component} = capsule;
       const currentComponentResult: ComponentResult = {
         component
       };

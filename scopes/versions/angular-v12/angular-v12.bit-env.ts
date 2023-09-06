@@ -17,7 +17,7 @@ export class AngularV12Env extends AngularBaseEnv {
     jestModulePath: require.resolve('jest'),
     ngPackagrModulePath: require.resolve('ng-packagr'),
     readDefaultTsConfig: require.resolve('ng-packagr/lib/ts/tsconfig'),
-    webpackConfigFactory: webpackConfigFactory,
+    webpackConfigFactory,
     webpackDevServerModulePath: require.resolve('webpack-dev-server'),
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break

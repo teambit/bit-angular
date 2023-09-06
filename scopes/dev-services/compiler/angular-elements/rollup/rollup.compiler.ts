@@ -8,11 +8,11 @@ import { TransformHook } from 'rollup';
 // import { minify } from 'rollup-plugin-esbuild';
 // import html from '@rollup/plugin-html';
 // import sourcemaps from 'rollup-plugin-sourcemaps';
+import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { ngcPlugin } from './ngc-plugin';
 // import { ensureUnixPath } from './utils/path';
 import { generateKey, readCacheEntry, saveCacheEntry } from './utils/cache';
 import { getNodeJSFileSystem, ngBabelLinker, ngCompilerCli, ngccCompilerCli } from './utils/ng-compiler-cli';
-import type { AngularCompilerOptions } from '@angular/compiler-cli';
 
 export type OutputFileCache = Map<string, { version: string; content: string }>;
 
@@ -51,14 +51,14 @@ export class RollupCompiler {
   }
 
   async bundleFiles(opts: RollupOptions) {
-    const cacheDirectory = opts.cacheDirectory;
+    const {cacheDirectory} = opts;
 
     /** File system used by the Angular linker plugin. */
     const NodeJSFileSystem = await getNodeJSFileSystem();
     const fileSystem = new NodeJSFileSystem();
 
     /** Logger used by the Angular linker plugin. */
-    let ConsoleLogger: any, LogLevel: any;
+    let ConsoleLogger: any; let LogLevel: any;
     const ngCompilerCliApi = await ngCompilerCli() as any;
     if (ngCompilerCliApi.ConsoleLogger && ngCompilerCliApi.LogLevel) {
       ConsoleLogger = ngCompilerCliApi.ConsoleLogger;

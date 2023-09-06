@@ -1,7 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const polyfillFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/polyfills.ts`,
     content: `/**

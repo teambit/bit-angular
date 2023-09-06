@@ -1,7 +1,7 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const appComponentSpecFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
+  const { name } = context;
   return {
     relativePath: `src/app/app.component.spec.ts`,
     content: `import { TestBed } from '@angular/core/testing';

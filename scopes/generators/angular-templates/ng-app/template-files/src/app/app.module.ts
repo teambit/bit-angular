@@ -1,7 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const appModuleFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
   return {
     relativePath: `src/app/app.module.ts`,
     content: `import { NgModule } from '@angular/core';

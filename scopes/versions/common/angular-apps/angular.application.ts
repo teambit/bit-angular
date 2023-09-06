@@ -43,7 +43,7 @@ export class AngularApp implements Application {
     }
 
     this.tsconfigPath = pathNormalizeToLinux(join(this.tempFolder, `__tsconfig-${Date.now()}.json`));
-    this.preview = this.getPreview(this.tsconfigPath);
+    this.preview = this.getPreview();
   }
 
   readonly publicDir = 'public';
@@ -61,7 +61,7 @@ export class AngularApp implements Application {
     });
   }
 
-  private getPreview(tsconfigPath: string): EnvHandler<Preview> {
+  private getPreview(): EnvHandler<Preview> {
     const ngEnvOptions = this.angularEnv.getNgEnvOptions();
 
     const serveOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), { tsConfig: this.tsconfigPath });
