@@ -114,11 +114,10 @@ export class ${Name} extends ${envName} {
    */
   override generators(): EnvHandler<TemplateList> {
     const envName = this.constructor.name;
-    const angularVersion = this.angularVersion;
     return TemplateList.from([
-      NgModuleTemplate.from({ envName, angularVersion }),
-      NgEnvTemplate.from({ envName, angularVersion }),
-      NgAppTemplate.from({ envName, angularVersion })
+      NgModuleTemplate.from({envName, angularVersion: this.angularVersion}),
+      NgEnvTemplate.from({envName, angularVersion: this.angularVersion}),
+      NgAppTemplate.from({envName, angularVersion: this.angularVersion})
     ]);
   }
 
