@@ -50,7 +50,6 @@
         "@teambit/webpack.modules.generate-style-loaders": "1.0.0",
         "@teambit/webpack.modules.style-regexps": "1.0.0",
         "@teambit/webpack.webpack-bundler": "1.0.1",
-        "@teambit/workspace-config-files": "^0.0.128",
         "@types/fs-extra": "~9.0.7",
         "@types/lodash": "4.14.165",
         "@types/object-hash": "~2.1.0",
