@@ -1,7 +1,7 @@
 import { AngularComponentTemplateOptions, getWorkspace } from '@teambit/angular-common';
 import { ComponentID } from '@teambit/component';
 import { EnvContext } from '@teambit/envs';
-import { ComponentContext, ComponentTemplate, ConfigContext } from '@teambit/generator';
+import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { PkgAspect, PkgMain } from '@teambit/pkg';
 import { Workspace } from '@teambit/workspace';
 import { eslintConfigFile } from './files/config/eslintrc';
@@ -28,9 +28,18 @@ export class NgEnvTemplate implements ComponentTemplate {
 
   async generateFiles(context: ComponentContext) {
     const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
-    const envComponent = await this.workspace!.get(aspectId);
-    const envPkgName = this.pkg.getPackageName(envComponent);
-    const envId = envComponent.id.toStringWithoutVersion();
+    const envId = aspectId.toStringWithoutVersion();
+    let envPkgName: string;
+    if (this.workspace) {
+      const envComponent = await this.workspace!.get(aspectId);
+      envPkgName = this.pkg.getPackageName(envComponent);
+    } else { // mostly for ci / ripple
+      if(envId === 'teambit.angular/angular') {
+        envPkgName = '@teambit/angular';
+      } else {
+        envPkgName = `@teambit/angular-v${this.angularVersion}`;
+      }
+    }
     return [
       {
         relativePath: 'index.ts',
