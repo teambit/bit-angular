@@ -1,5 +1,5 @@
-import { NgModuleRef } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import type { NgModuleRef } from '@angular/core';
+import type { ReplaySubject } from 'rxjs';
 
 declare global {
   interface Window {
