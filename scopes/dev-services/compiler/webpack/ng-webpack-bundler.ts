@@ -117,7 +117,7 @@ export class NgWebpackBundler {
           entryFiles: target.entries as string[],
           logger,
           useNgcc: !!options.ngEnvOptions.useNgcc,
-          nodeModulesPaths: getNodeModulesPaths(false, isolator, workspace),
+          nodeModulesPaths: getNodeModulesPaths(true, isolator, workspace),
           plugins,
           rootPath: appRootPath,
           setup: WebpackSetup.Build,
