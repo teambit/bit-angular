@@ -22,13 +22,8 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: bitsrc/stable:latest
     steps:
-      - uses: teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Keep default
