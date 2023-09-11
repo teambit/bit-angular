@@ -44,7 +44,9 @@ export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, work
     nodeModulesPaths.push(workspaceNodeModules, 'node_modules');
   }
 
-  nodeModulesPaths.push('node_modules');
+  if (!nodeModulesPaths.includes('node_modules')) {
+    nodeModulesPaths.push('node_modules');
+  }
 
   return nodeModulesPaths;
 }
