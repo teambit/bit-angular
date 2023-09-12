@@ -68,7 +68,7 @@
           "webpack": "5.81.0",
           "webpack-dev-middleware": "6.0.2",
           "webpack-dev-server": "4.13.3",
-          "zone.js": "~0.13.0"
+          "zone.js": "0.13.1"
         },
         "peerDependencies": {
           "rxjs": "^6.5.5 || ^7.4.0"
