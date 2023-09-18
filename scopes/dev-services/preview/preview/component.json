@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/preview/preview"
+    "name": "dev-services/preview/preview",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -18,8 +19,7 @@
     },
     "teambit.dependencies/dependency-resolver": {
       "policy": {
-        "dependencies": {
-        },
+        "dependencies": {},
         "peerDependencies": {
           "@angular/animations": ">= 8.0.0",
           "@angular/compiler": ">= 8.0.0",
@@ -31,6 +31,9 @@
           "rxjs": "^6.5.5 || ^7.4.0",
           "typescript": ">= 3.5.3",
           "zone.js": ">= 0.9.1"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

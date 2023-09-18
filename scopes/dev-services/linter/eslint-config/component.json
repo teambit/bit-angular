@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/linter/angular-eslint-config"
+    "name": "dev-services/linter/angular-eslint-config",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -29,6 +30,9 @@
           "@typescript-eslint/eslint-plugin": ">= 4",
           "@typescript-eslint/parser": ">= 4",
           "eslint": ">= 7.0.0"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

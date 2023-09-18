@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/compiler/ngcc"
+    "name": "dev-services/compiler/ngcc",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -23,6 +24,9 @@
         },
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

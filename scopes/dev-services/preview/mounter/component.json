@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/preview/mounter"
+    "name": "dev-services/preview/mounter",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -28,6 +29,9 @@
           "@angular/platform-browser-dynamic": ">= 8.0.0",
           "typescript": ">= 3.5.3",
           "zone.js": ">= 0.9.1"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

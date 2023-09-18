@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "versions/common/angular-common"
+    "name": "versions/common/angular-common",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -25,6 +26,9 @@
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",
           "typescript": ">= 3.5.3"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

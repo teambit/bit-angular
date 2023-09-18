@@ -27,10 +27,9 @@
           "@angular/platform-browser": "-",
           "@angular/platform-browser-dynamic": "-",
           "@angular/router": "-",
-          "@babel/plugin-proposal-class-properties": "7.12.13",
-          "@babel/preset-env": "7.12.17",
-          "@babel/preset-typescript": "7.12.7",
-          "@babel/runtime": "^7.12.18",
+          "@babel/plugin-transform-class-properties": "7.22.5",
+          "@babel/preset-env": "7.22.15",
+          "@babel/preset-typescript": "7.22.15",
           "@types/dompurify": "^2.2.2",
           "@types/enhanced-resolve": "~3.0.7",
           "@types/node": "^12.11.1",
@@ -64,6 +63,9 @@
           "webpack": ">= 4.44.2",
           "webpack-dev-server": ">= 3.11.2",
           "zone.js": ">= 0.9.1"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

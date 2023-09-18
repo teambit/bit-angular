@@ -31,7 +31,7 @@ const presets = [
   require.resolve('@babel/preset-env'),
   require.resolve('@babel/preset-typescript')
 ];
-const plugins = [require.resolve('@babel/plugin-proposal-class-properties')];
+const plugins = [require.resolve('@babel/plugin-transform-class-properties')];
 
 export interface NgMultiCompilerOptions {
   bitCompilerOptions?: Partial<CompilerOptions>;
@@ -96,9 +96,9 @@ export class NgMultiCompiler implements Compiler {
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
       return this.mainCompiler.transpileComponent(params);
-    } 
+    }
       return this.ngPackagrCompiler.transpileComponent(params);
-    
+
   }
 
   transpileFile(fileContent: string, params: TranspileFileParams): TranspileFileOutput {

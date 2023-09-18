@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/compiler/ng-packagr",
-    "scope": "teambit.angular"
+    "scope": "teambit.angular",
+    "name": "dev-services/compiler/ng-packagr"
   },
   "propagate": true,
   "extensions": {
@@ -27,6 +27,9 @@
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0",
           "ng-packagr": ">=5.0.0"
+        },
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

@@ -1,6 +1,7 @@
 {
   "componentId": {
-    "name": "generators/angular-starters"
+    "name": "generators/angular-starters",
+    "scope": "teambit.angular"
   },
   "propagate": true,
   "extensions": {
@@ -13,6 +14,13 @@
         "private": false,
         "engines": {
           "node": ">=14.20.0"
+        }
+      }
+    },
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "devDependencies": {
+          "@babel/runtime": "7.22.15"
         }
       }
     }

@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "dev-services/compiler/ng-multi-compiler",
-    "scope": "teambit.angular"
+    "scope": "teambit.angular",
+    "name": "dev-services/compiler/ng-multi-compiler"
   },
   "propagate": true,
   "extensions": {
@@ -21,13 +21,14 @@
       "policy": {
         "dependencies": {
           "@angular/compiler-cli": "-",
-          "@babel/plugin-proposal-class-properties": "7.12.13",
-          "@babel/preset-env": "7.12.17",
-          "@babel/preset-typescript": "7.12.7",
+          "@babel/plugin-transform-class-properties": "7.22.5",
+          "@babel/preset-env": "7.22.15",
+          "@babel/preset-typescript": "7.22.15",
           "minimatch": "~3.0.4"
         },
         "devDependencies": {
-          "@types/minimatch": "~3.0.4"
+          "@types/minimatch": "~3.0.4",
+          "@babel/runtime": "7.22.15"
         },
         "peerDependencies": {
           "@angular/compiler-cli": ">= 8.0.0"
