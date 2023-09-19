@@ -106,6 +106,3 @@ yarn.lock
 
 # cypress
 cypress/videos
-
-# other
-/scopes/versions/angular-v15/backup/

@@ -1,0 +1,20 @@
+{
+  "componentId": {
+    "name": "examples/my-angular-v15-env",
+    "scope": "bitdev.angular"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@jest/globals": "^29.3.1",
+          "@bitdev/angular.dev-services.linter.eslint": ">= 1.0.0",
+          "@types/jest": "^29.2.4",
+          "jest": "^29.3.1",
+          "jest-preset-angular": "~12.2.3"
+        }
+      }
+    }
+  }
+}

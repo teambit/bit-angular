@@ -1,0 +1,19 @@
+{
+  "componentId": {
+    "name": "examples/my-angular-v12-env",
+    "scope": "bitdev.angular"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@bitdev/angular.dev-services.linter.eslint": ">= 1.0.0",
+          "@types/jest": "~27.0.1",
+          "jest": "~27.0.4",
+          "jest-preset-angular": "~10.0.1"
+        }
+      }
+    }
+  }
+}
