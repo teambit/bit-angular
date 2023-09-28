@@ -153,12 +153,12 @@
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v16-env"
     },
-    "readme": {
+    /*"readme": {
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/readme"
-    },
+    },*/
     "templates/generators": {
         "scope": "bitdev.angular",
         "version": "1.0.0",

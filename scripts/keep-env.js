@@ -19,13 +19,13 @@ const argv = key => {
 const regexp = [];
 // Remove all versions but this one
 const version = parseInt(argv('version'));
-regexp.push(new RegExp(`\\s\\s"teambit\\.angular\\/versions\\/angular\\-v(?!${version})\\d\\d?":\\s\\{\\},\\n`, "g"));
+regexp.push(new RegExp(`\\s\\s"bitdev\\.angular\\/envs\\/angular\\-v(?!${version})\\d\\d?\\-env":\\s\\{\\},\\n`, "g"));
 
 const defaultEnv = argv('default');
 // Remove default env & app if needed
 if(!defaultEnv) {
-  regexp.push(new RegExp(`\\s\\s"teambit\\.angular\\/angular":\\s\\{\\},\\n`, "g"));
-  regexp.push(new RegExp(`\\s\\s"examples\\/demo-app":\\s\\{\\},\\n`, "g"));
+  regexp.push(new RegExp(`\\s\\s"bitdev\\.angular\\/angular\\-env":\\s\\{\\},\\n`, "g"));
+  regexp.push(new RegExp(`\\s\\s"integration\\/demo-app":\\s\\{\\},\\n`, "g"));
 }
 
 try {

@@ -23,7 +23,7 @@
      * default scope for all components in workspace.
      **/
     "defaultScope": "bitdev.angular",
-    "resolveEnvsFromRoots": false
+    "resolveEnvsFromRoots": true
   },
   /**
    * main configuration for component dependency resolution.
@@ -65,7 +65,7 @@
       "peerDependencies": {}
     },
     "linkCoreAspects": true,
-    "rootComponents": false,
+    "rootComponents": true,
     "packageImportMethod": "copy",
     "packageManagerArgs": [],
     "devFilePatterns": [
@@ -77,20 +77,22 @@
   },
   "teambit.generator/generator": {
     "envs": [
-      //      "bitdev.angular/angular-env",
-      "bitdev.angular/envs/angular-v16-env"
-      //      "bitdev.angular/envs/angular-v15-env",
-      //      "bitdev.angular/envs/angular-v14-env",
-      //      "bitdev.angular/envs/angular-v13-env",
-      //      "bitdev.angular/envs/angular-v12-env",
+      "bitdev.angular/angular-env",
+      "bitdev.angular/envs/angular-v16-env",
+      "bitdev.angular/envs/angular-v15-env",
+      "bitdev.angular/envs/angular-v14-env",
+      "bitdev.angular/envs/angular-v13-env",
+      "bitdev.angular/envs/angular-v12-env",
     ]
   },
-  //  "bitdev.angular/envs/angular-v15-env": {},
-  //  "bitdev.angular/envs/angular-v14-env": {},
-  //  "bitdev.angular/envs/angular-v13-env": {},
-  //  "bitdev.angular/envs/angular-v12-env": {},
+  "bitdev.angular/angular-env": {},
+  "bitdev.angular/envs/angular-v16-env": {},
+  "bitdev.angular/envs/angular-v15-env": {},
+  "bitdev.angular/envs/angular-v14-env": {},
+  "bitdev.angular/envs/angular-v13-env": {},
+  "bitdev.angular/envs/angular-v12-env": {},
   // Add angular apps (until this is no longer necessary)
-//  "integration/demo-app": {},
+  "integration/demo-app": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a

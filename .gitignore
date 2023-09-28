@@ -73,6 +73,7 @@ nodeBin
 
 # bit directories
 .bit
+**/*.eslintrc.json
 
 # DS_Store
 .DS_Store
