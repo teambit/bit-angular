@@ -109,6 +109,11 @@ export class AngularPreview implements Preview {
     return this.bundlerProvider(context);
   }
 
+  /**
+   * Dependencies to be bundled only once, in the env preview template, and not in each component preview.
+   * most of your peer dependencies should be listed here to avoid duplications in the preview.
+   * React, ReactDOM, and MDX are included as they are part of the preview ui.
+   */
   getHostDependencies(): string[] {
     return (
       this.hostDependencies || [
