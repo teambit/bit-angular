@@ -1,0 +1,13 @@
+export const tsConfigFile = () => {
+  return {
+    relativePath: './config/tsconfig.json',
+    content: `/**
+ * @see https://bit.dev/reference/typescript/typescript-config
+ */
+{
+  "extends": "@bitdev/angular.envs.base-env/config/tsconfig.json",
+  "include": ["**/*", "**/*.json"]
+}
+`,
+  };
+};

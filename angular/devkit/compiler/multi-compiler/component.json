@@ -1,0 +1,27 @@
+{
+  "componentId": {
+    "scope": "bitdev.angular",
+    "name": "dev-services/compiler/multi-compiler"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular/compiler-cli": "-",
+          "@babel/plugin-transform-class-properties": "7.22.5",
+          "@babel/preset-env": "7.22.15",
+          "@babel/preset-typescript": "7.22.15",
+          "minimatch": "~3.0.4"
+        },
+        "devDependencies": {
+          "@types/minimatch": "~3.0.4"
+        },
+        "peerDependencies": {
+          "@angular/compiler-cli": ">= 8.0.0"
+        }
+      }
+    },
+    "teambit.node/node@1.0.16": {}
+  }
+}

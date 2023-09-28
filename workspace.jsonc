@@ -22,8 +22,8 @@
     /**
      * default scope for all components in workspace.
      **/
-    "defaultScope": "teambit.angular",
-    "resolveEnvsFromRoots": false,
+    "defaultScope": "bitdev.angular",
+    "resolveEnvsFromRoots": false
   },
   /**
    * main configuration for component dependency resolution.
@@ -39,16 +39,16 @@
         "@teambit/defender.eslint-linter": "1.0.8",
         "@teambit/defender.jest-tester": "1.0.5",
         "@teambit/defender.prettier-formatter": "1.0.2",
-        "@teambit/dependencies.modules.packages-excluder": "1.0.2",
+        "@teambit/dependencies.modules.packages-excluder": "1.0.4",
         "@teambit/envs.docs.env-overview-template": "0.0.2",
         "@teambit/graph.cleargraph": "^0.0.7",
-        "@teambit/react.ui.docs-app": "1.0.2",
-        "@teambit/toolbox.network.get-port": "1.0.0",
-        "@teambit/toolbox.performance.v8-cache": "0.0.27",
+        "@teambit/react.ui.docs-app": "1.0.6",
+        "@teambit/toolbox.network.get-port": "1.0.2",
+        "@teambit/toolbox.performance.v8-cache": "0.0.29",
         "@teambit/typescript.typescript-compiler": "2.0.7",
-        "@teambit/ui-foundation.ui.constants.z-indexes": "^0.0.500",
-        "@teambit/webpack.modules.generate-style-loaders": "1.0.0",
-        "@teambit/webpack.modules.style-regexps": "1.0.0",
+        "@teambit/ui-foundation.ui.constants.z-indexes": "0.0.504",
+        "@teambit/webpack.modules.generate-style-loaders": "1.0.2",
+        "@teambit/webpack.modules.style-regexps": "1.0.2",
         "@teambit/webpack.webpack-bundler": "1.0.2",
         "@types/fs-extra": "~9.0.7",
         "@types/lodash": "4.14.165",
@@ -77,57 +77,36 @@
   },
   "teambit.generator/generator": {
     "envs": [
-//      "teambit.angular/angular",
-//      "teambit.angular/versions/angular-v16",
-//      "teambit.angular/versions/angular-v15",
-//      "teambit.angular/versions/angular-v14",
-//      "teambit.angular/versions/angular-v13",
-//      "teambit.angular/versions/angular-v12",
-    ],
-    //    "aspects": [
-    //      "teambit.angular/versions/angular-v11",
-    //      "teambit.angular/versions/angular-v10",
-    //      "teambit.angular/versions/angular-v9",
-    //      "teambit.angular/versions/angular-v8"
-    //    ]
+      //      "bitdev.angular/angular-env",
+      "bitdev.angular/envs/angular-v16-env"
+      //      "bitdev.angular/envs/angular-v15-env",
+      //      "bitdev.angular/envs/angular-v14-env",
+      //      "bitdev.angular/envs/angular-v13-env",
+      //      "bitdev.angular/envs/angular-v12-env",
+    ]
   },
-  // Add angular templates to the list
-  "teambit.angular/angular": {},
-  "teambit.angular/versions/angular-v16": {},
-  "teambit.angular/versions/angular-v15": {},
-  "teambit.angular/versions/angular-v14": {},
-  "teambit.angular/versions/angular-v13": {},
-  "teambit.angular/versions/angular-v12": {},
-  //    "teambit.angular/versions/angular-v11": {},
-  //    "teambit.angular/versions/angular-v10": {},
-  //    "teambit.angular/versions/angular-v9": {},
-  //    "teambit.angular/versions/angular-v8": {},
+  //  "bitdev.angular/envs/angular-v15-env": {},
+  //  "bitdev.angular/envs/angular-v14-env": {},
+  //  "bitdev.angular/envs/angular-v13-env": {},
+  //  "bitdev.angular/envs/angular-v12-env": {},
   // Add angular apps (until this is no longer necessary)
-    "examples/demo-app": {},
+//  "integration/demo-app": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a
    * new set of dependencies.
    **/
   "teambit.workspace/variants": {
-    // Set the default variant configs to be used for all components (except examples).
-    "scopes": {
-      "defaultScope": "teambit.angular",
-      "teambit.pkg/pkg": {
-        "packageManagerPublishArgs": [
-          "--access public"
-        ],
-        "packageJson": {
-          "name": "@teambit/{name}",
-          "private": false,
-          "engines": {
-            "node": ">=12.15.0"
-          }
-        }
-      }
+    // Set the default variant configs to be used for all components (except integration).
+    "angular": {
+      "defaultScope": "bitdev.angular"
+    },
+    // Set the default variant configs to be used for integration
+    "integration": {
+      "defaultScope": "integration.examples"
     },
     // Special rules for all aspect envs
-    "scopes/angular, scopes/versions/angular-v8, scopes/versions/angular-v9, scopes/versions/angular-v10, scopes/versions/angular-v11, scopes/versions/angular-v12, scopes/versions/angular-v13, scopes/versions/angular-v14, scopes/versions/angular-v15, scopes/versions/angular-v16, scopes/forks": {
+    "angular/envs, angular/examples": {
       "teambit.harmony/aspect": "-",
       // Set the env env for all core envs
       "teambit.envs/env": {},
@@ -136,48 +115,43 @@
       }
     },
     // All the other components use node env
-    "scopes/dev-services, scopes/generators, scopes/versions/common": {
+    "angular/devkit, angular/templates, angular/envs/base-env": {
+      "teambit.envs/env": "-",
       "teambit.envs/envs": {
-        "env": "teambit.harmony/node"
+        "env": "teambit.node/node"
       },
-      "teambit.harmony/node": {}
+      "teambit.node/node@1.0.16": {}
     },
-    "examples/custom-env": {
+    "angular/readme": {
+      "teambit.mdx/mdx": {},
+      "teambit.envs/envs": {
+        "env": "teambit.mdx/mdx"
+      }
+    },
+    "integration/custom-env": {
       "teambit.envs/env": {}
     },
-    "examples/demo-app": {
-      "teambit.angular/angular": {}
-//      "teambit.angular/versions/angular-v16": {}
+    "integration/demo-app": {
+      //      "bitdev.angular/angular-env": {}
+      "bitdev.angular/envs/angular-v16-env": {}
     },
-    "examples/demo-lib": {
-      "teambit.angular/angular": {}
+    "integration/demo-lib": {
+      "bitdev.angular/angular-env": {}
     },
-    "examples/demo-lib-v16": {
-      "teambit.angular/versions/angular-v16": {}
+    "integration/demo-lib-v16": {
+      "bitdev.angular/envs/angular-v16-env": {}
     },
-    "examples/demo-lib-v15": {
-      "teambit.angular/versions/angular-v15": {}
+    "integration/demo-lib-v15": {
+      "bitdev.angular/envs/angular-v15-env": {}
     },
-    "examples/demo-lib-v14": {
-      "teambit.angular/versions/angular-v14": {}
+    "integration/demo-lib-v14": {
+      "bitdev.angular/envs/angular-v14-env": {}
     },
-    "examples/demo-lib-v13": {
-      "teambit.angular/versions/angular-v13": {}
+    "integration/demo-lib-v13": {
+      "bitdev.angular/envs/angular-v13-env": {}
     },
-    "examples/demo-lib-v12": {
-      "teambit.angular/versions/angular-v12": {}
-    },
-    "examples/demo-lib-v11": {
-      "teambit.angular/versions/angular-v11": {}
-    },
-    "examples/demo-lib-v10": {
-      "teambit.angular/versions/angular-v10": {}
-    },
-    "examples/demo-lib-v9": {
-      "teambit.angular/versions/angular-v9": {}
-    },
-    "examples/demo-lib-v8": {
-      "teambit.angular/versions/angular-v8": {}
+    "integration/demo-lib-v12": {
+      "bitdev.angular/envs/angular-v12-env": {}
     }
   }
 }

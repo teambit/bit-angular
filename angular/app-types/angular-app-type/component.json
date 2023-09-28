@@ -1,0 +1,22 @@
+{
+  "componentId": {
+    "scope": "bitdev.angular",
+    "name": "app-types/angular-app-type"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@angular-devkit/build-angular": "-",
+          "typescript": "-"
+        },
+        "peerDependencies": {
+          "@angular-devkit/build-angular": ">= 0.0.1",
+          "typescript": ">= 3.5.3"
+        }
+      }
+    },
+    "teambit.node/node@1.0.16": {}
+  }
+}

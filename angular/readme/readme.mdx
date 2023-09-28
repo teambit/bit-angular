@@ -1,0 +1,51 @@
+# Bit Angular
+
+This scope contains the different components used to support the Angular framework.
+You can get more information about Bit & Angular in [the Bit Angular documentation](https://bit.dev/docs/angular-introduction).
+
+
+## Getting started
+Run the following command to create a new workspace that contains a custom Angular env component:
+```
+bit new angular my-workspace --aspect bitdev.angular/angular-env
+```
+
+You can list all available templates with the following command:
+```
+bit templates
+```
+
+Generate a component using the ng-module template with the bit create command:
+```
+bit create ng-module ui/my-button
+```
+
+Run the following commands to create and set up an application using the ng-app template:
+```
+bit create ng-app apps/my-angular-app
+bit use apps/my-angular-app
+```
+
+
+## Structure
+- `app-types`: adds support for Angular applications
+- `dev-services`: the different tools used by the Angular envs such as the compilers, linter, preview, etc...
+- `docs`: the components used by the [the Bit Angular documentation](https://bit.dev/docs/angular-introduction)
+- `envs`: the Angular environments for each major version of the framework that we support
+- `examples`: the components used by the templates
+- `templates`: the templates for the starters and generators
+- `angular-env`: the default Angular environment. It uses the latest version of the framework
+
+
+## Features
+The following dev services are supported by default:
+- Jest
+- ESLint
+- Prettier
+- Webpack dev server & bundler
+- Ng-packagr for libraries
+- Angular elements
+
+
+## License
+MIT
