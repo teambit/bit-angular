@@ -55,10 +55,10 @@ export class AngularApp implements Application {
     return join(artifactsDir, this.name);
   }
 
-  private getDevServerContext(context: AppContext): DevServerContext {
+  private getDevServerContext(context: AppContext, appRootPath: string): DevServerContext {
     return Object.assign(cloneDeep(context), {
       entry: [],
-      rootPath: '',
+      rootPath: appRootPath,
       publicPath: `${this.publicDir}/${this.options.name}`,
       title: this.options.name
     });
@@ -80,28 +80,23 @@ export class AngularApp implements Application {
     });
   }
 
-  private async generateTsConfig(appRootPath: string, tsconfigPath: string): Promise<string> {
+  private generateTsConfig(bitCmps: Component[], appRootPath: string, tsconfigPath: string): string {
     const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile).config;
 
     // Add the paths to tsconfig to remap bit components to local folders
     tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
-    if (this.workspace) {
-      const workspaceCmpsIDs = await this.workspace.listIds();
-      const bitCmps = await this.workspace.getMany(workspaceCmpsIDs);
-      bitCmps.forEach((dep: Component) => {
-          let componentDir = this.workspace?.componentDir(dep.id, {
-            ignoreScopeAndVersion: true,
-            ignoreVersion: true
-          });
-          if (componentDir) {
-            componentDir = pathNormalizeToLinux(componentDir);
-            const pkgName = this.depsResolver.getPackageName(dep);
-            // TODO we should find a way to use the real entry file based on the component config because people can change it
-            tsconfigJSON.compilerOptions.paths[pkgName] = [`${componentDir}/public-api.ts`, `${componentDir}`];
-            tsconfigJSON.compilerOptions.paths[`${pkgName}/*`] = [`${componentDir}/*`];
-          }
-      });
-    }
+    bitCmps.forEach((dep: Component) => {
+        let componentDir = this.workspace?.componentDir(dep.id, {
+          ignoreVersion: true
+        });
+        if (componentDir) {
+          componentDir = pathNormalizeToLinux(componentDir);
+          const pkgName = this.depsResolver.getPackageName(dep);
+          // TODO we should find a way to use the real entry file based on the component config because people can change it
+          tsconfigJSON.compilerOptions.paths[pkgName] = [`${componentDir}/public-api.ts`, `${componentDir}`];
+          tsconfigJSON.compilerOptions.paths[`${pkgName}/*`] = [`${componentDir}/*`];
+        }
+    });
 
     const tsconfigContent = expandIncludeExclude(tsconfigJSON, this.tsconfigPath, [appRootPath]);
     const hash = objectHash(tsconfigContent);
@@ -116,13 +111,17 @@ export class AngularApp implements Application {
   }
 
   async getDevServer(context: AppContext): Promise<DevServer> {
-    const appRootPath = this.workspace?.componentDir(context.appComponent.id, {
-      ignoreScopeAndVersion: true,
+    if(!this.workspace) {
+      throw new Error('workspace is not defined');
+    }
+    const appRootPath = this.workspace.componentDir(context.appComponent.id, {
       ignoreVersion: true
     }) || '';
     const tsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
-    await this.generateTsConfig(appRootPath, tsconfigPath);
-    const devServerContext = this.getDevServerContext(context);
+    const workspaceCmpsIDs = await this.workspace.listIds();
+    const bitCmps = await this.workspace.getMany(workspaceCmpsIDs);
+    this.generateTsConfig(bitCmps, appRootPath, tsconfigPath);
+    const devServerContext = this.getDevServerContext(context, this.options.bundler === 'vite' ? '' : appRootPath);
     const preview = this.preview(this.envContext);
 
     return preview.getDevServer(devServerContext)(this.envContext);
@@ -136,8 +135,12 @@ export class AngularApp implements Application {
   }
 
   async getBundler(context: AppBuildContext): Promise<Bundler> {
-    if (this.options.bundler) {
-      return this.options.bundler;
+    if (typeof this.options.bundler !== 'string') {
+      return this.options.bundler as Bundler;
+    }
+
+    if (this.options.bundler === 'vite') {
+      throw new Error('implement vite bundler');
     }
 
     const { capsule, artifactsDir } = context;
@@ -145,7 +148,7 @@ export class AngularApp implements Application {
     const outputPath = pathNormalizeToLinux(join(capsule.path, publicDir));
     const appRootPath = context.capsule.path;
     const tsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
-    await this.generateTsConfig(appRootPath, tsconfigPath);
+    this.generateTsConfig([capsule?.component], appRootPath, tsconfigPath);
     const preview = this.preview(this.envContext) as AngularPreview;
 
     const bundlerContext: BundlerContext = Object.assign(cloneDeep(context), {

@@ -1,9 +1,13 @@
 import {
   AngularEnvOptions,
   BrowserOptions,
+  BundlerSetup,
   DevServerOptions,
   getNodeModulesPaths,
-  getWorkspace
+  getPreviewRootPath,
+  getWorkspace,
+  isAppBuildContext,
+  writeTsconfig
 } from '@bitdev/angular.dev-services.common';
 import { AppBuildContext, ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BundlerContext } from '@teambit/bundler';
@@ -24,13 +28,7 @@ import {
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { join } from 'path';
 import { Configuration, WebpackPluginInstance } from 'webpack';
-import {
-  getPreviewRootPath,
-  isAppBuildContext,
-  WebpackConfigFactoryOpts,
-  WebpackSetup,
-  writeTsconfig
-} from './utils';
+import { WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export type NgWebpackBundlerOptions = {
@@ -90,10 +88,11 @@ export class NgWebpackBundler {
         tempFolder = join(CACHE_ROOT, idName);
       }
 
-      let appRootPath: string; let tsconfigPath: string;
+      let appRootPath: string;
+      let tsconfigPath: string;
       let plugins: WebpackPluginInstance[] = [];
       if (isAppBuildContext(bundlerContext)) { // When you use `bit run <app>`
-        appRootPath = bundlerContext.capsule.path;// this.workspace?.componentDir(context.appComponent.id, {ignoreScopeAndVersion: true, ignoreVersion: true}) || '';
+        appRootPath = bundlerContext.capsule.path;// this.workspace?.componentDir(context.appComponent.id, {ignoreVersion: true}) || '';
         tsconfigPath = join(appRootPath, 'tsconfig.app.json');
         plugins = [new StatsLoggerPlugin()];
       } else { // When you use `bit build`
@@ -121,7 +120,7 @@ export class NgWebpackBundler {
           nodeModulesPaths: getNodeModulesPaths(false, isolator, workspace),
           plugins,
           rootPath: appRootPath,
-          setup: WebpackSetup.Build,
+          setup: BundlerSetup.Build,
           sourceRoot: options.sourceRoot ?? 'src',
           tempFolder,
           tsConfigPath: tsconfigPath,

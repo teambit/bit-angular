@@ -1,6 +1,11 @@
 import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
-import { componentIsApp } from '@bitdev/angular.app-types.angular-app-type';
-import { AngularEnvOptions, getNodeModulesPaths, getWorkspace } from '@bitdev/angular.dev-services.common';
+import {
+  AngularEnvOptions,
+  componentIsApp,
+  getNodeModulesPaths,
+  getWorkspace
+} from '@bitdev/angular.dev-services.common';
+import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -19,7 +24,6 @@ import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-jso
 import removeFilesAndEmptyDirsRecursively
   from '@teambit/legacy/dist/utils/fs/remove-files-and-empty-dirs-recursively';
 import { Logger } from '@teambit/logger';
-import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
 import { mkdirsSync, outputFileSync } from 'fs-extra';
@@ -353,7 +357,6 @@ export class NgPackagrCompiler implements Compiler {
    */
   getPreviewComponentRootPath(component: Component): string {
     return this.workspace!.componentDir(component.id, {
-      ignoreScopeAndVersion: true,
       ignoreVersion: true
     }, { relative: true });
   }

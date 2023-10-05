@@ -10,144 +10,175 @@
 
 {
     "angular-env": {
+        "name": "angular-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-env"
     },
     "app-types/angular-app-type": {
+        "name": "app-types/angular-app-type",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/app-types/angular-app-type"
     },
     "dev-services/common": {
+        "name": "dev-services/common",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/common"
     },
     "dev-services/compiler/elements": {
+        "name": "dev-services/compiler/elements",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/compiler/elements"
     },
     "dev-services/compiler/multi-compiler": {
+        "name": "dev-services/compiler/multi-compiler",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/compiler/multi-compiler"
     },
     "dev-services/compiler/ng-packagr": {
+        "name": "dev-services/compiler/ng-packagr",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/compiler/ng-packagr"
     },
     "dev-services/linter/eslint": {
+        "name": "dev-services/linter/eslint",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.js",
         "rootDir": "angular/devkit/linter/eslint"
     },
     "dev-services/ngcc": {
+        "name": "dev-services/ngcc",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/ngcc"
     },
     "dev-services/preview/mounter": {
+        "name": "dev-services/preview/mounter",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/mounter"
     },
     "dev-services/preview/preview": {
+        "name": "dev-services/preview/preview",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/preview"
     },
     "dev-services/preview/runtime": {
+        "name": "dev-services/preview/runtime",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/runtime"
     },
+    "dev-services/vite": {
+        "name": "dev-services/vite",
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "angular/devkit/vite"
+    },
     "dev-services/webpack": {
+        "name": "dev-services/webpack",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/webpack"
     },
     "envs/angular-v12-env": {
+        "name": "envs/angular-v12-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v12-env"
     },
     "envs/angular-v13-env": {
+        "name": "envs/angular-v13-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v13-env"
     },
     "envs/angular-v14-env": {
+        "name": "envs/angular-v14-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v14-env"
     },
     "envs/angular-v15-env": {
+        "name": "envs/angular-v15-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v15-env"
     },
     "envs/angular-v16-env": {
+        "name": "envs/angular-v16-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v16-env"
     },
     "envs/base-env": {
+        "name": "envs/base-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/base-env"
     },
     "examples/my-angular-env": {
+        "name": "examples/my-angular-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-env"
     },
     "examples/my-angular-v12-env": {
+        "name": "examples/my-angular-v12-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v12-env"
     },
     "examples/my-angular-v13-env": {
+        "name": "examples/my-angular-v13-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v13-env"
     },
     "examples/my-angular-v14-env": {
+        "name": "examples/my-angular-v14-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v14-env"
     },
     "examples/my-angular-v15-env": {
+        "name": "examples/my-angular-v15-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v15-env"
     },
     "examples/my-angular-v16-env": {
+        "name": "examples/my-angular-v16-env",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
@@ -160,16 +191,18 @@
         "rootDir": "angular/readme"
     },*/
     "templates/generators": {
+        "name": "templates/generators",
         "scope": "bitdev.angular",
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/templates/generators"
     },
     "templates/starters": {
+        "name": "templates/starters",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/templates/starters"
     },
-    "$schema-version": "16.0.0"
+    "$schema-version": "17.0.0"
 }

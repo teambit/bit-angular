@@ -24,12 +24,12 @@ import {
   IndexHtmlWebpackPlugin
 } from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
+import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
   WebpackBuildConfigFactoryOpts,
   WebpackConfig,
   WebpackConfigFactoryOpts,
-  WebpackServeConfigFactoryOpts,
-  WebpackSetup
+  WebpackServeConfigFactoryOpts
 } from '@bitdev/angular.dev-services.webpack';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
@@ -100,7 +100,7 @@ async function getWebpackConfig(
   tsconfigPath: string,
   workspaceRoot: string,
   logger: Logger,
-  setup: WebpackSetup,
+  setup: BundlerSetup,
   webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
   angularOptions: Partial<BrowserBuilderOptions> = {},
   sourceRoot = 'src'
@@ -120,13 +120,13 @@ async function getWebpackConfig(
     scripts: angularOptions.scripts,
     vendorChunk: angularOptions.vendorChunk ?? true,
     namedChunks: angularOptions.namedChunks ?? true,
-    optimization: angularOptions.optimization ?? setup === WebpackSetup.Build,
-    buildOptimizer: angularOptions.buildOptimizer ?? setup === WebpackSetup.Build,
+    optimization: angularOptions.optimization ?? setup === BundlerSetup.Build,
+    buildOptimizer: angularOptions.buildOptimizer ?? setup === BundlerSetup.Build,
     aot: angularOptions.aot ?? true,
     deleteOutputPath: angularOptions.deleteOutputPath ?? true,
     sourceMap: angularOptions.sourceMap ?? true,
-    outputHashing: angularOptions.outputHashing ?? (setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
-    watch: setup === WebpackSetup.Serve,
+    outputHashing: angularOptions.outputHashing ?? (setup === BundlerSetup.Build ? OutputHashing.All : OutputHashing.None),
+    watch: setup === BundlerSetup.Serve,
     allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])],
   };
   const normalizedWorkspaceRoot = normalize(workspaceRoot);
@@ -151,7 +151,7 @@ async function getWebpackConfig(
     getSystemPath(normalizedSourceRoot),
     normalizedOptions,
     (wco: BrowserWebpackConfigOptions) => [
-      setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
+      setup === BundlerSetup.Serve ? getDevServerConfig(wco) : {},
       getCommonConfig(wco),
       getBrowserConfig(wco),
       getStylesConfig(wco),
@@ -171,7 +171,7 @@ async function getWebpackConfig(
   // Add bit generated files to the list of entries
   webpackConfig.entry.main.unshift(...entryFiles);
 
-  // if (setup === WebpackSetup.Serve && browserOptions.index) {
+  // if (setup === BundlerSetup.Serve && browserOptions.index) {
   const { scripts = [], styles = [] } = browserOptions;
   // const { options: compilerOptions } = readTsconfig(browserOptions.tsConfig, workspaceRoot);
   // const target = compilerOptions.target || ts.ScriptTarget.ES5;
@@ -207,7 +207,7 @@ async function getWebpackConfig(
   delete webpackConfig?.resolve?.modules;
   webpackConfig.stats = 'errors-only';
 
-  if (setup === WebpackSetup.Serve) {
+  if (setup === BundlerSetup.Serve) {
     return migrateConfiguration(webpackConfig) as any;
   }
 
@@ -228,7 +228,7 @@ export async function webpackConfigFactory(opts: WebpackConfigFactoryOpts & Webp
   ) as WebpackConfigWithDevServer;
 
   let overwriteConfig: WebpackConfigWithDevServer;
-  if (opts.setup === WebpackSetup.Serve) {
+  if (opts.setup === BundlerSetup.Serve) {
     overwriteConfig = webpack5ServeConfigFactory(
       opts.devServerID,
       opts.workspaceDir,

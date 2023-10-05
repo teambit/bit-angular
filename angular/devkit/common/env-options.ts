@@ -1,4 +1,4 @@
-import { WebpackConfigWithDevServer } from "@teambit/webpack";
+import { WebpackConfigWithDevServer } from '@teambit/webpack';
 
 export type WebpackConfigFactory = (opts: any) => Promise<WebpackConfigWithDevServer>;
 
@@ -14,7 +14,6 @@ export type AngularEnvOptions = {
    * Whether ngcc should be run as part of postinstall / compile / build ...
    */
   useNgcc?: boolean;
-
   jestConfigPath: string;
   jestModulePath: string;
   ngPackagrModulePath: string;
@@ -23,4 +22,17 @@ export type AngularEnvOptions = {
   webpackConfigFactory?: WebpackConfigFactory;
   webpackDevServerModulePath?: string;
   webpackModulePath?: string;
+  /**
+   * The dev server to use: webpack or vite.
+   * Vite only works for apps, not preview yet.
+   * @default 'webpack'
+   */
+  devServer?: 'webpack' | 'vite';
+  /**
+   * The bundler to use: webpack or vite.
+   * Vite only works for apps, not preview yet.
+   * @default 'webpack'
+   */
+  // TODO: enable this once we have a working vite bundler
+  // bundler?: 'webpack' | 'vite';
 };

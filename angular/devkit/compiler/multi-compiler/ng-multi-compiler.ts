@@ -1,7 +1,8 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-import { componentIsApp, NG_APP_PATTERN } from '@bitdev/angular.app-types.angular-app-type';
 import type { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
+import { componentIsApp, NG_APP_PATTERN } from '@bitdev/angular.dev-services.common';
 import { AngularElementsCompiler } from '@bitdev/angular.dev-services.compiler.elements';
+import { NgPackagrCompiler } from '@bitdev/angular.dev-services.compiler.ng-packagr';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BabelAspect, BabelCompiler, BabelMain } from '@teambit/babel';
 import {
@@ -22,7 +23,6 @@ import {
 import { Component } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { Capsule } from '@teambit/isolator';
-import { NgPackagrCompiler } from '@bitdev/angular.dev-services.compiler.ng-packagr';
 import { outputFileSync } from 'fs-extra';
 import minimatch from 'minimatch';
 import { join } from 'path';

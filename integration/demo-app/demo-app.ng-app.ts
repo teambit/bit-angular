@@ -1,4 +1,4 @@
-import type { AngularAppOptions } from '@bitdev/angular.dev-services.apps';
+import type { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
 import type { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 
 const angularOptions: BrowserOptions & DevServerOptions = {
