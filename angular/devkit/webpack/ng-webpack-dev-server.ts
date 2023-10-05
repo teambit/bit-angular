@@ -1,9 +1,13 @@
 import {
   AngularEnvOptions,
   BrowserOptions,
+  BundlerSetup,
   DevServerOptions,
   getNodeModulesPaths,
-  getWorkspace
+  getPreviewRootPath,
+  getWorkspace,
+  isAppDevContext,
+  writeTsconfig
 } from '@bitdev/angular.dev-services.common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { DevServer, DevServerContext } from '@teambit/bundler';
@@ -25,16 +29,10 @@ import {
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { join, posix } from 'path';
 import { Configuration } from 'webpack';
-import {
-  getPreviewRootPath,
-  isAppContext,
-  WebpackConfigFactoryOpts,
-  WebpackSetup,
-  writeTsconfig
-} from './utils';
+import { WebpackConfigFactoryOpts } from './utils';
 
 export type WebpackDevServerOptions = {
-  angularOptions?: Partial<BrowserOptions & DevServerOptions>;
+  angularOptions: Partial<BrowserOptions & DevServerOptions>;
 
   /**
    * context of the dev server execution.
@@ -93,11 +91,11 @@ export class NgWebpackDevServer {
         tempFolder = join(CACHE_ROOT, idName);
       }
 
-      let appRootPath: string; let tsconfigPath: string;
+      let appRootPath: string;
+      let tsconfigPath: string;
       let isApp = false;
-      if (isAppContext(devServerContext)) { // When you use `bit run <app>`
+      if (isAppDevContext(devServerContext)) { // When you use `bit run <app>`
         appRootPath = workspace?.componentDir(devServerContext.appComponent.id, {
-          ignoreScopeAndVersion: true,
           ignoreVersion: true
         }) || '';
         tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(appRootPath, 'tsconfig.app.json');
@@ -122,7 +120,7 @@ export class NgWebpackDevServer {
         publicRoot: devServerContext.rootPath,
         pubsub: webpackMain.pubsub,
         rootPath: appRootPath,
-        setup: WebpackSetup.Serve,
+        setup: BundlerSetup.Serve,
         sourceRoot: options.sourceRoot ?? 'src',
         tempFolder,
         tsConfigPath: tsconfigPath,

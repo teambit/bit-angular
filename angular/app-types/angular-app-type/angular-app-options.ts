@@ -18,7 +18,7 @@ export type AngularAppOptions = {
   /**
    * Instance of bundler to use. default is Webpack.
    */
-  bundler?: Bundler;
+  bundler?: Bundler | string;
 
   /**
    * Set webpack build transformers

@@ -2,6 +2,14 @@
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
 import {
+  getCommonConfig,
+  getDevServerConfig,
+  getStylesConfig
+} from '@angular-devkit/build-angular/src/tools/webpack/configs';
+import {
+  IndexHtmlWebpackPlugin
+} from '@angular-devkit/build-angular/src/tools/webpack/plugins/index-html-webpack-plugin';
+import {
   normalizeBrowserSchema,
   normalizeOptimization
 } from '@angular-devkit/build-angular/src/utils';
@@ -12,21 +20,13 @@ import {
   generateWebpackConfig,
   getIndexOutputFile
 } from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
-import {
-  getCommonConfig,
-  getDevServerConfig,
-  getStylesConfig
-} from '@angular-devkit/build-angular/src/webpack/configs';
-import {
-  IndexHtmlWebpackPlugin
-} from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
+import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
   WebpackBuildConfigFactoryOpts,
   WebpackConfig,
   WebpackConfigFactoryOpts,
-  WebpackServeConfigFactoryOpts,
-  WebpackSetup
+  WebpackServeConfigFactoryOpts
 } from '@bitdev/angular.dev-services.webpack';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
@@ -37,7 +37,7 @@ import {
   WebpackConfigWithDevServer
 } from '@teambit/webpack';
 import path, { join } from 'path';
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
 import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
 
@@ -101,7 +101,7 @@ async function getWebpackConfig(
   tsconfigPath: string,
   workspaceRoot: string,
   logger: Logger,
-  setup: WebpackSetup,
+  setup: BundlerSetup,
   webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
   angularOptions: Partial<BrowserBuilderOptions> = {},
   sourceRoot = 'src'
@@ -121,13 +121,13 @@ async function getWebpackConfig(
     scripts: angularOptions.scripts,
     vendorChunk: angularOptions.vendorChunk ?? true,
     namedChunks: angularOptions.namedChunks ?? true,
-    optimization: angularOptions.optimization ?? setup === WebpackSetup.Build,
-    buildOptimizer: angularOptions.buildOptimizer ?? setup === WebpackSetup.Build,
+    optimization: angularOptions.optimization ?? setup === BundlerSetup.Build,
+    buildOptimizer: angularOptions.buildOptimizer ?? setup === BundlerSetup.Build,
     aot: angularOptions.aot ?? true,
     deleteOutputPath: angularOptions.deleteOutputPath ?? true,
     sourceMap: angularOptions.sourceMap ?? true,
-    outputHashing: angularOptions.outputHashing ?? (setup === WebpackSetup.Build ? OutputHashing.All : OutputHashing.None),
-    watch: setup === WebpackSetup.Serve,
+    outputHashing: angularOptions.outputHashing ?? (setup === BundlerSetup.Build ? OutputHashing.All : OutputHashing.None),
+    watch: setup === BundlerSetup.Serve,
     allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])]
   };
   const normalizedWorkspaceRoot = normalize(workspaceRoot);
@@ -167,7 +167,7 @@ async function getWebpackConfig(
     'bit-angular-v16-env', // projectName
     normalizedOptions,
     (wco: BrowserWebpackConfigOptions) => [
-      setup === WebpackSetup.Serve ? getDevServerConfig(wco) : {},
+      setup === BundlerSetup.Serve ? getDevServerConfig(wco) : {},
       getCommonConfig(wco),
       getStylesConfig(wco)
     ],
@@ -216,7 +216,7 @@ async function getWebpackConfig(
   // uniqueName should not be an empty string
   webpackConfig.output.uniqueName = 'angular-v16-env';
 
-  if (setup === WebpackSetup.Serve) {
+  if (setup === BundlerSetup.Serve) {
     webpackConfig = migrateConfiguration(webpackConfig);
   }
 
@@ -237,7 +237,7 @@ export async function webpackConfigFactory(opts: WebpackConfigFactoryOpts & Webp
   ) as WebpackConfigWithDevServer;
 
   let overwriteConfig: WebpackConfigWithDevServer;
-  if (opts.setup === WebpackSetup.Serve) {
+  if (opts.setup === BundlerSetup.Serve) {
     overwriteConfig = webpack5ServeConfigFactory(
       opts.devServerID,
       opts.workspaceDir,

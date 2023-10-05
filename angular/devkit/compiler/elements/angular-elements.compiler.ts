@@ -1,7 +1,11 @@
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-import { componentIsApp } from '@bitdev/angular.app-types.angular-app-type';
 import type { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
-import { getNodeModulesPaths, getWorkspace } from '@bitdev/angular.dev-services.common';
+import {
+  componentIsApp,
+  getNodeModulesPaths,
+  getWorkspace
+} from '@bitdev/angular.dev-services.common';
+import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -16,7 +20,6 @@ import { EnvContext, EnvHandler } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { Timer } from '@teambit/legacy/dist/toolbox/timer';
 import { Logger } from '@teambit/logger';
-import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
 import { extname, join } from 'path';

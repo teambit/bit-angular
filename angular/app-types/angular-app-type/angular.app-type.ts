@@ -1,11 +1,10 @@
-import { GenericAngularEnv, getWorkspace } from '@bitdev/angular.dev-services.common';
+import { GenericAngularEnv, getWorkspace, NG_APP_NAME } from '@bitdev/angular.dev-services.common';
 import { Application, ApplicationType } from '@teambit/application';
 import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { Workspace } from '@teambit/workspace';
 import { AngularAppOptions } from './angular-app-options';
 import { AngularApp } from './angular.application';
-import { NG_APP_NAME } from './utils';
 
 interface AngularAppTypeOptions {
   name?: string;

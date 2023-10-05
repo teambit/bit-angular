@@ -1,5 +1,5 @@
-import { Type } from '@angular/core';
-import { RenderingContext } from '@teambit/preview';
+import type { Type } from '@angular/core';
+import type { RenderingContext } from '@teambit/preview';
 import DocsRoot from '@teambit/react.ui.docs-app';
 // required here to make sure that this is loaded before the compositions file
 import '@angular/compiler';

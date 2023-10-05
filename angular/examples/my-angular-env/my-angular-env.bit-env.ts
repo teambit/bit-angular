@@ -24,7 +24,7 @@ import hostDependencies from './preview/host-dependencies';
 
 export class MyAngularEnv extends AngularEnv {
   // Name of the environment, used for friendly mentions across bit
-  name = 'my-my-angular-env';
+  name = 'my-angular-env';
 
   getTesterConfig() {
     return {

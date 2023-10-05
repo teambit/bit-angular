@@ -1,5 +1,5 @@
-import { RenderingContext } from '@teambit/preview';
-import { Type } from '@angular/core';
+import type { RenderingContext } from '@teambit/preview';
+import type { Type } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 
 window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<string>();

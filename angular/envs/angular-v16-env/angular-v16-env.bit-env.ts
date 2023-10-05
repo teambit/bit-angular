@@ -26,7 +26,8 @@ export class AngularV16Env extends AngularBaseEnv {
     webpackDevServerModulePath: require.resolve('webpack-dev-server'),
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
     // otherwise, if we use a different version, it would break
-    webpackModulePath: require.resolve('webpack', { paths: [require.resolve('@angular-devkit/build-angular')] })
+    webpackModulePath: require.resolve('webpack', { paths: [require.resolve('@angular-devkit/build-angular')] }),
+    devServer: 'webpack',
   };
 }
 

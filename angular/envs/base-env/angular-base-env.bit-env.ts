@@ -1,13 +1,32 @@
-import { AngularAppType, NG_APP_NAME } from '@bitdev/angular.app-types.angular-app-type';
-import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { AngularPreview, BundlerProvider, DevServerProvider } from '@bitdev/angular.dev-services.preview.preview';
+import { AngularAppType } from '@bitdev/angular.app-types.angular-app-type';
+import {
+  AngularEnvOptions,
+  BrowserOptions,
+  DevServerOptions,
+  isAppDevContext,
+  NG_APP_NAME
+} from '@bitdev/angular.dev-services.common';
+import {
+  NgMultiCompiler,
+  NgMultiCompilerTask
+} from '@bitdev/angular.dev-services.compiler.multi-compiler';
+import {
+  AngularPreview,
+  BundlerProvider,
+  DevServerProvider
+} from '@bitdev/angular.dev-services.preview.preview';
+import { NgViteDevServer, ViteConfigTransformer } from '@bitdev/angular.dev-services.vite';
+import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
+import {
+  NgAppTemplate,
+  NgEnvTemplate,
+  NgModuleTemplate
+} from '@bitdev/angular.templates.generators';
 import {
   AngularStarter,
   DesignSystemStarter,
   MaterialDesignSystemStarter
 } from '@bitdev/angular.templates.starters';
-import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@bitdev/angular.templates.generators';
-import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
 import { AppTypeList } from '@teambit/application';
 import { Pipeline } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
@@ -19,7 +38,6 @@ import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
 import { Formatter } from '@teambit/formatter';
 import { StarterList, TemplateList } from '@teambit/generator';
 import { Linter } from '@teambit/linter';
-import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
 import { PackageGenerator } from '@teambit/pkg';
 import { Preview } from '@teambit/preview';
 import { SchemaExtractor } from '@teambit/schema';
@@ -52,7 +70,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   [key: string]: any;
 
   public getNgEnvOptions(): AngularEnvOptions {
-    return { ...this.ngEnvOptions};
+    return { ...this.ngEnvOptions };
   }
 
   /**
@@ -60,10 +78,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   public setNgEnvOptions(...ngEnvOptions: Partial<AngularEnvOptions>[]): void {
     this.ngEnvOptions = merge(this.ngEnvOptions || {}, ...ngEnvOptions);
-    // TODO check if we need to run ngcc
-    // if (this.ngEnvOptions.useNgcc) {
-    //   this.depResolver.registerPostInstallSubscribers([this.postInstall.bind(this)]);
-    // }
+    if (this.ngEnvOptions.devServer === 'vite' && this.angularVersion < 16) {
+      throw new Error(`Vite dev server is only supported for Angular 16+`);
+    }
   }
 
   /**
@@ -132,17 +149,27 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   getDevServer(
     devServerContext: DevServerContext,
     ngEnvOptions: AngularEnvOptions,
-    transformers: WebpackConfigTransformer[] = [],
+    transformers: (WebpackConfigTransformer | ViteConfigTransformer)[] = [],
     angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
     webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
     sourceRoot?: string
   ): AsyncEnvHandler<DevServer> {
+    if (this.ngEnvOptions.devServer === 'vite' && isAppDevContext(devServerContext)) {
+      return NgViteDevServer.from({
+        angularOptions,
+        devServerContext,
+        ngEnvOptions,
+        sourceRoot,
+        transformers,
+        webpackOptions: webpackOptions as any
+      });
+    }
     return NgWebpackDevServer.from({
       angularOptions,
       devServerContext,
       ngEnvOptions,
       sourceRoot,
-      transformers,
+      transformers: transformers as WebpackConfigTransformer[],
       webpackOptions: webpackOptions as any
     });
   }
@@ -150,7 +177,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   getBundler(
     bundlerContext: BundlerContext,
     ngEnvOptions: AngularEnvOptions,
-    transformers: WebpackConfigTransformer[] = [],
+    transformers: (WebpackConfigTransformer | ViteConfigTransformer)[] = [],
     angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
     webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
     sourceRoot?: string
@@ -160,14 +187,20 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       bundlerContext,
       ngEnvOptions,
       sourceRoot,
-      transformers,
+      transformers: transformers as WebpackConfigTransformer[],
       webpackOptions: webpackOptions as any
     });
   }
 
   preview(): EnvHandler<Preview> {
     const ngEnvOptions = this.getNgEnvOptions();
-    const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.getDevServer(devServerContext, ngEnvOptions);
+    const devServerProvider: DevServerProvider = (
+      devServerContext: DevServerContext,
+      transformers?: (WebpackConfigTransformer | ViteConfigTransformer)[],
+      angularOptions?: Partial<BrowserOptions & DevServerOptions>,
+      webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
+      sourceRoot?: string
+    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.getBundler(bundlerContext, ngEnvOptions);
     return AngularPreview.from({
       devServerProvider,
@@ -184,7 +217,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   schemaExtractor(): EnvHandler<SchemaExtractor> {
     return TypeScriptExtractor.from({
-      tsconfig: require.resolve('./config/tsconfig.json'),
+      tsconfig: require.resolve('./config/tsconfig.json')
     });
   }
 
@@ -203,9 +236,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   generators(): EnvHandler<TemplateList> {
     const envName = this.constructor.name;
     return TemplateList.from([
-      NgModuleTemplate.from({envName, angularVersion: this.angularVersion}),
-      NgEnvTemplate.from({envName, angularVersion: this.angularVersion}),
-      NgAppTemplate.from({envName, angularVersion: this.angularVersion})
+      NgModuleTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgEnvTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgAppTemplate.from({ envName, angularVersion: this.angularVersion })
     ]);
   }
 
@@ -215,9 +248,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      AngularStarter.from({envName: this.constructor.name, angularVersion: this.angularVersion}),
-      DesignSystemStarter.from({envName: this.constructor.name}),
-      MaterialDesignSystemStarter.from({envName: this.constructor.name}),
+      AngularStarter.from({ envName: this.constructor.name, angularVersion: this.angularVersion }),
+      DesignSystemStarter.from({ envName: this.constructor.name }),
+      MaterialDesignSystemStarter.from({ envName: this.constructor.name })
     ]);
   }
 
@@ -262,6 +295,6 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   }
 
   apps(): EnvHandler<AppTypeList> {
-    return AppTypeList.from([AngularAppType.from({angularEnv: this, name: NG_APP_NAME})]);
+    return AppTypeList.from([AngularAppType.from({ angularEnv: this, name: NG_APP_NAME })]);
   }
 }

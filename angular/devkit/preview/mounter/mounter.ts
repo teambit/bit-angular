@@ -1,6 +1,6 @@
 // required here to make sure that this is loaded before the compositions file
 import '@angular/compiler';
-import { Type } from '@angular/core';
+import type { Type } from '@angular/core';
 import { ngBootstrap, NgBootstrapOptions } from '@bitdev/angular.dev-services.preview.runtime';
 
 export interface MounterOptions extends Omit<NgBootstrapOptions, "wrapper"| "hostElement"> {
