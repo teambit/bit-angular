@@ -8,7 +8,7 @@
 // eslint-disable-next-line max-classes-per-file
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
 import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
-import { Compiler } from 'webpack';
+import type { Compiler } from 'webpack';
 import { NodeJSFileSystem } from './nodejs-file-system';
 
 interface ResourceData {

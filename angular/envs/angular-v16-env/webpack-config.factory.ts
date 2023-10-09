@@ -4,22 +4,15 @@ import { OutputHashing } from '@angular-devkit/build-angular';
 import {
   getCommonConfig,
   getDevServerConfig,
-  getStylesConfig
-} from '@angular-devkit/build-angular/src/tools/webpack/configs';
-import {
-  IndexHtmlWebpackPlugin
-} from '@angular-devkit/build-angular/src/tools/webpack/plugins/index-html-webpack-plugin';
-import {
+  getStylesConfig,
+  IndexHtmlWebpackPlugin,
+  normalizeCacheOptions,
+  generateEntryPoints,
+  generateWebpackConfig,
+  getIndexOutputFile,
   normalizeBrowserSchema,
   normalizeOptimization
-} from '@angular-devkit/build-angular/src/utils';
-import { normalizeCacheOptions } from '@angular-devkit/build-angular/src/utils/normalize-cache';
-import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
-import {
-  BrowserWebpackConfigOptions,
-  generateWebpackConfig,
-  getIndexOutputFile
-} from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
+} from '@bitdev/angular.dev-services.ng-compat';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
@@ -166,7 +159,7 @@ async function getWebpackConfig(
     getSystemPath(normalizedSourceRoot),
     'bit-angular-v16-env', // projectName
     normalizedOptions,
-    (wco: BrowserWebpackConfigOptions) => [
+    (wco: any) => [
       setup === BundlerSetup.Serve ? getDevServerConfig(wco) : {},
       getCommonConfig(wco),
       getStylesConfig(wco)

@@ -5,7 +5,7 @@ import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
 import { EnvPreviewConfig, Preview } from '@teambit/preview';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import objectHash from 'object-hash';
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 // Make sure bit recognizes the dependencies
 import 'webpack-dev-server';
 

@@ -28,7 +28,7 @@ import {
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { join, posix } from 'path';
-import { Configuration } from 'webpack';
+import type { Configuration } from 'webpack';
 import { WebpackConfigFactoryOpts } from './utils';
 
 export type WebpackDevServerOptions = {

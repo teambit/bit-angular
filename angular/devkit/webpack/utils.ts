@@ -2,7 +2,7 @@ import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Logger } from '@teambit/logger';
 import { WebpackConfigWithDevServer } from '@teambit/webpack';
-import { Configuration, WebpackPluginInstance } from 'webpack';
+import type { Configuration, WebpackPluginInstance } from 'webpack';
 
 
 export type WebpackConfig = Configuration;

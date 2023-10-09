@@ -21,6 +21,8 @@
           "@angular/platform-browser-dynamic": ">= 8.0.0",
           "rxjs": "^6.5.5 || ^7.4.0",
           "typescript": ">= 3.5.3",
+          "webpack": ">= 4.44.2",
+          "webpack-dev-server": ">= 3.11.2",
           "zone.js": ">= 0.9.1"
         }
       }

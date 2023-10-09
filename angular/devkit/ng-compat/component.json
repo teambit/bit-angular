@@ -1,22 +1,18 @@
 {
   "componentId": {
     "scope": "bitdev.angular",
-    "name": "dev-services/webpack"
+    "name": "dev-services/ng-compat"
   },
   "propagate": true,
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "typescript": "-"
         },
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",
-          "typescript": ">= 3.5.3",
+          "@angular/cli": ">= 8.0.0",
           "webpack": ">= 4.44.2"
-        },
-        "devDependencies": {
-          "@babel/runtime": "7.22.15"
         }
       }
     },

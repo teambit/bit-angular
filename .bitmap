@@ -30,6 +30,13 @@
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/common"
     },
+    "dev-services/ng-compat": {
+        "name": "dev-services/ng-compat",
+        "scope": "",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "angular/devkit/ng-compat"
+    },
     "dev-services/compiler/elements": {
         "name": "dev-services/compiler/elements",
         "scope": "bitdev.angular",

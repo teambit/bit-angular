@@ -27,7 +27,7 @@ import {
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { join } from 'path';
-import { Configuration, WebpackPluginInstance } from 'webpack';
+import type { Configuration, WebpackPluginInstance } from 'webpack';
 import { WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 

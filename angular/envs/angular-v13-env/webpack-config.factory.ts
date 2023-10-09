@@ -1,27 +1,20 @@
 /* eslint-disable no-param-reassign */
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
-import {
-  normalizeBrowserSchema,
-  normalizeOptimization
-} from '@angular-devkit/build-angular/src/utils';
-import { normalizeCacheOptions } from '@angular-devkit/build-angular/src/utils/normalize-cache';
-import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
-import {
-  BrowserWebpackConfigOptions,
-  generateWebpackConfig,
-  getIndexOutputFile
-} from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
-import {
-  getCommonConfig,
-  getDevServerConfig,
-  getStylesConfig
-} from '@angular-devkit/build-angular/src/webpack/configs';
-import {
-  IndexHtmlWebpackPlugin
-} from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
 import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
 import { BundlerSetup } from '@bitdev/angular.dev-services.common';
+import {
+  generateEntryPoints,
+  generateWebpackConfig,
+  getCommonConfig,
+  getDevServerConfig,
+  getIndexOutputFile,
+  getStylesConfig,
+  IndexHtmlWebpackPlugin,
+  normalizeBrowserSchema,
+  normalizeCacheOptions,
+  normalizeOptimization
+} from '@bitdev/angular.dev-services.ng-compat';
 import {
   WebpackBuildConfigFactoryOpts,
   WebpackConfig,
@@ -166,7 +159,7 @@ async function getWebpackConfig(
     getSystemPath(normalizedSourceRoot),
     'bit-angular-v13-env', // projectName
     normalizedOptions,
-    (wco: BrowserWebpackConfigOptions) => [
+    (wco: any) => [
       setup === BundlerSetup.Serve ? getDevServerConfig(wco) : {},
       getCommonConfig(wco),
       getStylesConfig(wco),

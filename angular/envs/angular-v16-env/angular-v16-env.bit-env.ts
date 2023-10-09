@@ -1,6 +1,19 @@
+import {
+  AngularEnvOptions,
+  BrowserOptions,
+  DevServerOptions,
+  isAppDevContext
+} from '@bitdev/angular.dev-services.common';
+import { NgViteDevServer, ViteConfigTransformer } from '@bitdev/angular.dev-services.vite';
 import { AngularBaseEnv } from '@bitdev/angular.envs.base-env';
-import { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
+import { DevServer, DevServerContext } from '@teambit/bundler';
+import { AsyncEnvHandler } from '@teambit/envs';
 import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
+import {
+  Configuration,
+  WebpackConfigTransformer,
+  WebpackConfigWithDevServer
+} from '@teambit/webpack';
 import { webpackConfigFactory } from './webpack-config.factory';
 
 // Disable v8-caching because it breaks ESM loaders
@@ -29,6 +42,27 @@ export class AngularV16Env extends AngularBaseEnv {
     webpackModulePath: require.resolve('webpack', { paths: [require.resolve('@angular-devkit/build-angular')] }),
     devServer: 'webpack',
   };
+
+  override getDevServer(
+    devServerContext: DevServerContext,
+    ngEnvOptions: AngularEnvOptions,
+    transformers: (WebpackConfigTransformer | ViteConfigTransformer)[] = [],
+    angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
+    sourceRoot?: string
+  ): AsyncEnvHandler<DevServer> {
+    if (this.ngEnvOptions.devServer === 'vite' && isAppDevContext(devServerContext)) {
+      return NgViteDevServer.from({
+        angularOptions,
+        devServerContext,
+        ngEnvOptions,
+        sourceRoot,
+        transformers,
+        webpackOptions: webpackOptions as any
+      });
+    }
+    return this.super();
+  }
 }
 
 export default new AngularV16Env();

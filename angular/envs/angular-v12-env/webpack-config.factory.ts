@@ -1,30 +1,23 @@
 /* eslint-disable no-param-reassign */
+import { OutputHashing } from '@angular-devkit/build-angular';
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
-import { OutputHashing } from '@angular-devkit/build-angular/src/server/schema';
+import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
+import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
   BuildBrowserFeatures,
-  normalizeBrowserSchema,
-  normalizeOptimization
-} from '@angular-devkit/build-angular/src/utils';
-import { generateEntryPoints } from '@angular-devkit/build-angular/src/utils/package-chunk-sort';
-import {
-  BrowserWebpackConfigOptions,
+  generateEntryPoints,
   generateWebpackConfig,
-  getIndexOutputFile
-} from '@angular-devkit/build-angular/src/utils/webpack-browser-config';
-import {
   getBrowserConfig,
   getCommonConfig,
   getDevServerConfig,
+  getIndexOutputFile,
   getStatsConfig,
   getStylesConfig,
-  getTypeScriptConfig
-} from '@angular-devkit/build-angular/src/webpack/configs';
-import {
-  IndexHtmlWebpackPlugin
-} from '@angular-devkit/build-angular/src/webpack/plugins/index-html-webpack-plugin';
-import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { BundlerSetup } from '@bitdev/angular.dev-services.common';
+  getTypeScriptConfig,
+  IndexHtmlWebpackPlugin,
+  normalizeBrowserSchema,
+  normalizeOptimization
+} from '@bitdev/angular.dev-services.ng-compat';
 import {
   WebpackBuildConfigFactoryOpts,
   WebpackConfig,
@@ -150,7 +143,7 @@ async function getWebpackConfig(
     getSystemPath(projectRoot),
     getSystemPath(normalizedSourceRoot),
     normalizedOptions,
-    (wco: BrowserWebpackConfigOptions) => [
+    (wco: any) => [
       setup === BundlerSetup.Serve ? getDevServerConfig(wco) : {},
       getCommonConfig(wco),
       getBrowserConfig(wco),

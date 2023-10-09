@@ -3,7 +3,6 @@ import {
   AngularEnvOptions,
   BrowserOptions,
   DevServerOptions,
-  isAppDevContext,
   NG_APP_NAME
 } from '@bitdev/angular.dev-services.common';
 import {
@@ -15,7 +14,6 @@ import {
   BundlerProvider,
   DevServerProvider
 } from '@bitdev/angular.dev-services.preview.preview';
-import { NgViteDevServer, ViteConfigTransformer } from '@bitdev/angular.dev-services.vite';
 import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
 import {
   NgAppTemplate,
@@ -48,7 +46,6 @@ import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/w
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash';
-import { Configuration } from 'webpack';
 import { AngularEnvInterface } from './angular-env.interface';
 import hostDependencies from './preview/host-dependencies';
 
@@ -149,37 +146,27 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   getDevServer(
     devServerContext: DevServerContext,
     ngEnvOptions: AngularEnvOptions,
-    transformers: (WebpackConfigTransformer | ViteConfigTransformer)[] = [],
+    transformers: WebpackConfigTransformer[] = [],
     angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
-    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
+    webpackOptions: any = {},
     sourceRoot?: string
   ): AsyncEnvHandler<DevServer> {
-    if (this.ngEnvOptions.devServer === 'vite' && isAppDevContext(devServerContext)) {
-      return NgViteDevServer.from({
-        angularOptions,
-        devServerContext,
-        ngEnvOptions,
-        sourceRoot,
-        transformers,
-        webpackOptions: webpackOptions as any
-      });
-    }
     return NgWebpackDevServer.from({
       angularOptions,
       devServerContext,
       ngEnvOptions,
       sourceRoot,
-      transformers: transformers as WebpackConfigTransformer[],
-      webpackOptions: webpackOptions as any
+      transformers,
+      webpackOptions: webpackOptions
     });
   }
 
   getBundler(
     bundlerContext: BundlerContext,
     ngEnvOptions: AngularEnvOptions,
-    transformers: (WebpackConfigTransformer | ViteConfigTransformer)[] = [],
+    transformers: WebpackConfigTransformer[] = [],
     angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
-    webpackOptions: Partial<WebpackConfigWithDevServer | Configuration> = {},
+    webpackOptions: any = {},
     sourceRoot?: string
   ): AsyncEnvHandler<Bundler> {
     return NgWebpackBundler.from({
@@ -187,8 +174,8 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       bundlerContext,
       ngEnvOptions,
       sourceRoot,
-      transformers: transformers as WebpackConfigTransformer[],
-      webpackOptions: webpackOptions as any
+      transformers,
+      webpackOptions: webpackOptions
     });
   }
 
@@ -196,9 +183,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     const ngEnvOptions = this.getNgEnvOptions();
     const devServerProvider: DevServerProvider = (
       devServerContext: DevServerContext,
-      transformers?: (WebpackConfigTransformer | ViteConfigTransformer)[],
-      angularOptions?: Partial<BrowserOptions & DevServerOptions>,
-      webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
+      transformers: WebpackConfigTransformer[] = [],
+      angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+      webpackOptions: any = {},
       sourceRoot?: string
     ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.getBundler(bundlerContext, ngEnvOptions);
