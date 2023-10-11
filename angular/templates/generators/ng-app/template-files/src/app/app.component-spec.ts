@@ -1,6 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const appComponentSpecFile = (context: ComponentContext): ComponentFile => {
+export const appComponentSpecFile = (context: ComponentContext, angularVersion: number): ComponentFile => {
   const { name } = context;
   return {
     relativePath: `src/app/app.component.spec.ts`,
@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AppComponent]
+      ${angularVersion >= 17 ? `imports: [AppComponent]` : `declarations: [AppComponent]`},
     }).compileComponents();
   });
 
@@ -20,7 +20,7 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(\`should have as title '${name}'\`, () => {
+  it(\`should have the '${name}' title\`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('${name}');

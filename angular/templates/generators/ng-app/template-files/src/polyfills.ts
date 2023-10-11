@@ -1,6 +1,6 @@
 import { ComponentFile } from '@teambit/generator';
 
-export const polyfillFile = (): ComponentFile => {
+export const polyfillsFile = (): ComponentFile => {
   return {
     relativePath: `src/polyfills.ts`,
     content: `/**

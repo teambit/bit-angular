@@ -30,13 +30,6 @@
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/common"
     },
-    "dev-services/ng-compat": {
-        "name": "dev-services/ng-compat",
-        "scope": "",
-        "version": "",
-        "mainFile": "index.ts",
-        "rootDir": "angular/devkit/ng-compat"
-    },
     "dev-services/compiler/elements": {
         "name": "dev-services/compiler/elements",
         "scope": "bitdev.angular",
@@ -64,6 +57,14 @@
         "version": "1.0.0",
         "mainFile": "index.js",
         "rootDir": "angular/devkit/linter/eslint"
+    },
+    "dev-services/ng-compat": {
+        "name": "dev-services/ng-compat",
+        "scope": "",
+        "version": "",
+        "defaultScope": "bitdev.angular",
+        "mainFile": "index.ts",
+        "rootDir": "angular/devkit/ng-compat"
     },
     "dev-services/ngcc": {
         "name": "dev-services/ngcc",
@@ -97,6 +98,7 @@
         "name": "dev-services/vite",
         "scope": "",
         "version": "",
+        "defaultScope": "bitdev.angular",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/vite"
     },
@@ -141,6 +143,14 @@
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v16-env"
+    },
+    "envs/angular-v17-env": {
+        "name": "envs/angular-v17-env",
+        "scope": "",
+        "version": "",
+        "defaultScope": "bitdev.angular",
+        "mainFile": "index.ts",
+        "rootDir": "angular/envs/angular-v17-env"
     },
     "envs/base-env": {
         "name": "envs/base-env",
@@ -190,6 +200,14 @@
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v16-env"
+    },
+    "examples/my-angular-v17-env": {
+        "name": "examples/my-angular-v17-env",
+        "scope": "",
+        "version": "",
+        "defaultScope": "bitdev.angular",
+        "mainFile": "index.ts",
+        "rootDir": "angular/examples/my-angular-v17-env"
     },
     /*"readme": {
         "scope": "bitdev.angular",

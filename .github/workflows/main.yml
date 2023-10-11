@@ -35,6 +35,12 @@ jobs:
       - name: Install dependencies
         run: bit install --log
 
+      - name: Remove v17
+        run: bit remove envs/angular-v17-env -s -f --log
+
+      - name: Remove v17 fork
+        run: bit remove examples/my-angular-v17-env -s -f --log
+
       - name: Remove v15
         run: bit remove envs/angular-v15-env -s -f --log
 
@@ -98,18 +104,99 @@ jobs:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
 
+  # Test angular-v17
+  v17:
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip-ci')"
+    container:
+      image: bitsrc/stable:latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Keep v17
+        run: npm i replace-in-file@6.3.5 && node scripts/keep-env.js --version=17
+
+      - name: Cleanup node modules
+        run: rm -rf node_modules
+
+      - name: Install dependencies
+        run: bit install --log
+
+      - name: Remove default
+        run: bit remove angular-env -s -f --log
+
+      - name: Remove default fork
+        run: bit remove examples/my-angular-env -s -f --log
+
+      - name: Remove v16
+        run: bit remove envs/angular-v16-env -s -f --log
+
+      - name: Remove v16 fork
+        run: bit remove examples/my-angular-v16-env -s -f --log
+
+      - name: Remove v15
+        run: bit remove envs/angular-v15-env -s -f --log
+
+      - name: Remove v15 fork
+        run: bit remove examples/my-angular-v15-env -s -f --log
+
+      - name: Remove v14
+        run: bit remove envs/angular-v14-env -s -f --log
+
+      - name: Remove v14 fork
+        run: bit remove examples/my-angular-v14-env -s -f --log
+
+      - name: Remove v13
+        run: bit remove envs/angular-v13-env -s -f --log
+
+      - name: Remove v13 fork
+        run: bit remove examples/my-angular-v13-env -s -f --log
+
+      - name: Remove v12
+        run: bit remove envs/angular-v12-env -s -f --log
+
+      - name: Remove v12 fork
+        run: bit remove examples/my-angular-v12-env -s -f --log
+
+      - name: Add example component
+        run: bit add integration/demo-lib-v17 --log
+
+      - name: Bit cc
+        run: bit cc
+
+      - name: Cleanup capsules
+        run: bit capsule delete --all
+
+      - name: Cleanup node modules
+        run: rm -rf node_modules
+
+      - name: Cleanup package-lock.json
+        run: rm -rf package-lock.json
+
+      - name: Cleanup .git/bit
+        run: rm -rf .git/bit
+
+      - name: Install dependencies
+        run: bit install --log
+
+      - name: Bit test
+        run: bit test --log
+
+      - name: Bit build
+        run: bit build --log
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: debug-log
+          path: $HOME/Library/Caches/Bit/logs
+
   # Test angular-v16
   v16:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: bitsrc/stable:latest
     steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Keep v16
@@ -126,6 +213,12 @@ jobs:
 
       - name: Remove default fork
         run: bit remove examples/my-angular-env -s -f --log
+
+      - name: Remove v17
+        run: bit remove envs/angular-v17-env -s -f --log
+
+      - name: Remove v17 fork
+        run: bit remove examples/my-angular-v17-env -s -f --log
 
       - name: Remove v15
         run: bit remove envs/angular-v15-env -s -f --log
@@ -189,13 +282,8 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: bitsrc/stable:latest
     steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Keep v15
@@ -212,6 +300,12 @@ jobs:
 
       - name: Remove default fork
         run: bit remove examples/my-angular-env -s -f --log
+
+      - name: Remove v17
+        run: bit remove envs/angular-v17-env -s -f --log
+
+      - name: Remove v17 fork
+        run: bit remove examples/my-angular-v17-env -s -f --log
 
       - name: Remove v16
         run: bit remove envs/angular-v16-env -s -f --log
@@ -274,13 +368,8 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: bitsrc/stable:latest
     steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Keep v14
@@ -297,6 +386,12 @@ jobs:
 
       - name: Remove default fork
         run: bit remove examples/my-angular-env -s -f --log
+
+      - name: Remove v17
+        run: bit remove envs/angular-v17-env -s -f --log
+
+      - name: Remove v17 fork
+        run: bit remove examples/my-angular-v17-env -s -f --log
 
       - name: Remove v16
         run: bit remove envs/angular-v16-env -s -f --log
@@ -359,13 +454,8 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: bitsrc/stable:latest
     steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Keep v13
@@ -382,6 +472,12 @@ jobs:
 
       - name: Remove default fork
         run: bit remove examples/my-angular-env -s -f --log
+
+      - name: Remove v17
+        run: bit remove envs/angular-v17-env -s -f --log
+
+      - name: Remove v17 fork
+        run: bit remove examples/my-angular-v17-env -s -f --log
 
       - name: Remove v16
         run: bit remove envs/angular-v16-env -s -f --log
@@ -445,13 +541,8 @@ jobs:
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, 'skip-ci')"
     container:
-      image: docker://bitcli/bit:latest
+      image: bitsrc/stable:latest
     steps:
-      - uses:  teambit/setup-action@v2.02
-        with:
-          name: angular-github-actions
-          BIT_TOKEN: ${{ env.BIT_TOKEN }}
-
       - uses: actions/checkout@v3
 
       - name: Keep v12
@@ -468,6 +559,12 @@ jobs:
 
       - name: Remove default fork
         run: bit remove examples/my-angular-env -s -f --log
+
+      - name: Remove v17
+        run: bit remove envs/angular-v17-env -s -f --log
+
+      - name: Remove v17 fork
+        run: bit remove examples/my-angular-v17-env -s -f --log
 
       - name: Remove v16
         run: bit remove envs/angular-v16-env -s -f --log

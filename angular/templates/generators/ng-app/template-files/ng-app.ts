@@ -1,6 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const ngAppFile = (context: ComponentContext): ComponentFile => {
+export const ngAppFile = (context: ComponentContext, angularVersion: number): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `${name}.ng-app.ts`,
@@ -9,7 +9,10 @@ import { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.c
 
 const angularOptions: BrowserOptions & DevServerOptions = {
   main: './src/main.ts',
-  polyfills: './src/polyfills.ts',
+  polyfills: ${angularVersion >= 15 ? `[
+    "zone.js",
+    "zone.js/testing"
+  ]` : `'./src/polyfills.ts'`},
   index: './src/index.html',
   tsConfig: './tsconfig.app.json',
   assets: [{

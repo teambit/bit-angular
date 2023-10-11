@@ -78,6 +78,7 @@
   "teambit.generator/generator": {
     "envs": [
       "bitdev.angular/angular-env",
+      "bitdev.angular/envs/angular-v17-env",
       "bitdev.angular/envs/angular-v16-env",
       "bitdev.angular/envs/angular-v15-env",
       "bitdev.angular/envs/angular-v14-env",
@@ -86,6 +87,7 @@
     ]
   },
   "bitdev.angular/angular-env": {},
+  "bitdev.angular/envs/angular-v17-env": {},
   "bitdev.angular/envs/angular-v16-env": {},
   "bitdev.angular/envs/angular-v15-env": {},
   "bitdev.angular/envs/angular-v14-env": {},
@@ -99,14 +101,6 @@
    * new set of dependencies.
    **/
   "teambit.workspace/variants": {
-    // Set the default variant configs to be used for all components (except integration).
-    "angular": {
-      "defaultScope": "bitdev.angular"
-    },
-    // Set the default variant configs to be used for integration
-    "integration": {
-      "defaultScope": "integration.examples"
-    },
     // Special rules for all aspect envs
     "angular/envs, angular/examples": {
       "teambit.harmony/aspect": "-",
@@ -134,11 +128,14 @@
       "teambit.envs/env": {}
     },
     "integration/demo-app": {
-      //      "bitdev.angular/angular-env": {}
-      "bitdev.angular/envs/angular-v16-env": {}
+      "bitdev.angular/angular-env": {}
+//      "bitdev.angular/envs/angular-v17-env": {}
     },
     "integration/demo-lib": {
       "bitdev.angular/angular-env": {}
+    },
+    "integration/demo-lib-v17": {
+      "bitdev.angular/envs/angular-v17-env": {}
     },
     "integration/demo-lib-v16": {
       "bitdev.angular/envs/angular-v16-env": {}

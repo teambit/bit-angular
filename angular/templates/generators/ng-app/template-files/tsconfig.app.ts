@@ -1,6 +1,6 @@
 import { ComponentFile } from '@teambit/generator';
 
-export const tsconfigFile = (): ComponentFile => {
+export const tsconfigFile = (angularVersion: number): ComponentFile => {
   return {
     relativePath: 'tsconfig.app.json',
     content: `/* To learn more about this file see: https://angular.io/config/tsconfig. */
@@ -13,19 +13,20 @@ export const tsconfigFile = (): ComponentFile => {
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
     "sourceMap": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "allowJs": true,
-    "target": "es2017",
-    "module": "es2020",
+    ${angularVersion >= 17 ? `"target": "ES2022",
+    "module": "ES2022"` : `"target": "es2017",
+    "module": "es2020"`},
     "preserveSymlinks": false,
     "lib": [
-      "es2018",
+      "${angularVersion >= 17 ? `ES2022` : `ES2018`}",
       "dom"
     ],
     "types": []
@@ -33,9 +34,7 @@ export const tsconfigFile = (): ComponentFile => {
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "strictInputAccessModifiers": true,
-    "strictGenerators": true,
-    "enableIvy": true
+    "strictInputAccessModifiers": true
   },
   "files": [
     "./src/main.ts",
