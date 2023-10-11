@@ -1,5 +1,5 @@
 /* eslint-disable */
-require('zone.js/dist/zone');
+require('zone.js');
 const i0 = require('@angular/core') as any;
 import { BrowserModule } from '@angular/platform-browser';
 

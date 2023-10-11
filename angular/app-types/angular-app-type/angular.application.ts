@@ -55,10 +55,10 @@ export class AngularApp implements Application {
     return join(artifactsDir, this.name);
   }
 
-  private getDevServerContext(context: AppContext, appRootPath: string): DevServerContext {
+  private getDevServerContext(context: AppContext): DevServerContext {
     return Object.assign(cloneDeep(context), {
       entry: [],
-      rootPath: appRootPath,
+      rootPath: '',
       publicPath: `${this.publicDir}/${this.options.name}`,
       title: this.options.name
     });
@@ -121,7 +121,7 @@ export class AngularApp implements Application {
     const workspaceCmpsIDs = await this.workspace.listIds();
     const bitCmps = await this.workspace.getMany(workspaceCmpsIDs);
     this.generateTsConfig(bitCmps, appRootPath, tsconfigPath);
-    const devServerContext = this.getDevServerContext(context, this.options.bundler === 'vite' ? '' : appRootPath);
+    const devServerContext = this.getDevServerContext(context);
     const preview = this.preview(this.envContext);
 
     return preview.getDevServer(devServerContext)(this.envContext);

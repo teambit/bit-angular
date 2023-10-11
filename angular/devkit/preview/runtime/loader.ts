@@ -2,7 +2,7 @@
 // Only load those if we are in the browser
 if (typeof window !== 'undefined') {
   require('./native-shim.js');
-  require('zone.js/dist/zone');
+  require('zone.js');
 }
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
