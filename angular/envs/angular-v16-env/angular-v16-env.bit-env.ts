@@ -58,7 +58,7 @@ export class AngularV16Env extends AngularBaseEnv {
         ngEnvOptions,
         sourceRoot,
         transformers,
-        webpackOptions: webpackOptions as any
+        webpackOptions
       });
     }
     return super.getDevServer(devServerContext, ngEnvOptions, transformers as WebpackConfigTransformer[], angularOptions, webpackOptions, sourceRoot);

@@ -39,6 +39,24 @@ export interface IndexHtmlTransformResult {
   errors: string[];
 }
 
+function augmentIndexHtmlPlugin(generator: IndexHtmlGenerator): IndexHtmlGeneratorPlugin {
+  const { deployUrl, crossOrigin, entrypoints } = generator.options;
+
+  return async (html, options) => {
+    const { lang, baseHref, hints } = options;
+
+    return augmentIndexHtml({
+      html,
+      baseHref,
+      deployUrl,
+      crossOrigin,
+      lang,
+      entrypoints,
+      hints,
+    });
+  };
+}
+
 export class IndexHtmlGenerator {
   private readonly plugins: IndexHtmlGeneratorPlugin[];
 
@@ -53,7 +71,9 @@ export class IndexHtmlGenerator {
     const warnings: string[] = [];
     const errors: string[] = [];
 
+    // eslint-disable-next-line no-restricted-syntax
     for (const plugin of this.plugins) {
+      // eslint-disable-next-line no-await-in-loop
       const result = await plugin(content, options);
       if (typeof result === 'string') {
         content = result;
@@ -80,22 +100,4 @@ export class IndexHtmlGenerator {
   protected async readIndex(path: string): Promise<string> {
     return fs.promises.readFile(path, 'utf-8');
   }
-}
-
-function augmentIndexHtmlPlugin(generator: IndexHtmlGenerator): IndexHtmlGeneratorPlugin {
-  const { deployUrl, crossOrigin, entrypoints } = generator.options;
-
-  return async (html, options) => {
-    const { lang, baseHref, hints } = options;
-
-    return augmentIndexHtml({
-      html,
-      baseHref,
-      deployUrl,
-      crossOrigin,
-      lang,
-      entrypoints,
-      hints,
-    });
-  };
 }

@@ -1,6 +1,6 @@
 import type { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 import type { ServerResponse } from 'http';
-import { default as memoize } from 'memoizee';
+import memoize from 'memoizee';
 import { join } from 'path';
 import type { Connect, Plugin, ViteDevServer } from 'vite';
 import { IndexHtmlGenerator } from './index-file/index-html-generator';
@@ -9,14 +9,13 @@ import { generateEntryPoints } from './index-file/package-chunk-sort';
 export function getIndexInputFile(index: BrowserBuilderOptions['index']): string {
   if (typeof index === 'string') {
     return index;
-  } else {
-    return index.input;
   }
+  return index.input;
 }
 
 const cleanUrl = (url: string) => url.replace(/#.*$/s, '').replace(/\?.*$/s, '');
 
-const genHtml = async function(options: Partial<BrowserBuilderOptions>, rootPath: string, sourceRoot = 'src') {
+async function genHtml(options: Partial<BrowserBuilderOptions>, rootPath: string, sourceRoot = 'src') {
   const entrypoints = generateEntryPoints({
     main: options.main ?? `./${join(sourceRoot, `main.ts`)}`,
     polyfills: options.polyfills ?? `./${join(sourceRoot, `polyfills.ts`)}`,
@@ -38,6 +37,7 @@ const genHtml = async function(options: Partial<BrowserBuilderOptions>, rootPath
   });
 
   if (warnings.length) {
+    // eslint-disable-next-line no-console
     warnings.forEach((warning) => console.warn(warning));
   }
 

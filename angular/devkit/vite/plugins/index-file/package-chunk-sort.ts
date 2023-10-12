@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
-import path from 'path';
+import {parse} from 'path';
 // import { ScriptElement, StyleElement } from '@angular-devkit/build-angular/src/builders/browser/schema';
 import type { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 
@@ -37,7 +37,7 @@ export function normalizeExtraEntryPoints(
       bundleName = entry.bundleName;
     } else if (!inject) {
       // Lazy entry points use the file name as bundle name.
-      bundleName = path.parse(entry.input).name;
+      bundleName = parse(entry.input).name;
     } else {
       bundleName = defaultBundleName;
     }
@@ -55,10 +55,10 @@ export function generateEntryPoints(options: {
 }): EntryPointsType[] {
   // Add all styles/scripts, except lazy-loaded ones.
   const extraEntryPoints = (
-    extraEntryPoints: (ScriptElement | StyleElement)[],
+    eePoints: (ScriptElement | StyleElement)[],
     defaultBundleName: string,
   ) => {
-    const entryPoints = normalizeExtraEntryPoints(extraEntryPoints, defaultBundleName)
+    const entryPoints = normalizeExtraEntryPoints(eePoints, defaultBundleName)
       .filter((entry) => entry.inject)
       .map((entry) => entry.input);
 

@@ -6,9 +6,9 @@
  * found in the LICENSE file at https://angular.io/license
  */
 
+import { loadEsmModule } from '@bitdev/angular.dev-services.common';
 import { extname } from 'path';
 import { htmlRewritingStream } from './html-rewriting-stream';
-import { loadEsmModule } from '@bitdev/angular.dev-services.common';
 import { EntryPointsType } from './package-chunk-sort';
 
 export type CrossOriginValue = 'none' | 'anonymous' | 'use-credentials';
@@ -27,6 +27,64 @@ export interface AugmentIndexHtmlOptions {
   hints?: { url: string; mode: string; as?: string }[];
 }
 
+function isString(value: unknown): value is string {
+  return typeof value === 'string';
+}
+
+async function getLanguageDirectionFromLocales(locale: string): Promise<string | undefined> {
+  try {
+    const localeData = (
+      await loadEsmModule<typeof import('@angular/common/locales/en')>(
+        `@angular/common/locales/${locale}`,
+      )
+    ).default;
+
+    const dir = localeData[localeData.length - 2];
+
+    return isString(dir) ? dir : undefined;
+  } catch {
+    // In some cases certain locales might map to files which are named only with language id.
+    // Example: `en-US` -> `en`.
+    const [languageId] = locale.split('-', 1);
+    if (languageId !== locale) {
+      return getLanguageDirectionFromLocales(languageId);
+    }
+  }
+
+  return undefined;
+}
+
+async function getLanguageDirection(
+  locale: string,
+  warnings: string[],
+): Promise<string | undefined> {
+  const dir = await getLanguageDirectionFromLocales(locale);
+
+  if (!dir) {
+    warnings.push(
+      `Locale data for '${locale}' cannot be found. 'dir' attribute will not be set for this locale.`,
+    );
+  }
+
+  return dir;
+}
+
+function updateAttribute(
+  tag: { attrs: { name: string; value: string }[] },
+  name: string,
+  value: string,
+): void {
+  const index = tag.attrs.findIndex((a) => a.name === name);
+  const newValue = { name, value };
+
+  if (index === -1) {
+    tag.attrs.push(newValue);
+  } else {
+    // eslint-disable-next-line no-param-reassign
+    tag.attrs[index] = newValue;
+  }
+}
+
 /*
  * Helper function used by the IndexHtmlWebpackPlugin.
  * Can also be directly used by builder, e.g. in order to generate an index.html
@@ -41,15 +99,17 @@ export async function augmentIndexHtml(
   const warnings: string[] = [];
   const errors: string[] = [];
 
-  let { crossOrigin = 'none' } = params;
+  const { crossOrigin = 'none' } = params;
 
   const stylesheets = new Set<string>();
   const scripts = new Map</** file name */ string, /** isModule */ boolean>();
 
   // Sort files in the order we want to insert them by entrypoint
+  // eslint-disable-next-line no-restricted-syntax
   for (const [file, isModule] of entrypoints) {
     const extension = extname(file);
       if (scripts.has(file) || stylesheets.has(file)) {
+        // eslint-disable-next-line no-continue
         continue;
       }
 
@@ -58,6 +118,7 @@ export async function augmentIndexHtml(
         case '.jsx':
         case '.ts':
         case '.tsx':
+        default:
           // Also, non entrypoints need to be loaded as no module as they can contain problematic code.
           scripts.set(file, isModule);
           break;
@@ -80,6 +141,7 @@ export async function augmentIndexHtml(
   }
 
   let scriptTags: string[] = [];
+  // eslint-disable-next-line no-restricted-syntax
   for (const [src, isModule] of scripts) {
     const attrs = [`src="${deployUrl}${src}"`];
 
@@ -98,6 +160,7 @@ export async function augmentIndexHtml(
   }
 
   let linkTags: string[] = [];
+  // eslint-disable-next-line no-restricted-syntax
   for (const src of stylesheets) {
     const attrs = [`rel="stylesheet"`, `href="${deployUrl}${src}"`];
 
@@ -109,6 +172,7 @@ export async function augmentIndexHtml(
   }
 
   if (params.hints?.length) {
+    // eslint-disable-next-line no-restricted-syntax
     for (const hint of params.hints) {
       const attrs = [`rel="${hint.mode}"`, `href="${deployUrl}${hint.url}"`];
 
@@ -143,6 +207,7 @@ export async function augmentIndexHtml(
 
   rewriter
     .on('startTag', (tag) => {
+      // eslint-disable-next-line default-case
       switch (tag.tagName) {
         case 'html':
           // Adjust document locale if specified
@@ -174,8 +239,10 @@ export async function augmentIndexHtml(
       rewriter.emitStartTag(tag);
     })
     .on('endTag', (tag) => {
+      // eslint-disable-next-line default-case
       switch (tag.tagName) {
         case 'head':
+          // eslint-disable-next-line no-restricted-syntax
           for (const linkTag of linkTags) {
             rewriter.emitRaw(linkTag);
           }
@@ -184,6 +251,7 @@ export async function augmentIndexHtml(
           break;
         case 'body':
           // Add script tags
+          // eslint-disable-next-line no-restricted-syntax
           for (const scriptTag of scriptTags) {
             rewriter.emitRaw(scriptTag);
           }
@@ -206,61 +274,4 @@ export async function augmentIndexHtml(
     warnings,
     errors,
   };
-}
-
-function updateAttribute(
-  tag: { attrs: { name: string; value: string }[] },
-  name: string,
-  value: string,
-): void {
-  const index = tag.attrs.findIndex((a) => a.name === name);
-  const newValue = { name, value };
-
-  if (index === -1) {
-    tag.attrs.push(newValue);
-  } else {
-    tag.attrs[index] = newValue;
-  }
-}
-
-function isString(value: unknown): value is string {
-  return typeof value === 'string';
-}
-
-async function getLanguageDirection(
-  locale: string,
-  warnings: string[],
-): Promise<string | undefined> {
-  const dir = await getLanguageDirectionFromLocales(locale);
-
-  if (!dir) {
-    warnings.push(
-      `Locale data for '${locale}' cannot be found. 'dir' attribute will not be set for this locale.`,
-    );
-  }
-
-  return dir;
-}
-
-async function getLanguageDirectionFromLocales(locale: string): Promise<string | undefined> {
-  try {
-    const localeData = (
-      await loadEsmModule<typeof import('@angular/common/locales/en')>(
-        `@angular/common/locales/${locale}`,
-      )
-    ).default;
-
-    const dir = localeData[localeData.length - 2];
-
-    return isString(dir) ? dir : undefined;
-  } catch {
-    // In some cases certain locales might map to files which are named only with language id.
-    // Example: `en-US` -> `en`.
-    const [languageId] = locale.split('-', 1);
-    if (languageId !== locale) {
-      return getLanguageDirectionFromLocales(languageId);
-    }
-  }
-
-  return undefined;
 }

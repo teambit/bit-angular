@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { logging } from '@angular-devkit/core';
 import { VERSION } from '@angular/cli';
 import { Configuration } from '@teambit/webpack';

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { Configuration } from 'webpack';
 import { VERSION } from '@angular/cli';
 

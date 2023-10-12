@@ -67,6 +67,7 @@ function extractMetadata(): Pluggable {
   return function transformer(tree, file) {
     visit(tree, 'yaml', (node: any) => {
       try {
+        // eslint-disable-next-line no-param-reassign
         file.data.frontmatter = yaml.parse(node.value, { prettyErrors: true });
       } catch (err: any) {
         throw new Error(
@@ -93,6 +94,7 @@ function extractImports(): Pluggable {
           isDefault: importSpecifier.isDefault,
         }));
       });
+      // eslint-disable-next-line no-param-reassign
       (file.data.imports ||= []).push(...imports);
     });
 

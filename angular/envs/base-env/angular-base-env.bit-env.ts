@@ -42,7 +42,7 @@ import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
 import { TypeScriptExtractor } from '@teambit/typescript';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
-import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
+import { WebpackConfigTransformer } from '@teambit/webpack';
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash';
@@ -157,7 +157,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       ngEnvOptions,
       sourceRoot,
       transformers,
-      webpackOptions: webpackOptions
+      webpackOptions
     });
   }
 
@@ -175,7 +175,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       ngEnvOptions,
       sourceRoot,
       transformers,
-      webpackOptions: webpackOptions
+      webpackOptions
     });
   }
 

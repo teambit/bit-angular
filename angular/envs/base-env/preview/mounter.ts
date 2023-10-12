@@ -10,6 +10,7 @@ import { Component, ViewEncapsulation } from '@angular/core';
  */
 @Component({
   selector: 'bit-wrapper',
+  // @ts-ignore
   standalone: true,
   imports: [],
   encapsulation: ViewEncapsulation.None,

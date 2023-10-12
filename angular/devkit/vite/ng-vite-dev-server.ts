@@ -1,102 +1,20 @@
+// eslint-disable-next-line import/no-named-default
 import { default as ngVitePlugin } from '@analogjs/vite-plugin-angular';
-import {
-  AngularEnvOptions,
-  BrowserOptions,
-  DevServerOptions,
-  isAppDevContext
-} from '@bitdev/angular.dev-services.common';
-import type { DevServer, DevServerContext } from '@teambit/bundler';
+import { isAppDevContext } from '@bitdev/angular.dev-services.common';
+import type { DevServer } from '@teambit/bundler';
 import type { AsyncEnvHandler, EnvContext } from '@teambit/envs';
-import type { Logger } from '@teambit/logger';
-import type { PubsubMain } from '@teambit/pubsub';
 import type { Workspace } from '@teambit/workspace';
 import type { Server } from 'http';
 import { posix } from 'path';
 // @ts-ignore
-import type { Alias, InlineConfig, Plugin, PluginOption } from 'vite';
+import type { InlineConfig, Plugin } from 'vite';
 import { configFactory } from './dev-server/config';
+import {
+  NgViteDevServerOptions,
+  ViteDevServerAspectsContext,
+  ViteDevServerOptions
+} from './dev-server/types';
 import { htmlPlugin } from './plugins/index-html.plugin';
-
-
-export type NgViteDevServerOptions = {
-  angularOptions: Partial<BrowserOptions & DevServerOptions>;
-
-  /**
-   * context of the dev server execution.
-   */
-  devServerContext: DevServerContext;
-
-  /**
-   * name of the dev server.
-   */
-  name?: string;
-
-  ngEnvOptions: AngularEnvOptions;
-
-  sourceRoot?: string;
-
-  // TODO: fix type once we can support preview with vite
-  transformers?: (ViteConfigTransformer | any)[];
-
-  // TODO: remove this once we can support preview with vite
-  [key: string]: any;
-};
-
-
-export type ViteConfigTransformer = (config: InlineConfig) => void;
-
-export type ViteDevServerAspectsContext = {
-  logger: Logger;
-  workspace: Workspace;
-  pubsub: PubsubMain;
-};
-
-export type ViteDevServerOptions = {
-  /**
-   * name of the dev server.
-   */
-  name?: string;
-
-  /**
-   * context of the dev server execution.
-   */
-  devServerContext: DevServerContext;
-
-  /**
-   * optimize entries before passing them to Vite.
-   */
-  optimizeEntries?: (entries: string[], context: ViteDevServerAspectsContext) => string[];
-
-  /**
-   * root path of the dev server.
-   */
-  root?: string;
-
-  /**
-   * base URL to use for all relative URLs in a document
-   */
-  base?: string;
-
-  /**
-   * variables to be injected to the dev server.
-   */
-  define?: Record<string, any>;
-
-  /**
-   * alias to be injected to the dev server.
-   */
-  alias?: Alias[];
-
-  /**
-   * list of plugins to be injected to the dev server.
-   */
-  plugins?: PluginOption[];
-
-  /**
-   * list of transformers to modify Vite config in an advanced way.
-   */
-  transformers?: ViteConfigTransformer[];
-};
 
 export class NgViteDevServer {
   id = 'ng-vite-dev-server';
@@ -120,7 +38,7 @@ export class NgViteDevServer {
 
   static from(options: NgViteDevServerOptions): AsyncEnvHandler<DevServer> {
     return async(context: EnvContext): Promise<DevServer> => {
-      const rootPath = options.devServerContext.rootPath;
+      const {rootPath} = options.devServerContext;
       const name = options.name || 'vite-dev-server';
       const logger = context.createLogger(name);
       const workspace: Workspace = context.getAspect<any>('teambit.workspace/workspace');

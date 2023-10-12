@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { VERSION } from '@angular/cli';
 import { json } from '@angular-devkit/core';
 

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { json, logging } from '@angular-devkit/core';
 import { VERSION } from '@angular/cli';
 import { BrowserBuilderSchema } from '../browser-schema';

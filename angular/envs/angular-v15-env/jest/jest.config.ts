@@ -6,7 +6,7 @@ export default {
   preset: 'jest-preset-angular',
   globalSetup: 'jest-preset-angular/global-setup',
   reporters: ['default'],
-  setupFilesAfterEnv: [require.resolve('jest-preset-angular/setup-jest')],
+  setupFilesAfterEnv: [require.resolve('./setup-jest')],
   testPathIgnorePatterns: ['<rootDir>/.*/e2e/'],
   globals: {
     ngJest: {

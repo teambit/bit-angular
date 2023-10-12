@@ -5,7 +5,7 @@ const packagesToExclude: string[] = ['@angular', '@ngrx'];
 export default {
   preset: 'jest-preset-angular',
   reporters: ['default'],
-  setupFilesAfterEnv: [require.resolve('jest-preset-angular/setup-jest')],
+  setupFilesAfterEnv: [require.resolve('./setup-jest')],
   testPathIgnorePatterns: ['<rootDir>/.*/e2e/'],
   globals: {
     'ts-jest': {

@@ -17,6 +17,7 @@ export class StatsLoggerPlugin {
       });
     } catch (e) {
       // if it fails, just continue (we don't need logging to break the build)
+      // eslint-disable-next-line no-console
       console.log('Failed to load @bitdev/angular.dev-services.ng-compat', e);
     }
   }

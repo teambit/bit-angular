@@ -5,7 +5,7 @@ import 'node-stdlib-browser';
 import { relative } from 'path';
 import { defineConfig, InlineConfig } from 'vite';
 import { nodePolyfills } from 'vite-plugin-node-polyfills';
-import { ViteDevServerAspectsContext, ViteDevServerOptions } from '../ng-vite-dev-server';
+import { ViteDevServerAspectsContext, ViteDevServerOptions } from './types';
 import { getHostAlias } from './utils';
 // import react from "@vitejs/plugin-react";
 // import mdx from "vite-plugin-mdx";
@@ -21,8 +21,14 @@ import { getHostAlias } from './utils';
  * 4. websocket protocol
  */
 export async function configFactory(options: ViteDevServerOptions, aspectContext: ViteDevServerAspectsContext, port: number): Promise<InlineConfig> {
-  const { devServerContext: { publicPath, entry, id, rootPath, envRuntime, }, define, alias, plugins, transformers, } = options;
-  const { workspace, pubsub } = aspectContext;
+  const {
+    devServerContext: { publicPath, entry, rootPath, envRuntime },
+    define,
+    alias,
+    plugins,
+    transformers
+  } = options;
+  const { workspace } = aspectContext;
   const entries = entry;
 
   const root = options.root ?? workspace.path;
@@ -71,7 +77,7 @@ export async function configFactory(options: ViteDevServerOptions, aspectContext
         },
         ...hostAlias,
         ...alias || []
-      ],
+      ]
     },
     // apply different cache dir for each env
     cacheDir,
@@ -82,7 +88,7 @@ export async function configFactory(options: ViteDevServerOptions, aspectContext
         // 2. entry files
         // 3. local packages
         ignored: [
-          ...packageList.map(p => `!**/node_modules/${p}/**`),
+          ...packageList.map(p => `!**/node_modules/${p}/**`)
         ]
       },
       fs: {
@@ -90,7 +96,7 @@ export async function configFactory(options: ViteDevServerOptions, aspectContext
       }
     },
     optimizeDeps: {
-      entries,
+      entries
       // exclude: packageList,
     },
     // TODO: make it replaceable and reusable
@@ -99,8 +105,8 @@ export async function configFactory(options: ViteDevServerOptions, aspectContext
       // react(),
       // mdx(mdxOptions),
       // htmlPlugin(entries),
-      ...plugins || [],
-    ],
+      ...plugins || []
+    ]
   });
 
   // apply transformers

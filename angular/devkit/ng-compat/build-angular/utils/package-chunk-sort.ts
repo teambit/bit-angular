@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { VERSION } from '@angular/cli';
 
 export let generateEntryPoints: (options: {
