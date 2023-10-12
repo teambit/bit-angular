@@ -64,6 +64,23 @@ export class AngularApp implements Application {
     });
   }
 
+  private getBundlerContext(context: AppBuildContext): BundlerContext {
+    const { capsule, artifactsDir } = context;
+    const publicDir = this.getPublicDir(artifactsDir);
+    const outputPath = pathNormalizeToLinux(join(capsule.path, publicDir));
+
+    return Object.assign(cloneDeep(context), {
+      targets: [{
+        components: [capsule.component],
+        entries: [],
+        outputPath
+      }],
+      entry: [],
+      rootPath: '/',
+      appName: this.options.name
+    });
+  }
+
   private getPreview(): EnvHandler<Preview> {
     const ngEnvOptions = this.angularEnv.getNgEnvOptions();
 
@@ -143,24 +160,13 @@ export class AngularApp implements Application {
       throw new Error('implement vite bundler');
     }
 
-    const { capsule, artifactsDir } = context;
-    const publicDir = this.getPublicDir(artifactsDir);
-    const outputPath = pathNormalizeToLinux(join(capsule.path, publicDir));
-    const appRootPath = context.capsule.path;
+    const { capsule } = context;
+    const appRootPath = capsule.path;
     const tsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
-    this.generateTsConfig([capsule?.component], appRootPath, tsconfigPath);
-    const preview = this.preview(this.envContext) as AngularPreview;
+    this.generateTsConfig([capsule.component], appRootPath, tsconfigPath);
+    const bundlerContext = this.getBundlerContext(context);
+    const preview = this.preview(this.envContext);
 
-    const bundlerContext: BundlerContext = Object.assign(cloneDeep(context), {
-      targets: [{
-        components: [capsule?.component],
-        entries: [],
-        outputPath
-      }],
-      entry: [],
-      rootPath: '/',
-      appName: this.options.name
-    });
     return preview.getBundler(bundlerContext)(this.envContext);
   }
 

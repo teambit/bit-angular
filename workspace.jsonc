@@ -111,12 +111,12 @@
       }
     },
     // All the other components use node env
-    "angular/devkit, angular/templates, angular/envs/base-env": {
+    "angular/devkit, angular/templates, angular/envs/base-env, angular/app-types": {
       "teambit.envs/env": "-",
       "teambit.envs/envs": {
-        "env": "teambit.node/node"
+        "env": "teambit.harmony/node"
       },
-      "teambit.node/node@1.0.16": {}
+      "teambit.harmony/node": {}
     },
     "angular/readme": {
       "teambit.mdx/mdx": {},
