@@ -152,7 +152,7 @@ export class AngularApp implements Application {
   }
 
   async getBundler(context: AppBuildContext): Promise<Bundler> {
-    if (typeof this.options.bundler !== 'string') {
+    if (this.options.bundler && typeof this.options.bundler !== 'string') {
       return this.options.bundler as Bundler;
     }
 
