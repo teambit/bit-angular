@@ -46,7 +46,6 @@
           "@babel/runtime": "7.22.15"
         }
       }
-    },
-    "teambit.node/node@1.0.16": {}
+    }
   }
 }

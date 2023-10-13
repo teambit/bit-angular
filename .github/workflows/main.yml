@@ -264,7 +264,7 @@ jobs:
         run: bit test --log
 
       - name: Bit build
-        run: bit build --log
+        run: NODE_OPTIONS=--openssl-legacy-provider bit build --log
 
       - uses: actions/upload-artifact@v3
         with:

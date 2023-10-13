@@ -132,7 +132,6 @@ async function getWebpackConfig(
     ...logger,
     log: logger.console
   } as any as logging.LoggerApi;
-  console.log(browserOptions);
   const normalizedOptions = normalizeBrowserSchema(
     normalizedWorkspaceRoot,
     projectRoot,

@@ -14,7 +14,6 @@
           "@angular/compiler-cli": ">= 8.0.0"
         }
       }
-    },
-    "teambit.node/node@1.0.16": {}
+    }
   }
 }
