@@ -1,20 +1,20 @@
 /* eslint-disable no-param-reassign */
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
+import { getSystemPath, normalize, tags } from '@angular-devkit/core';
+import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
-  getCommonConfig,
-  getDevServerConfig,
-  getStylesConfig,
-  IndexHtmlWebpackPlugin,
-  normalizeCacheOptions,
   generateEntryPoints,
   generateWebpackConfig,
+  getCommonConfig,
+  getDevServerConfig,
   getIndexOutputFile,
+  getStylesConfig,
+  IndexHtmlWebpackPlugin,
   normalizeBrowserSchema,
+  normalizeCacheOptions,
   normalizeOptimization
 } from '@bitdev/angular.dev-services.ng-compat';
-import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
-import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
   WebpackBuildConfigFactoryOpts,
   WebpackConfig,
@@ -131,7 +131,7 @@ async function getWebpackConfig(
     createChild: () => logger as any,
     ...logger,
     log: logger.console
-  } as any as logging.LoggerApi;
+  } as any;
 
   const normalizedOptions = normalizeBrowserSchema(
     normalizedWorkspaceRoot,

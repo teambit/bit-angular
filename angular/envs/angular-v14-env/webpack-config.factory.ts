@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
-import { getSystemPath, logging, normalize, tags } from '@angular-devkit/core';
+import { getSystemPath, normalize, tags } from '@angular-devkit/core';
 import { BundlerSetup } from '@bitdev/angular.dev-services.common';
 import {
   generateEntryPoints,
@@ -133,7 +133,7 @@ async function getWebpackConfig(
     createChild: () => logger as any,
     ...logger,
     log: logger.console
-  } as any as logging.LoggerApi;
+  } as any;
 
   const normalizedOptions = normalizeBrowserSchema(
     normalizedWorkspaceRoot,
