@@ -9,11 +9,6 @@ export type AngularEnvOptions = {
    * This transforms compositions into Web Components and replaces the Angular bundler by the React bundler.
    */
   useAngularElementsPreview?: boolean;
-
-  /**
-   * Whether ngcc should be run as part of postinstall / compile / build ...
-   */
-  useNgcc?: boolean;
   jestConfigPath: string;
   jestModulePath: string;
   ngPackagrModulePath: string;

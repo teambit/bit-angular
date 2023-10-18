@@ -28,7 +28,6 @@ export class AngularV16Env extends AngularBaseEnv {
   angularVersion = 16;
 
   ngEnvOptions: AngularEnvOptions = {
-    useNgcc: false,
     useAngularElementsPreview: false,
     // angularElementsModulePath: require.resolve('@angular/elements'),
     jestConfigPath: require.resolve('./jest/jest.config'),

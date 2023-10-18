@@ -15,7 +15,6 @@ export class AngularV15Env extends AngularBaseEnv {
   angularVersion = 15;
 
   ngEnvOptions: AngularEnvOptions = {
-    useNgcc: false,
     useAngularElementsPreview: false,
     // angularElementsModulePath: require.resolve('@angular/elements'),
     jestConfigPath: require.resolve('./jest/jest.config'),

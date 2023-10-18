@@ -113,7 +113,6 @@ export class NgWebpackDevServer {
         entryFiles: devServerContext.entry,
         isApp,
         logger,
-        useNgcc: !!options.ngEnvOptions.useNgcc,
         nodeModulesPaths: getNodeModulesPaths(false, isolator, workspace),
         plugins: [],
         publicPath: devServerContext.publicPath,

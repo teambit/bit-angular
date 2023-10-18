@@ -241,7 +241,6 @@ export async function webpackConfigFactory(opts: WebpackConfigFactoryOpts & Webp
       opts.tempFolder,
       opts.plugins,
       opts.isApp,
-      opts.useNgcc
     );
   } else {
     overwriteConfig = webpack5BuildConfigFactory(
@@ -251,7 +250,6 @@ export async function webpackConfigFactory(opts: WebpackConfigFactoryOpts & Webp
       opts.workspaceDir,
       opts.tempFolder,
       opts.plugins,
-      opts.useNgcc
     ) as WebpackConfigWithDevServer;
   }
 

@@ -7,7 +7,6 @@
  */
 // eslint-disable-next-line max-classes-per-file
 import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
-import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import type { Compiler } from 'webpack';
 import { NodeJSFileSystem } from './nodejs-file-system';
 
@@ -130,9 +129,7 @@ export class BitDedupeModuleResolvePlugin {
 
   private fs = new NodeJSFileSystem();
 
-  private ngccProcessor?: NgccProcessor;
-
-  constructor(private nodeModulesPaths: string[], private workspaceDir: string, private tempFolder: string, private useNgcc: boolean) {
+  constructor(private nodeModulesPaths: string[], private workspaceDir: string, private tempFolder: string) {
   }
 
   guessTypingsFromPackageJson(
@@ -195,18 +192,6 @@ export class BitDedupeModuleResolvePlugin {
   }
 
   apply(compiler: Compiler) {
-    let needsNgcc = false;
-    if (this.useNgcc) {
-      if (!this.ngccProcessor) {
-        this.ngccProcessor = new NgccProcessor();
-      }
-      needsNgcc = this.ngccProcessor.needsProcessing(this.workspaceDir, this.tempFolder, this.nodeModulesPaths);
-      if (needsNgcc) {
-        // Process all node_modules folders (only works if the modules are hoisted)
-        this.nodeModulesPaths.forEach(path => this.ngccProcessor?.process(path, this.tempFolder));
-      }
-    }
-
     compiler.hooks.compilation.tap(
       this.pluginName,
         // @ts-ignore
@@ -250,11 +235,6 @@ export class BitDedupeModuleResolvePlugin {
               resource,
               request: result.request
             });
-
-            // Run ngcc
-            if(needsNgcc) {
-              this.ngccProcessor!.process(packagePath);
-            }
 
             return;
           }

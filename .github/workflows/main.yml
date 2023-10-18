@@ -234,39 +234,3 @@ jobs:
         with:
           name: debug-log
           path: $HOME/Library/Caches/Bit/logs
-
-
-  # Test angular-v12
-  v12:
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'skip-ci')"
-    container:
-      image: bitsrc/stable:latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Keep v12
-        run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=12
-
-      - name: Cleanup node modules
-        run: rm -rf node_modules
-
-      - name: Install dependencies
-        run: bit install --log
-
-      - name: Add example component
-        run: bit add integration/demo-lib-v12 --log
-
-      - name: Install dependencies
-        run: bit install --log
-
-      - name: Bit test
-        run: bit test --log
-
-      - name: Bit build
-        run: NODE_OPTIONS=--openssl-legacy-provider bit build --log
-
-      - uses: actions/upload-artifact@v3
-        with:
-          name: debug-log
-          path: $HOME/Library/Caches/Bit/logs

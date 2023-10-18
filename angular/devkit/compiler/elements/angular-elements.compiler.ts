@@ -5,7 +5,6 @@ import {
   getNodeModulesPaths,
   getWorkspace
 } from '@bitdev/angular.dev-services.common';
-import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -41,8 +40,6 @@ export class AngularElementsCompiler implements Compiler {
 
   displayName = 'Angular elements compiler';
 
-  ngccProcessor?: NgccProcessor;
-
   rollupCompiler: RollupCompiler;
 
   private constructor(
@@ -59,21 +56,10 @@ export class AngularElementsCompiler implements Compiler {
     private ngEnvOptions: AngularEnvOptions
   ) {
     this.rollupCompiler = new RollupCompiler(this.tsCompilerOptions, this.logger);
-    if (this.ngEnvOptions.useNgcc) {
-      this.ngccProcessor = new NgccProcessor();
-    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async compositionsCompilation(component: Component, componentDir: string, outputDir: string, watch = false) {
-    // Process all node_modules folders (only works if the modules are hoisted)
-    if (this.ngEnvOptions.useNgcc) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-        // eslint-disable-next-line no-await-in-loop
-        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-      }
-    }
     // Build compositions with rollup
     this.logger.console('\nBuilding compositions');
     const timer = Timer.create();
@@ -108,15 +94,6 @@ Built Angular Compositions
     if (isApp) {
       return;
     }
-    // if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
-    // Process all node_modules folders (only works if the modules are hoisted)
-    if (this.ngEnvOptions.useNgcc) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-        // eslint-disable-next-line no-await-in-loop
-        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-      }
-    }
     // Build compositions
     await this.compositionsCompilation(params.component, params.componentDir, params.outputDir, true);
 
@@ -139,15 +116,6 @@ Built Angular Compositions
   async build(context: BuildContext): Promise<BuiltTaskResult> {
     const capsules = context.capsuleNetwork.seedersCapsules;
     const componentsResults: ComponentResult[] = [];
-
-    // Process all node_modules folders (only works if the modules are hoisted)
-    if (this.ngEnvOptions.useNgcc) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-        // eslint-disable-next-line no-await-in-loop
-        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-      }
-    }
 
     // eslint-disable-next-line no-plusplus
     for (let i = 0; i < context.components.length; i++) {

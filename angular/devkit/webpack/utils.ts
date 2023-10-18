@@ -21,5 +21,4 @@ export interface WebpackConfigFactoryOpts {
   nodeModulesPaths: string[];
   workspaceDir: string;
   plugins: WebpackPluginInstance[];
-  useNgcc: boolean;
 }

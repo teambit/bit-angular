@@ -5,7 +5,6 @@ import {
   getNodeModulesPaths,
   getWorkspace
 } from '@bitdev/angular.dev-services.common';
-import { NgccProcessor } from '@bitdev/angular.dev-services.ngcc';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
   ArtifactDefinition,
@@ -79,8 +78,6 @@ export class NgPackagrCompiler implements Compiler {
 
   ngPackagr: NgPackagr;
 
-  ngccProcessor?: NgccProcessor;
-
   private constructor(
     ngPackagrPath: string,
     private logger: Logger,
@@ -95,9 +92,6 @@ export class NgPackagrCompiler implements Compiler {
     private nodeModulesPaths: string[] = [],
     private ngEnvOptions: AngularEnvOptions
   ) {
-    if (this.ngEnvOptions.useNgcc) {
-      this.ngccProcessor = new NgccProcessor();
-    }
     // eslint-disable-next-line global-require,import/no-dynamic-require
     this.ngPackagr = require(ngPackagrPath).ngPackagr();
 
@@ -249,12 +243,6 @@ export class NgPackagrCompiler implements Compiler {
       return;
     }
     if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
-      // Process all node_modules folders (only works if the modules are hoisted)
-      if (this.ngEnvOptions.useNgcc) {
-        for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-          await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-        }
-      }
       return;
     }
     // recreate packageJson from component to make sure that its dependencies are updated with recent code changes
@@ -280,15 +268,6 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit build`
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
-    // Process all node_modules folders (only works if the modules are hoisted)
-    if (this.ngEnvOptions.useNgcc) {
-      // eslint-disable-next-line no-plusplus
-      for (let i = 0; i < this.nodeModulesPaths.length; i++) {
-        // eslint-disable-next-line no-await-in-loop
-        await this.ngccProcessor?.process(this.nodeModulesPaths[i]);
-      }
-    }
-
     let capsules = context.capsuleNetwork.seedersCapsules;
     if (typeof capsules.toposort !== 'undefined') {
       try {

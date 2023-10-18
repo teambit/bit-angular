@@ -13,7 +13,6 @@ export function webpack5BuildConfigFactory(
   workspaceDir: string,
   tempFolder: string,
   plugins: any[] = [],
-  useNgcc: boolean,
 ): WebpackConfig {
   const config = {
     mode: 'production',
@@ -69,7 +68,7 @@ export function webpack5BuildConfigFactory(
     },
 
     plugins: [
-      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder, useNgcc),
+      new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
       new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
       ...plugins
     ],

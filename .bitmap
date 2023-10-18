@@ -66,13 +66,6 @@
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/ng-compat"
     },
-    "dev-services/ngcc": {
-        "name": "dev-services/ngcc",
-        "scope": "bitdev.angular",
-        "version": "1.0.0",
-        "mainFile": "index.ts",
-        "rootDir": "angular/devkit/ngcc"
-    },
     "dev-services/preview/mounter": {
         "name": "dev-services/preview/mounter",
         "scope": "bitdev.angular",
@@ -108,13 +101,6 @@
         "version": "1.0.0",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/webpack"
-    },
-    "envs/angular-v12-env": {
-        "name": "envs/angular-v12-env",
-        "scope": "bitdev.angular",
-        "version": "1.0.1",
-        "mainFile": "index.ts",
-        "rootDir": "angular/envs/angular-v12-env"
     },
     "envs/angular-v13-env": {
         "name": "envs/angular-v13-env",
@@ -165,13 +151,6 @@
         "version": "1.0.1",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-env"
-    },
-    "examples/my-angular-v12-env": {
-        "name": "examples/my-angular-v12-env",
-        "scope": "bitdev.angular",
-        "version": "1.0.1",
-        "mainFile": "index.ts",
-        "rootDir": "angular/examples/my-angular-v12-env"
     },
     "examples/my-angular-v13-env": {
         "name": "examples/my-angular-v13-env",
