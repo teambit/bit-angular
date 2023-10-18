@@ -39,6 +39,7 @@
           "@babel/runtime": "7.20.0"
         },
         "peerDependencies": {
+          "@angular/common": ">= 13.0.0",
           "typescript": ">= 3.5.3",
           "vite": "4.4.8"
         }

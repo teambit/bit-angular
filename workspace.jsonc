@@ -119,9 +119,9 @@
       "teambit.harmony/node": {}
     },
     "angular/readme": {
-      "teambit.mdx/mdx": {},
+      "teambit.community/envs/community-mdx@4.0.1": {},
       "teambit.envs/envs": {
-        "env": "teambit.mdx/mdx"
+        "env": "teambit.community/envs/community-mdx"
       }
     },
     "integration/custom-env": {

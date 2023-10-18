@@ -189,6 +189,7 @@
         "rootDir": "angular/examples/my-angular-v17-env"
     },
     /*"readme": {
+        "name": "readme",
         "scope": "bitdev.angular",
         "version": "1.0.1",
         "mainFile": "index.ts",
@@ -209,4 +210,5 @@
         "rootDir": "angular/templates/starters"
     },
     "$schema-version": "17.0.0"
+    }
 }
