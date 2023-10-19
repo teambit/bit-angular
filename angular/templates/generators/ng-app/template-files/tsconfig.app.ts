@@ -37,8 +37,8 @@ export const tsconfigFile = (angularVersion: number): ComponentFile => {
     "strictInputAccessModifiers": true
   },
   "files": [
-    "./src/main.ts",
-    "./src/polyfills.ts"
+    "./src/main.ts"${angularVersion >= 15 ? `` : `,
+    "./src/polyfills.ts"`}
   ],
   "include": [
     "./src/**/*.d.ts"

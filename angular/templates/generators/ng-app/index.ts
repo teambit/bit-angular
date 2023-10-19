@@ -42,7 +42,7 @@ export class NgAppTemplate implements ComponentTemplate {
       gitKeepFile(),
     ];
 
-    if (this.angularVersion >= 15) {
+    if (this.angularVersion < 15) {
       files.push(
         // starting from Angular 15, the `polyfills` option accept an array of module specifiers.
         // https://github.com/angular/angular-cli/commit/597bfea1b29cc7b25d1f466eb313cbeeb6dffc98
