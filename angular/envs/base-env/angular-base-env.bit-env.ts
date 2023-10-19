@@ -18,7 +18,8 @@ import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-servic
 import {
   NgAppTemplate,
   NgEnvTemplate,
-  NgModuleTemplate
+  NgModuleTemplate,
+  NgStandaloneTemplate
 } from '@bitdev/angular.templates.generators';
 import {
   AngularStarter,
@@ -224,6 +225,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     const envName = this.constructor.name;
     return TemplateList.from([
       NgModuleTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgStandaloneTemplate.from({ envName, angularVersion: this.angularVersion }),
       NgEnvTemplate.from({ envName, angularVersion: this.angularVersion }),
       NgAppTemplate.from({ envName, angularVersion: this.angularVersion })
     ]);

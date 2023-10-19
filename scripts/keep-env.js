@@ -25,10 +25,9 @@ const defaultEnv = args('default');
 const regexp = [];
 regexp.push(new RegExp(`\\s\\s"bitdev\\.angular\\/envs\\/angular\\-v(?!${version})\\d\\d?\\-env":\\s\\{\\},\\n`, 'g'));
 
-// Remove default env & app if needed
+// Remove default env if needed
 if (!defaultEnv) {
   regexp.push(new RegExp(`\\s\\s"bitdev\\.angular\\/angular\\-env":\\s\\{\\},\\n`, 'g'));
-  regexp.push(new RegExp(`\\s\\s"integration\\/demo-app":\\s\\{\\},\\n`, 'g'));
 }
 
 try {

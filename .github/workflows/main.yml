@@ -41,6 +41,9 @@ jobs:
       - name: Add example app
         run: bit add integration/demo-app --log
 
+      - name: Use example app
+        run: bit use integration.examples/demo-app --log
+
       - name: Install dependencies
         run: bit install --log
 

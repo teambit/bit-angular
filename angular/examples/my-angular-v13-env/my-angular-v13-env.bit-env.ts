@@ -4,12 +4,12 @@ import {
   DevServerProvider
 } from '@bitdev/angular.dev-services.preview.preview';
 import { AngularV13Env } from '@bitdev/angular.envs.angular-v13-env';
-import { AngularStarter } from '@bitdev/angular.templates.starters';
 import {
   NgAppTemplate,
   NgEnvTemplate,
   NgModuleTemplate
 } from '@bitdev/angular.templates.generators';
+import { AngularStarter } from '@bitdev/angular.templates.starters';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';

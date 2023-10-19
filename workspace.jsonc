@@ -94,7 +94,7 @@
   "bitdev.angular/envs/angular-v13-env": {},
   "bitdev.angular/envs/angular-v12-env": {},
   // Add angular apps (until this is no longer necessary)
-  "integration/demo-app": {},
+  //  "integration.examples/demo-app": {},
   /**
    * workspace variants allow you to set different subsets of configuration for components in your workspace.
    * this is extremely useful for upgrading, aligning and building components with a
@@ -103,7 +103,6 @@
   "teambit.workspace/variants": {
     // Special rules for all aspect envs
     "angular/envs, angular/examples": {
-      "teambit.harmony/aspect": "-",
       // Set the env env for all core envs
       "teambit.envs/env": {},
       "teambit.envs/envs": {
@@ -112,7 +111,6 @@
     },
     // All the other components use node env
     "angular/devkit, angular/templates, angular/envs/base-env, angular/app-types": {
-      "teambit.envs/env": "-",
       "teambit.envs/envs": {
         "env": "teambit.harmony/node"
       },

@@ -4,12 +4,13 @@ import {
   DevServerProvider
 } from '@bitdev/angular.dev-services.preview.preview';
 import { AngularV15Env } from '@bitdev/angular.envs.angular-v15-env';
-import { AngularStarter } from '@bitdev/angular.templates.starters';
 import {
   NgAppTemplate,
   NgEnvTemplate,
-  NgModuleTemplate
+  NgModuleTemplate,
+  NgStandaloneTemplate
 } from '@bitdev/angular.templates.generators';
+import { AngularStarter } from '@bitdev/angular.templates.starters';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
@@ -120,6 +121,7 @@ export class MyAngularV15Env extends AngularV15Env {
     const envName = this.constructor.name;
     return TemplateList.from([
       NgModuleTemplate.from({envName, angularVersion: this.angularVersion}),
+      NgStandaloneTemplate.from({envName, angularVersion: this.angularVersion}),
       NgEnvTemplate.from({envName, angularVersion: this.angularVersion}),
       NgAppTemplate.from({envName, angularVersion: this.angularVersion})
     ]);
