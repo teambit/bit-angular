@@ -58,7 +58,7 @@ export class NgEnvTemplate implements ComponentTemplate {
       jestConfigFile(this.angularVersion, envPkgName),
       prettierConfigFile(),
       tsConfigFile(),
-      mounterFile(),
+      mounterFile(this.angularVersion),
       hostDependenciesFile()
     ];
   }
