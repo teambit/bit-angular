@@ -83,7 +83,6 @@
       "bitdev.angular/envs/angular-v15-env",
       "bitdev.angular/envs/angular-v14-env",
       "bitdev.angular/envs/angular-v13-env",
-      "bitdev.angular/envs/angular-v12-env",
     ]
   },
   "bitdev.angular/angular-env": {},
@@ -92,7 +91,6 @@
   "bitdev.angular/envs/angular-v15-env": {},
   "bitdev.angular/envs/angular-v14-env": {},
   "bitdev.angular/envs/angular-v13-env": {},
-  "bitdev.angular/envs/angular-v12-env": {},
   // Add angular apps (until this is no longer necessary)
   //  "integration.examples/demo-app": {},
   /**
@@ -146,9 +144,6 @@
     },
     "integration/demo-lib-v13": {
       "bitdev.angular/envs/angular-v13-env": {}
-    },
-    "integration/demo-lib-v12": {
-      "bitdev.angular/envs/angular-v12-env": {}
     }
   }
 }
