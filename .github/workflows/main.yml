@@ -33,29 +33,34 @@ jobs:
         run: rm -rf node_modules
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      - name: Add example component
-        run: bit add integration/demo-lib --log
+      - name: Create example ng-module component
+        run: bit create ng-module demo-lib-module --log error
 
-      - name: Add example app
-        run: bit add integration/demo-app --log
+      - name: Create example ng-standalone component
+        run: bit create ng-standalone demo-lib-standalone --log error
+
+      - name: Create example app
+        run: bit create ng-app demo-app --log error
 
       - name: Use example app
-        run: bit use integration.examples/demo-app --log
+        run: bit use integration.examples/demo-app --log error
+
+      - name: Create example custom env
+        run: bit create ng-env demo-env --log error
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      # Compile the example app
       - name: Bit compile example app
-        run: bit compile demo-app --log
+        run: bit compile demo-app --log error
 
       - name: Bit test
-        run: bit test --log
+        run: bit test --log error
 
       - name: Bit build
-        run: bit build --log
+        run: bit build --log error
 
       - uses: actions/upload-artifact@v3
         with:
@@ -78,19 +83,34 @@ jobs:
         run: rm -rf node_modules
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      - name: Add example component
-        run: bit add integration/demo-lib-v17 --log
+      - name: Create example ng-module component
+        run: bit create ng-module demo-lib-module --log error
+
+      - name: Create example ng-standalone component
+        run: bit create ng-standalone demo-lib-standalone --log error
+
+      - name: Create example app
+        run: bit create ng-app demo-app --log error
+
+      - name: Use example app
+        run: bit use integration.examples/demo-app --log error
+
+      - name: Create example custom env
+        run: bit create ng-env demo-env --log error
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
+
+      - name: Bit compile example app
+        run: bit compile demo-app --log error
 
       - name: Bit test
-        run: bit test --log
+        run: bit test --log error
 
       - name: Bit build
-        run: bit build --log
+        run: bit build --log error
 
       - uses: actions/upload-artifact@v3
         with:
@@ -113,19 +133,34 @@ jobs:
         run: rm -rf node_modules
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      - name: Add example component
-        run: bit add integration/demo-lib-v16 --log
+      - name: Create example ng-module component
+        run: bit create ng-module demo-lib-module --log error
+
+      - name: Create example ng-standalone component
+        run: bit create ng-standalone demo-lib-standalone --log error
+
+      - name: Create example app
+        run: bit create ng-app demo-app --log error
+
+      - name: Use example app
+        run: bit use integration.examples/demo-app --log error
+
+      - name: Create example custom env
+        run: bit create ng-env demo-env --log error
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
+
+      - name: Bit compile example app
+        run: bit compile demo-app --log error
 
       - name: Bit test
-        run: bit test --log
+        run: bit test --log error
 
       - name: Bit build
-        run: bit build --log
+        run: bit build --log error
 
       - uses: actions/upload-artifact@v3
         with:
@@ -149,19 +184,34 @@ jobs:
         run: rm -rf node_modules
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      - name: Add example component
-        run: bit add integration/demo-lib-v15 --log
+      - name: Create example ng-module component
+        run: bit create ng-module demo-lib-module --log error
+
+      - name: Create example ng-standalone component
+        run: bit create ng-standalone demo-lib-standalone --log error
+
+      - name: Create example app
+        run: bit create ng-app demo-app --log error
+
+      - name: Use example app
+        run: bit use integration.examples/demo-app --log error
+
+      - name: Create example custom env
+        run: bit create ng-env demo-env --log error
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
+
+      - name: Bit compile example app
+        run: bit compile demo-app --log error
 
       - name: Bit test
-        run: bit test --log
+        run: bit test --log error
 
       - name: Bit build
-        run: bit build --log
+        run: bit build --log error
 
       - uses: actions/upload-artifact@v3
         with:
@@ -184,19 +234,31 @@ jobs:
         run: rm -rf node_modules
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      - name: Add example component
-        run: bit add integration/demo-lib-v14 --log
+      - name: Create example ng-module component
+        run: bit create ng-module demo-lib-module --log error
+
+      - name: Create example app
+        run: bit create ng-app demo-app --log error
+
+      - name: Use example app
+        run: bit use integration.examples/demo-app --log error
+
+      - name: Create example custom env
+        run: bit create ng-env demo-env --log error
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
+
+      - name: Bit compile example app
+        run: bit compile demo-app --log error
 
       - name: Bit test
-        run: bit test --log
+        run: bit test --log error
 
       - name: Bit build
-        run: bit build --log
+        run: bit build --log error
 
       - uses: actions/upload-artifact@v3
         with:
@@ -219,19 +281,31 @@ jobs:
         run: rm -rf node_modules
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
 
-      - name: Add example component
-        run: bit add integration/demo-lib-v13 --log
+      - name: Create example ng-module component
+        run: bit create ng-module demo-lib-module --log error
+
+      - name: Create example app
+        run: bit create ng-app demo-app --log error
+
+      - name: Use example app
+        run: bit use integration.examples/demo-app --log error
+
+      - name: Create example custom env
+        run: bit create ng-env demo-env --log error
 
       - name: Install dependencies
-        run: bit install --log
+        run: bit install --log error
+
+      - name: Bit compile example app
+        run: bit compile demo-app --log error
 
       - name: Bit test
-        run: bit test --log
+        run: bit test --log error
 
       - name: Bit build
-        run: bit build --log
+        run: bit build --log error
 
       - uses: actions/upload-artifact@v3
         with:
