@@ -2,20 +2,22 @@ import { ComponentContext } from '@teambit/generator';
 
 export function envFile({ namePascalCase: Name, name }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
   // language=TypeScript
-  return `import { ${envName} } from '${envPkgName}';
-import { EnvHandler } from '@teambit/envs';
-import { Tester } from '@teambit/tester';
-import { Preview } from '@teambit/preview';
-import { Linter } from '@teambit/linter';
+  return `import { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@bitdev/angular.dev-services.preview.preview';
+import { ${envName} } from '${envPkgName}';
+import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate, NgStandaloneTemplate } from '@bitdev/angular.templates.generators';
+import { AngularStarter, DesignSystemStarter, MaterialDesignSystemStarter } from '@bitdev/angular.templates.starters';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
-import { ESLint as ESLintLib } from 'eslint';
+import { EnvHandler } from '@teambit/envs';
 import { StarterList, TemplateList } from '@teambit/generator';
-import { AngularStarter, DesignSystemStarter } from '@bitdev/angular.templates.starters';
-import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate } from '@bitdev/angular.generators.generators';
+import { Linter } from '@teambit/linter';
+import { Preview } from '@teambit/preview';
+import { Tester } from '@teambit/tester';
+import { WebpackConfigTransformer } from '@teambit/webpack';
+import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
 
 export class ${Name} extends ${envName} {
@@ -83,7 +85,13 @@ export class ${Name} extends ${envName} {
      * To customize the dev server or bundler behavior, you can change webpack transformers, angular
      * options and webpack options in the getDevServer and getBundler methods.
      */
-    const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.getDevServer(devServerContext, ngEnvOptions);
+    const devServerProvider: DevServerProvider = (
+      devServerContext: DevServerContext,
+      transformers: WebpackConfigTransformer[] = [],
+      angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+      webpackOptions: any = {},
+      sourceRoot?: string
+    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
     const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.getBundler(bundlerContext, ngEnvOptions);
     return AngularPreview.from({
       devServerProvider,
@@ -115,9 +123,10 @@ export class ${Name} extends ${envName} {
   override generators(): EnvHandler<TemplateList> {
     const envName = this.constructor.name;
     return TemplateList.from([
-      NgModuleTemplate.from({envName, angularVersion: this.angularVersion}),
-      NgEnvTemplate.from({envName, angularVersion: this.angularVersion}),
-      NgAppTemplate.from({envName, angularVersion: this.angularVersion})
+      NgModuleTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgStandaloneTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgEnvTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgAppTemplate.from({ envName, angularVersion: this.angularVersion })
     ]);
   }
 
@@ -127,8 +136,9 @@ export class ${Name} extends ${envName} {
    */
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
-      AngularStarter.from({envName: this.constructor.name, angularVersion: this.angularVersion}),
-      DesignSystemStarter.from({envName: this.constructor.name})
+      AngularStarter.from({ envName: this.constructor.name, angularVersion: this.angularVersion }),
+      DesignSystemStarter.from({ envName: this.constructor.name }),
+      MaterialDesignSystemStarter.from({ envName: this.constructor.name })
     ]);
   }
 }
