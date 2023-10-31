@@ -2,7 +2,7 @@
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
 import { getSystemPath, normalize, tags } from '@angular-devkit/core';
-import { BundlerSetup } from '@bitdev/angular.dev-services.common';
+import { BundlerSetup, dedupPaths } from '@bitdev/angular.dev-services.common';
 import {
   generateEntryPoints,
   generateWebpackConfig,
@@ -109,8 +109,8 @@ async function getWebpackConfig(
     main: angularOptions.main ?? `./${join(sourceRoot, `main.ts`)}`,
     polyfills: angularOptions.polyfills ?? `./${join(sourceRoot, `polyfills.ts`)}`,
     tsConfig: angularOptions.tsConfig ?? tsconfigPath,
-    assets: [...new Set([path.posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])])], // using set to remove duplicates
-    styles: [...new Set([path.posix.join(sourceRoot, `styles.scss`), ...(angularOptions.styles ?? [])])], // using set to remove duplicates
+    assets: dedupPaths([path.posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
+    styles: dedupPaths([path.posix.join(sourceRoot, `styles.scss`), ...(angularOptions.styles ?? [])]),
     scripts: angularOptions.scripts,
     vendorChunk: angularOptions.vendorChunk ?? true,
     namedChunks: angularOptions.namedChunks ?? true,

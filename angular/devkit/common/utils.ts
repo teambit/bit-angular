@@ -235,3 +235,7 @@ export function getPreviewRootPath(workspace?: Workspace): string {
     return resolve(require.resolve('@bitdev/angular.dev-services.preview.preview'), '../../preview-app/');
   }
 }
+
+export function dedupPaths(paths: (string | any)[]): string[] {
+  return Array.from(new Set(paths.map(p => typeof p === 'string' ? posix.normalize(p) : p)));
+}
