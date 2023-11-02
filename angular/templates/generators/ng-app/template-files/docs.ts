@@ -10,8 +10,6 @@ labels: ['angular', 'typescript', 'apps']
 description: 'An Angular application.'
 ---
 
-# ${Name} documentation
-
 Run your application with \`bit run ${name}\`.
 `,
   };

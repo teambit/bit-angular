@@ -10,8 +10,6 @@ labels: ['angular', 'typescript', '${name}']
 description: 'A \`${name}\` component.'
 ---
 
-# ${Name} documentation
-
 Import \`${Name}Component\` into your application:
 
 \`\`\`ts
