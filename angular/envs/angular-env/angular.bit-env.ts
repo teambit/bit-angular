@@ -1,10 +1,10 @@
-import { AngularV16Env } from '@bitdev/angular.envs.angular-v16-env';
+import { AngularV17Env } from '@bitdev/angular.envs.angular-v17-env';
 import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
 
 // Disable v8-caching because it breaks ESM loaders
 NativeCompileCache.uninstall();
 
-export class AngularEnv extends AngularV16Env {
+export class AngularEnv extends AngularV17Env {
   name = 'Angular';
 }
 
