@@ -12,7 +12,7 @@ import { EnvOverview } from '@teambit/envs.docs.env-overview-template';
 logo={{
   name: 'Angular',
     icon: 'https://static.bit.dev/brands/logo-angular.svg',
-    background: '#0d47a1'
+    background: '#000'
 }}
 envId='${envId}'
 docsLink='https://bit.dev/docs/angular-introduction'
