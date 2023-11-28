@@ -4,7 +4,6 @@ import {
   BundlerSetup,
   DevServerOptions,
   getNodeModulesPaths,
-  getPreviewRootPath,
   getWorkspace,
   isAppDevContext,
   writeTsconfig
@@ -30,7 +29,7 @@ import {
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { join, posix } from 'path';
 import type { Configuration } from 'webpack';
-import { WebpackConfigFactoryOpts } from './utils';
+import { getPreviewRootPath, WebpackConfigFactoryOpts } from './utils';
 
 export type WebpackDevServerOptions = {
   angularOptions: Partial<BrowserOptions & DevServerOptions>;

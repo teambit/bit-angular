@@ -4,7 +4,6 @@ import {
   BundlerSetup,
   DevServerOptions,
   getNodeModulesPaths,
-  getPreviewRootPath,
   getWorkspace,
   isAppBuildContext,
   writeTsconfig
@@ -28,7 +27,7 @@ import {
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import { join } from 'path';
 import type { Configuration, WebpackPluginInstance } from 'webpack';
-import { WebpackConfigFactoryOpts } from './utils';
+import { getPreviewRootPath, WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export type NgWebpackBundlerOptions = {
