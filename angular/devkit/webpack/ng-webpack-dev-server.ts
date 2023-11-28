@@ -11,6 +11,7 @@ import {
 } from '@bitdev/angular.dev-services.common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { DevServer, DevServerContext } from '@teambit/bundler';
+import { Component } from '@teambit/component';
 import { DevFilesAspect, DevFilesMain } from '@teambit/dev-files';
 import { AsyncEnvHandler, EnvContext } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
@@ -75,7 +76,7 @@ export class NgWebpackDevServer {
 
       const name = options.name || 'ng-webpack-dev-server';
       const logger = context.createLogger(name);
-      const {devServerContext} = options;
+      const { devServerContext } = options;
       const workspace = getWorkspace(context);
       const webpackMain = context.getAspect<WebpackMain>(WebpackAspect.id);
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
@@ -84,7 +85,7 @@ export class NgWebpackDevServer {
       const devFilesMain = context.getAspect<DevFilesMain>(DevFilesAspect.id);
 
       let tempFolder: string;
-      const idName = `bitdev.angular/${name}`;
+      const idName = `bitdev.angular/${ name }`;
       if (workspace) {
         tempFolder = workspace.getTempDir(idName);
       } else {
@@ -103,6 +104,21 @@ export class NgWebpackDevServer {
       } else { // When you use `bit start`
         appRootPath = getPreviewRootPath(workspace);
         tsconfigPath = writeTsconfig(devServerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
+
+        // add the assets paths for each component to the angular compiler options
+        const assetsPaths: string[] = [];
+        devServerContext.components.forEach((component: Component) => {
+          const cmpDir = workspace?.componentDir(component.id, { ignoreVersion: true }) || '';
+          const assetsDir = `${ cmpDir }/src/assets`;
+          if (!assetsPaths.includes(assetsDir)) {
+            assetsPaths.push(`${ cmpDir }/src/assets`);
+          }
+        });
+        options.angularOptions.assets = [...options.angularOptions.assets || [], ...assetsPaths.map((path) => ({
+          'glob': '**/*',
+          'input': path,
+          'output': '/assets/'
+        }))];
       }
 
       const webpackServeConfigFactory: WebpackServeConfigFactory = options.ngEnvOptions.webpackConfigFactory;
@@ -138,10 +154,10 @@ export class NgWebpackDevServer {
         transformerContext
       );
 
-      if(!options.ngEnvOptions.webpackModulePath) {
+      if (!options.ngEnvOptions.webpackModulePath) {
         throw new Error('ngEnvOptions.webpackModulePath is required to use the Webpack dev server');
       }
-      if(!options.ngEnvOptions.webpackDevServerModulePath) {
+      if (!options.ngEnvOptions.webpackDevServerModulePath) {
         throw new Error('ngEnvOptions.webpackDevServerModulePath is required to use the Webpack dev server');
       }
 

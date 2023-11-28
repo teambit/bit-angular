@@ -25,7 +25,7 @@ import removeFilesAndEmptyDirsRecursively
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
-import { mkdirsSync, outputFileSync } from 'fs-extra';
+import { mkdirsSync, outputFileSync, pathExistsSync } from 'fs-extra';
 import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
 import { join, posix, resolve } from 'path';
 
@@ -178,7 +178,9 @@ export class NgPackagrCompiler implements Compiler {
     // create ng-package.json config file for ngPackagr
     const ngPackageJson: NgPackageConfig = {
       dest: this.distDir,
+      assets: ["src/assets"],
       lib: {
+        cssUrl: 'inline',
         entryFile: posix.join(pathToComponent, 'public-api.ts')
       },
       allowedNonPeerDependencies

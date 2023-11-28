@@ -10,7 +10,7 @@ import TesterAspect from '@teambit/tester';
 import WorkspaceAspect, { Workspace } from '@teambit/workspace';
 import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
 import objectHash from 'object-hash';
-import { join, posix, resolve } from 'path';
+import { dirname, join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
 
 export const NG_APP_NAME = 'ng-app';
@@ -238,4 +238,15 @@ export function getPreviewRootPath(workspace?: Workspace): string {
 
 export function dedupPaths(paths: (string | any)[]): string[] {
   return Array.from(new Set(paths.map(p => typeof p === 'string' ? posix.normalize(p) : p)));
+}
+
+/**
+ * Returns the absolute path to a package or directory within a package.
+ *
+ * @param {string} packageName - The name of the package.
+ * @param {string} [path=''] - The path to file or directory within the package. Defaults to an empty string.
+ * @return {string} - The absolute path to the specified file or directory.
+ */
+export function packagePath(packageName: string, path = ''): string {
+  return join(dirname(require.resolve(`${packageName}/package.json`)), path);
 }
