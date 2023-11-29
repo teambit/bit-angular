@@ -26,6 +26,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Version
+        run: bit version
+
       - name: Keep default
         run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=17 --default
 
@@ -76,6 +79,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Version
+        run: bit version
+
       - name: Keep v17
         run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=17
 
@@ -125,6 +131,9 @@ jobs:
       image: bitsrc/stable:latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Version
+        run: bit version
 
       - name: Keep v16
         run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=16
@@ -177,6 +186,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Version
+        run: bit version
+
       - name: Keep v15
         run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=15
 
@@ -227,6 +239,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Version
+        run: bit version
+
       - name: Keep v14
         run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=14
 
@@ -273,6 +288,9 @@ jobs:
       image: bitsrc/stable:latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Version
+        run: bit version
 
       - name: Keep v13
         run: npm i replace-in-file@6.3.5 json5@2.2.3 && node scripts/keep-env.js --version=13
