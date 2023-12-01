@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { OutputHashing } from '@angular-devkit/build-angular';
-import type { JsonObject } from '@angular-devkit/core';
 import { VERSION } from '@angular/cli';
 import {
   ApplicationOptions,
@@ -144,7 +143,7 @@ function getBuilderContext(options: BuildApplicationOptions): any {
       project: 'bit-ng-app-builder',
       target: 'build'
     },
-    getProjectMetadata: function(projectName: string): Promise<JsonObject> {
+    getProjectMetadata: function(projectName: string): Promise<any> {
       return Promise.resolve({
         root: '',
         sourceRoot,

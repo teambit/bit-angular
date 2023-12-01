@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 import { executeDevServerBuilder, OutputHashing } from '@angular-devkit/build-angular';
-import type { JsonObject } from '@angular-devkit/core';
 import { VERSION } from '@angular/cli';
 import {
   dedupPaths,
@@ -119,14 +118,14 @@ function getBuilderContext(options: ServeApplicationOptions, appOptions: Applica
       return;
     },
     getBuilderNameForTarget: () => Promise.resolve(BUILDER_NAME),
-    getTargetOptions: () => Promise.resolve(appOptions as any as JsonObject),
+    getTargetOptions: () => Promise.resolve(appOptions as any),
     validateOptions: () => Promise.resolve(appOptions as any)
   };
 }
 
 function getProjectMetadata(options: ServeApplicationOptions) {
   const { sourceRoot, tempFolder } = options;
-  return function(projectName: string): Promise<JsonObject> {
+  return function(projectName: string): Promise<any> {
     return Promise.resolve({
       root: '',
       sourceRoot,
