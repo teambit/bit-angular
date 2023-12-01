@@ -11,14 +11,14 @@
           "h3": "^1.9.0",
           "nitropack": "^2.8.0",
           "@angular-devkit/build-angular": "-",
+          "@angular/cli": "-",
           "typescript": "-",
           "#alias": "-"
         },
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",
           "@angular/cli": ">= 13.0.0",
-          "typescript": ">= 3.5.3",
-          "vite": "^4.5.0 || ^5.0.0"
+          "typescript": ">= 3.5.3"
         }
       }
     }

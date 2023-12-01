@@ -1,7 +1,7 @@
-import { ApplicationBuilderOptions } from '../schemas/application.schema';
 import type { BuilderContext, BuilderOutput } from '@angular-devkit/architect';
-import type { Plugin, OutputFile } from 'esbuild';
 import { VERSION } from '@angular/cli';
+import type { OutputFile, Plugin } from 'esbuild';
+import { ApplicationBuilderOptions } from '../schemas/application.schema';
 
 export let buildApplicationInternal = (
   options: ApplicationBuilderOptions,
