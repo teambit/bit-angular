@@ -5,7 +5,6 @@ export const indexFile = (context: ComponentContext): ComponentFile => {
   return {
     relativePath: `index.ts`,
     isMain: true,
-    content: `export * from './${name}.ng-app';
-`
+    content: `export * from './${name}.ng-app';`
   };
 };

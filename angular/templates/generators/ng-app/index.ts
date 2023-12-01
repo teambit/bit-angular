@@ -76,7 +76,7 @@ export class NgAppTemplate implements ComponentTemplate {
     let params: { [id: string]: any } = {
       styleSheet: 'scss',
       standalone: this.angularVersion > 13,
-      ssr: this.angularVersion >= 17 // todo: check if we can use 16 here
+      ssr: this.angularVersion >= 17
     };
 
     if (!isCI) {
