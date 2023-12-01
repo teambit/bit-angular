@@ -1,8 +1,11 @@
 /* eslint-disable no-param-reassign */
-import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
 import { getSystemPath, normalize, tags } from '@angular-devkit/core';
-import { BundlerSetup, dedupPaths } from '@bitdev/angular.dev-services.common';
+import { BundlerSetup, dedupPaths, getLoggerApi } from '@bitdev/angular.dev-services.common';
+import type {
+  BrowserBuilderOptions,
+  DevServerBuilderOptions
+} from '@bitdev/angular.dev-services.ng-compat';
 import {
   generateEntryPoints,
   generateWebpackConfig,
@@ -29,7 +32,7 @@ import {
   WebpackConfigTransformer,
   WebpackConfigWithDevServer
 } from '@teambit/webpack';
-import path, { join } from 'path';
+import { join, posix, resolve } from 'path';
 import type { Configuration } from 'webpack';
 import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
 import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
@@ -107,10 +110,10 @@ async function getWebpackConfig(
     outputPath: 'public', // doesn't matter because it will be deleted from the config
     index: angularOptions.index ?? `./${join(sourceRoot, `index.html`)}`,
     main: angularOptions.main ?? `./${join(sourceRoot, `main.ts`)}`,
-    polyfills: angularOptions.polyfills ?? `./${join(sourceRoot, `polyfills.ts`)}`,
+    polyfills: angularOptions.polyfills,
     tsConfig: angularOptions.tsConfig ?? tsconfigPath,
-    assets: dedupPaths([path.posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
-    styles: dedupPaths([path.posix.join(sourceRoot, `styles.scss`), ...(angularOptions.styles ?? [])]),
+    assets: dedupPaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
+    styles: dedupPaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage ?? 'scss' }`), ...(angularOptions.styles ?? [])]),
     scripts: angularOptions.scripts,
     vendorChunk: angularOptions.vendorChunk ?? true,
     namedChunks: angularOptions.namedChunks ?? true,
@@ -127,11 +130,7 @@ async function getWebpackConfig(
   // used to load component config files, such as tailwind config, ...
   const projectRoot = normalize(workspaceRoot);
   const normalizedSourceRoot = normalize(sourceRoot);
-  const loggerApi = {
-    createChild: () => logger as any,
-    ...logger,
-    log: logger.console
-  } as any;
+  const loggerApi = getLoggerApi(logger);
 
   const normalizedOptions = normalizeBrowserSchema(
     normalizedWorkspaceRoot,
@@ -188,7 +187,7 @@ async function getWebpackConfig(
   const cacheOptions = normalizeCacheOptions({}, workspaceRoot);
   webpackConfig.plugins.push(
     new IndexHtmlWebpackPlugin({
-      indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
+      indexPath: resolve(workspaceRoot, browserOptions.index as string),
       outputPath: getIndexOutputFile(normalizedIndex),
       baseHref: browserOptions.baseHref || '/',
       entrypoints,

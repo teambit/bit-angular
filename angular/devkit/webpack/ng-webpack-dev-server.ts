@@ -1,5 +1,6 @@
 import {
   AngularEnvOptions,
+  ApplicationOptions,
   BrowserOptions,
   BundlerSetup,
   DevServerOptions,
@@ -27,12 +28,13 @@ import {
   WebpackMain
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
+import assert from 'assert';
 import { join, posix } from 'path';
 import type { Configuration } from 'webpack';
 import { getPreviewRootPath, WebpackConfigFactoryOpts } from './utils';
 
 export type WebpackDevServerOptions = {
-  angularOptions: Partial<BrowserOptions & DevServerOptions>;
+  angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
 
   /**
    * context of the dev server execution.
@@ -69,9 +71,7 @@ export type WebpackServeConfigFactory =
 export class NgWebpackDevServer {
   static from(options: WebpackDevServerOptions): AsyncEnvHandler<DevServer> {
     return async(context: EnvContext): Promise<DevServer> => {
-      if (!options.ngEnvOptions.webpackConfigFactory) {
-        throw new Error('ngEnvOptions.webpackConfigFactory is required to use the Webpack dev server');
-      }
+      assert(options.ngEnvOptions.webpackConfigFactory, 'ngEnvOptions.webpackConfigFactory is required to use the Webpack dev server');
 
       const name = options.name || 'ng-webpack-dev-server';
       const logger = context.createLogger(name);
@@ -153,12 +153,8 @@ export class NgWebpackDevServer {
         transformerContext
       );
 
-      if (!options.ngEnvOptions.webpackModulePath) {
-        throw new Error('ngEnvOptions.webpackModulePath is required to use the Webpack dev server');
-      }
-      if (!options.ngEnvOptions.webpackDevServerModulePath) {
-        throw new Error('ngEnvOptions.webpackDevServerModulePath is required to use the Webpack dev server');
-      }
+      assert(options.ngEnvOptions.webpackModulePath, 'ngEnvOptions.webpackModulePath is required to use the Webpack dev server');
+      assert(options.ngEnvOptions.webpackDevServerModulePath, 'ngEnvOptions.webpackDevServerModulePath is required to use the Webpack dev server');
 
       // eslint-disable-next-line import/no-dynamic-require,global-require
       const webpack = require(options.ngEnvOptions.webpackModulePath);

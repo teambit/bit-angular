@@ -1,8 +1,11 @@
-import { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import {
+  ApplicationOptions,
+  BrowserOptions,
+  DevServerOptions
+} from '@bitdev/angular.dev-services.common';
 import { Bundler } from '@teambit/bundler';
 import { WebpackConfigTransformer } from '@teambit/webpack';
 import { AngularDeployContext } from './deploy-context';
-
 
 export type AngularAppOptions = {
   /**
@@ -16,9 +19,9 @@ export type AngularAppOptions = {
   sourceRoot: string;
 
   /**
-   * Instance of bundler to use. default is Webpack.
+   * Instance of bundler to use, default is esbuild after v17 and webpack before that.
    */
-  bundler?: Bundler | string;
+  bundler?: Bundler;
 
   /**
    * Set webpack build transformers
@@ -43,10 +46,10 @@ export type AngularAppOptions = {
   /**
    * Angular options for `bit build`
    */
-  angularBuildOptions: BrowserOptions;
+  angularBuildOptions: BrowserOptions | ApplicationOptions;
 
   /**
    * Angular options for `bit run`
    */
-  angularServeOptions: BrowserOptions & DevServerOptions;
+  angularServeOptions: (BrowserOptions & DevServerOptions) | (ApplicationOptions & DevServerOptions);
 };

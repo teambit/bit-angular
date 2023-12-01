@@ -61,6 +61,7 @@ dist-legacy/
 flow-typed/
 eslint-report.html
 types/*
+.nitro
 
 #distrubution
 distribution/

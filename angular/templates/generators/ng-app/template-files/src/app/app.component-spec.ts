@@ -1,6 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const appComponentSpecFile = (context: ComponentContext, angularVersion: number): ComponentFile => {
+export const appComponentSpecFile = (context: ComponentContext, standalone: boolean): ComponentFile => {
   const { name } = context;
   return {
     relativePath: `src/app/app.component.spec.ts`,
@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      ${angularVersion >= 17 ? `imports: [AppComponent]` : `declarations: [AppComponent]`},
+      ${standalone ? `imports: [AppComponent]` : `declarations: [AppComponent]`},
     }).compileComponents();
   });
 

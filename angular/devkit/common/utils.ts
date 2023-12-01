@@ -4,11 +4,13 @@ import { Component, ComponentID } from '@teambit/component';
 import { DevFilesMain } from '@teambit/dev-files';
 import { EnvContext } from '@teambit/envs';
 import { IsolatorMain } from '@teambit/isolator';
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
+import { Logger } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
 import TesterAspect from '@teambit/tester';
 import WorkspaceAspect, { Workspace } from '@teambit/workspace';
-import { existsSync, mkdirSync, writeFileSync } from 'fs-extra';
+import { outputFileSync } from 'fs-extra';
+// @ts-ignore
+import normalize from 'normalize-path';
 import objectHash from 'object-hash';
 import { dirname, join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
@@ -116,13 +118,15 @@ export function isBuildContext(context: DevServerContext | BundlerContext): cont
   return (context as BundlerContext).capsuleNetwork !== undefined;
 }
 
-export function isAppDevContext(context: DevServerContext | AppContext): context is DevServerContext & AppContext {
+export function isAppDevContext(context: any): context is DevServerContext & AppContext {
   return (context as any).appName !== undefined;
 }
 
-export function isAppBuildContext(
-  context: BundlerContext | AppBuildContext
-): context is BundlerContext & AppBuildContext {
+export function isAppBuildContext(context: any): context is BundlerContext & AppBuildContext {
+  return (context as any).appName !== undefined;
+}
+
+export function isAppContext<T>(context: any): context is T {
   return (context as any).appName !== undefined;
 }
 
@@ -141,7 +145,7 @@ export function generateTsConfig(
 ): string {
   const tsconfigPath = join(appPath, 'tsconfig.app.json');
   const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile).config;
-  const pAppPath = pathNormalizeToLinux(appPath);
+  const pAppPath = normalizePath(appPath);
 
   // tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
   tsconfigJSON.files = tsconfigJSON.files.map((file: string) => posix.join(pAppPath, file));
@@ -174,9 +178,6 @@ export function writeTsconfig(
   const includePaths = new Set<string>();
   const excludePaths = new Set<string>();
   const dirPath = join(tempFolder, context.id);
-  if (!existsSync(dirPath)) {
-    mkdirSync(dirPath, { recursive: true });
-  }
 
   // get the list of files for existing component compositions to include in the compilation
   context.components.forEach((component: Component) => {
@@ -192,9 +193,9 @@ export function writeTsconfig(
       if (!capsule) {
         throw new Error(`No capsule found for ${component.id} in network graph`);
       }
-      outputPath = pathNormalizeToLinux(capsule.path);
+      outputPath = normalizePath(capsule.path);
     } else {
-      outputPath = pathNormalizeToLinux(workspace?.componentDir(component.id, {
+      outputPath = normalizePath(workspace?.componentDir(component.id, {
         ignoreVersion: true
       }) || '');
     }
@@ -214,15 +215,15 @@ export function writeTsconfig(
 
   const content = generateTsConfig(rootPath, Array.from(includePaths), Array.from(excludePaths), tsPaths);
   const hash = objectHash(content);
-  const targetPath = join(dirPath, `__tsconfig-${timestamp}.json`);
+  const targetPath = join(dirPath, `tsconfig/tsconfig-${timestamp}.json`);
 
   // write only if the link has changed (prevents triggering fs watches)
   if (writeHash.get(targetPath) !== hash) {
-    writeFileSync(targetPath, content);
+    outputFileSync(targetPath, content);
     writeHash.set(targetPath, hash);
   }
 
-  return pathNormalizeToLinux(targetPath);
+  return normalizePath(targetPath);
 }
 
 export function dedupPaths(paths: (string | any)[]): string[] {
@@ -238,4 +239,23 @@ export function dedupPaths(paths: (string | any)[]): string[] {
  */
 export function packagePath(packageName: string, path = ''): string {
   return join(dirname(require.resolve(`${packageName}/package.json`)), path);
+}
+
+/**
+ * Normalize slashes in a file path to be posix/unix-like forward slashes.
+ * Also condenses repeat slashes to a single slash and removes and trailing slashes, unless disabled.
+ */
+export function normalizePath(path: string, removeTrailingSlashes = false): string {
+  return normalize(path, removeTrailingSlashes);
+}
+
+export function getLoggerApi(logger: Logger) {
+  return {
+    error: (m: string) => logger.consoleFailure(m),
+    log: (m: string) => logger.console(m),
+    warn: (m: string) => logger.consoleWarning(m),
+    info: (m: string) => logger.console(m),
+    colorMessage: (m: string) => logger.console(m),
+    createChild: () => logger
+  } as any;
 }

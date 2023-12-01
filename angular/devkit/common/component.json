@@ -9,7 +9,8 @@
       "policy": {
         "dependencies": {
           "@angular-devkit/build-angular": "-",
-          "typescript": "-"
+          "typescript": "-",
+          "normalize-path": "^3.0.0"
         },
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",

@@ -1,26 +1,26 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const ngAppFile = (context: ComponentContext, angularVersion: number): ComponentFile => {
+export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: boolean): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `${name}.ng-app.ts`,
     content: `import { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
-import { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import { ${ssr ? `ApplicationOptions`: `BrowserOptions` }, DevServerOptions } from '@bitdev/angular.dev-services.common';
 
-const angularOptions: BrowserOptions & DevServerOptions = {
-  main: './src/main.ts',
-  polyfills: ${angularVersion >= 15 ? `[
-    "zone.js",
-    "zone.js/testing"
-  ]` : `'./src/polyfills.ts'`},
+const angularOptions: ${ssr ? `ApplicationOptions`: `BrowserOptions` } & DevServerOptions = {
+  ${ssr ? `browser: './src/main.ts',
+  server: './src/main.server.ts',
+  prerender: true,
+  ssr: true,` : `main: './src/main.ts',`}
   index: './src/index.html',
   tsConfig: './tsconfig.app.json',
+  inlineStyleLanguage: '${styleSheet}',
   assets: [{
     "glob": "**/*",
     "input": "src/assets/",
     "output": "/assets/"
   }],
-  styles: ['./src/styles.scss'],
+  styles: ['./src/styles.${styleSheet}'],
 };
 
 export const ${Name}Options: AngularAppOptions = {

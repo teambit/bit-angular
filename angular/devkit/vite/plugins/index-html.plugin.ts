@@ -1,31 +1,34 @@
-import type { BrowserBuilderOptions } from '@angular-devkit/build-angular';
 import type { ServerResponse } from 'http';
 import memoize from 'memoizee';
-import { join } from 'path';
+// @ts-ignore
 import type { Connect, Plugin, ViteDevServer } from 'vite';
+import { ApplicationOptions } from '@bitdev/angular.dev-services.common';
 import { IndexHtmlGenerator } from './index-file/index-html-generator';
 import { generateEntryPoints } from './index-file/package-chunk-sort';
+import assert from 'assert';
 
-export function getIndexInputFile(index: BrowserBuilderOptions['index']): string {
+export function getIndexInputFile(index: ApplicationOptions['index']): string {
+  assert(index, 'No index file provided');
   if (typeof index === 'string') {
     return index;
   }
-  return index.input;
+  return (index as any).input;
 }
 
 const cleanUrl = (url: string) => url.replace(/#.*$/s, '').replace(/\?.*$/s, '');
 
-async function genHtml(options: Partial<BrowserBuilderOptions>, rootPath: string, sourceRoot = 'src') {
+async function genHtml(options: Partial<ApplicationOptions>, rootPath: string, indexPath: string) {
+  assert(options.browser, 'No main file provided');
   const entrypoints = generateEntryPoints({
-    main: options.main ?? `./${join(sourceRoot, `main.ts`)}`,
-    polyfills: options.polyfills ?? `./${join(sourceRoot, `polyfills.ts`)}`,
+    main: options.browser,
+    polyfills: options.polyfills ?? [],
     scripts: options.scripts ?? [],
     styles: options.styles ?? []
   });
 
   const indexHtmlGenerator = new IndexHtmlGenerator({
     rootPath,
-    indexPath: getIndexInputFile(options.index ?? `./${join(sourceRoot, `index.html`)}`),
+    indexPath,
     entrypoints,
     crossOrigin: options.crossOrigin
   });
@@ -50,18 +53,21 @@ async function genHtml(options: Partial<BrowserBuilderOptions>, rootPath: string
 
 const memoized = memoize(genHtml);
 
-export const htmlPlugin = (options: Partial<BrowserBuilderOptions>, rootPath: string, sourceRoot = 'src'): Plugin => {
+export const htmlPlugin = (options: Partial<ApplicationOptions>, rootPath: string, indexPath: string, ssr: boolean): Plugin => {
   return {
-    name: 'html-plugin',
+    name: 'ng-vite-html-plugin',
     configureServer(server: ViteDevServer) {
       return (): void => {
+        // if(ssr) {
+        //   return;
+        // }
         server.middlewares.use(async(req: Connect.IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {
           const url = req.url && cleanUrl(req.url);
           if (url?.endsWith('.html')) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'text/html');
-            let html = await memoized(options, rootPath, sourceRoot);
-            html = await server.transformIndexHtml(options.index as string ?? `./${join(sourceRoot, `index.html`)}`, html, req.originalUrl);
+            let html = await memoized(options, rootPath, indexPath);
+            html = await server.transformIndexHtml(indexPath, html, req.originalUrl);
             res.end(html);
             return;
           }

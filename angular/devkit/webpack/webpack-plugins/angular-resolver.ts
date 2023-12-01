@@ -6,7 +6,7 @@
  * found in the LICENSE file at https://angular.io/license
  */
 // eslint-disable-next-line max-classes-per-file
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
+import { normalizePath } from '@bitdev/angular.dev-services.common';
 import type { Compiler } from 'webpack';
 import { NodeJSFileSystem } from './nodejs-file-system';
 
@@ -33,7 +33,7 @@ function getResourceData(resolveData: any): ResourceData {
     packageName: descriptionFileData?.name,
     packageVersion: descriptionFileData?.version,
     relativePath,
-    packagePath: pathNormalizeToLinux(descriptionFileRoot),
+    packagePath: normalizePath(descriptionFileRoot),
     resource: resolveData.createData?.resource || resolveData.resource,
     entryPointPackageData: descriptionFileData
   };

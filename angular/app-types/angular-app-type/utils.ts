@@ -1,6 +1,11 @@
-import { pathNormalizeToLinux } from "@teambit/legacy/dist/utils";
+import { ApplicationOptions, normalizePath } from '@bitdev/angular.dev-services.common';
+import assert from 'assert';
 import { flatten } from 'lodash';
-import { relative, dirname } from 'path';
+import { dirname, relative } from 'path';
+
+export interface JsonObject {
+  [prop: string]: any;
+}
 
 /**
  * Takes a tsconfig.json file, a list of component directories, and returns a new tsconfig.json file with the include
@@ -10,7 +15,7 @@ import { relative, dirname } from 'path';
  * @param {string[]} compDirs - An array of paths to the component directories.
  * @returns the tsConfig object.
  */
-export function expandIncludeExclude(tsconfigJSON: any, targetPath: string, compDirs: string[]): string {
+export function expandIncludeExclude(tsconfigJSON: JsonObject, targetPath: string, compDirs: string[]): JsonObject {
   // eslint-disable-next-line no-param-reassign
   targetPath = dirname(targetPath);
 
@@ -19,7 +24,7 @@ export function expandIncludeExclude(tsconfigJSON: any, targetPath: string, comp
     tsconfigJSON.include = flatten(
       tsconfigJSON.include.map((includedPath: string) => {
         return compDirs.map((compDir: string) => {
-          const compDirRelative = pathNormalizeToLinux(relative(targetPath, compDir));
+          const compDirRelative = normalizePath(relative(targetPath, compDir));
           return `${compDirRelative}/${includedPath}`;
         });
       })
@@ -30,7 +35,7 @@ export function expandIncludeExclude(tsconfigJSON: any, targetPath: string, comp
     tsconfigJSON.exclude = flatten(
       tsconfigJSON.exclude.map((excludedPath: string) => {
         return compDirs.map((compDir: string) => {
-          const compDirRelative = pathNormalizeToLinux(relative(targetPath, compDir));
+          const compDirRelative = normalizePath(relative(targetPath, compDir));
           return `${compDirRelative}/${excludedPath}`;
         });
       })
@@ -41,12 +46,20 @@ export function expandIncludeExclude(tsconfigJSON: any, targetPath: string, comp
     tsconfigJSON.files = flatten(
       tsconfigJSON.files.map((filesPath: string) => {
         return compDirs.map((compDir: string) => {
-          const compDirRelative = pathNormalizeToLinux(relative(targetPath, compDir));
+          const compDirRelative = normalizePath(relative(targetPath, compDir));
           return `${compDirRelative}/${filesPath}`;
         });
       })
     );
   }
 
-  return JSON.stringify(tsconfigJSON, undefined, 2);
+  return tsconfigJSON;
+}
+
+export function getIndexInputFile(index: ApplicationOptions['index']): string {
+  assert(index, 'No index file provided');
+  if (typeof index === 'string') {
+    return index;
+  }
+  return (index as any).input;
 }

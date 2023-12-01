@@ -2,6 +2,7 @@
 
 import findRoot from 'find-root';
 import type { Alias } from 'vite';
+import type {BundlerContext, DevServerContext} from '@teambit/bundler';
 
 export type ViteContext = {
   /**
@@ -30,7 +31,7 @@ export type ViteContext = {
   aliasHostDependencies?: boolean;
 };
 
-export function getHostAlias(context: ViteContext): Alias[] {
+export function getHostAlias(context: BundlerContext | DevServerContext): [] {
   const alias: Alias[] = [];
   const { hostDependencies: deps, aliasHostDependencies, hostRootDir } = context;
   if (deps && aliasHostDependencies) {

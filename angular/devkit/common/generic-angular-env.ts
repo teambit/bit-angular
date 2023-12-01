@@ -1,4 +1,8 @@
-import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
+import type {
+  ApplicationBuilderOptions,
+  BrowserBuilderOptions,
+  DevServerBuilderOptions
+} from '@bitdev/angular.dev-services.ng-compat';
 import { AppsEnv } from '@teambit/application';
 import { BuilderEnv } from '@teambit/builder';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
@@ -8,8 +12,9 @@ import { PreviewEnv } from '@teambit/preview';
 import { Configuration, WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { AngularEnvOptions } from './env-options';
 
-export type BrowserOptions = Omit<BrowserBuilderOptions, "outputPath" | "preserveSymlinks">;
-export type DevServerOptions = Omit<DevServerBuilderOptions, "aot" | "baseHref" | "browserTarget" | "commonChunk" | "deployUrl" | "hmrWarning" | "open" | "optimization" | "port" | "progress" | "servePathDefaultWarning" | "sourceMap" | "vendorChunk">;
+export type BrowserOptions = Omit<BrowserBuilderOptions, "outputPath" | "deleteOutputPath" | "preserveSymlinks" | "inlineStyleLanguage"> & {inlineStyleLanguage?: "css" | "less" | "sass" | "scss"};
+export type DevServerOptions = Omit<DevServerBuilderOptions, "aot" | "baseHref" | "browserTarget" | "commonChunk" | "deployUrl" | "hmrWarning" | "open" | "progress" | "servePathDefaultWarning" | "vendorChunk">;
+export type ApplicationOptions = Omit<ApplicationBuilderOptions, "outputPath" | "deleteOutputPath" | "preserveSymlinks" | "aot">
 
 export interface GenericAngularEnv
   extends AppsEnv,
@@ -22,7 +27,7 @@ export interface GenericAngularEnv
     devServerContext: DevServerContext,
     ngEnvOptions: AngularEnvOptions,
     transformers?: WebpackConfigTransformer[],
-    angularOptions?: Partial<BrowserOptions & DevServerOptions>,
+    angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
     webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
     sourceRoot?: string
   ): AsyncEnvHandler<DevServer>;
@@ -31,7 +36,7 @@ export interface GenericAngularEnv
     bundlerContext: BundlerContext,
     ngEnvOptions: AngularEnvOptions,
     transformers?: WebpackConfigTransformer[],
-    angularOptions?: Partial<BrowserOptions & DevServerOptions>,
+    angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
     webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
     sourceRoot?: string
   ): AsyncEnvHandler<Bundler>

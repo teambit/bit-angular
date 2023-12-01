@@ -7,6 +7,7 @@
  */
 
 import { loadEsmModule } from '@bitdev/angular.dev-services.common';
+import assert from 'assert';
 import { extname } from 'path';
 import { htmlRewritingStream } from './html-rewriting-stream';
 import { EntryPointsType } from './package-chunk-sort';
@@ -124,11 +125,9 @@ export async function augmentIndexHtml(
           break;
         case '.mjs':
         case '.mts':
-          if (!isModule) {
-            // It would be very confusing to link an `*.mjs` file in a non-module script context,
-            // so we disallow it entirely.
-            throw new Error('`.mjs` & `.mts` files *must* set `isModule` to `true`.');
-          }
+          // It would be very confusing to link an `*.mjs` file in a non-module script context,
+          // so we disallow it entirely.
+          assert(isModule, '`.mjs` & `.mts` files *must* set `isModule` to `true`.');
           scripts.set(file, true /* isModule */);
           break;
         case '.css':

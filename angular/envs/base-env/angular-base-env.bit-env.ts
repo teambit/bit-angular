@@ -1,6 +1,7 @@
 import { AngularAppType } from '@bitdev/angular.app-types.angular-app-type';
 import {
   AngularEnvOptions,
+  ApplicationOptions,
   BrowserOptions,
   DevServerOptions,
   NG_APP_NAME
@@ -76,9 +77,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   public setNgEnvOptions(...ngEnvOptions: Partial<AngularEnvOptions>[]): void {
     this.ngEnvOptions = merge(this.ngEnvOptions || {}, ...ngEnvOptions);
-    if (this.ngEnvOptions.devServer === 'vite' && this.angularVersion < 16) {
+    /*if (this.ngEnvOptions.devServer === 'vite' && this.angularVersion < 16) {
       throw new Error(`Vite dev server is only supported for Angular 16+`);
-    }
+    }*/
   }
 
   /**
@@ -148,7 +149,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     devServerContext: DevServerContext,
     ngEnvOptions: AngularEnvOptions,
     transformers: WebpackConfigTransformer[] = [],
-    angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+    angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
     webpackOptions: any = {},
     sourceRoot?: string
   ): AsyncEnvHandler<DevServer> {
@@ -166,7 +167,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     bundlerContext: BundlerContext,
     ngEnvOptions: AngularEnvOptions,
     transformers: WebpackConfigTransformer[] = [],
-    angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+    angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
     webpackOptions: any = {},
     sourceRoot?: string
   ): AsyncEnvHandler<Bundler> {
@@ -185,7 +186,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     const devServerProvider: DevServerProvider = (
       devServerContext: DevServerContext,
       transformers: WebpackConfigTransformer[] = [],
-      angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
       webpackOptions: any = {},
       sourceRoot?: string
     ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);

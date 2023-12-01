@@ -2,7 +2,7 @@ import { ComponentContext } from '@teambit/generator';
 
 export function envFile({ namePascalCase: Name, name }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
   // language=TypeScript
-  return `import { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+  return `import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@bitdev/angular.dev-services.preview.preview';
 import { ${envName} } from '${envPkgName}';
 import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate, NgStandaloneTemplate } from '@bitdev/angular.templates.generators';
@@ -88,7 +88,7 @@ export class ${Name} extends ${envName} {
     const devServerProvider: DevServerProvider = (
       devServerContext: DevServerContext,
       transformers: WebpackConfigTransformer[] = [],
-      angularOptions: Partial<BrowserOptions & DevServerOptions> = {},
+      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
       webpackOptions: any = {},
       sourceRoot?: string
     ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);

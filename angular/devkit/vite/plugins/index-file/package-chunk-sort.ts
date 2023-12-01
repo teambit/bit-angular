@@ -8,7 +8,7 @@
 
 import {parse} from 'path';
 // import { ScriptElement, StyleElement } from '@angular-devkit/build-angular/src/builders/browser/schema';
-import type { BrowserBuilderOptions } from '@angular-devkit/build-angular';
+import type { BrowserBuilderOptions } from '@bitdev/angular.dev-services.ng-compat';
 
 export type EntryPointsType = [name: string, isModule: boolean, inject: boolean];
 

@@ -1,4 +1,9 @@
-import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import {
+  AngularEnvOptions,
+  ApplicationOptions,
+  BrowserOptions,
+  DevServerOptions
+} from '@bitdev/angular.dev-services.common';
 import { AppContext } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
@@ -12,7 +17,7 @@ import 'webpack-dev-server';
 export type DevServerProvider = (
   context: DevServerContext | (DevServerContext & AppContext),
   transformers?: WebpackConfigTransformer[],
-  angularOptions?: Partial<BrowserOptions & DevServerOptions>,
+  angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
   webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
   sourceRoot?: string
 ) => AsyncEnvHandler<DevServer>;
@@ -20,7 +25,7 @@ export type DevServerProvider = (
 export type BundlerProvider = (
   context: BundlerContext | (BundlerContext & AppContext),
   transformers?: WebpackConfigTransformer[],
-  angularOptions?: Partial<BrowserOptions & DevServerOptions>,
+  angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
   webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
   sourceRoot?: string
 ) => AsyncEnvHandler<Bundler>;
@@ -88,7 +93,7 @@ export class AngularPreview implements Preview {
   getDevServer(
     context: DevServerContext,
     transformers?: WebpackConfigTransformer[],
-    angularOptions?: Partial<BrowserOptions & DevServerOptions>,
+    angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
     webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
     sourceRoot?: string
   ): AsyncEnvHandler<DevServer> {

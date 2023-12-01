@@ -1,5 +1,5 @@
 import {
-  AngularEnvOptions,
+  AngularEnvOptions, ApplicationOptions,
   BrowserOptions,
   BundlerSetup,
   DevServerOptions,
@@ -25,13 +25,14 @@ import {
   WebpackMain
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
+import assert from 'assert';
 import { join } from 'path';
 import type { Configuration, WebpackPluginInstance } from 'webpack';
 import { getPreviewRootPath, WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export type NgWebpackBundlerOptions = {
-  angularOptions?: Partial<BrowserOptions & DevServerOptions>;
+  angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
 
   /**
    * context of the bundler execution.
@@ -64,9 +65,7 @@ export type WebpackBuildConfigFactory =
 export class NgWebpackBundler {
   static from(options: NgWebpackBundlerOptions): AsyncEnvHandler<WebpackBundler> {
     return async(context: EnvContext): Promise<WebpackBundler> => {
-      if (!options.ngEnvOptions.webpackConfigFactory) {
-        throw new Error('ngEnvOptions.webpackConfigFactory is required to use the Webpack bundler');
-      }
+      assert(options.ngEnvOptions.webpackConfigFactory, 'webpackConfigFactory is required to use the Webpack bundler');
 
       const webpackBuildConfigFactory: WebpackBuildConfigFactory = options.ngEnvOptions.webpackConfigFactory;
       const name = options.name || 'ng-webpack-bundler';
@@ -90,11 +89,11 @@ export class NgWebpackBundler {
       let appRootPath: string;
       let tsconfigPath: string;
       let plugins: WebpackPluginInstance[] = [];
-      if (isAppBuildContext(bundlerContext)) { // When you use `bit run <app>`
-        appRootPath = bundlerContext.capsule.path;// this.workspace?.componentDir(context.appComponent.id, {ignoreVersion: true}) || '';
+      if (isAppBuildContext(bundlerContext)) { // When you use `bit build` for an actual angular app
+        appRootPath = bundlerContext.capsule.path;
         tsconfigPath = join(appRootPath, 'tsconfig.app.json');
         plugins = [new StatsLoggerPlugin()];
-      } else { // When you use `bit build`
+      } else { // When you use `bit build` for the preview app
         appRootPath = getPreviewRootPath(workspace);
         tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
       }
@@ -136,9 +135,7 @@ export class NgWebpackBundler {
         return afterMutation.raw;
       }));
 
-      if(!options.ngEnvOptions.webpackModulePath) {
-        throw new Error('ngEnvOptions.webpackModulePath is required to use the Webpack bundler');
-      }
+      assert(options.ngEnvOptions.webpackModulePath, 'webpackModulePath is required to use the Webpack bundler');
 
       // eslint-disable-next-line import/no-dynamic-require,global-require
       const webpack = require(options.ngEnvOptions.webpackModulePath);

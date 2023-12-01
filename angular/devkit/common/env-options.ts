@@ -22,7 +22,7 @@ export type AngularEnvOptions = {
    * Vite only works for apps, not preview yet.
    * @default 'webpack'
    */
-  devServer?: 'webpack' | 'vite';
+  // devServer?: 'webpack' | 'vite';
   /**
    * The bundler to use: webpack or vite.
    * Vite only works for apps, not preview yet.

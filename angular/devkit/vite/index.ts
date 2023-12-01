@@ -1,2 +1,3 @@
-export * from './ng-vite-dev-server';
-export * from './dev-server/types';
+export * from './ng-vite.dev-server';
+export * from './ng-vite.bundler';
+export * from './utils/types';

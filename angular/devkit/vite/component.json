@@ -8,40 +8,24 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@analogjs/vite-plugin-angular": "^0.2.0",
-          "@mdx-js/react": "^1.6.22",
-          "@originjs/vite-plugin-commonjs": "^1.0.3",
+          "@analogjs/platform": "-",
           "@teambit/node.deps-detectors.detective-es6": "0.0.1",
+          "@teambit/vite.vite-bundler": "*",
+          "@teambit/vite.vite-dev-server": "*",
+          "@types/express": "^4.17.17",
           "@types/memoizee": "0.4.5",
-          "@vitejs/plugin-react": "^4.0.0",
           "find-root": "1.1.0",
           "memoizee": "0.4.15",
-          "node-stdlib-browser": "^1.2.0",
-          "parse5-html-rewriting-stream": "7.0.0",
-          "remark-admonitions": "^1.2.1",
-          "remark-frontmatter": "^2.0.0",
-          "typescript": "-",
-          "unified": "^10.1.2",
-          "unist-util-remove": "^2.0.1",
-          "unist-util-visit": "^2.0.3",
-          "vite": "^4.4.9",
-          "vite-plugin-commonjs": "^0.8.2",
-          "vite-plugin-markdown": "2.1.0",
-          "vite-plugin-mdx": "^3.5.11",
-          "vite-plugin-node-polyfills": "^0.11.2",
-          "vite-plugin-require-transform": "^1.0.21",
-          "yaml": "^2.3.1"
+          "parse5-html-rewriting-stream": "7.0.0"
         },
         "devDependencies": {
           "@types/find-root": "1.1.2",
-          "@types/jest": "26.0.20",
-          "@types/node": "12.20.4",
-          "@babel/runtime": "7.20.0"
+          "@types/node": "12.20.4"
         },
         "peerDependencies": {
+          "@analogjs/platform": ">= 0.2.22",
           "@angular/common": ">= 13.0.0",
-          "typescript": ">= 3.5.3",
-          "vite": "4.4.8"
+          "vite": "5.0.0"
         }
       }
     }

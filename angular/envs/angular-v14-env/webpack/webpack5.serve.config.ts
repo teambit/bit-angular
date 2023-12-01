@@ -1,5 +1,8 @@
-import { BitDedupeModuleResolvePlugin, StatsLoggerPlugin } from '@bitdev/angular.dev-services.webpack';
-import { pathNormalizeToLinux } from '@teambit/legacy/dist/utils';
+import { normalizePath } from '@bitdev/angular.dev-services.common';
+import {
+  BitDedupeModuleResolvePlugin,
+  StatsLoggerPlugin
+} from '@bitdev/angular.dev-services.webpack';
 import { PubsubMain } from '@teambit/pubsub';
 import {
   fallbacks,
@@ -65,7 +68,7 @@ export function webpack5ServeConfigFactory(
       chunkFilename: 'static/js/[name].chunk.js',
 
       // point sourcemap entries to original disk locations (format as URL on windows)
-      devtoolModuleFilenameTemplate: (info: any) => pathNormalizeToLinux(resolve(info.absoluteResourcePath))
+      devtoolModuleFilenameTemplate: (info: any) => normalizePath(resolve(info.absoluteResourcePath))
 
       // this defaults to 'window', but by setting it to 'this' then
       // module chunks which are built will work in web workers as well.

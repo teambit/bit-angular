@@ -1,13 +1,16 @@
 import type { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
-import type { BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import type { ApplicationOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 
-const angularOptions: BrowserOptions & DevServerOptions = {
-  main: './src/main.ts',
-  polyfills: './src/polyfills.ts',
+const angularOptions: ApplicationOptions & DevServerOptions = {
+  browser: './src/main.ts',
+  server: './src/main.server.ts',
   index: './src/index.html',
   tsConfig: 'tsconfig.app.json',
   assets: ['./src/favicon.ico', './src/assets'],
-  styles: ['./src/styles.scss']
+  styles: ['./src/styles.scss'],
+  inlineStyleLanguage: "scss",
+  prerender: true,
+  ssr: true
 };
 
 export const DemoAppOptions: AngularAppOptions = {
@@ -29,8 +32,7 @@ export const DemoAppOptions: AngularAppOptions = {
   /**
    * Angular options for `bit run`
    */
-  angularServeOptions: angularOptions,
-
+  angularServeOptions: angularOptions
 };
 
 export default DemoAppOptions;

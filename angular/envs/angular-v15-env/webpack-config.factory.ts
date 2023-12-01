@@ -2,7 +2,7 @@
 import type { BrowserBuilderOptions, DevServerBuilderOptions } from '@angular-devkit/build-angular';
 import { OutputHashing } from '@angular-devkit/build-angular';
 import { getSystemPath, normalize, tags } from '@angular-devkit/core';
-import { BundlerSetup, dedupPaths } from '@bitdev/angular.dev-services.common';
+import { BundlerSetup, dedupPaths, getLoggerApi } from '@bitdev/angular.dev-services.common';
 import {
   generateEntryPoints,
   generateWebpackConfig,
@@ -29,7 +29,8 @@ import {
   WebpackConfigTransformer,
   WebpackConfigWithDevServer
 } from '@teambit/webpack';
-import path, { join } from 'path';
+import assert from 'assert';
+import { join, posix, resolve } from 'path';
 import { Configuration } from 'webpack';
 import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
 import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
@@ -99,6 +100,8 @@ async function getWebpackConfig(
   angularOptions: Partial<BrowserBuilderOptions> = {},
   sourceRoot = 'src'
 ): Promise<WebpackConfigWithDevServer | WebpackConfig> {
+  assert(!(angularOptions as any).server, "SSR is only available for Angular v16+");
+
   // Options from angular.json
   const browserOptions: BrowserBuilderOptions = {
     ...angularOptions,
@@ -107,10 +110,10 @@ async function getWebpackConfig(
     outputPath: 'public', // doesn't matter because it will be deleted from the config
     index: angularOptions.index ?? `./${join(sourceRoot, `index.html`)}`,
     main: angularOptions.main ?? `./${join(sourceRoot, `main.ts`)}`,
-    polyfills: angularOptions.polyfills ?? `./${join(sourceRoot, `polyfills.ts`)}`,
+    polyfills: angularOptions.polyfills,
     tsConfig: angularOptions.tsConfig ?? tsconfigPath,
-    assets: dedupPaths([path.posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
-    styles: dedupPaths([path.posix.join(sourceRoot, `styles.scss`), ...(angularOptions.styles ?? [])]),
+    assets: dedupPaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
+    styles: dedupPaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage ?? 'scss' }`), ...(angularOptions.styles ?? [])]),
     scripts: angularOptions.scripts,
     vendorChunk: angularOptions.vendorChunk ?? true,
     namedChunks: angularOptions.namedChunks ?? true,
@@ -123,16 +126,12 @@ async function getWebpackConfig(
     watch: setup === BundlerSetup.Serve,
     allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])]
   };
+
   const normalizedWorkspaceRoot = normalize(workspaceRoot);
   // used to load component config files, such as tailwind config, ...
   const projectRoot = normalize(workspaceRoot);
   const normalizedSourceRoot = normalize(sourceRoot);
-
-  const loggerApi = {
-    createChild: () => logger as any,
-    ...logger,
-    log: logger.console
-  } as any;
+  const loggerApi = getLoggerApi(logger);
 
   const normalizedOptions = normalizeBrowserSchema(
     normalizedWorkspaceRoot,
@@ -189,7 +188,7 @@ async function getWebpackConfig(
   const cacheOptions = normalizeCacheOptions({}, workspaceRoot);
   webpackConfig.plugins.push(
     new IndexHtmlWebpackPlugin({
-      indexPath: path.resolve(workspaceRoot, browserOptions.index as string),
+      indexPath: resolve(workspaceRoot, browserOptions.index as string),
       outputPath: getIndexOutputFile(normalizedIndex),
       baseHref: browserOptions.baseHref || '/',
       entrypoints,

@@ -16,8 +16,9 @@
     "allowSyntheticDefaultImports": true,
     "importHelpers": true,
     "allowJs": true,
-    "target": "es2017",
-    "module": "es2020",
+    "useDefineForClassFields": true,
+    "target": "ES2022",
+    "module": "ES2022",
     "preserveSymlinks": false,
     "lib": [
       "es2018",
@@ -34,7 +35,7 @@
   },
   "files": [
     "./src/main.ts",
-    "./src/polyfills.ts"
+    "./src/main.server.ts"
   ],
   "include": [
     "./src/**/*.d.ts"

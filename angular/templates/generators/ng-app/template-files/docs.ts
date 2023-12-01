@@ -1,7 +1,7 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
 export const docsFile = (context: ComponentContext): ComponentFile => {
-  const { name, namePascalCase: Name } = context;
+  const { name } = context;
 
   return {
     relativePath: `${name}.docs.md`,

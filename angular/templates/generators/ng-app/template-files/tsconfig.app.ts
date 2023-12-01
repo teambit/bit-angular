@@ -1,6 +1,6 @@
 import { ComponentFile } from '@teambit/generator';
 
-export const tsconfigFile = (angularVersion: number): ComponentFile => {
+export const tsconfigFile = (angularVersion: number, ssr: boolean): ComponentFile => {
   return {
     relativePath: 'tsconfig.app.json',
     content: `/* To learn more about this file see: https://angular.io/config/tsconfig. */
@@ -23,7 +23,8 @@ export const tsconfigFile = (angularVersion: number): ComponentFile => {
     "allowJs": true,
     ${angularVersion >= 17 ? `"target": "ES2022",
     "module": "ES2022"` : `"target": "es2017",
-    "module": "es2020"`},
+    "module": "es2020"`},${angularVersion >= 15 ? `
+    "useDefineForClassFields": false,` : ``}
     "preserveSymlinks": false,
     "lib": [
       "${angularVersion >= 17 ? `ES2022` : `ES2018`}",
@@ -37,7 +38,8 @@ export const tsconfigFile = (angularVersion: number): ComponentFile => {
     "strictInputAccessModifiers": true
   },
   "files": [
-    "./src/main.ts"${angularVersion >= 15 ? `` : `,
+    "./src/main.ts",${ssr ? `
+    "./src/main.server.ts",` : ``}${angularVersion >= 15 ? `` : `
     "./src/polyfills.ts"`}
   ],
   "include": [
