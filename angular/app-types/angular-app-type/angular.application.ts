@@ -124,7 +124,9 @@ export class AngularApp implements Application {
         componentDir = normalizePath(componentDir);
         const pkgName = this.depsResolver.getPackageName(dep);
         // TODO we should find a way to use the real entry file based on the component config because people can change it
-        tsconfigJSON.compilerOptions.paths[pkgName] = [`${ componentDir }/public-api.ts`, `${ componentDir }`];
+        if (existsSync(join(componentDir, 'public-api.ts'))) {
+          tsconfigJSON.compilerOptions.paths[pkgName] = [`${ componentDir }/public-api.ts`, `${ componentDir }`];
+        }
         tsconfigJSON.compilerOptions.paths[`${ pkgName }/*`] = [`${ componentDir }/*`];
       }
     });
