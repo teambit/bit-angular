@@ -81,6 +81,7 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): Applic
     namedChunks: angularOptions.namedChunks ?? true,
     optimization: angularOptions.optimization ?? true,
     aot: true,
+    hmr: true,
     deleteOutputPath: true,
     sourceMap: angularOptions.sourceMap ?? true,
     outputHashing: angularOptions.outputHashing ?? OutputHashing.All,
