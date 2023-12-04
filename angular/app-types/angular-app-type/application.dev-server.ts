@@ -85,6 +85,7 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): Applic
     sourceMap: angularOptions.sourceMap ?? true,
     outputHashing: angularOptions.outputHashing ?? OutputHashing.All,
     watch: true,
+    liveReload: true,
     server: isSsr ? angularOptions.server ?? serverPath : undefined,
     prerender: isSsr ? angularOptions.prerender ?? !!angularOptions.server : false,
     ssr: isSsr ? (angularOptions.ssr ?? !!angularOptions.server) : false,
