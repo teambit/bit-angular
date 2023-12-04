@@ -1,9 +1,10 @@
-import type { AngularCompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
+import { type AngularCompilerOptions, type ParsedConfiguration } from '@angular/compiler-cli';
 import {
   AngularEnvOptions,
   componentIsApp,
   getNodeModulesPaths,
-  getWorkspace
+  getWorkspace,
+  loadEsmModule
 } from '@bitdev/angular.dev-services.common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
@@ -25,12 +26,42 @@ import removeFilesAndEmptyDirsRecursively
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
-import { mkdirsSync, outputFileSync, pathExistsSync } from 'fs-extra';
+import { mkdirsSync, outputFileSync } from 'fs-extra';
 import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
 import { join, posix, resolve } from 'path';
+import { Diagnostic, DiagnosticCategory, DiagnosticWithLocation } from 'typescript';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
+
+export interface FatalDiagnosticError {
+  _isFatalDiagnosticError: boolean;
+
+  toDiagnostic(): DiagnosticWithLocation;
+}
+
+export type DiagnosticsReporter = (diagnostics: Diagnostic) => void;
+
+export function isFatalDiagnosticError(err: any): err is FatalDiagnosticError {
+  return err._isFatalDiagnosticError === true;
+}
+
+export async function createDiagnosticsReporter(logger: Logger): Promise<DiagnosticsReporter> {
+  const { formatDiagnostics } = await loadEsmModule(`@angular/compiler-cli`);
+  const formatter = (diagnostic: Diagnostic) => formatDiagnostics([diagnostic]);
+  return (diagnostic: Diagnostic | Error) => {
+    let diag: Diagnostic = diagnostic as any;
+    if (isFatalDiagnosticError((diagnostic))) {
+      diag = diagnostic.toDiagnostic();
+    }
+    const text = formatter(diag);
+    if (diag.category === DiagnosticCategory.Error) {
+      throw new Error(text);
+    } else {
+      logger.warn(text);
+    }
+  };
+}
 
 export interface NgPackagr {
   /**
@@ -103,7 +134,7 @@ export class NgPackagrCompiler implements Compiler {
     } else {
       // Angular v13+
       this.readDefaultTsConfig = async() => {
-        const {initializeTsConfig} = module;
+        const { initializeTsConfig } = module;
         const entryPoints: any = [{
           data: {
             entryPoint: {
@@ -137,7 +168,7 @@ export class NgPackagrCompiler implements Compiler {
       updatePackageJson.exports = packageJson.exports;
       props.forEach(prop => {
         if (packageJson.exports['.'][prop]) {
-          updatePackageJson.exports['.'][prop] = `./${  posix.join(this.distDir, packageJson.exports['.'][prop])}`;
+          updatePackageJson.exports['.'][prop] = `./${ posix.join(this.distDir, packageJson.exports['.'][prop]) }`;
         }
       });
     }
@@ -148,14 +179,15 @@ export class NgPackagrCompiler implements Compiler {
     pathToComponent: string,
     pathToOutputFolder: string,
     tsCompilerOptions: AngularCompilerOptions,
+    diagnosticsReporter: DiagnosticsReporter,
     // component ids of other angular components in the workspace
     componentIds: string[],
-    isBuild = true
+    isBuild = true,
   ): Promise<void> {
     // check for dependencies other than tslib and move them to peer dependencies
     // see https://github.com/ng-packagr/ng-packagr/blob/master/docs/dependencies.md#general-recommendation-use-peerdependencies-whenever-possible
     const packageJson = PackageJsonFile.loadFromPathSync(pathToOutputFolder, '');
-    const {dependencies} = packageJson.packageJsonObject;
+    const { dependencies } = packageJson.packageJsonObject;
     // const peerDependencies = packageJson.packageJsonObject.peerDependencies;
     const allowedNonPeerDependencies: string[] = [];
     const depKeys = Object.keys(dependencies).filter(dep => dep !== 'tslib'); // only tslib is allowed in dependencies
@@ -178,7 +210,7 @@ export class NgPackagrCompiler implements Compiler {
     // create ng-package.json config file for ngPackagr
     const ngPackageJson: NgPackageConfig = {
       dest: this.distDir,
-      assets: ["src/assets"],
+      assets: ['src/assets'],
       lib: {
         cssUrl: 'inline',
         entryFile: posix.join(pathToComponent, 'public-api.ts')
@@ -188,7 +220,7 @@ export class NgPackagrCompiler implements Compiler {
 
     if (allowedNonPeerDependencies.length) {
       // eslint-disable-next-line no-console
-      console.warn(chalk.yellow(`\nWARNING: You have dependencies declared as "runtime dependencies" ("${allowedNonPeerDependencies.join('", "')}"). In most cases Angular recommends using peer dependencies instead (see: https://github.com/ng-packagr/ng-packagr/blob/main/docs/dependencies.md).\n`));
+      console.warn(chalk.yellow(`\nWARNING: You have dependencies declared as "runtime dependencies" ("${ allowedNonPeerDependencies.join('", "') }"). In most cases Angular recommends using peer dependencies instead (see: https://github.com/ng-packagr/ng-packagr/blob/main/docs/dependencies.md).\n`));
     }
 
     outputFileSync(join(pathToOutputFolder, NG_PACKAGE_JSON), JSON.stringify(ngPackageJson, null, 2));
@@ -216,17 +248,17 @@ export class NgPackagrCompiler implements Compiler {
         await removeFilesAndEmptyDirsRecursively([resolve(join(pathToOutputFolder, this.distDir, PACKAGE_JSON))]);
         await removeFilesAndEmptyDirsRecursively([resolve(join(pathToOutputFolder, NG_PACKAGE_JSON))]);
         // eslint-disable-next-line consistent-return
-      }, (err: Error) => {
+      }, async (err: Error) => {
         if (err.message === ViewEngineTemplateError && !tsCompilerOptions.fullTemplateTypeCheck) {
           // eslint-disable-next-line no-console
-          console.warn(chalk.yellow(`\nError "${err.message}" triggered by the Angular compiler, retrying compilation without "fullTemplateTypeCheck" (you should probably create a custom environment using "bit create ng-env my-custom-angular-env" to set this option by default and avoid this error message)\n`));
+          console.warn(chalk.yellow(`\nError "${ err.message }" triggered by the Angular compiler, retrying compilation without "fullTemplateTypeCheck" (you should probably create a custom environment using "bit create ng-env my-custom-angular-env" to set this option by default and avoid this error message)\n`));
           return this.ngPackagrCompilation(pathToComponent, pathToOutputFolder, {
             ...tsCompilerOptions,
             fullTemplateTypeCheck: false
-          }, componentIds, isBuild);
+          }, diagnosticsReporter, componentIds, isBuild);
         }
         // eslint-disable-next-line no-console
-        console.error(err);
+        diagnosticsReporter(err as any);
       });
   }
 
@@ -270,6 +302,7 @@ export class NgPackagrCompiler implements Compiler {
    * used by `bit build`
    */
   async build(context: BuildContext): Promise<BuiltTaskResult> {
+    const diagnosticsReporter = await createDiagnosticsReporter(this.logger);
     let capsules = context.capsuleNetwork.seedersCapsules;
     if (typeof capsules.toposort !== 'undefined') {
       try {
@@ -277,7 +310,7 @@ export class NgPackagrCompiler implements Compiler {
         capsules = await capsules.toposort(this.depResolver);
       } catch (err) {
         if (err instanceof CyclicError) {
-          this.logger.consoleWarning(`Warning: ${err.message}, unable to sort components for compilation, the capsules will be built in an arbitrary order`);
+          this.logger.consoleWarning(`Warning: ${ err.message }, unable to sort components for compilation, the capsules will be built in an arbitrary order`);
         }
       }
     }
@@ -287,7 +320,7 @@ export class NgPackagrCompiler implements Compiler {
 
     // eslint-disable-next-line no-restricted-syntax
     for (const capsule of componentCapsules) {
-      const {component} = capsule;
+      const { component } = capsule;
       const currentComponentResult: ComponentResult = {
         component
       };
@@ -297,7 +330,7 @@ export class NgPackagrCompiler implements Compiler {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();
           // eslint-disable-next-line no-await-in-loop
-          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, componentIds, true);
+          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, diagnosticsReporter, componentIds, true);
           this.logger.on();
           // @ts-ignore
         } catch (e: any) {
