@@ -16,7 +16,7 @@ import { dirname, join, posix, resolve } from 'path';
 import { readConfigFile, sys } from 'typescript';
 
 export const NG_APP_NAME = 'ng-app';
-export const NG_APP_PATTERN = `*.${NG_APP_NAME}.*`;
+export const NG_APP_PATTERN = `*.${ NG_APP_NAME }.*`;
 
 export enum BundlerSetup {
   Serve = 'serve',
@@ -44,7 +44,7 @@ export function getWorkspace(context: EnvContext): Workspace | undefined {
   return undefined;
 }
 
-export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, workspace?: Workspace): string[] {
+export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, workspace?: Workspace, capsuleOnly = false): string[] {
   const nodeModulesPaths: string[] = [];
 
   if (workspace) {
@@ -68,7 +68,9 @@ export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, work
     }
 
     // Add the workspace node modules
-    nodeModulesPaths.push(workspaceNodeModules, 'node_modules');
+    if (!capsuleOnly) {
+      nodeModulesPaths.push(workspaceNodeModules, 'node_modules');
+    }
   }
 
   if (!nodeModulesPaths.includes('node_modules')) {
@@ -111,7 +113,7 @@ export function cmpIdToPkgName(componentId: ComponentID) {
   const name = componentId.fullName.replace(allSlashes, '.');
   const scope = componentId.scope.split('.').join('/');
   const partsToJoin = scope ? [scope, name] : [name];
-  return `@${partsToJoin.join('.')}`;
+  return `@${ partsToJoin.join('.') }`;
 }
 
 export function isBuildContext(context: DevServerContext | BundlerContext): context is BundlerContext {
@@ -155,7 +157,7 @@ export function generateTsConfig(
   ];
   tsconfigJSON.exclude = [
     ...tsconfigJSON.exclude.map((file: string) => posix.join(pAppPath, file)),
-    ...excludePaths,
+    ...excludePaths
   ];
   tsconfigJSON.compilerOptions.paths = tsPaths;
 
@@ -191,7 +193,7 @@ export function writeTsconfig(
       const capsules = context.capsuleNetwork.graphCapsules;
       const capsule = capsules.getCapsule(component.id);
       if (!capsule) {
-        throw new Error(`No capsule found for ${component.id} in network graph`);
+        throw new Error(`No capsule found for ${ component.id } in network graph`);
       }
       outputPath = normalizePath(capsule.path);
     } else {
@@ -201,8 +203,8 @@ export function writeTsconfig(
     }
     // map the package names to the workspace component paths for typescript in case a package references another local package
     const pkgName = pkg.getPackageName(component);
-    tsPaths[pkgName] = [`${outputPath}/public-api.ts`];
-    tsPaths[`${pkgName}/*`] = [`${outputPath}/*`];
+    tsPaths[pkgName] = [`${ outputPath }/public-api.ts`];
+    tsPaths[`${ pkgName }/*`] = [`${ outputPath }/*`];
 
     includePaths.add(outputPath);
 
@@ -215,7 +217,7 @@ export function writeTsconfig(
 
   const content = generateTsConfig(rootPath, Array.from(includePaths), Array.from(excludePaths), tsPaths);
   const hash = objectHash(content);
-  const targetPath = join(dirPath, `tsconfig/tsconfig-${timestamp}.json`);
+  const targetPath = join(dirPath, `tsconfig/tsconfig-${ timestamp }.json`);
 
   // write only if the link has changed (prevents triggering fs watches)
   if (writeHash.get(targetPath) !== hash) {
@@ -238,7 +240,7 @@ export function dedupPaths(paths: (string | any)[]): string[] {
  * @return {string} - The absolute path to the specified file or directory.
  */
 export function packagePath(packageName: string, path = ''): string {
-  return join(dirname(require.resolve(`${packageName}/package.json`)), path);
+  return join(dirname(require.resolve(`${ packageName }/package.json`)), path);
 }
 
 /**
