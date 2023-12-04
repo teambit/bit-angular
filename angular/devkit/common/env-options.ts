@@ -12,7 +12,6 @@ export type AngularEnvOptions = {
   jestConfigPath: string;
   jestModulePath: string;
   ngPackagrModulePath: string;
-  readDefaultTsConfig: string;
   angularElementsModulePath?: string;
   webpackConfigFactory?: WebpackConfigFactory;
   webpackDevServerModulePath?: string;

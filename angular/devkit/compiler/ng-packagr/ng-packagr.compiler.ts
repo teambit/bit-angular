@@ -127,28 +127,21 @@ export class NgPackagrCompiler implements Compiler {
     this.ngPackagr = require(ngPackagrPath).ngPackagr();
 
     // eslint-disable-next-line global-require,import/no-dynamic-require
-    const module = require(ngEnvOptions.readDefaultTsConfig);
-    if (typeof module.readDefaultTsConfig !== 'undefined') {
-      // Angular v8 to v12
-      this.readDefaultTsConfig = module.readDefaultTsConfig;
-    } else {
-      // Angular v13+
-      this.readDefaultTsConfig = async() => {
-        const { initializeTsConfig } = module;
-        const entryPoints: any = [{
-          data: {
-            entryPoint: {
-              moduleId: '@bitdev/angular.dev-services.compiler.ng-packagr',
-              entryFilePath: '',
-              flatModuleFile: ''
-            },
-            tsConfig: null
-          }
-        }];
-        await initializeTsConfig(undefined, entryPoints);
-        return entryPoints[0].data.tsConfig;
-      };
-    }
+    this.readDefaultTsConfig = async() => {
+      const { initializeTsConfig } = require('ng-packagr/lib/ts/tsconfig');
+      const entryPoints: any = [{
+        data: {
+          entryPoint: {
+            moduleId: '@bitdev/angular.dev-services.compiler.ng-packagr',
+            entryFilePath: '',
+            flatModuleFile: ''
+          },
+          tsConfig: null
+        }
+      }];
+      await initializeTsConfig(undefined, entryPoints);
+      return entryPoints[0].data.tsConfig;
+    };
   }
 
   updatePaths(packageJson: Record<string, any>) {
@@ -182,7 +175,7 @@ export class NgPackagrCompiler implements Compiler {
     diagnosticsReporter: DiagnosticsReporter,
     // component ids of other angular components in the workspace
     componentIds: string[],
-    isBuild = true,
+    isBuild = true
   ): Promise<void> {
     // check for dependencies other than tslib and move them to peer dependencies
     // see https://github.com/ng-packagr/ng-packagr/blob/master/docs/dependencies.md#general-recommendation-use-peerdependencies-whenever-possible
@@ -248,7 +241,7 @@ export class NgPackagrCompiler implements Compiler {
         await removeFilesAndEmptyDirsRecursively([resolve(join(pathToOutputFolder, this.distDir, PACKAGE_JSON))]);
         await removeFilesAndEmptyDirsRecursively([resolve(join(pathToOutputFolder, NG_PACKAGE_JSON))]);
         // eslint-disable-next-line consistent-return
-      }, async (err: Error) => {
+      }, async(err: Error) => {
         if (err.message === ViewEngineTemplateError && !tsCompilerOptions.fullTemplateTypeCheck) {
           // eslint-disable-next-line no-console
           console.warn(chalk.yellow(`\nError "${ err.message }" triggered by the Angular compiler, retrying compilation without "fullTemplateTypeCheck" (you should probably create a custom environment using "bit create ng-env my-custom-angular-env" to set this option by default and avoid this error message)\n`));

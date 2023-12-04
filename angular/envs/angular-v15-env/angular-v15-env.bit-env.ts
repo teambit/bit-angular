@@ -20,7 +20,6 @@ export class AngularV15Env extends AngularBaseEnv {
     jestConfigPath: require.resolve('./jest/jest.config'),
     jestModulePath: require.resolve('jest'),
     ngPackagrModulePath: require.resolve('ng-packagr'),
-    readDefaultTsConfig: require.resolve('ng-packagr/lib/ts/tsconfig'),
     webpackConfigFactory,
     webpackDevServerModulePath: require.resolve('webpack-dev-server'),
     // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
