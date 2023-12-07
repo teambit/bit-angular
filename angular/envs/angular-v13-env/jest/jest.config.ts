@@ -1,6 +1,6 @@
 import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
 
-const packagesToExclude: string[] = ['@angular', '@ngrx'];
+const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];
 
 export default {
   preset: 'jest-preset-angular',

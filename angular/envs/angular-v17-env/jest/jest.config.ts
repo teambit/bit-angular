@@ -2,7 +2,7 @@ import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packag
 
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 
-const packagesToExclude: string[] = ['@angular', '@ngrx'];
+const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];
 
 export default {
   preset: 'jest-preset-angular',
