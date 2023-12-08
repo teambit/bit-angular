@@ -10,6 +10,7 @@ import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
 import { EnvPreviewConfig, Preview } from '@teambit/preview';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import objectHash from 'object-hash';
+import { join, resolve } from 'path';
 import type { Configuration } from 'webpack';
 // Make sure bit recognizes the dependencies
 import 'webpack-dev-server';
@@ -77,6 +78,12 @@ interface AngularPreviewOptions {
    */
   mounterPath?: string;
 }
+
+export function getPreviewRootPath(): string {
+  // __dirname is the path of the current file in dist, we want the preview app source code
+  return resolve(join(__dirname, '../preview-app/'));
+}
+
 
 export class AngularPreview implements Preview {
   private constructor(

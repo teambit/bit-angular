@@ -25,17 +25,3 @@ export interface WebpackConfigFactoryOpts {
   workspaceDir: string;
   plugins: WebpackPluginInstance[];
 }
-
-
-export function getPreviewRootPath(workspace?: Workspace): string {
-  try {
-    // @bit-ignore
-    const rootPath = workspace?.componentDir(ComponentID.fromString('bitdev.angular/dev-services/preview/preview'), {
-      ignoreVersion: true
-    }, { relative: false }) || '';
-    return join(rootPath, 'preview-app');
-  } catch (e) {
-    // @bit-ignore
-    return resolve(require.resolve('@bitdev/angular.dev-services.preview.preview'), '../../preview-app/');
-  }
-}

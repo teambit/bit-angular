@@ -150,7 +150,7 @@ export function generateTsConfig(
   const pAppPath = normalizePath(appPath);
 
   // tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
-  tsconfigJSON.files = tsconfigJSON.files.map((file: string) => posix.join(pAppPath, file));
+  tsconfigJSON.files = tsconfigJSON.files?.map((file: string) => posix.join(pAppPath, file)) || [];
   tsconfigJSON.include = [
     ...tsconfigJSON.include.map((file: string) => posix.join(pAppPath, file)),
     ...includePaths.map((path) => posix.join(path, '**/*.ts'))

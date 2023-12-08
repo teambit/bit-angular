@@ -1,5 +1,6 @@
 import {
-  AngularEnvOptions, ApplicationOptions,
+  AngularEnvOptions,
+  ApplicationOptions,
   BrowserOptions,
   BundlerSetup,
   DevServerOptions,
@@ -8,6 +9,7 @@ import {
   isAppBuildContext,
   writeTsconfig
 } from '@bitdev/angular.dev-services.common';
+import { getPreviewRootPath } from '@bitdev/angular.dev-services.preview.preview';
 import { AppBuildContext, ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BundlerContext } from '@teambit/bundler';
 import { DevFilesAspect, DevFilesMain } from '@teambit/dev-files';
@@ -28,7 +30,7 @@ import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-
 import assert from 'assert';
 import { join } from 'path';
 import type { Configuration, WebpackPluginInstance } from 'webpack';
-import { getPreviewRootPath, WebpackConfigFactoryOpts } from './utils';
+import { WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export type NgWebpackBundlerOptions = {
@@ -94,7 +96,7 @@ export class NgWebpackBundler {
         tsconfigPath = join(appRootPath, 'tsconfig.app.json');
         plugins = [new StatsLoggerPlugin()];
       } else { // When you use `bit build` for the preview app
-        appRootPath = getPreviewRootPath(workspace);
+        appRootPath = getPreviewRootPath();
         tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
       }
 

@@ -9,6 +9,7 @@ import {
   isAppDevContext,
   writeTsconfig
 } from '@bitdev/angular.dev-services.common';
+import { getPreviewRootPath } from '@bitdev/angular.dev-services.preview.preview';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { DevServer, DevServerContext } from '@teambit/bundler';
 import { Component } from '@teambit/component';
@@ -31,7 +32,7 @@ import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-
 import assert from 'assert';
 import { join, posix } from 'path';
 import type { Configuration } from 'webpack';
-import { getPreviewRootPath, WebpackConfigFactoryOpts } from './utils';
+import { WebpackConfigFactoryOpts } from './utils';
 
 export type WebpackDevServerOptions = {
   angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
@@ -101,7 +102,7 @@ export class NgWebpackDevServer {
         tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(appRootPath, 'tsconfig.app.json');
         isApp = true;
       } else { // When you use `bit start`
-        appRootPath = getPreviewRootPath(workspace);
+        appRootPath = getPreviewRootPath();
         tsconfigPath = writeTsconfig(devServerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
 
         // add the assets paths for each component to the angular compiler options
