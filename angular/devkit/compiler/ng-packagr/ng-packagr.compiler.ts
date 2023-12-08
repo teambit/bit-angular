@@ -24,7 +24,7 @@ import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-jso
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
-import { mkdirsSync, outputFileSync, removeSync } from 'fs-extra';
+import { mkdirsSync, outputFileSync, removeSync, readdirSync } from 'fs-extra';
 import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
 import { join, posix, resolve } from 'path';
 import { Diagnostic, DiagnosticCategory, DiagnosticWithLocation } from 'typescript';
@@ -48,11 +48,16 @@ export async function createDiagnosticsReporter(logger: Logger): Promise<Diagnos
   const { formatDiagnostics } = await loadEsmModule(`@angular/compiler-cli`);
   const formatter = (diagnostic: Diagnostic) => formatDiagnostics([diagnostic]);
   return (diagnostic: Diagnostic | Error) => {
-    let diag: Diagnostic = diagnostic as any;
-    if (isFatalDiagnosticError((diagnostic))) {
-      diag = diagnostic.toDiagnostic();
+    let diag = diagnostic as any;
+    let text: string;
+    try {
+      if (isFatalDiagnosticError((diagnostic))) {
+        diag = diagnostic.toDiagnostic();
+      }
+      text = formatter(diag);
+    } catch (e) {
+      throw new Error(diag);
     }
-    const text = formatter(diag);
     if (diag.category === DiagnosticCategory.Error) {
       throw new Error(text);
     } else {
