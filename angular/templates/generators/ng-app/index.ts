@@ -25,6 +25,9 @@ import { stylesFile } from './template-files/src/styles';
 import { tsconfigFile } from './template-files/tsconfig.app';
 
 export class NgAppTemplate implements ComponentTemplate {
+  installMissingDependencies = true;
+  isApp = true;
+
   private constructor(
     private logger: Logger,
     readonly angularVersion: number,

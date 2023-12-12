@@ -16,6 +16,9 @@ import { hostDependenciesFile } from './files/preview/host-dependencies';
 import { mounterFile } from './files/preview/mounter';
 
 export class NgEnvTemplate implements ComponentTemplate {
+  installMissingDependencies = true;
+  isEnv = true;
+
   private constructor(
     readonly envName: string,
     readonly angularVersion: number,
