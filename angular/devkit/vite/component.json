@@ -9,7 +9,7 @@
       "policy": {
         "dependencies": {
           "@analogjs/platform": "-",
-          "@teambit/node.deps-detectors.detective-es6": "0.0.1",
+          "@teambit/node.deps-detectors.detective-es6": "0.0.5",
           "@teambit/vite.vite-bundler": "*",
           "@teambit/vite.vite-dev-server": "*",
           "@types/express": "^4.17.17",
