@@ -124,7 +124,7 @@ async function getWebpackConfig(
     sourceMap: angularOptions.sourceMap ?? true,
     outputHashing: angularOptions.outputHashing ?? (setup === BundlerSetup.Build ? OutputHashing.All : OutputHashing.None),
     watch: setup === BundlerSetup.Serve,
-    allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])]
+    allowedCommonJsDependencies: ['dompurify', '@teambit/harmony', '@teambit/preview', 'graphql', '@teambit/documenter.ng.content.copy-box', ...(angularOptions.allowedCommonJsDependencies || [])]
   };
   const normalizedWorkspaceRoot = normalize(workspaceRoot);
   // used to load component config files, such as tailwind config, ...

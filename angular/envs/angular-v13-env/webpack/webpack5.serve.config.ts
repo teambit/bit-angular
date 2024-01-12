@@ -16,10 +16,8 @@ import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
 import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
 import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
 import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
-import RemarkFrontmatter from 'remark-frontmatter';
-import RemarkHTML from 'remark-html';
-import RemarkPrism from 'remark-prism';
 import { ProvidePlugin } from 'webpack';
+import { getModuleRulesConfig } from './module-rules.config';
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 
@@ -163,25 +161,7 @@ export function webpack5ServeConfigFactory(
     },
 
     module: {
-      rules: [
-        {
-          test: /\.md$/,
-          use: [
-            {
-              loader: 'html-loader',
-            },
-            {
-              loader: 'remark-loader',
-              options: {
-                removeFrontMatter: false,
-                remarkOptions: {
-                  plugins: [RemarkPrism, RemarkHTML, RemarkFrontmatter],
-                },
-              },
-            },
-          ],
-        },
-      ],
+      rules: getModuleRulesConfig(false)
     },
 
     plugins: [
