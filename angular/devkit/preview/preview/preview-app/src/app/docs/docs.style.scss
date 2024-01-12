@@ -1,7 +1,9 @@
 .docsMainBlock {
-  padding: 50px 40px 10px;
+  padding: 20px 40px 10px;
   max-width: 1440px;
-  margin: 0 auto 150px;
+  margin: 0 0 150px;
+  width: 100%;
+  box-sizing: border-box;
 
   ::ng-deep {
     color: #414141;
