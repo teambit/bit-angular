@@ -86,13 +86,13 @@
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/runtime"
     },
-    "dev-services/vite": {
+    /*"dev-services/vite": {
         "name": "dev-services/vite",
         "scope": "bitdev.angular",
         "version": "1.1.5",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/vite"
-    },
+    },*/
     "dev-services/webpack": {
         "name": "dev-services/webpack",
         "scope": "bitdev.angular",

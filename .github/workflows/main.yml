@@ -47,9 +47,6 @@ jobs:
       - name: Create example app
         run: bit create ng-app demo-app --log error
 
-      - name: Use example app
-        run: bit use integration.examples/demo-app --log error
-
       - name: Create example custom env
         run: bit create ng-env demo-env --log error
 
@@ -100,9 +97,6 @@ jobs:
       - name: Create example app
         run: bit create ng-app demo-app --log error
 
-      - name: Use example app
-        run: bit use integration.examples/demo-app --log error
-
       - name: Create example custom env
         run: bit create ng-env demo-env --log error
 
@@ -152,9 +146,6 @@ jobs:
 
       - name: Create example app
         run: bit create ng-app demo-app --log error
-
-      - name: Use example app
-        run: bit use integration.examples/demo-app --log error
 
       - name: Create example custom env
         run: bit create ng-env demo-env --log error
@@ -207,9 +198,6 @@ jobs:
       - name: Create example app
         run: bit create ng-app demo-app --log error
 
-      - name: Use example app
-        run: bit use integration.examples/demo-app --log error
-
       - name: Create example custom env
         run: bit create ng-env demo-env --log error
 
@@ -257,9 +245,6 @@ jobs:
       - name: Create example app
         run: bit create ng-app demo-app --log error
 
-      - name: Use example app
-        run: bit use integration.examples/demo-app --log error
-
       - name: Create example custom env
         run: bit create ng-env demo-env --log error
 
@@ -306,9 +291,6 @@ jobs:
 
       - name: Create example app
         run: bit create ng-app demo-app --log error
-
-      - name: Use example app
-        run: bit use integration.examples/demo-app --log error
 
       - name: Create example custom env
         run: bit create ng-env demo-env --log error
