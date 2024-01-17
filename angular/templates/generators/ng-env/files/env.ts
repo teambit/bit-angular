@@ -8,15 +8,19 @@ import { ${envName} } from '${envPkgName}';
 import { NgAppTemplate, NgEnvTemplate, NgModuleTemplate, NgStandaloneTemplate } from '@bitdev/angular.templates.generators';
 import { AngularStarter, DesignSystemStarter, MaterialDesignSystemStarter } from '@bitdev/angular.templates.starters';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
-import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
+import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
-import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
+import { PrettierConfigWriter, PrettierFormatter } from '@teambit/defender.prettier-formatter';
 import { EnvHandler } from '@teambit/envs';
 import { StarterList, TemplateList } from '@teambit/generator';
 import { Linter } from '@teambit/linter';
 import { Preview } from '@teambit/preview';
+import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
+import { TypeScriptExtractor } from '@teambit/typescript';
+import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
 import { WebpackConfigTransformer } from '@teambit/webpack';
+import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
 
@@ -139,6 +143,31 @@ export class ${Name} extends ${envName} {
       AngularStarter.from({ envName: this.constructor.name, angularVersion: this.angularVersion }),
       DesignSystemStarter.from({ envName: this.constructor.name }),
       MaterialDesignSystemStarter.from({ envName: this.constructor.name })
+    ]);
+  }
+
+  /**
+   * returns an instance of the default TypeScript extractor.
+   * used by default for type inference for both JS and TS.
+   */
+  override schemaExtractor(): EnvHandler<SchemaExtractor> {
+    return TypeScriptExtractor.from({
+      tsconfig: require.resolve('./config/tsconfig.json')
+    });
+  }
+
+  override workspaceConfig(): ConfigWriterList {
+    return ConfigWriterList.from([
+      TypescriptConfigWriter.from({
+        tsconfig: require.resolve('./config/tsconfig.json')
+      }),
+      EslintConfigWriter.from({
+        configPath: require.resolve('./config/eslintrc'),
+        tsconfig: require.resolve('./config/tsconfig.json')
+      }),
+      PrettierConfigWriter.from({
+        configPath: require.resolve('./config/prettier.config')
+      })
     ]);
   }
 }

@@ -116,7 +116,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
 
   getLinterConfig(): any {
     return {
-      tsconfig: require.resolve('@bitdev/angular.dev-services.linter.eslint/config/tsconfig.json'),
+      tsconfig: require.resolve('./config/tsconfig.json'),
       eslint: ESLintLib,
       configPath: require.resolve('./config/eslintrc'),
       // resolve all plugins from the angular environment.
@@ -190,7 +190,13 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       webpackOptions: any = {},
       sourceRoot?: string
     ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
-    const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.getBundler(bundlerContext, ngEnvOptions);
+    const bundlerProvider: BundlerProvider = (
+      bundlerContext: BundlerContext,
+      transformers: WebpackConfigTransformer[] = [],
+      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
+      webpackOptions: any = {},
+      sourceRoot?: string
+    ) => this.getBundler(bundlerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
     return AngularPreview.from({
       devServerProvider,
       bundlerProvider,

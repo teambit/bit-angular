@@ -2,19 +2,26 @@
   "extends": "@teambit/react/typescript/tsconfig.json",
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
-    "target": "esnext",                             /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
-    "lib": ["ESNext", "dom"],                       /* Specify library files to be included in the compilation. */
     "allowJs": true,                                /* Allow javascript files to be compiled. */
-    "strict": true,                                 /* Enable all strict type-checking options. */
-    "moduleResolution": "node",                     /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
-    "esModuleInterop": true,                        /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
-    "preserveSymlinks": false,                       /* Do not resolve the real path of symlinks. */
-    "experimentalDecorators": true,                 /* Enables experimental support for ES7 decorators. */
     "emitDecoratorMetadata": true,                  /* Enables experimental support for emitting type metadata for decorators. */
+    "esModuleInterop": true,                        /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
+    "experimentalDecorators": true,                 /* Enables experimental support for ES7 decorators. */
+    "forceConsistentCasingInFileNames": true,       /* Disallow inconsistently cased references to the same file. */
+    "jsx": "react-jsx",                             /* Specify JSX code generation: 'preserve', 'react-native', 'react-jsx' or 'react'. */
+    "lib": ["ESNext", "dom"],                       /* Specify library files to be included in the compilation. */
+    "moduleResolution": "node",                     /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
+    "preserveSymlinks": false,                       /* Do not resolve the real path of symlinks. */
     "skipLibCheck": true,                           /* Skip type checking of declaration files. */
-    "forceConsistentCasingInFileNames": true,
-    "jsx": "react-jsx"
+    "strict": true,                                 /* Enable all strict type-checking options. */
+    "target": "esnext",                             /* Specify ECMAScript target version: 'ES3' (default), 'ES5', 'ES2015', 'ES2016', 'ES2017', 'ES2018', 'ES2019', 'ES2020', or 'ESNEXT'. */
   },
   "exclude": ["artifacts", "public", "dist", "node_modules", "package.json", "**/*.cjs"],
-  "include": ["**/*", "**/*.json"]
+  "include": ["**/*", "**/*.json"],
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true,
+    "enableIvy": true
+  }
 }

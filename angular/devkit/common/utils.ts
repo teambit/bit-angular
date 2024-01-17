@@ -140,14 +140,13 @@ const timestamp = Date.now();
  * Add the list of files to include in the typescript compilation as absolute paths
  */
 export function generateTsConfig(
-  appPath: string,
+  pAppPath: string,
+  tsConfigPath: string,
   includePaths: string[],
   excludePaths: string[] = [],
-  tsPaths: { [key: string]: string[] }
+  tsPaths: { [key: string]: string[] },
 ): string {
-  const tsconfigPath = join(appPath, 'tsconfig.app.json');
-  const tsconfigJSON = readConfigFile(tsconfigPath, sys.readFile).config;
-  const pAppPath = normalizePath(appPath);
+  const tsconfigJSON = readConfigFile(tsConfigPath, sys.readFile).config;
 
   // tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
   tsconfigJSON.files = tsconfigJSON.files?.map((file: string) => posix.join(pAppPath, file)) || [];
@@ -174,6 +173,7 @@ export function writeTsconfig(
   application: ApplicationMain,
   pkg: PkgMain,
   devFilesMain: DevFilesMain,
+  tsConfigPath?: string,
   workspace?: Workspace
 ): string {
   const tsPaths: { [key: string]: string[] } = {};
@@ -215,7 +215,9 @@ export function writeTsconfig(
     });
   });
 
-  const content = generateTsConfig(rootPath, Array.from(includePaths), Array.from(excludePaths), tsPaths);
+  const pAppPath = normalizePath(rootPath);
+  tsConfigPath = tsConfigPath ?? join(rootPath, 'tsconfig.app.json');
+  const content = generateTsConfig(pAppPath, tsConfigPath, Array.from(includePaths), Array.from(excludePaths), tsPaths);
   const hash = objectHash(content);
   const targetPath = join(dirPath, `tsconfig/tsconfig-${ timestamp }.json`);
 

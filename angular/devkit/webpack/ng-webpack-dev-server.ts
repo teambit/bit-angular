@@ -103,7 +103,7 @@ export class NgWebpackDevServer {
         isApp = true;
       } else { // When you use `bit start`
         appRootPath = getPreviewRootPath();
-        tsconfigPath = writeTsconfig(devServerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
+        tsconfigPath = writeTsconfig(devServerContext, appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
 
         // add the assets paths for each component to the angular compiler options
         const assetsPaths: string[] = [];

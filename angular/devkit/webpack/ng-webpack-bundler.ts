@@ -28,7 +28,7 @@ import {
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import assert from 'assert';
-import { join } from 'path';
+import { join, posix } from 'path';
 import type { Configuration, WebpackPluginInstance } from 'webpack';
 import { WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
@@ -93,11 +93,11 @@ export class NgWebpackBundler {
       let plugins: WebpackPluginInstance[] = [];
       if (isAppBuildContext(bundlerContext)) { // When you use `bit build` for an actual angular app
         appRootPath = bundlerContext.capsule.path;
-        tsconfigPath = join(appRootPath, 'tsconfig.app.json');
+        tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(appRootPath, 'tsconfig.app.json');
         plugins = [new StatsLoggerPlugin()];
       } else { // When you use `bit build` for the preview app
         appRootPath = getPreviewRootPath();
-        tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, workspace);
+        tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
       }
 
       const transformers = options.transformers || [];
