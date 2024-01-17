@@ -89,7 +89,7 @@ export class MyAngularV13Env extends AngularV13Env {
    */
   override preview(): EnvHandler<Preview> {
     const ngEnvOptions = this.getNgEnvOptions();
-    const tsconfigPath = require.resolve('./config/tsconfig.app.json');
+    const tsconfigPath: string = require.resolve('./config/tsconfig.app.json');
     /**
      * To customize the dev server or bundler behavior, you can change webpack transformers, angular
      * options and webpack options in the getDevServer and getBundler methods.
@@ -101,7 +101,7 @@ export class MyAngularV13Env extends AngularV13Env {
       webpackOptions: any = {},
       sourceRoot?: string
     ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, {
-      ...angularOptions,
+      ...angularOptions as any,
       tsConfig: tsconfigPath
     }, webpackOptions, sourceRoot);
     const bundlerProvider: BundlerProvider = (
@@ -111,7 +111,7 @@ export class MyAngularV13Env extends AngularV13Env {
       webpackOptions: any = {},
       sourceRoot?: string
     ) => this.getBundler(bundlerContext, ngEnvOptions, transformers, {
-      ...angularOptions,
+      ...angularOptions as any,
       tsConfig: tsconfigPath
     }, webpackOptions, sourceRoot);
     return AngularPreview.from({
