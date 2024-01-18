@@ -98,6 +98,9 @@ export class NgWebpackBundler {
       } else { // When you use `bit build` for the preview app
         appRootPath = getPreviewRootPath();
         tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        if (options?.angularOptions?.tsConfig) {
+          options.angularOptions.tsConfig = tsconfigPath;
+        }
       }
 
       const transformers = options.transformers || [];

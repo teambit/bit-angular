@@ -90,7 +90,7 @@ export class MyAngularV17Env extends AngularV17Env {
    */
   override preview(): EnvHandler<Preview> {
     const ngEnvOptions = this.getNgEnvOptions();
-    const tsconfigPath = require.resolve('./config/tsconfig.app.json');
+    const tsconfigPath = require.resolve('./config/tsconfig.json');
     /**
      * To customize the dev server or bundler behavior, you can change webpack transformers, angular
      * options and webpack options in the getDevServer and getBundler methods.

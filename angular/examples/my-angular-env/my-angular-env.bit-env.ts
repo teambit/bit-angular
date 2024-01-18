@@ -1,4 +1,5 @@
 import { AngularEnv } from '@bitdev/angular.angular-env';
+import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 import {
   AngularPreview,
   BundlerProvider,
@@ -12,14 +13,19 @@ import {
 } from '@bitdev/angular.templates.generators';
 import { AngularStarter } from '@bitdev/angular.templates.starters';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
-import { ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
+import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
-import { PrettierFormatter } from '@teambit/defender.prettier-formatter';
+import { PrettierConfigWriter, PrettierFormatter } from '@teambit/defender.prettier-formatter';
 import { EnvHandler } from '@teambit/envs';
 import { StarterList, TemplateList } from '@teambit/generator';
 import { Linter } from '@teambit/linter';
 import { Preview } from '@teambit/preview';
+import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
+import { TypeScriptExtractor } from '@teambit/typescript';
+import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
+import { WebpackConfigTransformer } from '@teambit/webpack';
+import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
 
@@ -84,18 +90,37 @@ export class MyAngularEnv extends AngularEnv {
    */
   override preview(): EnvHandler<Preview> {
     const ngEnvOptions = this.getNgEnvOptions();
+    const tsconfigPath = require.resolve('./config/tsconfig.json');
     /**
      * To customize the dev server or bundler behavior, you can change webpack transformers, angular
      * options and webpack options in the getDevServer and getBundler methods.
      */
-    const devServerProvider: DevServerProvider = (devServerContext: DevServerContext) => this.getDevServer(devServerContext, ngEnvOptions);
-    const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.getBundler(bundlerContext, ngEnvOptions);
+    const devServerProvider: DevServerProvider = (
+      devServerContext: DevServerContext,
+      transformers: WebpackConfigTransformer[] = [],
+      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
+      webpackOptions: any = {},
+      sourceRoot?: string
+    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, {
+      ...angularOptions,
+      tsConfig: tsconfigPath
+    }, webpackOptions, sourceRoot);
+    const bundlerProvider: BundlerProvider = (
+      bundlerContext: BundlerContext,
+      transformers: WebpackConfigTransformer[] = [],
+      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
+      webpackOptions: any = {},
+      sourceRoot?: string
+    ) => this.getBundler(bundlerContext, ngEnvOptions, transformers, {
+      ...angularOptions,
+      tsConfig: tsconfigPath
+    }, webpackOptions, sourceRoot);
     return AngularPreview.from({
       devServerProvider,
       bundlerProvider,
       ngEnvOptions,
       hostDependencies,
-      mounterPath: require.resolve('./preview/mounter'),
+      mounterPath: require.resolve('./preview/mounter')
     });
   }
 
@@ -134,6 +159,31 @@ export class MyAngularEnv extends AngularEnv {
   override starters(): EnvHandler<StarterList> {
     return StarterList.from([
       AngularStarter.from({envName: this.constructor.name, angularVersion: this.angularVersion})
+    ]);
+  }
+
+  /**
+   * returns an instance of the default TypeScript extractor.
+   * used by default for type inference for both JS and TS.
+   */
+  override schemaExtractor(): EnvHandler<SchemaExtractor> {
+    return TypeScriptExtractor.from({
+      tsconfig: require.resolve('./config/tsconfig.json')
+    });
+  }
+
+  override workspaceConfig(): ConfigWriterList {
+    return ConfigWriterList.from([
+      TypescriptConfigWriter.from({
+        tsconfig: require.resolve('./config/tsconfig.json')
+      }),
+      EslintConfigWriter.from({
+        configPath: require.resolve('./config/eslintrc'),
+        tsconfig: require.resolve('./config/tsconfig.json')
+      }),
+      PrettierConfigWriter.from({
+        configPath: require.resolve('./config/prettier.config')
+      })
     ]);
   }
 }

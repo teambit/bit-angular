@@ -7,7 +7,6 @@ import { Workspace } from '@teambit/workspace';
 import { eslintConfigFile } from './files/config/eslintrc';
 import { jestConfigFile } from './files/config/jest.config';
 import { prettierConfigFile } from './files/config/prettier.config';
-import { tsConfigAppFile } from './files/config/tsconfig.app.json';
 import { tsConfigFile } from './files/config/tsconfig.json';
 import { tsConfigSpecFile } from './files/config/tsconfig.spec.json';
 import { docFile } from './files/doc';
@@ -63,7 +62,6 @@ export class NgEnvTemplate implements ComponentTemplate {
       jestConfigFile(this.angularVersion, envPkgName),
       prettierConfigFile(),
       tsConfigFile(),
-      tsConfigAppFile(),
       tsConfigSpecFile(),
       mounterFile(this.angularVersion),
       hostDependenciesFile()

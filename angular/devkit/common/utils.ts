@@ -13,7 +13,6 @@ import { outputFileSync } from 'fs-extra';
 import normalize from 'normalize-path';
 import objectHash from 'object-hash';
 import { dirname, join, posix, resolve } from 'path';
-import { readConfigFile, sys } from 'typescript';
 
 export const NG_APP_NAME = 'ng-app';
 export const NG_APP_PATTERN = `*.${ NG_APP_NAME }.*`;
@@ -144,27 +143,30 @@ export function generateTsConfig(
   tsConfigPath: string,
   includePaths: string[],
   excludePaths: string[] = [],
-  tsPaths: { [key: string]: string[] },
+  tsPaths: { [key: string]: string[] }
 ): string {
-  const tsconfigJSON = readConfigFile(tsConfigPath, sys.readFile).config;
-
-  // tsconfigJSON.config.angularCompilerOptions.enableIvy = this.enableIvy;
-  tsconfigJSON.files = tsconfigJSON.files?.map((file: string) => posix.join(pAppPath, file)) || [];
-  tsconfigJSON.include = [
-    ...tsconfigJSON.include.map((file: string) => posix.join(pAppPath, file)),
-    ...includePaths.map((path) => posix.join(path, '**/*.ts'))
-  ];
-  tsconfigJSON.exclude = [
-    ...tsconfigJSON.exclude.map((file: string) => posix.join(pAppPath, file)),
-    ...excludePaths
-  ];
-  tsconfigJSON.compilerOptions.paths = tsPaths;
+  // default config to make the preview app work
+  const tsconfigJSON = {
+    extends: normalizePath(resolve(tsConfigPath)),
+    compilerOptions: {
+      paths: tsPaths
+    },
+    files: ["./src/main.ts", "./src/polyfills.ts"].map((file: string) => posix.join(pAppPath, file)),
+    include: [
+      ...["./src/app/**/*.ts"].map((file: string) => posix.join(pAppPath, file)),
+      ...includePaths.map((path) => posix.join(path, '**/*.ts'))
+    ],
+    exclude: [
+      ...["./src/app/**/*.spec.ts"].map((file: string) => posix.join(pAppPath, file)),
+      ...excludePaths
+    ]
+  }
 
   return JSON.stringify(tsconfigJSON, undefined, 2);
 }
 
 /**
- * write a link to load custom modules dynamically.
+ * Generates the tsconfig to load the preview app with compositions dynamically.
  */
 export function writeTsconfig(
   context: DevServerContext | BundlerContext,

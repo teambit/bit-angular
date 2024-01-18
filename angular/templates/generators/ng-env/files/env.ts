@@ -85,6 +85,7 @@ export class ${Name} extends ${envName} {
    */
   override preview(): EnvHandler<Preview> {
     const ngEnvOptions = this.getNgEnvOptions();
+    const tsconfigPath = require.resolve('./config/tsconfig.json');
     /**
      * To customize the dev server or bundler behavior, you can change webpack transformers, angular
      * options and webpack options in the getDevServer and getBundler methods.
@@ -95,14 +96,26 @@ export class ${Name} extends ${envName} {
       angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
       webpackOptions: any = {},
       sourceRoot?: string
-    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
-    const bundlerProvider: BundlerProvider = (bundlerContext: BundlerContext) => this.getBundler(bundlerContext, ngEnvOptions);
+    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, {
+      ...angularOptions,
+      tsConfig: tsconfigPath
+    }, webpackOptions, sourceRoot);
+    const bundlerProvider: BundlerProvider = (
+      bundlerContext: BundlerContext,
+      transformers: WebpackConfigTransformer[] = [],
+      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
+      webpackOptions: any = {},
+      sourceRoot?: string
+    ) => this.getBundler(bundlerContext, ngEnvOptions, transformers, {
+      ...angularOptions,
+      tsConfig: tsconfigPath
+    }, webpackOptions, sourceRoot);
     return AngularPreview.from({
       devServerProvider,
       bundlerProvider,
       ngEnvOptions,
       hostDependencies,
-      mounterPath: require.resolve('./preview/mounter'),
+      mounterPath: require.resolve('./preview/mounter')
     });
   }
 
