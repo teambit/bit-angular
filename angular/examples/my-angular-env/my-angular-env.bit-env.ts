@@ -1,5 +1,6 @@
 import { AngularEnv } from '@bitdev/angular.angular-env';
 import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import { NgMultiCompiler } from '@bitdev/angular.dev-services.compiler.multi-compiler';
 import {
   AngularPreview,
   BundlerProvider,
@@ -13,6 +14,7 @@ import {
 } from '@bitdev/angular.templates.generators';
 import { AngularStarter } from '@bitdev/angular.templates.starters';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
+import { Compiler } from '@teambit/compiler';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierConfigWriter, PrettierFormatter } from '@teambit/defender.prettier-formatter';
@@ -28,6 +30,8 @@ import { WebpackConfigTransformer } from '@teambit/webpack';
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
+
+let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
 export class MyAngularEnv extends AngularEnv {
   // Name of the environment, used for friendly mentions across bit
@@ -60,6 +64,20 @@ export class MyAngularEnv extends AngularEnv {
       pluginsPath: __dirname,
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
     };
+  }
+
+  /**
+   * Returns an instance of the compiler
+   * Required for making and reading dists, especially for `bit compile`
+   */
+  compiler(): EnvHandler<Compiler> {
+    if (!ngMultiCompiler) {
+      ngMultiCompiler = NgMultiCompiler.from({
+        ngEnvOptions: this.getNgEnvOptions(),
+        tsconfigPath: require.resolve('./config/tsconfig.json'),
+      });
+    }
+    return ngMultiCompiler;
   }
 
   /**

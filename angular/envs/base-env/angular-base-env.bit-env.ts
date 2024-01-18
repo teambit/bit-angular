@@ -51,13 +51,13 @@ import { merge } from 'lodash';
 import { AngularEnvInterface } from './angular-env.interface';
 import hostDependencies from './preview/host-dependencies';
 
+let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
+
 /**
  * a component environment built for [Angular](https://angular.io).
  */
 export abstract class AngularBaseEnv implements AngularEnvInterface {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
-
-  private ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
   /** Abstract functions & properties specific to the adapter * */
   abstract ngEnvOptions: AngularEnvOptions;
@@ -100,12 +100,12 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    * Required for making and reading dists, especially for `bit compile`
    */
   compiler(): EnvHandler<Compiler> {
-    if (!this.ngMultiCompiler) {
-      this.ngMultiCompiler = NgMultiCompiler.from({
+    if (!ngMultiCompiler) {
+      ngMultiCompiler = NgMultiCompiler.from({
         ngEnvOptions: this.getNgEnvOptions()
       });
     }
-    return this.ngMultiCompiler;
+    return ngMultiCompiler;
   }
 
   formatter(): EnvHandler<Formatter> {

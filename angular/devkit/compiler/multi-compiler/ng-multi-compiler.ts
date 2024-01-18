@@ -38,6 +38,7 @@ export interface NgMultiCompilerOptions {
   name?: string;
   ngEnvOptions: AngularEnvOptions;
   tsCompilerOptions?: AngularCompilerOptions;
+  tsconfigPath?: string;
 }
 
 export class NgMultiCompiler implements Compiler {
@@ -208,7 +209,8 @@ export class NgMultiCompiler implements Compiler {
         ngEnvOptions: options.ngEnvOptions,
         ngPackagrModulePath,
         shouldCopyNonSupportedFiles,
-        tsCompilerOptions: options.tsCompilerOptions
+        tsCompilerOptions: options.tsCompilerOptions,
+        tsconfigPath: options.tsconfigPath
       })(context);
 
       let angularElementsCompiler: AngularElementsCompiler | undefined;

@@ -1,4 +1,4 @@
-import { type AngularCompilerOptions, type ParsedConfiguration } from '@angular/compiler-cli';
+import type { AngularCompilerOptions, ParsedConfiguration, CompilerOptions } from '@angular/compiler-cli';
 import {
   AngularEnvOptions,
   componentIsApp,
@@ -24,10 +24,10 @@ import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-jso
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
-import { mkdirsSync, outputFileSync, removeSync, readdirSync } from 'fs-extra';
+import { mkdirsSync, outputFileSync, removeSync } from 'fs-extra';
 import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
 import { join, posix, resolve } from 'path';
-import { Diagnostic, DiagnosticCategory, DiagnosticWithLocation } from 'typescript';
+import { Diagnostic, DiagnosticCategory, DiagnosticWithLocation, ScriptTarget } from 'typescript';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -96,6 +96,7 @@ interface NgPackagrCompilerOptions {
   ngPackagrModulePath?: string;
   ngEnvOptions: AngularEnvOptions;
   tsCompilerOptions?: AngularCompilerOptions;
+  tsconfigPath?: string;
   name?: string;
   distDir: string;
   distGlobPatterns: string[];
@@ -123,8 +124,8 @@ export class NgPackagrCompiler implements Compiler {
     public shouldCopyNonSupportedFiles: boolean,
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
+    private tsconfigPath?: string,
     private nodeModulesPaths: string[] = [],
-    private ngEnvOptions: AngularEnvOptions
   ) {
     // eslint-disable-next-line global-require,import/no-dynamic-require
     this.ngPackagr = require(ngPackagrPath).ngPackagr();
@@ -315,6 +316,29 @@ export class NgPackagrCompiler implements Compiler {
     const componentCapsules = capsules.filter(capsule => componentIds.includes(capsule.component.id.toString()));
     const componentsResults: ComponentResult[] = [];
 
+    let tsCompilerOptions = this.tsCompilerOptions || {};
+    if (this.tsconfigPath) {
+      // these options are mandatory for ngPackagr to work
+      const extraOptions: CompilerOptions = {
+        target: ScriptTarget.ES2022,
+
+        // sourcemaps
+        sourceMap: false,
+        inlineSources: true,
+        inlineSourceMap: true,
+
+        outDir: '',
+        declaration: true,
+
+        // ng compiler
+        enableResourceInlining: true,
+      };
+
+      const { readConfiguration } = await loadEsmModule('@angular/compiler-cli');
+      const tsconfigJSON = readConfiguration(this.tsconfigPath, extraOptions);
+      tsCompilerOptions = { ...tsCompilerOptions, ...tsconfigJSON.options };
+    }
+
     // eslint-disable-next-line no-restricted-syntax
     for (const capsule of componentCapsules) {
       const { component } = capsule;
@@ -327,7 +351,7 @@ export class NgPackagrCompiler implements Compiler {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();
           // eslint-disable-next-line no-await-in-loop
-          await this.ngPackagrCompilation(capsule.path, capsule.path, this.tsCompilerOptions, diagnosticsReporter, componentIds, true);
+          await this.ngPackagrCompilation(capsule.path, capsule.path, tsCompilerOptions, diagnosticsReporter, componentIds, true);
           this.logger.on();
           // @ts-ignore
         } catch (e: any) {
@@ -406,8 +430,8 @@ export class NgPackagrCompiler implements Compiler {
         options.shouldCopyNonSupportedFiles,
         options.artifactName,
         options.tsCompilerOptions,
+        options.tsconfigPath,
         nodeModulesPaths,
-        options.ngEnvOptions
       );
     };
   }
