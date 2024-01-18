@@ -3,6 +3,7 @@
  */
 import { jestConfig } from '@bitdev/angular.angular-env';
 import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
+
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 
 const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];

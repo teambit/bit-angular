@@ -6,6 +6,7 @@ export const jestConfigFile = (angularVersion: number, envPkgName: string) => {
  */
 import { jestConfig } from '${envPkgName}';
 import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
+
 ${angularVersion >= 16 ? `
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 ` : ''}
