@@ -8,7 +8,10 @@ import {
   loadEsmModule,
   normalizePath
 } from '@bitdev/angular.dev-services.common';
-import { buildApplicationInternal } from '@bitdev/angular.dev-services.ng-compat';
+import {
+  type ApplicationBuilderOptions,
+  buildApplicationInternal, type DevServerBuilderOptions
+} from '@bitdev/angular.dev-services.ng-compat';
 import { Logger } from '@teambit/logger';
 import assert from 'assert';
 import { outputFileSync } from 'fs-extra';
@@ -27,6 +30,10 @@ export type BuildApplicationOptions = {
   entryServer?: string;
 }
 
+// TODO allow customizing this
+const BUILDER_NAME = '@angular-devkit/build-angular:application';
+const CACHE_PATH = 'angular/cache';
+
 export async function buildApplication(options: BuildApplicationOptions): Promise<void> {
   const { angularOptions: { tsConfig, ssr } } = options;
   const isSsr = !!ssr && Number(VERSION.major) >= 17;
@@ -38,7 +45,7 @@ export async function buildApplication(options: BuildApplicationOptions): Promis
   }
 
   const appOptions = getAppOptions(options, isSsr);
-  const builderContext = getBuilderContext(options);
+  const builderContext = getBuilderContext(options, appOptions);
   const builderPlugins: any[] = [];
 
   for await (const result of buildApplicationInternal(
@@ -126,12 +133,12 @@ function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): any {
 }
 
 
-function getBuilderContext(options: BuildApplicationOptions): any {
+function getBuilderContext(options: BuildApplicationOptions, appOptions: ApplicationBuilderOptions): any {
   const { workspaceRoot, sourceRoot, tempFolder } = options;
   return {
     id: 1,
     builder: {
-      builderName: '@bitdev/build-angular:application',
+      builderName: BUILDER_NAME,
       description: 'Bit Angular Application Builder',
       optionSchema: {}
     },
@@ -149,7 +156,14 @@ function getBuilderContext(options: BuildApplicationOptions): any {
         sourceRoot,
         cli: { cache: { enabled: true, path: resolve(tempFolder, 'angular/cache') } }
       });
-    }
+    },
+    addTeardown: (teardown: () => Promise<void> | void) => {
+      teardown();
+      return;
+    },
+    getBuilderNameForTarget: () => Promise.resolve(BUILDER_NAME),
+    getTargetOptions: () => Promise.resolve(appOptions as any),
+    validateOptions: () => Promise.resolve(appOptions as any)
   };
 }
 
