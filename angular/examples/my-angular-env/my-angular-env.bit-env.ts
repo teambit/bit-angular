@@ -1,11 +1,8 @@
 import { AngularEnv } from '@bitdev/angular.angular-env';
 import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { NgMultiCompiler } from '@bitdev/angular.dev-services.compiler.multi-compiler';
-import {
-  AngularPreview,
-  BundlerProvider,
-  DevServerProvider
-} from '@bitdev/angular.dev-services.preview.preview';
+import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
+import { AngularPreview, BundlerProvider, DevServerProvider } from '@bitdev/angular.dev-services.preview.preview';
+import { Pipeline } from '@teambit/builder';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Compiler } from '@teambit/compiler';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
@@ -139,10 +136,11 @@ export class MyAngularEnv extends AngularEnv {
    * This is a set of processes to be performed before a component is snapped, during its build phase
    * @see https://bit.dev/docs/my-angular-env/build-pipelines
    */
-  override build() {
-    return super.build().replace([
+  override build(): Pipeline {
+    return Pipeline.from([
+      NgMultiCompilerTask.from({ ngMultiCompiler: this.compiler() }),
       EslintTask.from(this.getLinterConfig()),
-      JestTask.from(this.getTesterConfig()),
+      JestTask.from(this.getTesterConfig())
     ]);
   }
 

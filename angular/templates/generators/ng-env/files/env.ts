@@ -3,8 +3,9 @@ import { ComponentContext } from '@teambit/generator';
 export function envFile({ namePascalCase: Name, name }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
   // language=TypeScript
   return `import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { NgMultiCompiler } from '@bitdev/angular.dev-services.compiler.multi-compiler';
+import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
 import { AngularPreview, BundlerProvider, DevServerProvider } from '@bitdev/angular.dev-services.preview.preview';
+import { Pipeline } from '@teambit/builder';
 import { ${envName} } from '${envPkgName}';
 import { BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Compiler } from '@teambit/compiler';
@@ -140,9 +141,10 @@ export class ${Name} extends ${envName} {
    * @see https://bit.dev/docs/angular-env/build-pipelines
    */
   override build() {
-    return super.build().replace([
+    return Pipeline.from([
+      NgMultiCompilerTask.from({ ngMultiCompiler: this.compiler() }),
       EslintTask.from(this.getLinterConfig()),
-      JestTask.from(this.getTesterConfig()),
+      JestTask.from(this.getTesterConfig())
     ]);
   }
 
