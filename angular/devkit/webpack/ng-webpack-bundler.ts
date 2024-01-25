@@ -9,7 +9,6 @@ import {
   isAppBuildContext,
   writeTsconfig
 } from '@bitdev/angular.dev-services.common';
-import { getPreviewRootPath } from '@bitdev/angular.dev-services.preview.preview';
 import { AppBuildContext, ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BundlerContext } from '@teambit/bundler';
 import { DevFilesAspect, DevFilesMain } from '@teambit/dev-files';
@@ -48,7 +47,10 @@ export type NgWebpackBundlerOptions = {
 
   ngEnvOptions: AngularEnvOptions;
 
+  appRootPath: string;
+
   sourceRoot?: string;
+
   /**
    * array of transformers to apply on webpack config.
    */
@@ -72,7 +74,7 @@ export class NgWebpackBundler {
       const webpackBuildConfigFactory: WebpackBuildConfigFactory = options.ngEnvOptions.webpackConfigFactory;
       const name = options.name || 'ng-webpack-bundler';
       const logger = context.createLogger(name);
-      const {bundlerContext} = options;
+      const { bundlerContext } = options;
       const workspace = getWorkspace(context);
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
@@ -81,7 +83,7 @@ export class NgWebpackBundler {
       const devFilesMain = context.getAspect<DevFilesMain>(DevFilesAspect.id);
 
       let tempFolder: string;
-      const idName = `bitdev.angular/${name}`;
+      const idName = `bitdev.angular/${ name }`;
       if (workspace) {
         tempFolder = workspace.getTempDir(idName);
       } else {
@@ -92,12 +94,10 @@ export class NgWebpackBundler {
       let tsconfigPath: string;
       let plugins: WebpackPluginInstance[] = [];
       if (isAppBuildContext(bundlerContext)) { // When you use `bit build` for an actual angular app
-        appRootPath = bundlerContext.capsule.path;
-        tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(appRootPath, 'tsconfig.app.json');
+        tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(options.appRootPath, 'tsconfig.app.json');
         plugins = [new StatsLoggerPlugin()];
       } else { // When you use `bit build` for the preview app
-        appRootPath = getPreviewRootPath();
-        tsconfigPath = writeTsconfig(bundlerContext, appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        tsconfigPath = writeTsconfig(bundlerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
         if (options?.angularOptions?.tsConfig) {
           options.angularOptions.tsConfig = tsconfigPath;
         }

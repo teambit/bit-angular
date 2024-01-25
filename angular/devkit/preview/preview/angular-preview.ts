@@ -2,19 +2,23 @@ import {
   AngularEnvOptions,
   ApplicationOptions,
   BrowserOptions,
-  DevServerOptions
+  DevServerOptions,
+  getWorkspace,
+  isAppBuildContext,
+  isAppDevContext
 } from '@bitdev/angular.dev-services.common';
+import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
 import { AppContext } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
-import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
+import { AsyncEnvHandler, EnvContext, EnvHandler } from '@teambit/envs';
 import { EnvPreviewConfig, Preview } from '@teambit/preview';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
+import { Workspace } from '@teambit/workspace';
 import objectHash from 'object-hash';
 import { join, resolve } from 'path';
 import type { Configuration } from 'webpack';
 // Make sure bit recognizes the dependencies
 import 'webpack-dev-server';
-import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
 
 export type DevServerProvider = (
   context: DevServerContext | (DevServerContext & AppContext),
@@ -109,33 +113,51 @@ export class AngularPreview implements Preview {
     private previewConfig: EnvPreviewConfig = {},
     private hostDependencies?: string[],
     private sourceRoot?: string,
-  ) {}
+    private workspace?: Workspace
+  ) {
+  }
 
   getDevServer(context: DevServerContext): AsyncEnvHandler<DevServer> {
+    let appRootPath: string;
+    if (isAppDevContext(context)) { // When you use `bit run <app>`
+      appRootPath = this.workspace?.componentDir(context.appComponent.id, {
+        ignoreVersion: true
+      }) || '';
+    } else { // When you use `bit start`
+      appRootPath = getPreviewRootPath();
+    }
     return NgWebpackDevServer.from({
       angularOptions: this.angularServeOptions,
       devServerContext: context,
       ngEnvOptions: this.ngEnvOptions,
       transformers: this.webpackServeTransformers,
       sourceRoot: this.sourceRoot,
+      appRootPath
     });
   }
 
   getDevEnvId() {
     const objToHash = {
       webpack: this.ngEnvOptions.webpackModulePath,
-      webpackDevServer: this.ngEnvOptions.webpackDevServerModulePath,
+      webpackDevServer: this.ngEnvOptions.webpackDevServerModulePath
     };
     return objectHash(objToHash);
   }
 
   getBundler(context: BundlerContext): AsyncEnvHandler<Bundler> {
+    let appRootPath: string;
+    if (isAppBuildContext(context)) { // When you use `bit build` for an actual angular app
+      appRootPath = context.capsule.path;
+    } else { // When you use `bit build` for the preview app
+      appRootPath = getPreviewRootPath();
+    }
     return NgWebpackBundler.from({
       angularOptions: this.angularBuildOptions,
       bundlerContext: context,
       ngEnvOptions: this.ngEnvOptions,
       transformers: this.webpackBuildTransformers,
       sourceRoot: this.sourceRoot,
+      appRootPath
     });
   }
 
@@ -150,7 +172,7 @@ export class AngularPreview implements Preview {
         '@teambit/mdx.ui.mdx-scope-context',
         '@mdx-js/react',
         'react',
-        'react-dom',
+        'react-dom'
       ]
     );
   }
@@ -163,18 +185,20 @@ export class AngularPreview implements Preview {
     return this.docsTemplatePath;
   }
 
-  getPreviewConfig(): EnvPreviewConfig & {isScaling ?: boolean} {
+  getPreviewConfig(): EnvPreviewConfig & { isScaling?: boolean } {
     return {
       strategyName: 'env',
       // splitComponentBundle: true,
       // isScaling: true,
-      ...this.previewConfig,
+      ...this.previewConfig
     };
   }
 
   static from(options: AngularPreviewOptions): EnvHandler<Preview> {
     const name = options.name || 'angular-preview';
-    return () => {
+    return (context: EnvContext) => {
+      const workspace = getWorkspace(context);
+
       return new AngularPreview(
         name,
         options.ngEnvOptions,
@@ -187,6 +211,7 @@ export class AngularPreview implements Preview {
         options.previewConfig,
         options.hostDependencies,
         options.sourceRoot,
+        workspace
       );
     };
   }

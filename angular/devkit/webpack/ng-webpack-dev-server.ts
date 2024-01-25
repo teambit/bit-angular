@@ -9,7 +9,6 @@ import {
   isAppDevContext,
   writeTsconfig
 } from '@bitdev/angular.dev-services.common';
-import { getPreviewRootPath } from '@bitdev/angular.dev-services.preview.preview';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { DevServer, DevServerContext } from '@teambit/bundler';
 import { Component } from '@teambit/component';
@@ -48,7 +47,10 @@ export type WebpackDevServerOptions = {
 
   ngEnvOptions: AngularEnvOptions;
 
+  appRootPath: string;
+
   sourceRoot?: string;
+
   /**
    * array of transformers to apply on webpack config.
    */
@@ -93,14 +95,10 @@ export class NgWebpackDevServer {
       let tsconfigPath: string;
       let isApp = false;
       if (isAppDevContext(devServerContext)) { // When you use `bit run <app>`
-        appRootPath = workspace?.componentDir(devServerContext.appComponent.id, {
-          ignoreVersion: true
-        }) || '';
-        tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(appRootPath, 'tsconfig.app.json');
+        tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(options.appRootPath, 'tsconfig.app.json');
         isApp = true;
       } else { // When you use `bit start`
-        appRootPath = getPreviewRootPath();
-        tsconfigPath = writeTsconfig(devServerContext, appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        tsconfigPath = writeTsconfig(devServerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
         options.angularOptions = options.angularOptions || {};
         if (options?.angularOptions?.tsConfig) {
           options.angularOptions.tsConfig = tsconfigPath;
@@ -135,7 +133,7 @@ export class NgWebpackDevServer {
         publicPath: devServerContext.publicPath,
         publicRoot: devServerContext.rootPath,
         pubsub: webpackMain.pubsub,
-        rootPath: appRootPath,
+        rootPath: options.appRootPath,
         setup: BundlerSetup.Serve,
         sourceRoot: options.sourceRoot ?? 'src',
         tempFolder,
