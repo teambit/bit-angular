@@ -14,6 +14,7 @@ import { join, resolve } from 'path';
 import type { Configuration } from 'webpack';
 // Make sure bit recognizes the dependencies
 import 'webpack-dev-server';
+import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
 
 export type DevServerProvider = (
   context: DevServerContext | (DevServerContext & AppContext),
@@ -33,14 +34,9 @@ export type BundlerProvider = (
 
 interface AngularPreviewOptions {
   /**
-   * Name of the angular preview.
+   * Override the default Angular docs template path
    */
-  name?: string;
-
-  /**
-   * Configuration for the preview.
-   */
-  previewConfig?: EnvPreviewConfig;
+  docsTemplatePath?: string;
 
   /**
    * Deps that will be bundled with the env template and will be configured as externals for the component bundle.
@@ -48,20 +44,15 @@ interface AngularPreviewOptions {
    */
   hostDependencies?: string[];
 
-  // /**
-  //  * DOM mounter used for the thumbnail.
-  //  */
-  // thumbnail?: string;
+  /**
+   * Override the default Angular mount path
+   */
+  mounterPath?: string;
 
   /**
-   * Bundler to be used for the preview.
+   * Name of the angular preview.
    */
-  bundlerProvider: BundlerProvider;
-
-  /**
-   * Dev server to use for preview.
-   */
-  devServerProvider: DevServerProvider;
+  name?: string;
 
   /**
    * Angular env options
@@ -69,14 +60,34 @@ interface AngularPreviewOptions {
   ngEnvOptions: AngularEnvOptions;
 
   /**
-   * Override the default Angular docs template path
+   * Configuration for the preview.
    */
-  docsTemplatePath?: string;
+  previewConfig?: EnvPreviewConfig;
 
   /**
-   * Override the default Angular mount path
+   * Angular options for `bit run`
    */
-  mounterPath?: string;
+  angularServeOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
+
+  /**
+   * Set webpack serve transformers
+   */
+  webpackServeTransformers?: WebpackConfigTransformer[];
+
+  /**
+   * Angular options for `bit build`
+   */
+  angularBuildOptions?: Partial<(BrowserOptions | ApplicationOptions)>;
+
+  /**
+   * Set webpack build transformers
+   */
+  webpackBuildTransformers?: WebpackConfigTransformer[];
+
+  /**
+   * The root of the source files, assets and index.html file structure.
+   */
+  sourceRoot?: string;
 }
 
 export function getPreviewRootPath(): string {
@@ -89,22 +100,25 @@ export class AngularPreview implements Preview {
   private constructor(
     readonly name: string,
     private ngEnvOptions: AngularEnvOptions,
-    private devServerProvider: DevServerProvider,
-    private bundlerProvider: BundlerProvider,
+    private angularServeOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
+    private webpackServeTransformers: WebpackConfigTransformer[] = [],
+    private angularBuildOptions: Partial<(BrowserOptions | ApplicationOptions)> = {},
+    private webpackBuildTransformers: WebpackConfigTransformer[] = [],
     private docsTemplatePath: string = require.resolve('./docs'),
     private mounterPath: string = require.resolve('./mounter'),
     private previewConfig: EnvPreviewConfig = {},
     private hostDependencies?: string[],
+    private sourceRoot?: string,
   ) {}
 
-  getDevServer(
-    context: DevServerContext,
-    transformers?: WebpackConfigTransformer[],
-    angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
-    webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
-    sourceRoot?: string
-  ): AsyncEnvHandler<DevServer> {
-    return this.devServerProvider(context, transformers, angularOptions, webpackOptions, sourceRoot);
+  getDevServer(context: DevServerContext): AsyncEnvHandler<DevServer> {
+    return NgWebpackDevServer.from({
+      angularOptions: this.angularServeOptions,
+      devServerContext: context,
+      ngEnvOptions: this.ngEnvOptions,
+      transformers: this.webpackServeTransformers,
+      sourceRoot: this.sourceRoot,
+    });
   }
 
   getDevEnvId() {
@@ -115,10 +129,14 @@ export class AngularPreview implements Preview {
     return objectHash(objToHash);
   }
 
-  getBundler(
-    context: BundlerContext
-  ): AsyncEnvHandler<Bundler> {
-    return this.bundlerProvider(context);
+  getBundler(context: BundlerContext): AsyncEnvHandler<Bundler> {
+    return NgWebpackBundler.from({
+      angularOptions: this.angularBuildOptions,
+      bundlerContext: context,
+      ngEnvOptions: this.ngEnvOptions,
+      transformers: this.webpackBuildTransformers,
+      sourceRoot: this.sourceRoot,
+    });
   }
 
   /**
@@ -160,12 +178,15 @@ export class AngularPreview implements Preview {
       return new AngularPreview(
         name,
         options.ngEnvOptions,
-        options.devServerProvider,
-        options.bundlerProvider,
+        options.angularServeOptions,
+        options.webpackServeTransformers,
+        options.angularBuildOptions,
+        options.webpackBuildTransformers,
         options.docsTemplatePath,
         options.mounterPath,
         options.previewConfig,
         options.hostDependencies,
+        options.sourceRoot,
       );
     };
   }

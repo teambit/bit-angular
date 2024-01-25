@@ -126,7 +126,6 @@ export class NgWebpackBundler {
           sourceRoot: options.sourceRoot ?? 'src',
           tempFolder,
           tsConfigPath: tsconfigPath,
-          webpackOptions: options.webpackOptions ?? {},
           workspaceDir: workspace?.path ?? '',
           outputPath: target.outputPath
         });

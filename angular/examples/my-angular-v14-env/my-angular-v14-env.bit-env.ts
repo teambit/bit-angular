@@ -1,9 +1,10 @@
-import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
-import { AngularPreview, BundlerProvider, DevServerProvider } from '@bitdev/angular.dev-services.preview.preview';
-import { Pipeline } from '@teambit/builder';
+import {
+  NgMultiCompiler,
+  NgMultiCompilerTask
+} from '@bitdev/angular.dev-services.compiler.multi-compiler';
+import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 import { AngularV14Env } from '@bitdev/angular.envs.angular-v14-env';
-import { BundlerContext, DevServerContext } from '@teambit/bundler';
+import { Pipeline } from '@teambit/builder';
 import { Compiler } from '@teambit/compiler';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
@@ -13,7 +14,6 @@ import { Linter } from '@teambit/linter';
 import { Preview } from '@teambit/preview';
 import { Tester } from '@teambit/tester';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
-import { WebpackConfigTransformer } from '@teambit/webpack';
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import hostDependencies from './preview/host-dependencies';
@@ -94,38 +94,13 @@ export class MyAngularV14Env extends AngularV14Env {
    * Generates the component previews during development and build
    */
   override preview(): EnvHandler<Preview> {
-    const ngEnvOptions = this.getNgEnvOptions();
-    const tsconfigPath = require.resolve('./config/tsconfig.json');
-    /**
-     * To customize the dev server or bundler behavior, you can change webpack transformers, angular
-     * options and webpack options in the getDevServer and getBundler methods.
-     */
-    const devServerProvider: DevServerProvider = (
-      devServerContext: DevServerContext,
-      transformers: WebpackConfigTransformer[] = [],
-      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
-      webpackOptions: any = {},
-      sourceRoot?: string
-    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, {
-      ...angularOptions,
-      tsConfig: tsconfigPath
-    }, webpackOptions, sourceRoot);
-    const bundlerProvider: BundlerProvider = (
-      bundlerContext: BundlerContext,
-      transformers: WebpackConfigTransformer[] = [],
-      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
-      webpackOptions: any = {},
-      sourceRoot?: string
-    ) => this.getBundler(bundlerContext, ngEnvOptions, transformers, {
-      ...angularOptions,
-      tsConfig: tsconfigPath
-    }, webpackOptions, sourceRoot);
+    const tsConfig = require.resolve('./config/tsconfig.json');
     return AngularPreview.from({
-      devServerProvider,
-      bundlerProvider,
-      ngEnvOptions,
+      ngEnvOptions: this.getNgEnvOptions(),
       hostDependencies,
-      mounterPath: require.resolve('./preview/mounter')
+      mounterPath: require.resolve('./preview/mounter'),
+      angularServeOptions: { tsConfig },
+      angularBuildOptions: { tsConfig },
     });
   }
 

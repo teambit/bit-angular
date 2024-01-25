@@ -31,11 +31,10 @@ import {
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import assert from 'assert';
 import { join, posix } from 'path';
-import type { Configuration } from 'webpack';
 import { WebpackConfigFactoryOpts } from './utils';
 
 export type WebpackDevServerOptions = {
-  angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
+  angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
 
   /**
    * context of the dev server execution.
@@ -54,8 +53,6 @@ export type WebpackDevServerOptions = {
    * array of transformers to apply on webpack config.
    */
   transformers?: WebpackConfigTransformer[];
-  webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>;
-  // tsConfigPath: string;
 };
 
 export interface WebpackServeConfigFactoryOpts {
@@ -104,6 +101,7 @@ export class NgWebpackDevServer {
       } else { // When you use `bit start`
         appRootPath = getPreviewRootPath();
         tsconfigPath = writeTsconfig(devServerContext, appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        options.angularOptions = options.angularOptions || {};
         if (options?.angularOptions?.tsConfig) {
           options.angularOptions.tsConfig = tsconfigPath;
         }
@@ -142,7 +140,6 @@ export class NgWebpackDevServer {
         sourceRoot: options.sourceRoot ?? 'src',
         tempFolder,
         tsConfigPath: tsconfigPath,
-        webpackOptions: options.webpackOptions ?? {},
         workspaceDir: workspace?.path ?? ''
       });
 

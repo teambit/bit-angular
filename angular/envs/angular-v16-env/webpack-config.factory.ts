@@ -2,10 +2,7 @@
 import { OutputHashing } from '@angular-devkit/build-angular';
 import { getSystemPath, normalize, tags } from '@angular-devkit/core';
 import { BundlerSetup, dedupPaths, getLoggerApi } from '@bitdev/angular.dev-services.common';
-import type {
-  BrowserBuilderOptions,
-  DevServerBuilderOptions
-} from '@bitdev/angular.dev-services.ng-compat';
+import type { BrowserBuilderOptions } from '@bitdev/angular.dev-services.ng-compat';
 import {
   generateEntryPoints,
   generateWebpackConfig,
@@ -98,7 +95,6 @@ async function getWebpackConfig(
   workspaceRoot: string,
   logger: Logger,
   setup: BundlerSetup,
-  webpackOptions: Partial<WebpackConfigWithDevServer | WebpackConfig> = {},
   angularOptions: Partial<BrowserBuilderOptions> = {},
   sourceRoot = 'src'
 ): Promise<WebpackConfigWithDevServer | WebpackConfig> {
@@ -138,7 +134,6 @@ async function getWebpackConfig(
     normalizedSourceRoot,
     {
       ...browserOptions,
-      ...(webpackOptions as Partial<BrowserBuilderOptions & DevServerBuilderOptions>)
     },
     {
       cli: {
@@ -168,7 +163,7 @@ async function getWebpackConfig(
   );
 
   // @ts-ignore
-  if (webpackOptions.hmr) {
+  if (angularOptions.hmr) {
     logger.warn(tags.stripIndents`NOTICE: Hot Module Replacement (HMR) is enabled for the dev server.
       See https://webpack.js.org/guides/hot-module-replacement for information on working with HMR for Webpack.`);
   }
@@ -223,7 +218,6 @@ export async function webpackConfigFactory(opts: WebpackConfigFactoryOpts & Webp
     opts.rootPath,
     opts.logger,
     opts.setup,
-    opts.webpackOptions,
     opts.angularOptions,
     opts.sourceRoot
   ) as WebpackConfigWithDevServer;

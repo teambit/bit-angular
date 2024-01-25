@@ -145,61 +145,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     });
   }
 
-  getDevServer(
-    devServerContext: DevServerContext,
-    ngEnvOptions: AngularEnvOptions,
-    transformers: WebpackConfigTransformer[] = [],
-    angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
-    webpackOptions: any = {},
-    sourceRoot?: string
-  ): AsyncEnvHandler<DevServer> {
-    return NgWebpackDevServer.from({
-      angularOptions,
-      devServerContext,
-      ngEnvOptions,
-      sourceRoot,
-      transformers,
-      webpackOptions
-    });
-  }
-
-  getBundler(
-    bundlerContext: BundlerContext,
-    ngEnvOptions: AngularEnvOptions,
-    transformers: WebpackConfigTransformer[] = [],
-    angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
-    webpackOptions: any = {},
-    sourceRoot?: string
-  ): AsyncEnvHandler<Bundler> {
-    return NgWebpackBundler.from({
-      angularOptions,
-      bundlerContext,
-      ngEnvOptions,
-      sourceRoot,
-      transformers,
-      webpackOptions
-    });
-  }
-
   preview(): EnvHandler<Preview> {
     const ngEnvOptions = this.getNgEnvOptions();
-    const devServerProvider: DevServerProvider = (
-      devServerContext: DevServerContext,
-      transformers: WebpackConfigTransformer[] = [],
-      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
-      webpackOptions: any = {},
-      sourceRoot?: string
-    ) => this.getDevServer(devServerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
-    const bundlerProvider: BundlerProvider = (
-      bundlerContext: BundlerContext,
-      transformers: WebpackConfigTransformer[] = [],
-      angularOptions: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions> = {},
-      webpackOptions: any = {},
-      sourceRoot?: string
-    ) => this.getBundler(bundlerContext, ngEnvOptions, transformers, angularOptions, webpackOptions, sourceRoot);
     return AngularPreview.from({
-      devServerProvider,
-      bundlerProvider,
       ngEnvOptions,
       hostDependencies,
       mounterPath: require.resolve('./preview/mounter'),
