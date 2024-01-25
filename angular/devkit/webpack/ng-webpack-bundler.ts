@@ -90,7 +90,6 @@ export class NgWebpackBundler {
         tempFolder = join(CACHE_ROOT, idName);
       }
 
-      let appRootPath: string;
       let tsconfigPath: string;
       let plugins: WebpackPluginInstance[] = [];
       if (isAppBuildContext(bundlerContext)) { // When you use `bit build` for an actual angular app
@@ -121,7 +120,7 @@ export class NgWebpackBundler {
           // keep first argument to be false, to avoid issues when building apps
           nodeModulesPaths: getNodeModulesPaths(false, isolator, workspace),
           plugins,
-          rootPath: appRootPath,
+          rootPath: options.appRootPath,
           setup: BundlerSetup.Build,
           sourceRoot: options.sourceRoot ?? 'src',
           tempFolder,

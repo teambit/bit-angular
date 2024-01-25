@@ -91,7 +91,6 @@ export class NgWebpackDevServer {
         tempFolder = join(CACHE_ROOT, idName);
       }
 
-      let appRootPath: string;
       let tsconfigPath: string;
       let isApp = false;
       if (isAppDevContext(devServerContext)) { // When you use `bit run <app>`
