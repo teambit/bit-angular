@@ -2,8 +2,7 @@ import { ComponentContext } from '@teambit/generator';
 
 export function envFile({ namePascalCase: Name, name }: ComponentContext, envName: string, angularVersion: number, envPkgName: string) {
   // language=TypeScript
-  return `import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
+  return `import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
 import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 import { Pipeline } from '@teambit/builder';
 import { ${envName} } from '${envPkgName}';
@@ -93,7 +92,7 @@ export class ${Name} extends ${envName} {
   }
 
   /**
-   * Generates the component previews during development and build
+   * Generates the component previews during development and build.
    */
   override preview(): EnvHandler<Preview> {
     const tsConfig = require.resolve('./config/tsconfig.json');
