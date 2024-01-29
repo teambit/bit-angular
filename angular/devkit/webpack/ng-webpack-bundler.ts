@@ -9,7 +9,7 @@ import {
   isAppBuildContext,
   writeTsconfig
 } from '@bitdev/angular.dev-services.common';
-import { AppBuildContext, ApplicationAspect, ApplicationMain } from '@teambit/application';
+import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { BundlerContext } from '@teambit/bundler';
 import { DevFilesAspect, DevFilesMain } from '@teambit/dev-files';
 import { AsyncEnvHandler, EnvContext } from '@teambit/envs';
@@ -38,7 +38,7 @@ export type NgWebpackBundlerOptions = {
   /**
    * context of the bundler execution.
    */
-  bundlerContext: BundlerContext | (BundlerContext & AppBuildContext);
+  bundlerContext: BundlerContext;
 
   /**
    * name of the dev server.

@@ -1,21 +1,9 @@
-import { AngularAppType } from '@bitdev/angular.app-types.angular-app-type';
-import {
-  AngularEnvOptions,
-  ApplicationOptions,
-  BrowserOptions,
-  DevServerOptions,
-  NG_APP_NAME
-} from '@bitdev/angular.dev-services.common';
+import { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
 import {
   NgMultiCompiler,
   NgMultiCompilerTask
 } from '@bitdev/angular.dev-services.compiler.multi-compiler';
-import {
-  AngularPreview,
-  BundlerProvider,
-  DevServerProvider
-} from '@bitdev/angular.dev-services.preview.preview';
-import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
+import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 import {
   NgAppTemplate,
   NgEnvTemplate,
@@ -27,14 +15,12 @@ import {
   DesignSystemStarter,
   MaterialDesignSystemStarter
 } from '@bitdev/angular.templates.starters';
-import { AppTypeList } from '@teambit/application';
 import { Pipeline } from '@teambit/builder';
-import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { Compiler } from '@teambit/compiler';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierConfigWriter, PrettierFormatter } from '@teambit/defender.prettier-formatter';
-import { AsyncEnvHandler, EnvHandler } from '@teambit/envs';
+import { EnvHandler } from '@teambit/envs';
 import { Formatter } from '@teambit/formatter';
 import { StarterList, TemplateList } from '@teambit/generator';
 import { Linter } from '@teambit/linter';
@@ -44,7 +30,6 @@ import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
 import { TypeScriptExtractor } from '@teambit/typescript';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
-import { WebpackConfigTransformer } from '@teambit/webpack';
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash';
@@ -236,9 +221,5 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   tester(): EnvHandler<Tester> {
     return JestTester.from(this.getTesterConfig());
-  }
-
-  apps(): EnvHandler<AppTypeList> {
-    return AppTypeList.from([AngularAppType.from({ angularEnv: this, name: NG_APP_NAME })]);
   }
 }

@@ -1,21 +1,22 @@
 import { VERSION } from '@angular/cli';
 import {
   ApplicationOptions,
-  GenericAngularEnv,
+  getWorkspace,
+  NG_APP_NAME,
   normalizePath
 } from '@bitdev/angular.dev-services.common';
+import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 import {
-  AngularPreview,
-  BundlerProvider,
-  DevServerProvider
-} from '@bitdev/angular.dev-services.preview.preview';
-import { AppBuildContext, AppContext, Application } from '@teambit/application';
-import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
+  AppBuildContext,
+  AppContext,
+  Application,
+  ApplicationInstance
+} from '@teambit/application';
+import { Bundler, BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Component } from '@teambit/component';
-import { DependencyResolverMain } from '@teambit/dependency-resolver';
+import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
-import { Logger } from '@teambit/logger';
 import { Preview } from '@teambit/preview';
 import { Port } from '@teambit/toolbox.network.get-port';
 import { Workspace } from '@teambit/workspace';
@@ -35,34 +36,28 @@ const writeHash = new Map<string, string>();
 
 export class AngularApp implements Application {
   readonly name: string;
-
-  readonly preview: EnvHandler<Preview>;
-
-  readonly tempFolder: string;
-
-  readonly tsconfigPath: string;
+  readonly idName: string;
 
   constructor(
-    private angularEnv: GenericAngularEnv,
-    private envContext: EnvContext,
-    readonly options: AngularAppOptions,
-    private depsResolver: DependencyResolverMain,
-    private logger: Logger,
-    private workspace?: Workspace
+    readonly options: AngularAppOptions
   ) {
-    this.name = options.name;
-
-    const idName = `bitdev.angular/${ this.name }`;
-    this.tempFolder = workspace?.getTempDir(idName) || join(CACHE_ROOT, idName);
-    if (!existsSync(this.tempFolder)) {
-      mkdirSync(this.tempFolder, { recursive: true });
-    }
-
-    this.tsconfigPath = normalizePath(join(this.tempFolder, `tsconfig/tsconfig-${ Date.now() }.json`));
-    this.preview = this.getPreview();
+    this.name = options.name || NG_APP_NAME;
+    this.idName = `bitdev.angular/${ this.name }`;
   }
 
   readonly publicDir = 'public';
+
+  private getTempFolder(workspace?: Workspace): string {
+    const tempFolder = workspace?.getTempDir(this.idName) || join(CACHE_ROOT, this.idName);
+    if (!existsSync(tempFolder)) {
+      mkdirSync(tempFolder, { recursive: true });
+    }
+    return tempFolder;
+  }
+
+  private getTsconfigPath(tempFolder: string): string {
+    return normalizePath(join(tempFolder, `tsconfig/tsconfig-${ Date.now() }.json`));
+  }
 
   private getPublicDir(artifactsDir: string) {
     return join(artifactsDir, this.name);
@@ -95,35 +90,33 @@ export class AngularApp implements Application {
     });
   }
 
-  private getPreview(): EnvHandler<Preview> {
-    const ngEnvOptions = this.angularEnv.getNgEnvOptions();
-
-    const angularServeOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), { tsConfig: this.tsconfigPath });
-    const angularBuildOptions: any = Object.assign(cloneDeep(this.options.angularBuildOptions), { tsConfig: this.tsconfigPath });
+  private getPreview(tsconfigPath: string): EnvHandler<Preview> {
+    const angularServeOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), { tsConfig: tsconfigPath });
+    const angularBuildOptions: any = Object.assign(cloneDeep(this.options.angularBuildOptions), { tsConfig: tsconfigPath });
 
     return AngularPreview.from({
       webpackServeTransformers: this.options.webpackServeTransformers,
       webpackBuildTransformers: this.options.webpackBuildTransformers,
       angularServeOptions,
       angularBuildOptions,
-      ngEnvOptions,
+      ngEnvOptions: this.options.ngEnvOptions,
       sourceRoot: this.options.sourceRoot,
     });
 
   }
 
-  private generateTsConfig(bitCmps: Component[], appRootPath: string, tsconfigPath: string, serverEntry?: string): void {
-    const tsconfigJSON: JsonObject = readConfigFile(tsconfigPath, sys.readFile).config;
+  private generateTsConfig(bitCmps: Component[], appRootPath: string, appTsconfigPath: string, tsconfigPath: string, depsResolver: DependencyResolverMain, workspace?: Workspace, serverEntry?: string): void {
+    const tsconfigJSON: JsonObject = readConfigFile(appTsconfigPath, sys.readFile).config;
 
     // Add the paths to tsconfig to remap bit components to local folders
     tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
     bitCmps.forEach((dep: Component) => {
-      let componentDir = this.workspace?.componentDir(dep.id, {
+      let componentDir = workspace?.componentDir(dep.id, {
         ignoreVersion: true
       });
       if (componentDir) {
         componentDir = normalizePath(componentDir);
-        const pkgName = this.depsResolver.getPackageName(dep);
+        const pkgName = depsResolver.getPackageName(dep);
         // TODO we should find a way to use the real entry file based on the component config because people can change it
         if (existsSync(join(componentDir, 'public-api.ts'))) {
           tsconfigJSON.compilerOptions.paths[pkgName] = [`${ componentDir }/public-api.ts`, `${ componentDir }`];
@@ -136,93 +129,114 @@ export class AngularApp implements Application {
       tsconfigJSON.files.push(serverEntry);
     }
 
-    const tsconfigContent = expandIncludeExclude(tsconfigJSON, this.tsconfigPath, [appRootPath]);
+    const tsconfigContent = expandIncludeExclude(tsconfigJSON, tsconfigPath, [appRootPath]);
     const hash = objectHash(tsconfigContent);
     // write only if link has changed (prevents triggering fs watches)
-    if (writeHash.get(this.tsconfigPath) !== hash) {
-      outputJsonSync(this.tsconfigPath, tsconfigContent, { spaces: 2 });
-      writeHash.set(this.tsconfigPath, hash);
+    if (writeHash.get(tsconfigPath) !== hash) {
+      outputJsonSync(tsconfigPath, tsconfigContent, { spaces: 2 });
+      writeHash.set(tsconfigPath, hash);
     }
   }
 
-  async getDevServer(context: AppContext, appRootPath: string): Promise<DevServer> {
-    const devServerContext = this.getDevServerContext(context, appRootPath);
-    const preview = this.preview(this.envContext);
-
-    return preview.getDevServer(devServerContext)(this.envContext);
+  /**
+   * Transform the app context into env context to make typescript happy.
+   * Technically, we only use methods that exist in both interfaces, so it's fine.
+   */
+  private getEnvContext(context: AppContext | AppBuildContext): EnvContext {
+    return context as any as EnvContext;
   }
 
   // TODO: fix return type once bit has a new stable version
-  async run(context: AppContext): Promise<any> {
-    assert(this.workspace, 'Workspace is not defined');
+  async run(context: AppContext): Promise<ApplicationInstance> {
+    const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
+    assert(depsResolver, 'Dependency resolver is not defined');
+    const workspace = getWorkspace(context);
+    assert(workspace, 'Workspace is not defined');
+    const logger = context.createLogger(this.name);
     const port = context.port || (await Port.getPortFromRange(this.options.portRange || [3000, 4000]));
-    const appRootPath = this.workspace.componentDir(context.appComponent.id, {
+    const appRootPath = workspace.componentDir(context.appComponent.id, {
       ignoreVersion: true
     });
-    const tsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
-    const workspaceCmpsIDs = await this.workspace.listIds();
-    const bitCmps = await this.workspace.getMany(workspaceCmpsIDs);
-    this.generateTsConfig(bitCmps, appRootPath, tsconfigPath);
+    const appTsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
+    const workspaceCmpsIDs = await workspace.listIds();
+    const bitCmps = await workspace.getMany(workspaceCmpsIDs);
+    const tempFolder = this.getTempFolder(workspace);
+    const tsconfigPath = this.getTsconfigPath(tempFolder);
+    this.generateTsConfig(bitCmps, appRootPath, appTsconfigPath, tsconfigPath, depsResolver, workspace);
 
     if (Number(VERSION.major) >= 16) {
       await serveApplication({
         angularOptions: {
           ...this.options.angularBuildOptions as ApplicationOptions,
-          tsConfig: this.tsconfigPath
+          tsConfig: tsconfigPath
         },
         sourceRoot: this.options.sourceRoot || 'src',
         workspaceRoot: appRootPath,
         port,
-        logger: this.logger,
-        tempFolder: this.tempFolder
+        logger: logger,
+        tempFolder: tempFolder
       });
-      return port;
+    } else {
+      const devServerContext = this.getDevServerContext(context, appRootPath);
+      const envContext = this.getEnvContext(context);
+      const preview = this.getPreview(tsconfigPath)(envContext);
+
+      const devServer = await preview.getDevServer(devServerContext)(envContext);
+      await devServer.listen(port);
     }
 
-    const devServer = await this.getDevServer(context, appRootPath);
-    await devServer.listen(port);
-    return port;
-  }
-
-  async getBundler(context: AppBuildContext): Promise<Bundler> {
-    if (this.options.bundler) {
-      return this.options.bundler;
-    }
-
-    const bundlerContext = this.getBundlerContext(context);
-    const preview = this.preview(this.envContext);
-
-    return preview.getBundler(bundlerContext)(this.envContext);
+    return {
+      appName: this.name,
+      port
+    };
   }
 
   async build(context: AppBuildContext): Promise<AngularAppBuildResult> {
     const { capsule } = context;
+    const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
+    assert(depsResolver, 'Dependency resolver is not defined');
+    const logger = context.createLogger(this.name);
     const outputPath = this.getPublicDir(context.artifactsDir);
     const appRootPath = capsule.path;
-    const tsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
+    const appTsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
     const appOptions = this.options.angularBuildOptions as ApplicationOptions;
     const entryServer = appOptions.ssr && Number(VERSION.major) >= 17 ? './entry.server.ts' : undefined;
-    this.generateTsConfig([capsule.component], appRootPath, tsconfigPath, entryServer);
+    const tempFolder = this.getTempFolder();
+    const tsconfigPath = this.getTsconfigPath(tempFolder);
+    this.generateTsConfig([capsule.component], appRootPath, appTsconfigPath, tsconfigPath, depsResolver, undefined, entryServer);
 
     if (!this.options.bundler && Number(VERSION.major) >= 16) {
       await buildApplication({
         angularOptions: {
           ...appOptions,
-          tsConfig: this.tsconfigPath
+          tsConfig: tsconfigPath
         },
         outputPath,
         sourceRoot: this.options.sourceRoot || 'src',
         workspaceRoot: context.capsule.path,
-        logger: this.logger,
-        tempFolder: this.tempFolder,
+        logger: logger,
+        tempFolder: tempFolder,
         entryServer
       });
     } else {
-      const bundler = await this.getBundler(context);
+      let bundler: Bundler;
+      if (this.options.bundler) {
+        bundler = this.options.bundler;
+      } else {
+        const bundlerContext = this.getBundlerContext(context);
+        const envContext = this.getEnvContext(context);
+        const preview = this.getPreview(tsconfigPath)(envContext);
+
+        bundler = await preview.getBundler(bundlerContext)(envContext);
+      }
       await bundler.run();
     }
     return {
       publicDir: outputPath
     };
+  }
+
+  static from(options: AngularAppOptions): Application {
+    return new AngularApp(options);
   }
 }

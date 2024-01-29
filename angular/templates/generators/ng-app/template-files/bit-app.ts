@@ -3,9 +3,10 @@ import { ComponentContext, ComponentFile } from '@teambit/generator';
 export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: boolean): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
-    relativePath: `${name}.ng-app.ts`,
-    content: `import { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
+    relativePath: `${name}.bit-app.ts`,
+    content: `import { type AngularAppOptions, AngularApp } from '@bitdev/angular.app-types.angular-app-type';
 import { ${ssr ? `ApplicationOptions`: `BrowserOptions` }, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import { ngEnvOptions } from '@bitdev/angular.envs.angular-v17-env';
 
 const angularOptions: ${ssr ? `ApplicationOptions`: `BrowserOptions` } & DevServerOptions = {
   ${ssr ? `browser: './src/main.ts',
@@ -40,12 +41,17 @@ export const ${Name}Options: AngularAppOptions = {
   angularServeOptions: angularOptions,
 
   /**
+   * Env-specific options depending on the version of Angular used.
+   */
+  ngEnvOptions,
+
+  /**
     * Folder containing the main file of your application
     */
   sourceRoot: './src',
 };
 
-export default ${Name}Options;
+export default AngularApp.from(${Name}Options);
 `,
   };
 };

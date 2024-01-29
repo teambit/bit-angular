@@ -139,7 +139,8 @@ export class AngularPreview implements Preview {
   getDevEnvId() {
     const objToHash = {
       webpack: this.ngEnvOptions.webpackModulePath,
-      webpackDevServer: this.ngEnvOptions.webpackDevServerModulePath
+      webpackDevServer: this.ngEnvOptions.webpackDevServerModulePath,
+      transformers: this.webpackServeTransformers
     };
     return objectHash(objToHash);
   }

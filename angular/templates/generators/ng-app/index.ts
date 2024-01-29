@@ -6,7 +6,7 @@ import { Logger } from '@teambit/logger';
 import { isCI } from 'std-env';
 import { indexFile } from './template-files';
 import { docsFile } from './template-files/docs';
-import { ngAppFile } from './template-files/ng-app';
+import { ngAppFile } from './template-files/bit-app';
 import { appComponentFile } from './template-files/src/app/app.component';
 import { appComponentHtmlFile } from './template-files/src/app/app.component-html';
 import { appComponentStyleSheetFile } from './template-files/src/app/app.component-scss';

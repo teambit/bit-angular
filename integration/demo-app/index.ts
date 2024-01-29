@@ -1,1 +1,1 @@
-export * from './demo-app.ng-app';
+export * from './demo-app.bit-app';

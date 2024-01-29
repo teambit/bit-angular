@@ -1,4 +1,5 @@
 import {
+  AngularEnvOptions,
   ApplicationOptions,
   BrowserOptions,
   DevServerOptions
@@ -52,4 +53,9 @@ export type AngularAppOptions = {
    * Angular options for `bit run`
    */
   angularServeOptions: (BrowserOptions & DevServerOptions) | (ApplicationOptions & DevServerOptions);
+
+  /**
+   * Env-specific options depending on the version of Angular used.
+   */
+  ngEnvOptions: AngularEnvOptions;
 };

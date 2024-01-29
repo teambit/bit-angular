@@ -14,7 +14,7 @@ import normalize from 'normalize-path';
 import objectHash from 'object-hash';
 import { dirname, join, posix, resolve } from 'path';
 
-export const NG_APP_NAME = 'ng-app';
+export const NG_APP_NAME = 'bit-app';
 export const NG_APP_PATTERN = `*.${ NG_APP_NAME }.*`;
 
 export enum BundlerSetup {
@@ -33,7 +33,7 @@ export function componentIsApp(component: Component, application: ApplicationMai
 /**
  * Returns the workspace instance from the context, if it's available, or undefined otherwise.
  */
-export function getWorkspace(context: EnvContext): Workspace | undefined {
+export function getWorkspace(context: EnvContext | AppContext): Workspace | undefined {
   // TODO: replace this try catch with context.hasAspect once it's available from harmony
   try {
     return context.getAspect<Workspace>(WorkspaceAspect.id);
@@ -115,7 +115,7 @@ export function cmpIdToPkgName(componentId: ComponentID) {
   return `@${ partsToJoin.join('.') }`;
 }
 
-export function isBuildContext(context: DevServerContext | BundlerContext): context is BundlerContext {
+export function isBuildContext(context: any): context is BundlerContext {
   return (context as BundlerContext).capsuleNetwork !== undefined;
 }
 
@@ -169,7 +169,7 @@ export function generateTsConfig(
  * Generates the tsconfig to load the preview app with compositions dynamically.
  */
 export function writeTsconfig(
-  context: DevServerContext | BundlerContext,
+  context: DevServerContext | BundlerContext | AppContext | AppBuildContext,
   rootPath: string,
   tempFolder: string,
   application: ApplicationMain,

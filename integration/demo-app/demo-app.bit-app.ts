@@ -1,5 +1,6 @@
-import type { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
+import { type AngularAppOptions, AngularApp } from '@bitdev/angular.app-types.angular-app-type';
 import type { ApplicationOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
+import { ngEnvOptions } from '@bitdev/angular.envs.angular-v17-env';
 
 const angularOptions: ApplicationOptions & DevServerOptions = {
   browser: './src/main.ts',
@@ -32,7 +33,12 @@ export const DemoAppOptions: AngularAppOptions = {
   /**
    * Angular options for `bit run`
    */
-  angularServeOptions: angularOptions
+  angularServeOptions: angularOptions,
+
+  /**
+   * Env-specific options depending on the version of Angular used.
+   */
+  ngEnvOptions
 };
 
-export default DemoAppOptions;
+export default AngularApp.from(DemoAppOptions);
