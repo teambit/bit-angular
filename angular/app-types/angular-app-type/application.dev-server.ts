@@ -54,7 +54,6 @@ export async function serveApplication(options: ServeApplicationOptions): Promis
 
   // @ts-ignore only v17+ has 4 arguments, previous versions only have 3
   const res = await executeDevServerBuilder(appOptions, builderContext as any, undefined, devServerOptions).toPromise();
-  console.log(res);
 }
 
 function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): ApplicationBuilderOptions & DevServerBuilderOptions {
@@ -98,6 +97,7 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): Applic
 
 function getBuilderContext(options: ServeApplicationOptions, appOptions: ApplicationBuilderOptions & DevServerBuilderOptions) {
   const { workspaceRoot } = options;
+  const builderAbort = new AbortController();
   return {
     id: 1,
     builder: {
@@ -106,6 +106,7 @@ function getBuilderContext(options: ServeApplicationOptions, appOptions: Applica
       optionSchema: {}
     },
     logger: getLoggerApi(options.logger),
+    signal: builderAbort.signal,
     workspaceRoot: workspaceRoot,
     currentDirectory: '',
     // doesn't matter, just needs to exist
