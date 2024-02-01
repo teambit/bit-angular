@@ -68,7 +68,7 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): Applic
 
   return {
     ...angularOptions,
-    baseHref: angularOptions.baseHref ?? './',
+    baseHref: angularOptions.baseHref,
     preserveSymlinks: false,
     outputPath: OUTPUT_PATH,
     index: angularOptions.index ?? normalizedIndex,
