@@ -115,10 +115,7 @@ function getBuilderContext(options: ServeApplicationOptions, appOptions: Applica
       target: 'development'
     },
     getProjectMetadata: getProjectMetadata(options),
-    addTeardown: (teardown: () => Promise<void> | void) => {
-      teardown();
-      return;
-    },
+    addTeardown: () => {},
     getBuilderNameForTarget: () => Promise.resolve(BUILDER_NAME),
     getTargetOptions: () => Promise.resolve(appOptions as any),
     validateOptions: () => Promise.resolve(appOptions as any)
