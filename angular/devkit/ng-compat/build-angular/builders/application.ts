@@ -7,9 +7,11 @@ export let buildApplicationInternal = (
   options: ApplicationBuilderOptions,
   context: BuilderContext & {
     signal?: AbortSignal;
-  }, infrastructureSettings?: {
+  },
+  infrastructureSettings?: {
     write?: boolean;
-  }, plugins?: Plugin[]
+  },
+  plugins?: Plugin[] | { codePlugins: Plugin[], indexHtmlTransformer: any }
   // @ts-ignore
 ) => AsyncIterable<BuilderOutput & {
   outputFiles?: OutputFile[];

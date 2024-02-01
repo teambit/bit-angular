@@ -146,6 +146,16 @@ export class AngularApp implements Application {
     return context as any as EnvContext;
   }
 
+  private async getEnvFile(mode: string, rootDir: string, overrides?: Record<string, string>) {
+    // TODO: enable this one we have ESM envs, otherwise we get a warning message about loading the deprecated CJS build of Vite
+    // const vite = await loadEsmModule('vite');
+    // const dotenv = vite.loadEnv(mode, rootDir);
+    return {
+      ...overrides,
+      // ...dotenv
+    }
+  }
+
   // TODO: fix return type once bit has a new stable version
   async run(context: AppContext): Promise<ApplicationInstance> {
     const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
@@ -165,6 +175,7 @@ export class AngularApp implements Application {
     this.generateTsConfig(bitCmps, appRootPath, appTsconfigPath, tsconfigPath, depsResolver, workspace);
 
     if (Number(VERSION.major) >= 16) {
+      const envVars = await this.getEnvFile('development', appRootPath, context.envVariables as any);
       await serveApplication({
         angularOptions: {
           ...this.options.angularBuildOptions as ApplicationOptions,
@@ -174,7 +185,10 @@ export class AngularApp implements Application {
         workspaceRoot: appRootPath,
         port,
         logger: logger,
-        tempFolder: tempFolder
+        tempFolder: tempFolder,
+        envVars: {
+          'process.env': envVars
+        }
       });
     } else {
       const devServerContext = this.getDevServerContext(context, appRootPath);
@@ -206,6 +220,7 @@ export class AngularApp implements Application {
     this.generateTsConfig([capsule.component], appRootPath, appTsconfigPath, tsconfigPath, depsResolver, undefined, entryServer);
 
     if (!this.options.bundler && Number(VERSION.major) >= 16) {
+      const envVars = await this.getEnvFile('production', appRootPath, context.envVariables as any);
       await buildApplication({
         angularOptions: {
           ...appOptions,
@@ -216,7 +231,10 @@ export class AngularApp implements Application {
         workspaceRoot: context.capsule.path,
         logger: logger,
         tempFolder: tempFolder,
-        entryServer
+        entryServer,
+        envVars: {
+        'process.env': envVars
+      }
       });
     } else {
       let bundler: Bundler;

@@ -18,6 +18,7 @@ import { outputFileSync } from 'fs-extra';
 // @ts-ignore
 import type { NitroConfig } from 'nitropack';
 import { basename, extname, join, posix, relative, resolve } from 'path';
+import definePlugin from './plugins/define.plugin';
 import { getIndexInputFile } from './utils';
 
 export type BuildApplicationOptions = {
@@ -28,6 +29,7 @@ export type BuildApplicationOptions = {
   logger: Logger;
   tempFolder: string;
   entryServer?: string;
+  envVars: any;
 }
 
 // TODO allow customizing this
@@ -35,24 +37,22 @@ const BUILDER_NAME = '@angular-devkit/build-angular:application';
 const CACHE_PATH = 'angular/cache';
 
 export async function buildApplication(options: BuildApplicationOptions): Promise<void> {
-  const { angularOptions: { tsConfig, ssr } } = options;
-  const isSsr = !!ssr && Number(VERSION.major) >= 17;
-
+  const { angularOptions: { tsConfig, ssr, define }, envVars } = options;
   assert(tsConfig, 'tsConfig option is required');
-
-  if(isSsr) {
+  const isSsr = !!ssr && Number(VERSION.major) >= 17;
+  if (isSsr) {
     addEntryServer(options);
   }
-
   const appOptions = getAppOptions(options, isSsr);
   const builderContext = getBuilderContext(options, appOptions);
-  const builderPlugins: any[] = [];
+  const codePlugins = [definePlugin({ ...envVars, ...define || {} })];
+  const extensions: any = (Number(VERSION.major) >= 17 && Number(VERSION.minor) >= 1) ? { codePlugins } : [];
 
   for await (const result of buildApplicationInternal(
     appOptions as any,
     builderContext,
     { write: true },
-    builderPlugins
+    extensions
   )) {
     if (!result.success && result.errors) {
       throw new Error(result.errors.map((err: any) => err.text).join('\n'));
@@ -104,7 +104,7 @@ function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): any {
   const normalizedBrowser = `./${ join(sourceRoot, 'main.ts') }`;
 
   const dedupedAssets = dedupPaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]);
-  const dedupedStyles = dedupPaths([posix.join(sourceRoot, `styles.${angularOptions.inlineStyleLanguage}`), ...(angularOptions.styles ?? [])]);
+  const dedupedStyles = dedupPaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage }`), ...(angularOptions.styles ?? [])]);
 
   return {
     ...angularOptions,
@@ -157,10 +157,7 @@ function getBuilderContext(options: BuildApplicationOptions, appOptions: Applica
         cli: { cache: { enabled: true, path: resolve(tempFolder, 'angular/cache') } }
       });
     },
-    addTeardown: (teardown: () => Promise<void> | void) => {
-      teardown();
-      return;
-    },
+    addTeardown: () => {},
     getBuilderNameForTarget: () => Promise.resolve(BUILDER_NAME),
     getTargetOptions: () => Promise.resolve(appOptions as any),
     validateOptions: () => Promise.resolve(appOptions as any)

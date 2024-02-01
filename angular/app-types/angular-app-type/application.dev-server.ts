@@ -19,6 +19,7 @@ import type { NitroConfig } from 'nitropack';
 import { join, posix, relative, resolve } from 'path';
 // @ts-ignore
 import type { Connect } from 'vite';
+import definePlugin from './plugins/define.plugin';
 
 export type ServeApplicationOptions = {
   angularOptions: Partial<ApplicationBuilderOptions & DevServerBuilderOptions>;
@@ -27,6 +28,7 @@ export type ServeApplicationOptions = {
   logger: Logger;
   port: number;
   tempFolder: string;
+  envVars: any;
 }
 
 // TODO allow customizing this
@@ -36,24 +38,21 @@ const BUILDER_NAME = '@angular-devkit/build-angular:application';
 const CACHE_PATH = 'angular/cache';
 
 export async function serveApplication(options: ServeApplicationOptions): Promise<void> {
-  const {
-    angularOptions
-  } = options;
-  const isSsr = !!angularOptions.server && Number(VERSION.major) >= 17;
-
-  assert(angularOptions.tsConfig, 'tsConfig option is required');
-
-  const appOptions = getAppOptions(options, isSsr);
-  const builderContext = getBuilderContext(options, appOptions);
   // intercept SIGINT and exit cleanly, otherwise the process will not exit properly on Ctrl+C
   process.on('SIGINT', () => process.exit(1));
 
+  const { angularOptions: { server, tsConfig, define }, envVars } = options;
+  assert(tsConfig, 'tsConfig option is required');
+  const isSsr = !!server && Number(VERSION.major) >= 17;
+  const appOptions = getAppOptions(options, isSsr);
+  const builderContext = getBuilderContext(options, appOptions);
   const devServerOptions = isSsr ? {
+    buildPlugins: [definePlugin({ ...envVars, ...define })],
     middleware: [await createNitroApiMiddleware(options)]
   } : undefined;
 
   // @ts-ignore only v17+ has 4 arguments, previous versions only have 3
-  const res = await executeDevServerBuilder(appOptions, builderContext as any, undefined, devServerOptions).toPromise();
+  await executeDevServerBuilder(appOptions, builderContext as any, undefined, devServerOptions).toPromise();
 }
 
 function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): ApplicationBuilderOptions & DevServerBuilderOptions {

@@ -18,6 +18,7 @@
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",
           "@angular/cli": ">= 13.0.0",
+          "esbuild": ">= 0.14.0",
           "typescript": ">= 3.5.3"
         }
       }

@@ -41,6 +41,12 @@ export interface ApplicationBuilderOptions {
    */
   deleteOutputPath?: boolean;
   /**
+   * Defines global identifiers that will be replaced with a specified constant value when found in any JavaScript or TypeScript code including libraries.
+   * The value will be used directly.
+   * String values must be put in quotes. Identifiers within Angular metadata such as Component Decorators will not be replaced.
+   */
+  define?: any;
+  /**
    * Exclude the listed external dependencies from being bundled into the bundle. Instead, the
    * created bundle relies on these dependencies to be available during runtime.
    */
