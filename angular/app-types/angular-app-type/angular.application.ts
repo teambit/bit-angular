@@ -187,7 +187,7 @@ export class AngularApp implements Application {
         logger: logger,
         tempFolder: tempFolder,
         envVars: {
-          'process.env': envVars
+          process: { env: envVars }
         }
       });
     } else {
