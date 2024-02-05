@@ -4,9 +4,9 @@ import {
   BrowserOptions,
   DevServerOptions
 } from '@bitdev/angular.dev-services.common';
+import { AppDeployContext } from '@teambit/application';
 import { Bundler } from '@teambit/bundler';
 import { WebpackConfigTransformer } from '@teambit/webpack';
-import { AngularDeployContext } from './deploy-context';
 
 export type AngularAppOptions = {
   /**
@@ -37,7 +37,7 @@ export type AngularAppOptions = {
   /**
    * Deploy function.
    */
-  deploy?: (context: AngularDeployContext) => Promise<void>;
+  deploy?: (context: AppDeployContext) => Promise<void>;
 
   /**
    * Ranges of ports to use to run the app server.

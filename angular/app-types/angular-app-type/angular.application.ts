@@ -8,6 +8,7 @@ import {
 import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 import {
   AppBuildContext,
+  AppBuildResult,
   AppContext,
   Application,
   ApplicationInstance,
@@ -28,7 +29,6 @@ import objectHash from 'object-hash';
 import { join } from 'path';
 import { readConfigFile, sys } from 'typescript';
 import { AngularAppOptions } from './angular-app-options';
-import { AngularAppBuildResult } from './angular-build-result';
 import { buildApplication } from './application.bundler';
 import { serveApplication } from './application.dev-server';
 import { expandIncludeExclude, JsonObject } from './utils';
@@ -103,7 +103,7 @@ export class AngularApp implements Application {
       angularServeOptions,
       angularBuildOptions,
       ngEnvOptions: this.options.ngEnvOptions,
-      sourceRoot: this.options.sourceRoot,
+      sourceRoot: this.options.sourceRoot
     });
 
   }
@@ -154,9 +154,9 @@ export class AngularApp implements Application {
     // const vite = await loadEsmModule('vite');
     // const dotenv = vite.loadEnv(mode, rootDir);
     return {
-      ...overrides,
+      ...overrides
       // ...dotenv
-    }
+    };
   }
 
   // TODO: fix return type once bit has a new stable version
@@ -208,7 +208,7 @@ export class AngularApp implements Application {
     };
   }
 
-  async build(context: AppBuildContext): Promise<AngularAppBuildResult> {
+  async build(context: AppBuildContext): Promise<AppBuildResult> {
     const { capsule } = context;
     const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
     assert(depsResolver, 'Dependency resolver is not defined');
@@ -236,8 +236,8 @@ export class AngularApp implements Application {
         tempFolder: tempFolder,
         entryServer,
         envVars: {
-        'process.env': envVars
-      }
+          'process.env': envVars
+        }
       });
     } else {
       let bundler: Bundler;
@@ -253,7 +253,14 @@ export class AngularApp implements Application {
       await bundler.run();
     }
     return {
-      publicDir: outputPath
+      artifacts: [{
+        name: this.name,
+        globPatterns: [outputPath],
+      }],
+      metadata: {
+        publicDir: appOptions.ssr ? join(outputPath, 'browser') : outputPath,
+        ssrPublicDir: appOptions.ssr ? join(outputPath, 'server') : undefined
+      }
     };
   }
 
