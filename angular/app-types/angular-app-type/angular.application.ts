@@ -258,7 +258,9 @@ export class AngularApp implements Application {
         globPatterns: [outputPath],
       }],
       metadata: {
-        publicDir: appOptions.ssr ? join(outputPath, 'browser') : outputPath,
+        outputPath,
+        nitroDir: join(outputPath, 'nitro'),
+        publicDir: join(outputPath, 'browser'),
         ssrPublicDir: appOptions.ssr ? join(outputPath, 'server') : undefined
       }
     };
