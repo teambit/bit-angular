@@ -10,7 +10,8 @@ import {
   AppBuildContext,
   AppContext,
   Application,
-  ApplicationInstance
+  ApplicationInstance,
+  DeployFn
 } from '@teambit/application';
 import { Bundler, BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Component } from '@teambit/component';
@@ -37,12 +38,14 @@ const writeHash = new Map<string, string>();
 export class AngularApp implements Application {
   readonly name: string;
   readonly idName: string;
+  readonly deploy?: DeployFn;
 
   constructor(
     readonly options: AngularAppOptions
   ) {
     this.name = options.name || NG_APP_NAME;
     this.idName = `bitdev.angular/${ this.name }`;
+    this.deploy = options.deploy;
   }
 
   readonly publicDir = 'public';
