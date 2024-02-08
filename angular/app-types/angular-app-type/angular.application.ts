@@ -259,9 +259,8 @@ export class AngularApp implements Application {
       }],
       metadata: {
         outputPath,
-        nitroDir: join(outputPath, 'nitro'),
         publicDir: join(outputPath, 'browser'),
-        ssrPublicDir: appOptions.ssr ? join(outputPath, 'server') : undefined
+        ssrPublicDir: appOptions.ssr ? join(outputPath, 'ssr') : undefined
       }
     };
   }
