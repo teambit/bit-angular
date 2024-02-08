@@ -19,7 +19,7 @@
     "app-types/angular-app-type": {
         "name": "app-types/angular-app-type",
         "scope": "bitdev.angular",
-        "version": "4.0.4",
+        "version": "4.0.7",
         "mainFile": "index.ts",
         "rootDir": "angular/app-types/angular-app-type"
     },
