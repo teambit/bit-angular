@@ -45,7 +45,7 @@ p {
   font-weight: 600;
 }
 
-.toolbar img {
+.toolbar svg {
   margin: 0 16px;
 }
 
