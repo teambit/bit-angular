@@ -257,11 +257,11 @@ export function normalizePath(path: string = '', removeTrailingSlashes = false):
 
 export function getLoggerApi(logger: Logger) {
   return {
-    error: (m: string) => logger.consoleFailure(m),
+    error: (m: string) => console.error(m),
     log: (m: string) => logger.console(m),
-    warn: (m: string) => logger.consoleWarning(m),
+    warn: (m: string) => console.warn(m),
     info: (m: string) => logger.console(m),
-    colorMessage: (m: string) => logger.console(m),
+    colorMessage: (m: string) => console.log(m),
     createChild: () => logger
   } as any;
 }
