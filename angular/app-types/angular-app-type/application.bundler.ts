@@ -5,7 +5,6 @@ import {
   ApplicationOptions,
   dedupPaths,
   getLoggerApi,
-  loadEsmModule,
   normalizePath
 } from '@bitdev/angular.dev-services.common';
 import {
@@ -19,7 +18,7 @@ import { outputFileSync, removeSync } from 'fs-extra';
 import type { NitroConfig } from 'nitropack';
 import { basename, extname, join, posix, relative, resolve } from 'path';
 import definePlugin from './plugins/define.plugin';
-import { getIndexInputFile } from './utils';
+import { getIndexInputFile, loadEsmModule } from './utils';
 
 export type BuildApplicationOptions = {
   angularOptions: Partial<ApplicationOptions>;
@@ -237,7 +236,6 @@ async function buildNitro(options: BuildApplicationOptions): Promise<void> {
     copyPublicAssets,
     prerender
   } = await loadEsmModule<typeof import('nitropack')>('nitropack');
-
 
   const nitro = await createNitro({
     dev: false,
