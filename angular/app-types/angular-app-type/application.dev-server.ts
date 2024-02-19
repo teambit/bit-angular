@@ -1,7 +1,12 @@
 /* eslint-disable no-param-reassign */
 import { executeDevServerBuilder, OutputHashing } from '@angular-devkit/build-angular';
 import { VERSION } from '@angular/cli';
-import { dedupPaths, getLoggerApi, normalizePath } from '@bitdev/angular.dev-services.common';
+import {
+  dedupPaths,
+  getLoggerApi,
+  loadEsmModule,
+  normalizePath
+} from '@bitdev/angular.dev-services.common';
 import {
   type ApplicationBuilderOptions,
   type DevServerBuilderOptions
@@ -15,7 +20,6 @@ import { join, posix, relative, resolve } from 'path';
 // @ts-ignore
 import type { Connect } from 'vite';
 import definePlugin from './plugins/define.plugin';
-import { loadEsmModule } from './utils';
 
 export type ServeApplicationOptions = {
   angularOptions: Partial<ApplicationBuilderOptions & DevServerBuilderOptions>;
