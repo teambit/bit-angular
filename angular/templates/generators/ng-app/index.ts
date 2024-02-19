@@ -1,12 +1,15 @@
-import { AngularComponentTemplateOptions } from '@bitdev/angular.dev-services.common';
+import { AngularComponentTemplateOptions, getWorkspace } from '@bitdev/angular.dev-services.common';
 import { confirm, group, select } from '@clack/prompts';
+import { ComponentID } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { Logger } from '@teambit/logger';
+import { PkgAspect, PkgMain } from '@teambit/pkg';
+import { Workspace } from '@teambit/workspace';
 import { isCI } from 'std-env';
 import { indexFile } from './template-files';
-import { docsFile } from './template-files/docs';
 import { ngAppFile } from './template-files/bit-app';
+import { docsFile } from './template-files/docs';
 import { appComponentFile } from './template-files/src/app/app.component';
 import { appComponentHtmlFile } from './template-files/src/app/app.component-html';
 import { appComponentStyleSheetFile } from './template-files/src/app/app.component-scss';
@@ -33,7 +36,9 @@ export class NgAppTemplate implements ComponentTemplate {
     readonly angularVersion: number,
     readonly name = 'ng-app',
     readonly description = 'create an Angular application',
-    readonly hidden = false
+    readonly hidden = false,
+    private pkg: PkgMain,
+    private workspace: Workspace | undefined
   ) {
   }
 
@@ -86,10 +91,22 @@ export class NgAppTemplate implements ComponentTemplate {
       params = await this.prompt(context);
     }
 
+    const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
+    const envId = aspectId.toStringWithoutVersion();
+    let envPkgName: string;
+    if (this.workspace) {
+      const envComponent = await this.workspace!.get(aspectId);
+      envPkgName = this.pkg.getPackageName(envComponent);
+    } else if (envId === 'bitdev.angular/angular-env') { // mostly for ci / ripple
+      envPkgName = '@bitdev/angular.angular-env';
+    } else {
+      envPkgName = `@bitdev/angular.envs.angular-v${ this.angularVersion }-env`;
+    }
+
     const files = [
       docsFile(context),
       indexFile(context),
-      ngAppFile(context, params.styleSheet, params.ssr),
+      ngAppFile(context, params.styleSheet, params.ssr, envPkgName),
       tsconfigFile(this.angularVersion, params.ssr),
       indexHtmlFile(context),
       mainNgAppFile(params.standalone),
@@ -137,12 +154,16 @@ export class NgAppTemplate implements ComponentTemplate {
     return (context: EnvContext) => {
       const name = options.name || 'ng-app-template';
       const logger = context.createLogger(name);
+      const pkg = context.getAspect<PkgMain>(PkgAspect.id);
+      const workspace = getWorkspace(context);
       return new NgAppTemplate(
         logger,
         options.angularVersion,
         options.name,
         options.description,
-        options.hidden
+        options.hidden,
+        pkg,
+        workspace
       );
     };
   }

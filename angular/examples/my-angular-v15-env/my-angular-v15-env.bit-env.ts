@@ -64,7 +64,7 @@ export class MyAngularV15Env extends AngularV15Env {
         tsconfigPath: require.resolve('./config/tsconfig.json'),
       });
     }
-    return ngMultiCompiler;
+    return ngMultiCompiler!;
   }
 
   /**

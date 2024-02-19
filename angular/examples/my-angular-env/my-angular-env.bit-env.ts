@@ -44,7 +44,7 @@ export class MyAngularEnv extends AngularEnv {
 
   getLinterConfig() {
     return {
-      tsconfig: require.resolve('@bitdev/angular.dev-services.linter.eslint/config/tsconfig.json'),
+      tsconfig: require.resolve('./config/tsconfig.json'),
       eslint: ESLintLib,
       configPath: require.resolve('./config/eslintrc'),
       // resolve all plugins from the angular environment.
@@ -64,7 +64,7 @@ export class MyAngularEnv extends AngularEnv {
         tsconfigPath: require.resolve('./config/tsconfig.json'),
       });
     }
-    return ngMultiCompiler;
+    return ngMultiCompiler!;
   }
 
   /**

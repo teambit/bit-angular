@@ -1,12 +1,12 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: boolean): ComponentFile => {
+export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: boolean, envPkgName: string): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `${name}.bit-app.ts`,
     content: `import { type AngularAppOptions, AngularApp } from '@bitdev/angular.app-types.angular-app-type';
 import { ${ssr ? `ApplicationOptions`: `BrowserOptions` }, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { ngEnvOptions } from '@bitdev/angular.envs.angular-v17-env';
+import { ngEnvOptions } from '${envPkgName}';
 
 const angularOptions: ${ssr ? `ApplicationOptions`: `BrowserOptions` } & DevServerOptions = {
   ${ssr ? `browser: './src/main.ts',
