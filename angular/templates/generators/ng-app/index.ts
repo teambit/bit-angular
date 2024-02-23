@@ -1,11 +1,9 @@
-import { AngularComponentTemplateOptions, getWorkspace } from '@bitdev/angular.dev-services.common';
+import { AngularComponentTemplateOptions } from '@bitdev/angular.dev-services.common';
 import { confirm, group, select } from '@clack/prompts';
 import { ComponentID } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { Logger } from '@teambit/logger';
-import { PkgAspect, PkgMain } from '@teambit/pkg';
-import { Workspace } from '@teambit/workspace';
 import { isCI } from 'std-env';
 import { indexFile } from './template-files';
 import { ngAppFile } from './template-files/bit-app';
@@ -36,9 +34,7 @@ export class NgAppTemplate implements ComponentTemplate {
     readonly angularVersion: number,
     readonly name = 'ng-app',
     readonly description = 'create an Angular application',
-    readonly hidden = false,
-    private pkg: PkgMain,
-    private workspace: Workspace | undefined
+    readonly hidden = false
   ) {
   }
 
@@ -94,10 +90,7 @@ export class NgAppTemplate implements ComponentTemplate {
     const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
     const envId = aspectId.toStringWithoutVersion();
     let envPkgName: string;
-    if (this.workspace) {
-      const envComponent = await this.workspace!.get(aspectId);
-      envPkgName = this.pkg.getPackageName(envComponent);
-    } else if (envId === 'bitdev.angular/angular-env') { // mostly for ci / ripple
+    if (envId === 'bitdev.angular/angular-env') {
       envPkgName = '@bitdev/angular.angular-env';
     } else {
       envPkgName = `@bitdev/angular.envs.angular-v${ this.angularVersion }-env`;
@@ -154,16 +147,12 @@ export class NgAppTemplate implements ComponentTemplate {
     return (context: EnvContext) => {
       const name = options.name || 'ng-app-template';
       const logger = context.createLogger(name);
-      const pkg = context.getAspect<PkgMain>(PkgAspect.id);
-      const workspace = getWorkspace(context);
       return new NgAppTemplate(
         logger,
         options.angularVersion,
         options.name,
         options.description,
-        options.hidden,
-        pkg,
-        workspace
+        options.hidden
       );
     };
   }
