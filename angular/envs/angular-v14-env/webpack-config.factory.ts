@@ -32,8 +32,8 @@ import {
 import assert from 'assert';
 import { join, posix, resolve } from 'path';
 import { Configuration } from 'webpack';
-import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config';
-import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config';
+import { webpack5BuildConfigFactory } from './webpack/webpack5.build.config.js';
+import { webpack5ServeConfigFactory } from './webpack/webpack5.serve.config.js';
 
 /**
  * Migrate options from webpack-dev-server 3 to 4

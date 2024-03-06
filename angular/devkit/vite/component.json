@@ -20,7 +20,7 @@
         },
         "devDependencies": {
           "@types/find-root": "1.1.2",
-          "@types/node": "12.20.4"
+          "@types/node": "^20.11.22"
         },
         "peerDependencies": {
           "@analogjs/platform": ">= 0.2.22",

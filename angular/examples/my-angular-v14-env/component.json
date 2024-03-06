@@ -10,11 +10,16 @@
         "dependencies": {
           "@jest/globals": "^28.0.0",
           "@bitdev/angular.dev-services.linter.eslint": ">= 1.0.0",
+          "@types/eslint": "^8.21.0",
           "@types/jest": "^28.0.0",
           "jest": "^28.0.0",
           "jest-preset-angular": "~12.1.0"
         }
       }
+    },
+    "bitdev.general/envs/bit-env": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
     }
   }
 }

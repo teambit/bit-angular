@@ -1,6 +1,6 @@
 import { ApplicationOptions, normalizePath } from '@bitdev/angular.dev-services.common';
 import assert from 'assert';
-import { flatten } from 'lodash';
+import { flatten } from 'lodash-es';
 import { dirname, relative } from 'path';
 
 export interface JsonObject {

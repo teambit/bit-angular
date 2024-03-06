@@ -19,6 +19,10 @@
           "zone.js": ">= 0.9.1"
         }
       }
+    },
+    "bitdev.node/node-env@1.0.26": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
     }
   }
 }

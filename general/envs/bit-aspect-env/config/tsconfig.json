@@ -1,0 +1,25 @@
+/**
+  * @see https://bit.dev/reference/typescript/typescript-config
+  */
+{
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext"
+  },
+  "extends": "@teambit/react.react-env/config/tsconfig.json",
+  "exclude": [
+    "artifacts",
+    "public",
+    "dist",
+    "node_modules",
+    "package.json",
+    "**/*.cjs"
+  ],
+  "include": [
+    "**/*",
+    "**/*.json",
+    ".mocharc.js",
+    ".mocharc.js"
+  ]
+}
+

@@ -11,6 +11,7 @@ export async function ngccCompilerCli(): Promise<any> {
   return loadEsmModule(`@angular/compiler-cli/ngcc`);
 }
 
+// @ts-ignore
 export async function ngCompilerCli(): Promise<typeof import('@angular/compiler-cli')> {
   return loadEsmModule(`@angular/compiler-cli`);
 }

@@ -1,8 +1,8 @@
 import { NG_APP_NAME } from '@bitdev/angular.dev-services.common';
 import { Application, ApplicationType } from '@teambit/application';
 import { EnvHandler } from '@teambit/envs';
-import { AngularAppOptions } from './angular-app-options';
-import { AngularApp } from './angular.application';
+import { AngularAppOptions } from './angular-app-options.js';
+import { AngularApp } from './angular.application.js';
 
 interface AngularAppTypeOptions {
   name?: string;

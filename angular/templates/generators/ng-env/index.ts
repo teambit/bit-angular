@@ -8,7 +8,7 @@ import { eslintConfigFile } from './files/config/eslintrc';
 import { jestConfigFile } from './files/config/jest.config';
 import { prettierConfigFile } from './files/config/prettier.config';
 import { tsConfigFile } from './files/config/tsconfig.json';
-import { tsConfigSpecFile } from './files/config/tsconfig.spec.json';
+import { tsConfigSpecFile } from './files/config/tsconfig-spec.json';
 import { docFile } from './files/doc';
 import { envFile } from './files/env';
 import { envJsoncFile } from './files/env-jsonc';
@@ -18,6 +18,7 @@ import { mounterFile } from './files/preview/mounter';
 
 export class NgEnvTemplate implements ComponentTemplate {
   installMissingDependencies = true;
+
   isEnv = true;
 
   private constructor(

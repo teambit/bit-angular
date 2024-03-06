@@ -1,0 +1,58 @@
+---
+description: 'An ESM environment for Bit aspects.'
+labels: ['env', 'aspect', 'node', 'dev', 'vite', 'typescript']
+---
+
+A reusable ESM development environment for Bit aspects.
+Use this environment to create new aspect components.
+
+Features:
+- ▶️ TypeScript
+- 🧪 Vitest.
+- 🧑‍💻 Generator templates include [NodeJS Module](/), [Entity](/), [Express App](/), [Platform app](/) and a [native Bit app](/).
+- 🚀 Workspace starter
+- 🦋 ESLint
+- ⚒️ A NodeJS optimized build pipeline.
+- 👓 React-based Preview
+
+## Use in existing workspaces
+
+Add the development env to your generator configuration on `workspace.jsonc`.  
+
+```json
+{
+  "teambit.generator/generator": {
+    "envs": [
+      "bitdev.general/envs/bit-aspect-env"
+    ]
+  }
+}
+```
+
+You can see the generator templates in your workspace using `bit templates`.
+
+## Use on an existing component
+
+Use this dev environment on your existing components, by running the following command: 
+
+```
+bit env set my-component bitdev.general/envs/bit-aspect-env
+```
+
+
+## Create a NodeJS workspace
+
+You can create a new NodeJS workspace made from this env using the following command:
+
+```
+bit new node my-workspace --aspect bitdev.general/envs/bit-aspect-env
+```
+
+## Compose your own env
+
+You can base on this env, and customize it to your needs. To create your env run this command:
+```
+bit create node-env my-new-env
+```
+
+Make sure your new environment class extends this env class and overrides the needed class methods.

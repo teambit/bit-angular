@@ -1,0 +1,38 @@
+{
+  "componentId": {
+    "scope": "bitdev.angular",
+    "name": "dev-services/preview/preview-app"
+  },
+  "propagate": true,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "dependencies": {
+          "@types/dompurify": "3.0.2",
+          "dompurify": "3.0.5"
+        },
+        "peerDependencies": {
+          "@angular/animations": ">= 13.0.0",
+          "@angular/compiler": ">= 13.0.0",
+          "@angular/common": ">= 13.0.0",
+          "@angular/core": ">= 13.0.0",
+          "@angular/elements": ">= 13.0.0",
+          "@angular/platform-browser": ">= 13.0.0",
+          "@angular/platform-browser-dynamic": ">= 13.0.0",
+          "rxjs": "^6.5.5 || ^7.4.0",
+          "typescript": ">= 3.5.3",
+          "webpack": ">= 4.44.2",
+          "webpack-dev-server": ">= 3.11.2",
+          "zone.js": ">= 0.9.1"
+        },
+        "devDependencies": {
+          "@types/node": "^20.11.22"
+        }
+      }
+    },
+    "teambit.node/node@1.0.37": {},
+    "teambit.envs/envs": {
+      "env": "teambit.node/node"
+    }
+  }
+}

@@ -1,11 +1,15 @@
 import { generateStyleLoaders } from '@teambit/webpack.modules.generate-style-loaders';
 import * as stylesRegexps from '@teambit/webpack.modules.style-regexps';
-import { merge } from 'lodash';
-import getCSSModuleLocalIdent from 'react-dev-utils/getCSSModuleLocalIdent';
+import { merge } from 'lodash-es';
+import { createRequire } from 'node:module';
+// @ts-ignore
+import getLocalIdent from 'react-dev-utils-esm/getCSSModuleLocalIdent.js';
 import RemarkFrontmatter from 'remark-frontmatter';
 import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 import { RuleSetRule } from 'webpack';
+
+const require = createRequire(import.meta.url);
 
 const postCssConfig = {
   // Necessary for external CSS imports to work
@@ -104,7 +108,7 @@ export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
                 importLoaders: 1,
                 sourceMap: isEnvProduction || shouldUseSourceMap,
                 modules: {
-                  getLocalIdent: getCSSModuleLocalIdent
+                  getLocalIdent
                 }
               },
               shouldUseSourceMap: isEnvProduction || shouldUseSourceMap
@@ -121,7 +125,7 @@ export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
                 importLoaders: 3,
                 sourceMap: isEnvProduction || shouldUseSourceMap,
                 modules: {
-                  getLocalIdent: getCSSModuleLocalIdent
+                  getLocalIdent
                 }
               },
               shouldUseSourceMap: isEnvProduction || shouldUseSourceMap,

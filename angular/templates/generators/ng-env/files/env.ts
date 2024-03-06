@@ -17,7 +17,7 @@ import { Tester } from '@teambit/tester';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
-import hostDependencies from './preview/host-dependencies';
+import hostDependencies from './preview/host-dependencies.js';
 
 let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
@@ -27,8 +27,8 @@ export class ${Name} extends ${envName} {
 
   getTesterConfig() {
     return {
-      jest: require.resolve('jest'),
-      config: require.resolve('./config/jest.config')
+      jest: import.meta.resolve('jest'),
+      config: import.meta.resolve('./config/jest.config')
     };
   }
 
@@ -45,9 +45,9 @@ export class ${Name} extends ${envName} {
 
   getLinterConfig() {
     return {
-      tsconfig: require.resolve('@bitdev/angular.dev-services.linter.eslint/config/tsconfig.json'),
+      tsconfig: import.meta.resolve('@bitdev/angular.dev-services.linter.eslint/config/tsconfig.json'),
       eslint: ESLintLib,
-      configPath: require.resolve('./config/eslintrc'),
+      configPath: import.meta.resolve('./config/eslintrc'),
       // resolve all plugins from the angular environment.
       pluginsPath: __dirname,
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
@@ -62,7 +62,7 @@ export class ${Name} extends ${envName} {
     if (!ngMultiCompiler) {
       ngMultiCompiler = NgMultiCompiler.from({
         ngEnvOptions: this.getNgEnvOptions(),
-        tsconfigPath: require.resolve('./config/tsconfig.json'),
+        tsconfigPath: import.meta.resolve('./config/tsconfig.json'),
       });
     }
     return ngMultiCompiler;
@@ -87,7 +87,7 @@ export class ${Name} extends ${envName} {
      * @see https://bit.dev/reference/prettier/using-prettier
      * */
     return PrettierFormatter.from({
-      configPath: require.resolve('./config/prettier.config')
+      configPath: import.meta.resolve('./config/prettier.config')
     });
   }
 
@@ -95,11 +95,11 @@ export class ${Name} extends ${envName} {
    * Generates the component previews during development and build.
    */
   override preview(): EnvHandler<Preview> {
-    const tsConfig = require.resolve('./config/tsconfig.json');
+    const tsConfig = import.meta.resolve('./config/tsconfig.json');
     return AngularPreview.from({
       ngEnvOptions: this.getNgEnvOptions(),
       hostDependencies,
-      mounterPath: require.resolve('./preview/mounter'),
+      mounterPath: import.meta.resolve('./preview/mounter'),
       angularServeOptions: { tsConfig },
       angularBuildOptions: { tsConfig },
     });
@@ -123,14 +123,14 @@ export class ${Name} extends ${envName} {
   override workspaceConfig(): ConfigWriterList {
     return ConfigWriterList.from([
       TypescriptConfigWriter.from({
-        tsconfig: require.resolve('./config/tsconfig.json')
+        tsconfig: import.meta.resolve('./config/tsconfig.json')
       }),
       EslintConfigWriter.from({
-        configPath: require.resolve('./config/eslintrc'),
-        tsconfig: require.resolve('./config/tsconfig.json')
+        configPath: import.meta.resolve('./config/eslintrc'),
+        tsconfig: import.meta.resolve('./config/tsconfig.json')
       }),
       PrettierConfigWriter.from({
-        configPath: require.resolve('./config/prettier.config')
+        configPath: import.meta.resolve('./config/prettier.config')
       })
     ]);
   }

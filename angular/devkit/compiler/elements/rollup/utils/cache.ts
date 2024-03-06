@@ -20,7 +20,7 @@ export async function generateKey(...valuesToConsider: string[]): Promise<string
 
   return createHash('sha1')
     .update(aspectVersion || '')
-    .update(compilerCliVersion)
+    .update(compilerCliVersion!)
     .update(valuesToConsider.join(':'))
     .digest('hex');
 }

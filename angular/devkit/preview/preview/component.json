@@ -24,8 +24,15 @@
           "webpack": ">= 4.44.2",
           "webpack-dev-server": ">= 3.11.2",
           "zone.js": ">= 0.9.1"
+        },
+        "devDependencies": {
+          "@types/node": "^20.11.22"
         }
       }
+    },
+    "bitdev.node/node-env@1.0.26": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
     }
   }
 }

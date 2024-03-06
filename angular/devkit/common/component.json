@@ -10,13 +10,18 @@
         "dependencies": {
           "@angular-devkit/build-angular": "-",
           "typescript": "-",
-          "normalize-path": "^3.0.0"
+          "normalize-path": "^3.0.0",
+          "fs-extra": "^11.2.0"
         },
         "peerDependencies": {
           "@angular-devkit/build-angular": ">= 0.0.1",
           "typescript": ">= 3.5.3"
         }
       }
+    },
+    "teambit.node/node@1.0.37": {},
+    "teambit.envs/envs": {
+      "env": "teambit.node/node"
     }
   }
 }

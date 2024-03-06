@@ -1,5 +1,4 @@
 import { AngularComponentTemplateOptions } from '@bitdev/angular.dev-services.common';
-import { confirm, group, select } from '@clack/prompts';
 import { ComponentID } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { ComponentContext, ComponentTemplate } from '@teambit/generator';
@@ -26,7 +25,8 @@ import { stylesFile } from './template-files/src/styles';
 import { tsconfigFile } from './template-files/tsconfig.app';
 
 export class NgAppTemplate implements ComponentTemplate {
-  installMissingDependencies = true;
+  installMissingDependencies = true
+
   isApp = true;
 
   private constructor(
@@ -38,8 +38,10 @@ export class NgAppTemplate implements ComponentTemplate {
   ) {
   }
 
-  async prompt(context: ComponentContext) {
+  async prompt() {
     this.logger.off();
+
+    const { confirm, group, select } = await import('@clack/prompts');
 
     const prompts: { [id: string]: () => Promise<any> } = {
       styleSheet: () => select({
@@ -84,7 +86,7 @@ export class NgAppTemplate implements ComponentTemplate {
     };
 
     if (!isCI) {
-      params = await this.prompt(context);
+      params = await this.prompt();
     }
 
     const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;

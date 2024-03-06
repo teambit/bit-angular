@@ -1,3 +1,3 @@
-export { ngBootstrap, ngToCustomElements } from './loader';
-export { ngToReact, customElementsToReact } from './loader-react';
-export type { NgBootstrapOptions } from './loader';
+export { ngBootstrap, ngToCustomElements } from './loader.js';
+export { ngToReact, customElementsToReact } from './loader-react.js';
+export type { NgBootstrapOptions } from './loader.js';

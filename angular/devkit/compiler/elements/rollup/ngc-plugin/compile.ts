@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { CompilerHost, CompilerOptions } from '@angular/compiler-cli';
 import { CompilerOptions as TsCompilerOptions } from 'typescript';
 import { ngCompilerCli } from '../utils/ng-compiler-cli';
@@ -11,6 +12,7 @@ export interface CompileOptions {
 
 export async function compile(opts: CompileOptions) {
   const { id, host, options, files } = opts;
+  // @ts-ignore
   const { createProgram } = await ngCompilerCli();
 
   const program = createProgram({ rootNames: [id], options, host });

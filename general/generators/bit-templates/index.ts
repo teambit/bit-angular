@@ -1,0 +1,1 @@
+export { BitAspectTemplate } from './aspect/index';

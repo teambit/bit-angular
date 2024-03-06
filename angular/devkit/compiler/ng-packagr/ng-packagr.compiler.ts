@@ -1,14 +1,10 @@
-import type {
-  AngularCompilerOptions,
-  CompilerOptions,
-  ParsedConfiguration
-} from '@angular/compiler-cli';
+// @ts-ignore
+import type { AngularCompilerOptions, CompilerOptions, ParsedConfiguration} from '@angular/compiler-cli';
 import {
   AngularEnvOptions,
   componentIsApp,
   getNodeModulesPaths,
-  getWorkspace,
-  loadEsmModule
+  getWorkspace
 } from '@bitdev/angular.dev-services.common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import {
@@ -23,15 +19,18 @@ import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/depen
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { CyclicError } from '@teambit/graph.cleargraph';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
-import { PACKAGE_JSON } from '@teambit/legacy/dist/constants';
-import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file';
+import { PACKAGE_JSON } from '@teambit/legacy/dist/constants.js';
+import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file.js';
 import { Logger } from '@teambit/logger';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
-import { mkdirsSync, outputFileSync, removeSync } from 'fs-extra';
-import type { NgPackageConfig } from 'ng-packagr/ng-package.schema';
-import { join, posix, resolve } from 'path';
-import { Diagnostic, DiagnosticCategory, DiagnosticWithLocation, ScriptTarget } from 'typescript';
+// @ts-ignore
+import { mkdirsSync, outputFileSync, removeSync } from 'fs-extra/esm';
+import type { NgPackageConfig } from 'ng-packagr/ng-package.schema.js';
+import { createRequire } from 'node:module';
+import { join, posix, resolve } from 'node:path';
+import ts from 'typescript';
+import type { Diagnostic, DiagnosticWithLocation } from 'typescript';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -49,7 +48,8 @@ export function isFatalDiagnosticError(err: any): err is FatalDiagnosticError {
 }
 
 export async function createDiagnosticsReporter(logger: Logger): Promise<DiagnosticsReporter> {
-  const { formatDiagnostics } = await loadEsmModule(`@angular/compiler-cli`);
+  // @ts-ignore
+  const { formatDiagnostics } = await import('@angular/compiler-cli');
   const formatter = (diagnostic: Diagnostic) => formatDiagnostics([diagnostic]);
   return (diagnostic: Diagnostic | Error) => {
     let diag = diagnostic as any;
@@ -62,7 +62,7 @@ export async function createDiagnosticsReporter(logger: Logger): Promise<Diagnos
     } catch (e) {
       throw new Error(diag);
     }
-    if (diag.category === DiagnosticCategory.Error) {
+    if (diag.category === ts.DiagnosticCategory.Error) {
       throw new Error(text);
     } else {
       logger.warn(text);
@@ -97,7 +97,7 @@ export interface NgPackagr {
 
 
 interface NgPackagrCompilerOptions {
-  ngPackagrModulePath?: string;
+  ngPackagrModulePath: string;
   ngEnvOptions: AngularEnvOptions;
   tsCompilerOptions?: AngularCompilerOptions;
   tsconfigPath?: string;
@@ -115,10 +115,8 @@ export class NgPackagrCompiler implements Compiler {
 
   readDefaultTsConfig: () => Promise<ParsedConfiguration>;
 
-  ngPackagr: NgPackagr;
-
   private constructor(
-    ngPackagrPath: string,
+    private ngPackagrPath: string,
     private logger: Logger,
     private workspace: Workspace | undefined,
     private application: ApplicationMain,
@@ -131,12 +129,8 @@ export class NgPackagrCompiler implements Compiler {
     private tsconfigPath?: string,
     private nodeModulesPaths: string[] = [],
   ) {
-    // eslint-disable-next-line global-require,import/no-dynamic-require
-    this.ngPackagr = require(ngPackagrPath).ngPackagr();
-
-    // eslint-disable-next-line global-require,import/no-dynamic-require
     this.readDefaultTsConfig = async() => {
-      const { initializeTsConfig } = require('ng-packagr/lib/ts/tsconfig');
+      const { initializeTsConfig } = await import('ng-packagr/lib/ts/tsconfig.js');
       const entryPoints: any = [{
         data: {
           entryPoint: {
@@ -187,7 +181,8 @@ export class NgPackagrCompiler implements Compiler {
   ): Promise<void> {
     // check for dependencies other than tslib and move them to peer dependencies
     // see https://github.com/ng-packagr/ng-packagr/blob/master/docs/dependencies.md#general-recommendation-use-peerdependencies-whenever-possible
-    const packageJson = PackageJsonFile.loadFromPathSync(pathToOutputFolder, '');
+    // @ts-ignore
+    const packageJson = PackageJsonFile.default.loadFromPathSync(pathToOutputFolder, '');
     const { dependencies } = packageJson.packageJsonObject;
     // const peerDependencies = packageJson.packageJsonObject.peerDependencies;
     const allowedNonPeerDependencies: string[] = [];
@@ -236,13 +231,15 @@ export class NgPackagrCompiler implements Compiler {
     const parsedTsConfig = await this.readDefaultTsConfig();
     parsedTsConfig.options = { ...parsedTsConfig.options, ...tsCompilerOptions };
 
-    return this.ngPackagr
+    const ngPackagr: NgPackagr = (await import(this.ngPackagrPath)).ngPackagr();
+    return ngPackagr
       .withTsConfig(parsedTsConfig)
       .forProject(ngPackageJsonPath)
       .build()
       .then(async() => {
         // copy over properties generated by ngPackagr
-        const tempPackageJson = (await PackageJsonFile.load(pathToOutputFolder, this.distDir)).packageJsonObject;
+        // @ts-ignore
+        const tempPackageJson = PackageJsonFile.default.loadSync(pathToOutputFolder, this.distDir).packageJsonObject;
         const jsonProps = this.updatePaths(tempPackageJson);
         packageJson.mergePackageJsonObject(jsonProps);
         await packageJson.write();
@@ -324,7 +321,7 @@ export class NgPackagrCompiler implements Compiler {
     if (this.tsconfigPath) {
       // these options are mandatory for ngPackagr to work
       const extraOptions: CompilerOptions = {
-        target: ScriptTarget.ES2022,
+        target: ts.ScriptTarget.ES2022,
 
         // sourcemaps
         sourceMap: false,
@@ -338,7 +335,8 @@ export class NgPackagrCompiler implements Compiler {
         enableResourceInlining: true,
       };
 
-      const { readConfiguration } = await loadEsmModule('@angular/compiler-cli');
+      // @ts-ignore
+      const { readConfiguration } = await import('@angular/compiler-cli');
       const tsconfigJSON = readConfiguration(this.tsconfigPath, extraOptions);
       tsCompilerOptions = { ...tsCompilerOptions, ...tsconfigJSON.options };
     }
@@ -408,6 +406,7 @@ export class NgPackagrCompiler implements Compiler {
   }
 
   version(): string {
+    const require = createRequire(import.meta.url);
     // eslint-disable-next-line global-require
     return require('ng-packagr/package.json').version;
   }
@@ -415,7 +414,7 @@ export class NgPackagrCompiler implements Compiler {
   static from(options: NgPackagrCompilerOptions): EnvHandler<NgPackagrCompiler> {
     return (context: EnvContext) => {
       const name = options.name || 'ng-packagr-compiler';
-      const ngPackagrModulePath = options.ngPackagrModulePath || require.resolve('ng-packagr');
+      const ngPackagrModulePath = options.ngPackagrModulePath;
       const logger = context.createLogger(name);
       const workspace = getWorkspace(context);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);

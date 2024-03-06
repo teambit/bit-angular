@@ -22,6 +22,14 @@ export enum BundlerSetup {
   Build = 'build',
 }
 
+/**
+ * Normalize slashes in a file path to be posix/unix-like forward slashes.
+ * Also condenses repeat slashes to a single slash and removes and trailing slashes, unless disabled.
+ */
+export function normalizePath(path: string = '', removeTrailingSlashes = false): string {
+  return normalize(path, removeTrailingSlashes);
+}
+
 export function componentIsApp(component: Component, application: ApplicationMain): boolean {
   // We first check if the component is registered as an app
   return !!application.listAppsById(component.id)
@@ -218,8 +226,8 @@ export function writeTsconfig(
   });
 
   const pAppPath = normalizePath(rootPath);
-  tsConfigPath = tsConfigPath ?? join(rootPath, 'tsconfig.app.json');
-  const content = generateTsConfig(pAppPath, tsConfigPath, Array.from(includePaths), Array.from(excludePaths), tsPaths);
+  const tsConfigAppPath = tsConfigPath ?? join(rootPath, 'tsconfig.app.json');
+  const content = generateTsConfig(pAppPath, tsConfigAppPath, Array.from(includePaths), Array.from(excludePaths), tsPaths);
   const hash = objectHash(content);
   const targetPath = join(dirPath, `tsconfig/tsconfig-${ timestamp }.json`);
 
@@ -247,20 +255,15 @@ export function packagePath(packageName: string, path = ''): string {
   return join(dirname(require.resolve(`${ packageName }/package.json`)), path);
 }
 
-/**
- * Normalize slashes in a file path to be posix/unix-like forward slashes.
- * Also condenses repeat slashes to a single slash and removes and trailing slashes, unless disabled.
- */
-export function normalizePath(path: string = '', removeTrailingSlashes = false): string {
-  return normalize(path, removeTrailingSlashes);
-}
-
 export function getLoggerApi(logger: Logger) {
   return {
+    // eslint-disable-next-line no-console
     error: (m: string) => console.error(m),
     log: (m: string) => logger.console(m),
+    // eslint-disable-next-line no-console
     warn: (m: string) => console.warn(m),
     info: (m: string) => logger.console(m),
+    // eslint-disable-next-line no-console
     colorMessage: (m: string) => console.log(m),
     createChild: () => logger
   } as any;

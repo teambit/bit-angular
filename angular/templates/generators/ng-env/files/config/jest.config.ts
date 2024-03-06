@@ -19,7 +19,7 @@ export default {
       'jest-preset-angular',
       {
         ...defaultTransformerOptions,
-        tsconfig: require.resolve('./tsconfig.spec.json')
+        tsconfig: import.meta.resolve('./tsconfig.spec.json')
       }
     ]
   },` : `globals: {
@@ -27,7 +27,7 @@ export default {
       skipNgcc: true
     },
     ` : ''}'ts-jest': {
-      tsconfig: require.resolve('./tsconfig.spec.json')
+      tsconfig: import.meta.resolve('./tsconfig.spec.json')
     }
   },`}
   transformIgnorePatterns: [

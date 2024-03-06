@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "envs/angular-v13-env",
-    "scope": "bitdev.angular"
+    "scope": "bitdev.angular",
+    "name": "envs/angular-v13-env"
   },
   "propagate": true,
   "extensions": {
@@ -41,6 +41,7 @@
           "jest": "^27.4.4",
           "jest-preset-angular": "~11.0.1",
           "ng-packagr": "~13.2.1",
+          "react-dev-utils-esm": "11.0.3",
           "remark": "~13.0.0",
           "remark-loader": "~4.0.0",
           "rxjs": "~7.4.0",
@@ -53,6 +54,10 @@
           "zone.js": "~0.14.0"
         }
       }
+    },
+    "bitdev.general/envs/bit-env": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
     }
   }
 }

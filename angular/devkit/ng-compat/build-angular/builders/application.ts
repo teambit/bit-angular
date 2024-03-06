@@ -1,3 +1,4 @@
+/* eslint-disable */
 import type { BuilderContext, BuilderOutput } from '@angular-devkit/architect';
 import { VERSION } from '@angular/cli';
 import type { OutputFile, Plugin } from 'esbuild';

@@ -46,6 +46,10 @@
           "@babel/runtime": "7.22.15"
         }
       }
+    },
+    "teambit.node/node@1.0.37": {},
+    "teambit.envs/envs": {
+      "env": "teambit.node/node"
     }
   }
 }

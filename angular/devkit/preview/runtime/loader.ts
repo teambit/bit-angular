@@ -1,9 +1,5 @@
 /* eslint-disable */
-// Only load those if we are in the browser
-if (typeof window !== 'undefined') {
-  require('./native-shim.js');
-  require('zone.js');
-}
+import './native-shim.cjs';
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
@@ -18,7 +14,7 @@ import { createComponent, NgZone, StaticProvider } from '@angular/core';
 // @ts-ignore unavailable until Angular 14
 import { createApplication } from '@angular/platform-browser';
 // @ts-ignore
-const AppModule = require('./main').AppModule as any;
+import { AppModule } from './main.js';
 
 const enum RenderStrategy {
   Elements = 'element',
@@ -114,7 +110,7 @@ async function getModuleComponents<M>(module: Type<M>, renderStrategy: RenderStr
     // eslint-disable-next-line no-console
     // console.warn(`Automatically injecting "BrowserModule" into your composition for retro-compatibility, please add it to the imports of your module "${module.name}"`);
     const moduleInjector = Reflect.get(module, 'ɵinj');
-    const { imports } = AppModule.ɵinj as { imports: any[] };
+    const { imports } = (AppModule as any).ɵinj as { imports: any[] };
     moduleInjector.imports.push(...imports[0]);
   }
   // we are using ivy & AOT
@@ -194,7 +190,7 @@ export async function ngBootstrap<C>(modulesOrComponents: Type<any> | Type<any>[
     if (componentsToLoad.length) {
       if (options.wrapper) {
         if (options.wrapperSelector) {
-          console.warn('wrapperComponentSelector is only used for Angular v13 and below, starting with v14 you need to use a standalone component wrapper with `<ng-content>`');
+          console.warn('wrapperComponentSelector is only used for Angular v13 and below, starting with v14 you need to use a standalone component wrapper with `<ng-content/>`');
         }
         return wrapComponent(options.hostElement, options.wrapper, componentsToLoad, options.appConfig);
       }

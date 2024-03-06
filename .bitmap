@@ -79,6 +79,14 @@
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/preview"
     },
+    "dev-services/preview/preview-app": {
+        "name": "dev-services/preview/preview-app",
+        "scope": "",
+        "defaultScope": "bitdev.angular",
+        "version": "",
+        "mainFile": "index.ts",
+        "rootDir": "angular/devkit/preview/preview-app"
+    },
     "dev-services/preview/runtime": {
         "name": "dev-services/preview/runtime",
         "scope": "bitdev.angular",
@@ -135,6 +143,34 @@
         "mainFile": "index.ts",
         "rootDir": "angular/envs/base-env"
     },
+    "envs/bit-aspect-env": {
+        "name": "envs/bit-aspect-env",
+        "scope": "",
+        "version": "",
+        "defaultScope": "bitdev.general",
+        "mainFile": "index.ts",
+        "rootDir": "general/envs/bit-aspect-env",
+        "config": {
+            "teambit.envs/env": {},
+            "teambit.envs/envs": {
+                "env": "teambit.envs/env"
+            }
+        }
+    },
+    "envs/bit-env": {
+        "name": "envs/bit-env",
+        "scope": "",
+        "version": "",
+        "defaultScope": "bitdev.general",
+        "mainFile": "index.ts",
+        "rootDir": "general/envs/bit-env",
+        "config": {
+            "teambit.envs/env": {},
+            "teambit.envs/envs": {
+                "env": "teambit.envs/env"
+            }
+        }
+    },
     "examples/my-angular-env": {
         "name": "examples/my-angular-env",
         "scope": "bitdev.angular",
@@ -182,14 +218,26 @@
         "scope": "bitdev.angular",
         "version": "4.0.4",
         "mainFile": "index.ts",
-        "rootDir": "angular/templates/generators"
+        "rootDir": "angular/templates/generators",
+        "config": {
+            "teambit.node/node@1.0.37": {},
+            "teambit.envs/envs": {
+                "env": "teambit.node/node"
+            }
+        }
     },
     "templates/starters": {
         "name": "templates/starters",
         "scope": "bitdev.angular",
         "version": "4.0.2",
         "mainFile": "index.ts",
-        "rootDir": "angular/templates/starters"
+        "rootDir": "angular/templates/starters",
+        "config": {
+            "teambit.node/node@1.0.37": {},
+            "teambit.envs/envs": {
+                "env": "teambit.node/node"
+            }
+        }
     },
     "$schema-version": "17.0.0"
 }

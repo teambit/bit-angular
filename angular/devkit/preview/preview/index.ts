@@ -1,1 +1,1 @@
-export * from './angular-preview';
+export * from './angular-preview.js';

@@ -19,7 +19,7 @@ import type { NitroConfig } from 'nitropack';
 import { join, posix, relative, resolve } from 'path';
 // @ts-ignore
 import type { Connect } from 'vite';
-import definePlugin from './plugins/define.plugin';
+import definePlugin from './plugins/define.plugin.js';
 
 export type ServeApplicationOptions = {
   angularOptions: Partial<ApplicationBuilderOptions & DevServerBuilderOptions>;
@@ -152,11 +152,8 @@ function getNitroConfig(options: ServeApplicationOptions): NitroConfig {
 async function createNitroApiMiddleware(options: ServeApplicationOptions): Promise<Connect.NextHandleFunction> {
   const nitroConfig = getNitroConfig(options);
 
-  const {
-    createNitro,
-    createDevServer,
-    build
-  } = await loadEsmModule<typeof import('nitropack')>('nitropack');
+  // @ts-ignore
+  const { createNitro, createDevServer, build } = await import('nitropack');
 
   const nitro = await createNitro({
     dev: true,

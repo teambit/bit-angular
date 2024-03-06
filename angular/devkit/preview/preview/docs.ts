@@ -1,4 +1,5 @@
 import type { RenderingContext } from '@teambit/preview';
+// @ts-ignore
 import type { Type } from '@angular/core';
 import { ReplaySubject } from 'rxjs';
 

@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "envs/angular-v14-env",
-    "scope": "bitdev.angular"
+    "scope": "bitdev.angular",
+    "name": "envs/angular-v14-env"
   },
   "propagate": true,
   "extensions": {
@@ -42,10 +42,11 @@
           "jest": "^28.0.0",
           "jest-preset-angular": "~12.1.0",
           "ng-packagr": "~14.2.1",
-          "postcss": "8.4.18",
+          "postcss": "8.4.35",
           "postcss-flexbugs-fixes": "5.0.2",
-          "postcss-loader": "7.0.1",
-          "postcss-preset-env": "7.8.2",
+          "postcss-loader": "8.1.1",
+          "postcss-preset-env": "9.4.0",
+          "react-dev-utils-esm": "11.0.3",
           "remark": "~13.0.0",
           "remark-loader": "~4.0.0",
           "resolve-url-loader": "5.0.0",
@@ -61,6 +62,10 @@
           "zone.js": "~0.14.0"
         }
       }
+    },
+    "bitdev.general/envs/bit-env": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
     }
   }
 }

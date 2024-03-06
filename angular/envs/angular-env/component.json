@@ -66,6 +66,10 @@
           "rxjs": "~7.8.0"
         }
       }
+    },
+    "bitdev.general/envs/bit-env": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
     }
   }
 }
