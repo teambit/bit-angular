@@ -21,6 +21,8 @@ export class NgEnvTemplate implements ComponentTemplate {
 
   isEnv = true;
 
+  readonly env = 'bitdev.general/envs/bit-env';
+
   private constructor(
     readonly envName: string,
     readonly angularVersion: number,
@@ -67,14 +69,6 @@ export class NgEnvTemplate implements ComponentTemplate {
       mounterFile(this.angularVersion),
       hostDependenciesFile()
     ];
-  }
-
-  config() {
-    return {
-      'teambit.envs/envs': {
-        env: 'teambit.envs/env'
-      }
-    };
   }
 
   static from(options: AngularComponentTemplateOptions & { envName: string; angularVersion: number; }) {
