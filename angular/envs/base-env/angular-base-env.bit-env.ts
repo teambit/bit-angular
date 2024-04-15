@@ -15,7 +15,7 @@ import {
   DesignSystemStarter,
   MaterialDesignSystemStarter
 } from '@bitdev/angular.templates.starters';
-import { Pipeline } from '@teambit/builder';
+import { CAPSULE_ARTIFACTS_DIR, Pipeline } from '@teambit/builder';
 import { Compiler } from '@teambit/compiler';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
@@ -32,11 +32,14 @@ import { TypeScriptExtractor } from '@teambit/typescript';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
-import { merge } from 'lodash';
-import { AngularEnvInterface } from './angular-env.interface';
-import hostDependencies from './preview/host-dependencies';
+import { merge } from 'lodash-es';
+import { createRequire } from 'node:module';
+import { AngularEnvInterface } from './angular-env.interface.js';
+import hostDependencies from './preview/host-dependencies.js';
 
 let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
+
+const require = createRequire(import.meta.url);
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -95,7 +98,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
 
   formatter(): EnvHandler<Formatter> {
     return PrettierFormatter.from({
-      configPath: require.resolve('./config/prettier.config')
+      configPath: require.resolve('./config/prettier.config.cjs')
     });
   }
 
@@ -103,9 +106,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     return {
       tsconfig: require.resolve('./config/tsconfig.json'),
       eslint: ESLintLib,
-      configPath: require.resolve('./config/eslintrc'),
+      configPath: require.resolve('./config/eslintrc.cjs'),
       // resolve all plugins from the angular environment.
-      pluginsPath: __dirname,
+      pluginsPath: import.meta.dirname,
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
     };
   }
@@ -121,12 +124,27 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   }
 
   /**
-   * configure and control the packaging process of components.
+   * Default npm ignore paths.
+   * Will ignore the "artifacts" directory by default.
+   */
+  npmIgnore = [`${CAPSULE_ARTIFACTS_DIR}/`, '.vitest'];
+
+  /**
+   * Default package.json modifications.
+   */
+  packageJson = {
+    type: 'module',
+    main: 'dist/{main}.js',
+    types: '{main}.ts',
+  };
+
+  /**
+   * Configure and control the packaging process of components.
    */
   package() {
     return PackageGenerator.from({
-      packageJson: {},
-      npmIgnore: []
+      packageJson: this.packageJson,
+      npmIgnore: this.npmIgnore,
     });
   }
 
@@ -135,7 +153,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     return AngularPreview.from({
       ngEnvOptions,
       hostDependencies,
-      mounterPath: require.resolve('./preview/mounter'),
+      mounterPath: require.resolve('./preview/mounter.js'),
     });
   }
 
@@ -198,11 +216,11 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
         tsconfig: require.resolve('./config/tsconfig.json')
       }),
       EslintConfigWriter.from({
-        configPath: require.resolve('./config/eslintrc'),
+        configPath: require.resolve('./config/eslintrc.cjs'),
         tsconfig: require.resolve('./config/tsconfig.json')
       }),
       PrettierConfigWriter.from({
-        configPath: require.resolve('./config/prettier.config')
+        configPath: require.resolve('./config/prettier.config.cjs')
       })
     ]);
   }
@@ -213,6 +231,9 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       jest: ngEnvOptions.jestModulePath,
       config: ngEnvOptions.jestConfigPath
     };
+    // return VitestTester.from({
+    //   config: require.resolve(ngEnvOptions.vitestConfigPath)
+    // });
   }
 
   /**

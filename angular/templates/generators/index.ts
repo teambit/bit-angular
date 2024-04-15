@@ -1,4 +1,4 @@
-export { NgModuleTemplate } from './ng-module';
-export { NgStandaloneTemplate } from './ng-standalone';
-export { NgEnvTemplate } from './ng-env';
-export { NgAppTemplate } from './ng-app';
+export { NgModuleTemplate } from './ng-module/index.js';
+export { NgStandaloneTemplate } from './ng-standalone/index.js';
+export { NgEnvTemplate } from './ng-env/index.js';
+export { NgAppTemplate } from './ng-app/index.js';

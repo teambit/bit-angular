@@ -1,6 +1,6 @@
 export const prettierConfigFile = () => {
   return {
-    relativePath: './config/prettier.config.ts',
+    relativePath: './config/prettier.config.cjs',
     content: `/**
  * @see https://bit.dev/reference/prettier/prettier-config
  */

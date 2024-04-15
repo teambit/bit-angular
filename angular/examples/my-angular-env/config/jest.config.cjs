@@ -1,13 +1,12 @@
 /**
  * @see https://bit.dev/reference/jest/jest-config
  */
-import { jestConfig } from '@bitdev/angular.angular-env';
-import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
-
+const { jestConfig } = require('@bitdev/angular.angular-env');
+const { generateNodeModulesPattern } = require('@teambit/dependencies.modules.packages-excluder');
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 
-const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];
-export default {
+const packagesToExclude = ['@angular', '@ngrx', 'apollo-angular'];
+module.exports = {
   ...jestConfig,
   transform: {
     '^.+\\.(ts|js|mjs|html|svg)$': [

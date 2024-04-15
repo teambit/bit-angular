@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { AngularCompilerOptions, CompilerHost } from '@angular/compiler-cli';
 import { Logger } from '@teambit/logger';
 import { resolve } from 'path';
@@ -28,6 +29,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
   let host: CompilerHost & TsCompilerHost;
   const files = new Map();
   // let sideEffectFreeModules: string[];
+  // @ts-ignore
   const { createCompilerHost } = await ngCompilerCli();
   const internals = options.internals || [];
   const externals = options.externals || [];

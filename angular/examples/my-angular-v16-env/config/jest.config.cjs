@@ -1,12 +1,11 @@
 /**
  * @see https://bit.dev/reference/jest/jest-config
  */
-import { jestConfig } from '@bitdev/angular.envs.angular-v16-env';
-import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
-
+const jestConfig = require('@bitdev/angular.envs.angular-v16-env/jest/jest.config.cjs');
+const { generateNodeModulesPattern } = require('@teambit/dependencies.modules.packages-excluder');
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 
-const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];
+const packagesToExclude = ['@angular', '@ngrx', 'apollo-angular'];
 
 export default {
   ...jestConfig,

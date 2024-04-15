@@ -18,20 +18,20 @@ import { Bundler, BundlerContext, DevServerContext } from '@teambit/bundler';
 import { Component } from '@teambit/component';
 import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
-import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
+import { CACHE_ROOT } from '@teambit/legacy/dist/constants.js';
 import { Preview } from '@teambit/preview';
 import { Port } from '@teambit/toolbox.network.get-port';
 import { Workspace } from '@teambit/workspace';
 import assert from 'assert';
-import { existsSync, mkdirSync, outputJsonSync } from 'fs-extra';
-import { cloneDeep } from 'lodash';
+import fs from 'fs-extra';
+import { cloneDeep } from 'lodash-es';
 import objectHash from 'object-hash';
 import { join } from 'path';
-import { readConfigFile, sys } from 'typescript';
-import { AngularAppOptions } from './angular-app-options';
-import { buildApplication } from './application.bundler';
-import { serveApplication } from './application.dev-server';
-import { expandIncludeExclude, JsonObject } from './utils';
+import ts from 'typescript';
+import { AngularAppOptions } from './angular-app-options.js';
+import { buildApplication } from './application.bundler.js';
+import { serveApplication } from './application.dev-server.js';
+import { expandIncludeExclude, JsonObject } from './utils.js';
 
 const writeHash = new Map<string, string>();
 
@@ -52,8 +52,8 @@ export class AngularApp implements Application {
 
   private getTempFolder(workspace?: Workspace): string {
     const tempFolder = workspace?.getTempDir(this.idName) || join(CACHE_ROOT, this.idName);
-    if (!existsSync(tempFolder)) {
-      mkdirSync(tempFolder, { recursive: true });
+    if (!fs.existsSync(tempFolder)) {
+      fs.mkdirSync(tempFolder, { recursive: true });
     }
     return tempFolder;
   }
@@ -109,7 +109,7 @@ export class AngularApp implements Application {
   }
 
   private generateTsConfig(bitCmps: Component[], appRootPath: string, appTsconfigPath: string, tsconfigPath: string, depsResolver: DependencyResolverMain, workspace?: Workspace, serverEntry?: string): void {
-    const tsconfigJSON: JsonObject = readConfigFile(appTsconfigPath, sys.readFile).config;
+    const tsconfigJSON: JsonObject = ts.readConfigFile(appTsconfigPath, ts.sys.readFile).config;
 
     // Add the paths to tsconfig to remap bit components to local folders
     tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
@@ -121,7 +121,7 @@ export class AngularApp implements Application {
         componentDir = normalizePath(componentDir);
         const pkgName = depsResolver.getPackageName(dep);
         // TODO we should find a way to use the real entry file based on the component config because people can change it
-        if (existsSync(join(componentDir, 'public-api.ts'))) {
+        if (fs.existsSync(join(componentDir, 'public-api.ts'))) {
           tsconfigJSON.compilerOptions.paths[pkgName] = [`${ componentDir }/public-api.ts`, `${ componentDir }`];
         }
         tsconfigJSON.compilerOptions.paths[`${ pkgName }/*`] = [`${ componentDir }/*`];
@@ -136,7 +136,7 @@ export class AngularApp implements Application {
     const hash = objectHash(tsconfigContent);
     // write only if link has changed (prevents triggering fs watches)
     if (writeHash.get(tsconfigPath) !== hash) {
-      outputJsonSync(tsconfigPath, tsconfigContent, { spaces: 2 });
+      fs.outputJsonSync(tsconfigPath, tsconfigContent, { spaces: 2 });
       writeHash.set(tsconfigPath, hash);
     }
   }
@@ -151,7 +151,7 @@ export class AngularApp implements Application {
 
   private async getEnvFile(mode: string, rootDir: string, overrides?: Record<string, string>) {
     // TODO: enable this one we have ESM envs, otherwise we get a warning message about loading the deprecated CJS build of Vite
-    // const vite = await loadEsmModule('vite');
+    // const vite = await import('vite');
     // const dotenv = vite.loadEnv(mode, rootDir);
     return {
       ...overrides

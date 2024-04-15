@@ -1,6 +1,6 @@
 import React from 'react';
 import { Type } from '@angular/core';
-import { ngToCustomElements } from './loader';
+import { ngToCustomElements } from './loader.js';
 
 /**
  * Creates React components from a list of custom element selectors

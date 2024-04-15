@@ -1,5 +1,5 @@
 import { Plugin, PluginBuild } from 'esbuild';
-import { merge } from 'lodash';
+import { merge } from 'lodash-es';
 
 export const stringifyDefine = (define: any) => {
   return Object.entries(define).reduce((acc: any, [key, value]) => {

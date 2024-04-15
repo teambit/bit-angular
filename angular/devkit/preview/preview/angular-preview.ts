@@ -8,33 +8,16 @@ import {
   isAppDevContext
 } from '@bitdev/angular.dev-services.common';
 import { NgWebpackBundler, NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
-import { AppContext } from '@teambit/application';
 import { Bundler, BundlerContext, DevServer, DevServerContext } from '@teambit/bundler';
 import { AsyncEnvHandler, EnvContext, EnvHandler } from '@teambit/envs';
 import { EnvPreviewConfig, Preview } from '@teambit/preview';
-import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
+import { WebpackConfigTransformer } from '@teambit/webpack';
 import { Workspace } from '@teambit/workspace';
+import { dirname, join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import objectHash from 'object-hash';
-import { join, resolve } from 'path';
-import type { Configuration } from 'webpack';
 // Make sure bit recognizes the dependencies
 import 'webpack-dev-server';
-
-export type DevServerProvider = (
-  context: DevServerContext | (DevServerContext & AppContext),
-  transformers?: WebpackConfigTransformer[],
-  angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
-  webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
-  sourceRoot?: string
-) => AsyncEnvHandler<DevServer>;
-
-export type BundlerProvider = (
-  context: BundlerContext | (BundlerContext & AppContext),
-  transformers?: WebpackConfigTransformer[],
-  angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>,
-  webpackOptions?: Partial<WebpackConfigWithDevServer | Configuration>,
-  sourceRoot?: string
-) => AsyncEnvHandler<Bundler>;
 
 interface AngularPreviewOptions {
   /**
@@ -95,8 +78,10 @@ interface AngularPreviewOptions {
 }
 
 export function getPreviewRootPath(): string {
-  // __dirname is the path of the current file in dist, we want the preview app source code
-  return resolve(join(__dirname, '../preview-app/'));
+  const appPath = dirname(fileURLToPath(import.meta.resolve('@bitdev/angular.dev-services.preview.preview-app')));
+  // appPath is the path of the current file in dist
+  // but we want the preview app source code files (.ts) which are located in the parent directory
+  return resolve(join(appPath, '../preview-app/'));
 }
 
 
@@ -108,8 +93,8 @@ export class AngularPreview implements Preview {
     private webpackServeTransformers: WebpackConfigTransformer[] = [],
     private angularBuildOptions: Partial<(BrowserOptions | ApplicationOptions)> = {},
     private webpackBuildTransformers: WebpackConfigTransformer[] = [],
-    private docsTemplatePath: string = require.resolve('./docs'),
-    private mounterPath: string = require.resolve('./mounter'),
+    private docsTemplatePath: string = fileURLToPath(import.meta.resolve('./docs.js')),
+    private mounterPath: string = fileURLToPath(import.meta.resolve('./mounter.js')),
     private previewConfig: EnvPreviewConfig = {},
     private hostDependencies?: string[],
     private sourceRoot?: string,
@@ -153,6 +138,7 @@ export class AngularPreview implements Preview {
       appRootPath = getPreviewRootPath();
     }
     return NgWebpackBundler.from({
+      // @ts-ignore
       angularOptions: this.angularBuildOptions,
       bundlerContext: context,
       ngEnvOptions: this.ngEnvOptions,

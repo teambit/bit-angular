@@ -1,11 +1,11 @@
-import { generateNodeModulesPattern } from '@teambit/dependencies.modules.packages-excluder';
+const { generateNodeModulesPattern } = require('@teambit/dependencies.modules.packages-excluder');
 
-const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];
+const packagesToExclude = ['@angular', '@ngrx', 'apollo-angular'];
 
-export default {
+module.exports = {
   preset: 'jest-preset-angular',
   reporters: ['default'],
-  setupFilesAfterEnv: [require.resolve('./setup-jest')],
+  setupFilesAfterEnv: [require.resolve('./setup-jest.cjs')],
   testPathIgnorePatterns: ['<rootDir>/.*/e2e/'],
   globals: {
     'ts-jest': {

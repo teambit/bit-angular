@@ -1,5 +1,6 @@
 // required here to make sure that this is loaded before the compositions file
 import '@angular/compiler';
+// @ts-ignore
 import type { Type } from '@angular/core';
 import { ngBootstrap, NgBootstrapOptions } from '@bitdev/angular.dev-services.preview.runtime';
 

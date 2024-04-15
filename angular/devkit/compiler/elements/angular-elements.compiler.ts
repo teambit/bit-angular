@@ -1,3 +1,4 @@
+// @ts-ignore
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import type { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
 import {

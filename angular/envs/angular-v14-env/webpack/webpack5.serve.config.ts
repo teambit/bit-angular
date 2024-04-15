@@ -11,14 +11,20 @@ import {
   WebpackBitReporterPlugin,
   WebpackConfigWithDevServer
 } from '@teambit/webpack';
+import { fileURLToPath } from 'node:url';
 import { join, posix, resolve } from 'path';
-import errorOverlayMiddleware from 'react-dev-utils/errorOverlayMiddleware';
-import evalSourceMapMiddleware from 'react-dev-utils/evalSourceMapMiddleware';
-import getPublicUrlOrPath from 'react-dev-utils/getPublicUrlOrPath';
-import noopServiceWorkerMiddleware from 'react-dev-utils/noopServiceWorkerMiddleware';
-import redirectServedPath from 'react-dev-utils/redirectServedPathMiddleware';
-import { ProvidePlugin } from 'webpack';
-import { getModuleRulesConfig } from './module-rules.config';
+// @ts-ignore
+import errorOverlayMiddleware from 'react-dev-utils-esm/errorOverlayMiddleware.js';
+// @ts-ignore
+import evalSourceMapMiddleware from 'react-dev-utils-esm/evalSourceMapMiddleware.js';
+// @ts-ignore
+import getPublicUrlOrPath from 'react-dev-utils-esm/getPublicUrlOrPath.js';
+// @ts-ignore
+import noopServiceWorkerMiddleware from 'react-dev-utils-esm/noopServiceWorkerMiddleware.js';
+// @ts-ignore
+import redirectServedPath from 'react-dev-utils-esm/redirectServedPathMiddleware.js';
+import webpack from 'webpack';
+import { getModuleRulesConfig } from './module-rules.config.js';
 
 const publicUrlOrPath = getPublicUrlOrPath(process.env.NODE_ENV === 'development', '/', '/public');
 
@@ -157,7 +163,7 @@ export function webpack5ServeConfigFactory(
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
       alias: fallbacksAliases,
-      fallback: { ...fallbacks, events: require.resolve('events/') } as any,
+      fallback: { ...fallbacks, events: fileURLToPath(import.meta.resolve('events/')) } as any,
       modules: nodeModulesPaths
     },
 
@@ -167,7 +173,7 @@ export function webpack5ServeConfigFactory(
 
     plugins: [
       new BitDedupeModuleResolvePlugin(nodeModulesPaths, workspaceDir, tempFolder),
-      new ProvidePlugin(fallbacksProvidePluginConfig),
+      new webpack.ProvidePlugin(fallbacksProvidePluginConfig),
       new WebpackBitReporterPlugin({
         options: { pubsub, devServerID }
       }),

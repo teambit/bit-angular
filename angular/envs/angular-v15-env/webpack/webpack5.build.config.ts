@@ -2,7 +2,7 @@ import { BitDedupeModuleResolvePlugin, WebpackConfig } from '@bitdev/angular.dev
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
 import webpack from 'webpack';
-import { getModuleRulesConfig } from './module-rules.config';
+import { getModuleRulesConfig } from './module-rules.config.js';
 
 export function webpack5BuildConfigFactory(
   entryFiles: string[],

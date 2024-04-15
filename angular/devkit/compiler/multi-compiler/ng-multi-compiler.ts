@@ -1,10 +1,10 @@
+// @ts-ignore
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import type { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
 import { componentIsApp, NG_APP_PATTERN } from '@bitdev/angular.dev-services.common';
 import { AngularElementsCompiler } from '@bitdev/angular.dev-services.compiler.elements';
 import { NgPackagrCompiler } from '@bitdev/angular.dev-services.compiler.ng-packagr';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
-import { BabelAspect, BabelCompiler, BabelMain } from '@teambit/babel';
 import {
   ArtifactDefinition,
   BuildContext,
@@ -22,16 +22,11 @@ import {
 } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
-import { Capsule } from '@teambit/isolator';
-import { outputFileSync } from 'fs-extra';
+import { TypescriptCompiler } from '@teambit/typescript.typescript-compiler';
+import fs from 'fs-extra';
 import minimatch from 'minimatch';
-import { join } from 'path';
-
-const presets = [
-  require.resolve('@babel/preset-env'),
-  require.resolve('@babel/preset-typescript')
-];
-const plugins = [require.resolve('@babel/plugin-transform-class-properties')];
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 export interface NgMultiCompilerOptions {
   bitCompilerOptions?: Partial<CompilerOptions>;
@@ -48,7 +43,7 @@ export class NgMultiCompiler implements Compiler {
 
   private constructor(
     public displayName = 'angular-multi-compiler',
-    private babelMain: BabelMain,
+    private tsCompiler: Compiler,
     private application: ApplicationMain,
     private ngEnvOptions: AngularEnvOptions,
     private ngPackagrCompiler: NgPackagrCompiler,
@@ -62,21 +57,6 @@ export class NgMultiCompiler implements Compiler {
     } else {
       this.mainCompiler = this.ngPackagrCompiler;
     }
-  }
-
-  private _babelCompiler!: BabelCompiler;
-
-  get babelCompiler(): BabelCompiler {
-    if (!this._babelCompiler) {
-      this._babelCompiler = this.babelMain.createCompiler({
-        babelTransformOptions: {
-          presets,
-          plugins,
-          sourceMaps: true
-        }, shouldCopyNonSupportedFiles: false, supportedFilesGlobPatterns: [NG_APP_PATTERN]
-      });
-    }
-    return this._babelCompiler;
   }
 
   private getArtifactDefinition(): ArtifactDefinition[] {
@@ -103,19 +83,19 @@ export class NgMultiCompiler implements Compiler {
     await this.ngPackagrCompiler.transpileComponent(params);
   }
 
-  transpileFile(fileContent: string, params: TranspileFileParams): TranspileFileOutput {
+  transpileFile(fileContent: string, params: TranspileFileParams): TranspileFileOutput | Promise<TranspileFileOutput> {
     if (minimatch(params.filePath, NG_APP_PATTERN)) {
-      return this.babelCompiler.transpileFile(fileContent, params);
+      return this.tsCompiler.transpileFile!(fileContent, params);
     }
     return null;
   }
 
-  compileAppEntryFile(appComponent: Component, appComponentDir: string): TranspileFileOutput {
+  async compileAppEntryFile(appComponent: Component, appComponentDir: string): Promise<TranspileFileOutput> {
     const appEntryFile = appComponent.state.filesystem.files.find(file => minimatch(file.relative, NG_APP_PATTERN))!;
-    const transpileFileOutput = this.transpileFile(appEntryFile.contents.toString(), { filePath: appEntryFile.relative, componentDir: appComponentDir });
+    const transpileFileOutput = await this.transpileFile(appEntryFile.contents.toString(), { filePath: appEntryFile.relative, componentDir: appComponentDir });
     const distPath = join(appComponentDir, this.distDir);
     transpileFileOutput?.forEach((fileOutput: TranspileFileOutputOneFile) => {
-      outputFileSync(join(distPath, fileOutput.outputPath), fileOutput.outputText);
+      fs.outputFileSync(join(distPath, fileOutput.outputPath), fileOutput.outputText);
     });
     return transpileFileOutput;
   }
@@ -128,11 +108,11 @@ export class NgMultiCompiler implements Compiler {
     const capsules = context.capsuleNetwork.seedersCapsules;
     // compile all app entry files with babel
     const appComponentCapsules = capsules.filter(capsule => componentIsApp(capsule.component, this.application));
-    appComponentCapsules.forEach((capsule: Capsule) => {
+    for(const capsule of appComponentCapsules) {
       const appComponent = capsule.component;
-      this.compileAppEntryFile(appComponent, capsule.path);
+      await this.compileAppEntryFile(appComponent, capsule.path);
       componentsResults.push({ component: appComponent });
-    });
+    }
 
     // compile all the other components with ng-packagr
     const ngPackagrResult = await this.ngPackagrCompiler.build(context);
@@ -163,7 +143,7 @@ export class NgMultiCompiler implements Compiler {
    */
   getDistPathBySrcPath(srcPath: string): string {
     if (minimatch(srcPath, NG_APP_PATTERN)) {
-      return this.babelCompiler.getDistPathBySrcPath(srcPath);
+      return this.tsCompiler.getDistPathBySrcPath(srcPath);
     }
     return this.mainCompiler.getDistPathBySrcPath(srcPath);
   }
@@ -182,7 +162,7 @@ export class NgMultiCompiler implements Compiler {
    */
   isFileSupported(filePath: string): boolean {
     if (minimatch(filePath, NG_APP_PATTERN)) {
-      return this.babelCompiler.isFileSupported(filePath);
+      return this.tsCompiler.isFileSupported(filePath);
     }
     return this.mainCompiler.isFileSupported(filePath);
   }
@@ -194,13 +174,16 @@ export class NgMultiCompiler implements Compiler {
   static from(options: NgMultiCompilerOptions): EnvHandler<NgMultiCompiler> {
     return (context: EnvContext) => {
       const name = options.name || 'angular-multi-compiler';
-      const ngPackagrModulePath = options.ngEnvOptions.ngPackagrModulePath || require.resolve('ng-packagr');
+      const ngPackagrModulePath = options.ngEnvOptions.ngPackagrModulePath || import.meta.resolve('ng-packagr');
       const distDir = options.bitCompilerOptions?.distDir ?? 'dist';
       const distGlobPatterns = options.bitCompilerOptions?.distGlobPatterns ?? [`${distDir}/**`];
       const shouldCopyNonSupportedFiles = options.bitCompilerOptions?.shouldCopyNonSupportedFiles ?? false;
       const artifactName = options.bitCompilerOptions?.artifactName ?? 'dist';
-      const babelMain = context.getAspect<BabelMain>(BabelAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
+      const tsCompiler: Compiler = TypescriptCompiler.from({
+        esm: true,
+        tsconfig: fileURLToPath(import.meta.resolve('./config/tsconfig.json'))
+      })(context);
 
       const ngPackagrCompiler = NgPackagrCompiler.from({
         artifactName,
@@ -228,7 +211,7 @@ export class NgMultiCompiler implements Compiler {
 
       return new NgMultiCompiler(
         name,
-        babelMain,
+        tsCompiler,
         application,
         options.ngEnvOptions,
         ngPackagrCompiler,

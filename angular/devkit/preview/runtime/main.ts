@@ -1,6 +1,6 @@
 /* eslint-disable */
-require('zone.js');
-const i0 = require('@angular/core') as any;
+import 'zone.js';
+import { ɵɵdefineComponent, ɵsetClassMetadata, ɵɵdefineNgModule, ɵɵdefineInjector, ɵɵsetNgModuleScope, Component, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 // The injector used to create custom elements from Angular components
@@ -9,10 +9,10 @@ class AppComponent {
 // @ts-ignore
 AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(); };
 // @ts-ignore
-AppComponent.ɵcmp = /* @__PURE__ */ i0.ɵɵdefineComponent({ type: AppComponent, selectors: [["app-root"]], decls: 0, vars: 0, template: function AppComponent_Template(rf, ctx) { }, encapsulation: 2 });
+AppComponent.ɵcmp = /* @__PURE__ */ ɵɵdefineComponent({ type: AppComponent, selectors: [["app-root"]], decls: 0, vars: 0, template: function AppComponent_Template(rf, ctx) { }, encapsulation: 2 });
 (function () { // @ts-ignore
-  (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AppComponent, [{
-  type: i0.Component,
+  (typeof ngDevMode === "undefined" || ngDevMode) && ɵsetClassMetadata(AppComponent, [{
+  type: Component,
   args: [{
     selector: 'app-root',
     template: ``
@@ -25,17 +25,17 @@ class AppModule {
 // @ts-ignore
 AppModule.ɵfac = function AppModule_Factory(t) { return new (t || AppModule)(); };
 // @ts-ignore
-AppModule.ɵmod = /* @__PURE__ */ i0.ɵɵdefineNgModule({ type: AppModule });
+AppModule.ɵmod = /* @__PURE__ */ ɵɵdefineNgModule({ type: AppModule });
 // @ts-ignore
-AppModule.ɵinj = /* @__PURE__ */ i0.ɵɵdefineInjector({ imports: [[BrowserModule]] });
+AppModule.ɵinj = /* @__PURE__ */ ɵɵdefineInjector({ imports: [[BrowserModule]] });
 (function () { // @ts-ignore
-  (typeof ngDevMode === "undefined" || ngDevMode) && i0.ɵsetClassMetadata(AppModule, [{
-  type: i0.NgModule,
+  (typeof ngDevMode === "undefined" || ngDevMode) && ɵsetClassMetadata(AppModule, [{
+  type: NgModule,
   args: [{
     imports: [BrowserModule]
   }]
 }], null, null); })();
 (function () { // @ts-ignore
-  (typeof ngJitMode === "undefined" || ngJitMode) && i0.ɵɵsetNgModuleScope(AppModule, { imports: [BrowserModule] }); })();
+  (typeof ngJitMode === "undefined" || ngJitMode) && ɵɵsetNgModuleScope(AppModule, { imports: [BrowserModule] }); })();
 
 export { AppComponent, AppModule };

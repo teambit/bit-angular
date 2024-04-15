@@ -1,6 +1,7 @@
 import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import rollupJson from '@rollup/plugin-json';
+// @ts-ignore
 import nodeResolve from '@rollup/plugin-node-resolve';
 import { Logger } from '@teambit/logger';
 import * as rollup from 'rollup';
@@ -8,6 +9,7 @@ import { TransformHook } from 'rollup';
 // import { minify } from 'rollup-plugin-esbuild';
 // import html from '@rollup/plugin-html';
 // import sourcemaps from 'rollup-plugin-sourcemaps';
+// @ts-ignore
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
 import { ngcPlugin } from './ngc-plugin';
 // import { ensureUnixPath } from './utils/path';

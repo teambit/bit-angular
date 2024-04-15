@@ -1,6 +1,6 @@
 export const eslintConfigFile = () => {
   return {
-    relativePath: './config/eslintrc.js',
+    relativePath: './config/eslintrc.cjs',
     content: `/**
  * @see https://bit.dev/reference/eslint/eslint-config
  */

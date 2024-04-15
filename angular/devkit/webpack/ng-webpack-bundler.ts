@@ -27,12 +27,13 @@ import {
 } from '@teambit/webpack';
 import { generateTransformers, runTransformers } from '@teambit/webpack.webpack-bundler';
 import assert from 'assert';
-import { join, posix } from 'path';
+import { join, posix } from 'node:path';
 import type { Configuration, WebpackPluginInstance } from 'webpack';
 import { WebpackConfigFactoryOpts } from './utils';
 import { StatsLoggerPlugin } from './webpack-plugins/stats-logger';
 
 export type NgWebpackBundlerOptions = {
+  // @ts-ignore
   angularOptions?: Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
 
   /**
@@ -98,6 +99,7 @@ export class NgWebpackBundler {
       } else { // When you use `bit build` for the preview app
         tsconfigPath = writeTsconfig(bundlerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
         if (options?.angularOptions?.tsConfig) {
+          // eslint-disable-next-line no-param-reassign
           options.angularOptions.tsConfig = tsconfigPath;
         }
       }

@@ -98,8 +98,10 @@ export class NgWebpackDevServer {
         isApp = true;
       } else { // When you use `bit start`
         tsconfigPath = writeTsconfig(devServerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        // eslint-disable-next-line no-param-reassign
         options.angularOptions = options.angularOptions || {};
         if (options?.angularOptions?.tsConfig) {
+          // eslint-disable-next-line no-param-reassign
           options.angularOptions.tsConfig = tsconfigPath;
         }
 
@@ -112,6 +114,7 @@ export class NgWebpackDevServer {
             assetsPaths.push(`${ cmpDir }/src/assets`);
           }
         });
+        // eslint-disable-next-line no-param-reassign
         options.angularOptions.assets = [...options.angularOptions.assets || [], ...assetsPaths.map((path) => ({
           'glob': '**/*',
           'input': path,

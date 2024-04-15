@@ -36,26 +36,27 @@
     "policy": {
       "dependencies": {
         "@clack/prompts": "^0.7.0",
-        "@teambit/compilation.compiler-task": "1.0.6",
-        "@teambit/defender.eslint-linter": "1.0.15",
-        "@teambit/defender.jest-tester": "1.0.13",
-        "@teambit/defender.prettier-formatter": "1.0.8",
+        "@teambit/compilation.compiler-task": "1.0.7",
+        "@teambit/defender.eslint-linter": "1.0.22",
+        "@teambit/defender.jest-tester": "2.0.0",
+        "@teambit/defender.prettier-formatter": "1.0.11",
         "@teambit/dependencies.modules.packages-excluder": "1.0.8",
         "@teambit/envs.docs.env-overview-template": "0.0.2",
-        "@teambit/graph.cleargraph": "^0.0.7",
+        "@teambit/graph.cleargraph": "^0.0.8",
         "@teambit/node.deps-detectors.detective-es6": "0.0.5",
-        "@teambit/react.ui.docs-app": "1.0.12",
-        "@teambit/toolbox.network.get-port": "1.0.4",
-        "@teambit/toolbox.performance.v8-cache": "0.0.31",
-        "@teambit/typescript.typescript-compiler": "2.0.14",
+        "@teambit/react.ui.docs-app": "1.0.18",
+        "@teambit/toolbox.network.get-port": "1.0.6",
+        "@teambit/toolbox.performance.v8-cache": "0.0.33",
+        "@teambit/typescript.typescript-compiler": "2.0.28",
         "@teambit/ui-foundation.ui.constants.z-indexes": "0.0.504",
-        "@teambit/webpack.modules.generate-style-loaders": "1.0.4",
-        "@teambit/webpack.modules.style-regexps": "1.0.4",
+        "@teambit/webpack.modules.generate-style-loaders": "1.0.11",
+        "@teambit/webpack.modules.style-regexps": "1.0.6",
         "@teambit/webpack.webpack-bundler": "1.0.7",
         "@types/fs-extra": "~9.0.7",
         "@types/lodash": "4.14.165",
         "@types/object-hash": "~2.1.0",
-        "fs-extra": "9.1.0",
+        "events": "^3.3.0",
+        "fs-extra": "^11.2.0",
         "json5": "^2.2.3",
         "lodash": "4.17.21",
         "object-hash": "~2.1.1",
@@ -104,21 +105,6 @@
    * new set of dependencies.
    **/
   "teambit.workspace/variants": {
-    // Special rules for all aspect envs
-    "angular/envs, angular/examples": {
-      // Set the env env for all core envs
-      "teambit.envs/env": {},
-      "teambit.envs/envs": {
-        "env": "teambit.envs/env"
-      }
-    },
-    // All the other components use node env
-    "angular/devkit, angular/templates, angular/envs/base-env, angular/app-types": {
-      "teambit.envs/envs": {
-        "env": "teambit.harmony/node"
-      },
-      "teambit.harmony/node": {}
-    },
     "angular/readme": {
       "teambit.community/envs/community-mdx@4.0.1": {},
       "teambit.envs/envs": {

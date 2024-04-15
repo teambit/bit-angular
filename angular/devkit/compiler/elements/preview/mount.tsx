@@ -1,3 +1,5 @@
+/* eslint-disable */
+// @ts-nocheck
 import React from 'react';
 import ReactDOM from 'react-dom';
 // required here to make sure that this is loaded before the compositions file
