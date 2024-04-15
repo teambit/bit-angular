@@ -23,22 +23,6 @@
         "mainFile": "index.ts",
         "rootDir": "angular/app-types/angular-app-type"
     },
-    "demo-app": {
-        "name": "demo-app",
-        "scope": "",
-        "version": "",
-        "defaultScope": "integration.examples",
-        "mainFile": "index.ts",
-        "rootDir": "integration/demo-app"
-    },
-    "demo-lib-v17": {
-        "name": "demo-lib-v17",
-        "scope": "",
-        "version": "",
-        "defaultScope": "integration.examples",
-        "mainFile": "public-api.ts",
-        "rootDir": "integration/demo-lib-v17"
-    },
     "dev-services/common": {
         "name": "dev-services/common",
         "scope": "bitdev.angular",
