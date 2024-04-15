@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "envs/angular-v13-env",
-    "scope": "bitdev.angular"
+    "scope": "bitdev.angular",
+    "name": "envs/angular-v13-env"
   },
   "propagate": true,
   "extensions": {
@@ -53,6 +53,7 @@
           "zone.js": "~0.14.0"
         }
       }
-    }
+    },
+    "bitdev.general/envs/bit-env@1.0.1": {}
   }
 }

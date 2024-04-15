@@ -4,7 +4,7 @@ export const jestConfigFile = (angularVersion: number, envPkgName: string) => {
     content: `/**
  * @see https://bit.dev/reference/jest/jest-config
  */
-const jestConfig = require('${envPkgName}/jest/jest.config.cjs');
+const { jestConfig } = require('${envPkgName}');
 const { generateNodeModulesPattern } = require('@teambit/dependencies.modules.packages-excluder');
 ${angularVersion >= 16 ? `
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');

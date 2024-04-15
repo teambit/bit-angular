@@ -20,7 +20,7 @@
           "@babel/preset-typescript": "7.22.15",
           "@babel/runtime": "^7.12.18",
           "@types/enhanced-resolve": "~3.0.7",
-          "@types/node": "^12.11.1",
+          "@types/node": "^20.12.7",
           "@types/trusted-types": "~2.0.1",
           "enhanced-resolve": "5.8.3",
           "eslint": ">= 7.0.0",
@@ -52,6 +52,10 @@
           "zone.js": ">= 0.9.1"
         }
       }
+    },
+    "bitdev.node/node-env@1.0.26": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
     }
   }
 }

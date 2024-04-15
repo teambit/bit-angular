@@ -17,6 +17,7 @@
           "typescript": ">= 3.5.3"
         }
       }
-    }
+    },
+    "teambit.node/node@1.0.54": {}
   }
 }

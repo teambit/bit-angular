@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "envs/angular-v16-env",
-    "scope": "bitdev.angular"
+    "scope": "bitdev.angular",
+    "name": "envs/angular-v16-env"
   },
   "propagate": true,
   "extensions": {
@@ -65,6 +65,10 @@
           "rxjs": "^6.5.5 || ^7.4.0"
         }
       }
+    },
+    "bitdev.general/envs/bit-env@1.0.1": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
     }
   }
 }

@@ -1,7 +1,7 @@
 {
   "componentId": {
-    "name": "examples/my-angular-v16-env",
-    "scope": "bitdev.angular"
+    "scope": "bitdev.angular",
+    "name": "examples/my-angular-v16-env"
   },
   "propagate": true,
   "extensions": {
@@ -15,6 +15,10 @@
           "jest-preset-angular": "~13.1.0"
         }
       }
+    },
+    "bitdev.general/envs/bit-env@1.0.1": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
     }
   }
 }
