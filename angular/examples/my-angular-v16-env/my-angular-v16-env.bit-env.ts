@@ -51,7 +51,7 @@ export class MyAngularV16Env extends AngularV16Env {
       eslint: ESLintLib,
       configPath: require.resolve('./config/eslintrc.cjs'),
       // resolve all plugins from the angular environment.
-      pluginsPath: __dirname,
+      pluginsPath: import.meta.dirname,
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
     };
   }

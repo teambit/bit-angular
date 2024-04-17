@@ -38,13 +38,17 @@ export class NgEnvTemplate implements ComponentTemplate {
     const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
     const envId = aspectId.toStringWithoutVersion();
     let envPkgName: string;
+    let jestEnvPkgName: string;
     if (this.workspace) {
       const envComponent = await this.workspace!.get(aspectId);
       envPkgName = this.pkg.getPackageName(envComponent);
+      jestEnvPkgName = this.pkg.getPackageName(envComponent);
     } else if (envId === 'bitdev.angular/angular-env') { // mostly for ci / ripple
       envPkgName = '@bitdev/angular.angular-env';
+      jestEnvPkgName = `@bitdev/angular.envs.angular-v${ this.angularVersion }-env`;
     } else {
       envPkgName = `@bitdev/angular.envs.angular-v${ this.angularVersion }-env`;
+      jestEnvPkgName = `@bitdev/angular.envs.angular-v${ this.angularVersion }-env`;
     }
     return [
       {
@@ -62,7 +66,7 @@ export class NgEnvTemplate implements ComponentTemplate {
         content: envFile(context, this.envName, this.angularVersion, envPkgName)
       },
       eslintConfigFile(),
-      jestConfigFile(this.angularVersion, envPkgName),
+      jestConfigFile(this.angularVersion, jestEnvPkgName),
       prettierConfigFile(),
       tsConfigFile(),
       tsConfigSpecFile(),
