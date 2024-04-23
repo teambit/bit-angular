@@ -1,7 +1,7 @@
 /**
  * @see https://bit.dev/reference/jest/jest-config
  */
-const { jestConfig } = require('@bitdev/angular.envs.angular-v15-env/jest/jest.config.cjs');
+const jestConfig = require('@bitdev/angular.envs.angular-v15-env/jest/jest.config.cjs');
 const { generateNodeModulesPattern } = require('@teambit/dependencies.modules.packages-excluder');
 
 const packagesToExclude = ['@angular', '@ngrx', 'apollo-angular'];

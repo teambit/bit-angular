@@ -4,22 +4,22 @@ export const jestConfigFile = (angularVersion: number, envPkgName: string) => {
     content: `/**
  * @see https://bit.dev/reference/jest/jest-config
  */
-const { jestConfig } = require('${envPkgName}/jest/jest.config.cjs');
+const jestConfig = require('${envPkgName}/jest/jest.config.cjs');
 const { generateNodeModulesPattern } = require('@teambit/dependencies.modules.packages-excluder');
 ${angularVersion >= 16 ? `
 const { defaultTransformerOptions } = require('jest-preset-angular/presets');
 ` : ''}
 
-const packagesToExclude: string[] = ['@angular', '@ngrx', 'apollo-angular'];
+const packagesToExclude = ['@angular', '@ngrx', 'apollo-angular'];
 
 module.exports = {
   ...jestConfig,
   ${angularVersion >= 16 ? `transform: {
-    '^.+\\\\.(ts|js|mjs|html|svg)$': [
+    '^.+\\.(ts|js|mjs|html|svg)$': [
       'jest-preset-angular',
       {
         ...defaultTransformerOptions,
-        tsconfig: import.meta.resolve('./tsconfig.spec.json')
+        tsconfig: require.resolve('./tsconfig.spec.json')
       }
     ]
   },` : `globals: {
@@ -27,7 +27,7 @@ module.exports = {
       skipNgcc: true
     },
     ` : ''}'ts-jest': {
-      tsconfig: import.meta.resolve('./tsconfig.spec.json')
+      tsconfig: require.resolve('./tsconfig.spec.json')
     }
   },`}
   transformIgnorePatterns: [
