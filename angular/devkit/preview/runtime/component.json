@@ -18,6 +18,7 @@
           "zone.js": ">= 0.9.1"
         }
       }
-    }
+    },
+    "bitdev.node/node-env@2.0.2": {}
   }
 }

@@ -17,6 +17,7 @@
           "ng-packagr": ">=5.0.0"
         }
       }
-    }
+    },
+    "bitdev.node/node-env@2.0.2": {}
   }
 }

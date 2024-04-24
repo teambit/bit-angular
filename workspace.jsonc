@@ -35,6 +35,8 @@
     "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
+        "@bitdev/general.envs.bit-env": "1.0.1",
+        "@bitdev/node.node-env": "2.0.2",
         "@clack/prompts": "^0.7.0",
         "@types/fs-extra": "~9.0.7",
         "@types/lodash": "4.14.165",
@@ -122,4 +124,5 @@
       "bitdev.angular/envs/angular-v13-env": {}
     }
   }
+  //  "integration.examples/demo-app": {}
 }

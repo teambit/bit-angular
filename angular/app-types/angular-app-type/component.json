@@ -22,6 +22,7 @@
           "typescript": ">= 3.5.3"
         }
       }
-    }
+    },
+    "bitdev.node/node-env@2.0.2": {}
   }
 }

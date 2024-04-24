@@ -53,9 +53,9 @@
         }
       }
     },
-    "bitdev.node/node-env@1.0.26": {},
     "teambit.envs/envs": {
       "env": "bitdev.node/node-env"
-    }
+    },
+    "bitdev.node/node-env@2.0.2": {}
   }
 }
