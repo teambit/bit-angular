@@ -20,6 +20,9 @@
         }
       }
     },
-    "teambit.node/node@1.0.54": {}
+    "teambit.node/node@1.0.54": {},
+    "teambit.envs/envs": {
+      "env": "teambit.node/node"
+    }
   }
 }

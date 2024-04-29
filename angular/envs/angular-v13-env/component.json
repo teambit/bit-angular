@@ -54,6 +54,9 @@
         }
       }
     },
-    "bitdev.general/envs/bit-env@1.0.1": {}
+    "bitdev.general/envs/bit-env@1.0.1": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.general/envs/bit-env"
+    }
   }
 }
