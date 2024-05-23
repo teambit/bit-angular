@@ -1,0 +1,22 @@
+```scss
+// Design tokens
+$myPrimaryColor: #4571c4;
+$mySecondaryColor: #c42020cc;
+$myTextColor: #bae0ff;
+$myBgColor: #303030;
+
+// Mixin to output design tokens as CSS variables
+@mixin myDarkTheme() {
+  --myPrimaryColor: $myPrimaryColor;
+  --mySecondaryColor: $mySecondaryColor;
+  --myTextColor: $myTextColor;
+  --myBgColor: $myBgColor;
+}
+
+:export {
+  myPrimaryColor: $myPrimaryColor;
+  mySecondaryColor: $mySecondaryColor;
+  myTextColor: $myTextColor;
+  myBgColor: $myBgColor;
+}
+```

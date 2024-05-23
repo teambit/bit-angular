@@ -1,0 +1,19 @@
+```scss
+// Design tokens
+$myFontSize: 16px;
+$myFontFamily: "Roboto, sans-serif";
+$myBorderRadius: 3px;
+
+// Mixin to output design tokens as CSS variables
+@mixin myBaseTheme() {
+  --myFontSize: $myFontSize;
+  --myFontFamily: $myFontFamily;
+  --myBorderRadius: $myBorderRadius;
+}
+
+:export {
+  myFontSize: $myFontSize;
+  myFontFamily: $myFontFamily;
+  myBorderRadius: $myBorderRadius;
+}
+```

@@ -1,0 +1,18 @@
+---
+description: Routes for the Angular section of bit's documentation.
+---
+
+A component that exposes the Angular routes required for bit's Angular documentation
+
+### Component usage
+```js
+import { learnAngular } from '@bitdev/angular.docs.angular-docs-routes';
+
+export const totalRoutes = DocsRoutes.from(
+  [
+    // other application routes
+    ...learnAngular,
+  ],
+  '/docs'
+).toLinkList();
+```

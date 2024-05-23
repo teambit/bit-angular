@@ -1,0 +1,27 @@
+It is common to both replace tasks and add new tasks.
+
+```ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { JestTask } from '@teambit/defender.jest-tester';
+/* import the task you want to add */
+import { ComponentNameTask } from '@learnbit/extending-bit.build-tasks.component-name';
+
+export class MyAngularEnv extends AngularV18Env {
+  build() {
+    return (
+      super
+        .build()
+        /* replace some of the tasks in the build pipeline */
+        .replace([
+          JestTask.from({
+            config: require.resolve('./config/jest.config'),
+          }),
+        ])
+        /* add a new task to the build pipeline */
+        .add([ComponentNameTask.from({})])
+    );
+  }
+}
+
+export default new MyAngularEnv();
+```

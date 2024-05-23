@@ -1,0 +1,63 @@
+import {
+  NewWorkspace,
+  CreateEnv,
+  BitEnvs,
+  BitTemplates,
+  BitTemplatesOutput,
+  CreateComponent,
+  EnvsOutputComponent,
+  SetEnv,
+} from './commands';
+
+# Set Up your Environment
+
+An env (component development environment) provides your components with the proper tooling, configurations and runtime environment.
+You can use one of the [pre-configured envs](https://bit.cloud/bitdev/angular/angular),
+but we recommend creating a custom env for your workspace so that you can change the configurations and tooling to fit your needs.
+
+## Create a custom Angular env
+
+Run the following to create a new workspace that contains a custom Angular env component:
+
+<NewWorkspace />
+
+Alternatively, run the following to create a custom Angular env in an existing workspace:
+
+<CreateEnv />
+
+## Create a component pre-configured with an env
+
+You can create components using pre-configured [generators](docs/angular-env/component-generators) (templates).
+These generators include the source files for the component as well as its configuration.
+
+Before you create a component using a generator, make sure that your custom env is set properly in your `workspace.jsonc` file.
+When you set your env in the generator config you ensure that all (relevant) components that you generate will be configured to use that env.
+
+```json
+// @filename: workspace.jsonc
+{
+  "teambit.generator/generator": {
+    "envs": ["my-org.my-scope/envs/my-angular-env"]
+  }
+}
+```
+
+Run the following command to list all available templates:
+
+<BitTemplates />
+<BitTemplatesOutput />
+
+Generate a component using the `ng-module` template with the `bit create` command:
+
+<CreateComponent />
+
+Run the following command to verify that your component uses the proper env:
+
+<BitEnvs />
+<EnvsOutputComponent />
+
+## Configure a component to use an env
+
+You can set an existing component to use a different env at any time with the `bit envs set` command:
+
+<SetEnv />

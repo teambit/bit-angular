@@ -1,0 +1,113 @@
+import {
+  RemoveEnv,
+  NewWorkspace,
+  ForkStarter,
+  InstallStarter,
+} from './commands';
+
+# Workspace Starters
+
+Workspace starters are pre-configured workspace templates that you can use to create a new workspace.
+The generated workspace includes workspace-level configuration, configuration files for your IDE,
+and a customizable Angular env for your Angular component development.
+
+Run the following to create a new Angular workspace (set your own default scope name):
+
+<NewWorkspace />
+
+## Change the default env for Angular components
+
+Your workspace starter includes a default env for your Angular component development.
+To remove the env included by this starter, run the following:
+
+<RemoveEnv />
+
+To set a different env as the default env for Angular components, set it in the `generator` property
+of the `workspace.jsonc` file.
+For example, the following code replaces the custom env that was previously removed with the basic
+Angular env:
+
+```json
+/* @filename workspace.jsonc */
+{
+  "teambit.generator/generator": {
+    "envs": ["bitdev.angular/angular-env"]
+  }
+}
+```
+
+> Note that you can use an env whether it is available locally or not. If the env is not available
+locally, Bit will install it from the remote scope.
+
+## Change your starter configuration
+
+Depending on which generator you use, you can change its properties. Here are the list of properties
+used in the default starter generator:
+
+- `name`: the generator's name
+- `description`: the generators description
+- `hidden`: display the generator only when running `bit templates --show-all`
+- `envName`: name of the class that implements the env (e.g. `AngularV15Env`)
+- `packageName`: name of the package that provides the env (e.g. `@bitdev/angular.envs.angular-v15-env`)
+- `angularVersion`: the Angular major version that the generator will use (e.g. `15`)
+
+Install the component that provides the starter generators to customize its properties:
+
+<InstallStarter />
+
+Implement the `starter`` env handler in your env, and provide the starters with the properties to override:
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { EnvHandler } from '@teambit/envs';
+import { StarterList } from '@teambit/generator';
+import { NgWorkspaceTemplate } from '@bitdev/angular.templates.starters';
+
+export class MyAngularEnv extends AngularV18Env {
+  packageName = '@my-org/my-scope.my-angular-env';
+
+  starters(): EnvHandler<StarterList> {
+    return StarterList.from([
+      NgWorkspaceTemplate.from({
+        name: 'my-custom-name',
+        description: 'My custom starter description',
+        envName: this.constructor.name,
+        packageName: this.packageName,
+        angularVersion: this.angularVersion
+      })
+    ]);
+  }
+}
+
+export default new MyAngularEnv();
+```
+
+## Extend or customize your starter
+
+Fork the default starter to customize it and add it to your env:
+
+<ForkStarter />
+
+Replace the default starter with your own custom one:
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { EnvHandler } from '@teambit/envs';
+import { StarterList } from '@teambit/generator';
+/* a custom starter */
+import { AngularWorkspaceStarter } from '@my-org/my-scope.templates.my-custom-starter';
+
+export class MyAngularEnv extends AngularV18Env {
+  packageName = '@my-org/my-scope.my-angular-env';
+
+  starters(): EnvHandler<StarterList> {
+    return StarterList.from([
+      AngularWorkspaceStarter.from({})
+    ]);
+  }
+}
+
+export default new MyAngularEnv();
+```

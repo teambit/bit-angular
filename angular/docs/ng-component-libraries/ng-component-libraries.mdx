@@ -1,0 +1,52 @@
+import { MaterialUI, CDKUI } from './component-galleries';
+import { CreateDesignSystemWS, CreateMaterialDesignSystemWS } from './commands';
+
+# Component Libraries
+
+Design systems often use popular component libraries. That is also the case for component-based implementations.
+Unlike traditional component libraries, a component-based solution does not take the form of a single package published from a centralized repository.
+Instead, it is a collection of independent components that are hosted and collaborated on, using the 'design' scope.
+
+Since each component is independent, consumers of your components are free to pick and choose specific component versions and receive updates only for those they choose to use.
+
+Moreover, using Bit, product-specific scopes can extend this basic collection of components with their UI components (which adhere to the same theme schema) and maintain their custom themes.
+
+## Simple design system with Angular CDK
+The [Angular Component Dev Kit (CDK)](https://material.angular.io/cdk/categories) is a library of reusable, well-tested, and accessible building blocks for UI components, directives, and services that extend the capabilities of Angular.
+It is used to build high-quality, accessible, and performant user interfaces.
+
+The CDK provides many features to help you build better Angular applications, including accessibility, performance, animations, and reusability.
+It is the perfect starting point for building a design system since it provides a solid foundation of UI components but **does not include any styling**.
+
+This example is a [design scope based on Angular CDK](https://bit.cloud/learnbit-angular/design-system/) that includes:
+
+- A base theme component and two custom themes that extend it
+- A theme picker component that allows users to switch between custom themes
+- A UI component using Angular CDK that exposes a custom API and uses the design tokens from the themes
+- An application that uses the themes, the UI component, and the theme picker component
+
+<CDKUI />
+
+<br/>
+Run the following command to create a new workspace with the CDK design system:
+<CreateDesignSystemWS />
+
+## Design system with Angular Material UI
+[Angular Material UI](https://material.angular.io/) is a UI component library that provides a set of high-quality, reusable, and accessible components that can be used to build Angular applications.
+It is based on the Material Design guidelines, which provide a set of design principles and best practices for creating user interfaces that are consistent, usable, and accessible.
+
+Angular Material UI is built on top of the Angular Component Dev Kit (CDK) and includes the most common UI components, such as buttons, cards, and sliders, as well as some advanced components, such as date pickers, tree views, and toolbars.
+It includes styling for all components and allows you to customize the styling to match your brand.
+
+This example is a [design scope based on Angular Material UI](https://bit.cloud/learnbit-angular/material-design-system/) that includes:
+
+- A base theme component and two custom themes that extend it, all using Angular Material UI
+- A theme picker component that allows users to switch between custom themes
+- A UI component using Angular Material UI that exposes a custom API and uses the design tokens from the themes
+- An application that uses the themes, the UI component, and the theme picker component
+
+<MaterialUI />
+
+<br/>
+Run the following command to create a new workspace with the Material UI design system:
+<CreateMaterialDesignSystemWS />

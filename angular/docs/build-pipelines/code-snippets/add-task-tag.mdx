@@ -1,0 +1,18 @@
+The Angular env does not register tasks to the tag pipeline.
+To add a new task, first create a new tag pipeline.
+
+```ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { Pipeline } from '@teambit/builder';
+/* import the task you want to add */
+import { ComponentNameTask } from '@learnbit/extending-bit.build-tasks.component-name';
+
+export class MyAngularEnv extends AngularV18Env {
+  tag() {
+    /* create a new pipeline and add your task */
+    return Pipeline.from([ComponentNameTask.from({})]);
+  }
+}
+
+export default new MyAngularEnv();
+```

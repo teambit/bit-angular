@@ -1,0 +1,62 @@
+import { CSSVarsExample, SCSSVarsExample, JSVarsExample } from './code-snippet-tabs';
+import { CreateButtonComponent } from './commands';
+
+# Base Components
+
+In Angular applications, we can make a distinction between two types of components:
+- UI components, also known as "presentational" or "dumb" components. These components are responsible for rendering the UI. They are usually stateless, and they don't have any business logic. They are also reusable and composable. They are the basic building blocks of a design system.
+- Business components, also known as "container" or "smart" components. These components are responsible for the business logic. They are usually stateful, and they don't have any UI logic. They are also not reusable and composable. They are the glue between UI components and services.
+
+Even with UI components, some logic is necessary, but your goal should be to simplify each component as much as possible (without going too far).
+You should try to externalize the logic into directives and services (think about separation of concern).
+It will make your components more reusable, composable, and easier to test.
+
+An excellent example of this is Angular Material UI. Most of the logic is packed into the Angular Component Dev Kit (CDK), a set of tools that implement common interaction patterns while being unopinionated about their presentation.
+The Angular Material UI package, on the other end, is just a set of UI components that implement Material Design on top of the CDK.
+If you want to write your own UI components and design system, you can do the same and use the CDK to implement common interaction patterns and then build your UI components on top of it.
+
+This section will focus on UI components and how to integrate them into your design system.
+
+Let's start by creating a basic UI component with the following command:
+
+<CreateButtonComponent />
+
+
+UI components must be themeable to maintain consistency in style across compositions.
+In Angular, there are three main options that you can choose to apply a theme to a UI component.
+
+## CSS Variables (Custom Properties)
+
+The simplest solution is to use CSS variables. They are a native CSS feature that allows you to define a variable in one place and use it in multiple locations in your CSS.
+It is a great way to define and consume a theme, as you can define variables for each design token and use them in other UI components.
+As they work at runtime, you can define them on your body element and consume them in your UI components.
+The downside of this approach is that there is no build time validation, so you can't be sure that the variables you are using are defined (which is why you should always have a default value).
+It is also harder to refactor, as you have to update all the references to the variable manually.
+
+CSS Variables are easy to use. Just define them in your theme, and import that theme into your app's main style file.
+Add them to your app's body element so that you can consume them in your UI components:
+
+<CSSVarsExample />
+
+## SCSS Variables
+
+Another simple solution is directly using SCSS variables. The setup is similar to CSS variables, except that you must import that file in your UI components before using the variables.
+You benefit from build-time validation and refactoring at the cost of importing the file in each component.
+It also means a tighter coupling between your theme and your UI components.
+That can be good, as it forces you to keep your theme and UI components in sync.
+
+For example, to author a theme with SCSS variables:
+
+<SCSSVarsExample />
+
+## JS Variables
+
+The last option is to use JS variables. That is an excellent alternative if you want to apply a theme programmatically.
+Some of its advantages are:
+- Proper type-checking for properties
+- Easier QA and unit testing using values from JavaScript
+
+Many libraries simplify the usage of css in js, such as [JSS](https://cssinjs.org), [Emotion](https://emotion.sh/), or [Tailwind](https://tailwindcss.com/).
+We will use simple JS variables for this example, but you can use any library you want.
+
+<JSVarsExample />

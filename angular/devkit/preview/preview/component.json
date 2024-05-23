@@ -1,7 +1,8 @@
 {
   "componentId": {
     "scope": "bitdev.angular",
-    "name": "dev-services/preview/preview"
+    "name": "dev-services/preview/preview",
+    "version": "6.0.0"
   },
   "propagate": true,
   "extensions": {

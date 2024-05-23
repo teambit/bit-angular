@@ -1,0 +1,23 @@
+```tsx
+import { Component, NgModule, ViewEncapsulation } from '@angular/core';
+import { ThemeModule } from '@my-scope/my-theme.provider';
+
+@Component({
+  selector: 'bit-wrapper',
+  encapsulation: ViewEncapsulation.ShadowDom,
+  template: `
+    <my-theme>
+      <div id='wrapper-host'></div>
+    </my-theme>
+  `,
+}) export class WrapperComponent {
+}
+
+@NgModule({
+  declarations: [WrapperComponent],
+  imports: [ThemeModule],
+  exports: [WrapperComponent],
+  bootstrap: [WrapperComponent],
+}) export class WrapperModule {
+}
+```

@@ -1,7 +1,8 @@
 {
   "componentId": {
     "scope": "bitdev.angular",
-    "name": "examples/my-angular-v17-env"
+    "name": "examples/my-angular-v17-env",
+    "version": "5.0.0"
   },
   "propagate": true,
   "extensions": {

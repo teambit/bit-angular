@@ -1,0 +1,122 @@
+import { JestTabs, AddBuildTabs } from './code-snippet-tabs';
+import {
+  BitBuild,
+  BitSnap,
+  BitTag,
+  ListTasks,
+  ListTasksOutput,
+} from './commands';
+
+# Build Pipelines
+
+A build pipeline is a sequence of tasks that are executed when a component is built or snapped.
+
+Your env defines the build tasks that will be executed on your components.
+These tasks are then included into a series of core build tasks that are common to all components.
+
+Run the following command to execute the build pipeline:
+
+<BitBuild />
+
+Run the following command to execute the [snap pipeline](docs/getting-started/collaborate/snap-component-changes) (which includes the build pipeline):
+
+<BitSnap />
+
+Run the following command to execute the [tag pipeline](#) (which includes the build pipeline):
+
+<BitTag />
+
+## Review a component's pipelines
+
+Run the following command to review the pipelines of a component:
+
+<ListTasks />
+
+You will get a list of tasks that includes core tasks (like `CoreExporter`), and tasks that your env
+registered (such as `NgMultiCompiler`).
+
+<ListTasksOutput />
+
+:::info Build artifacts
+Most build tasks generate artifacts. Learn how to retrieve and handle the generated artifacts in
+[Build artifacts](reference/build-pipeline/build-artifacts).
+:::
+
+## Env services vs build tasks
+
+When you developer a component you will run env services _in your workspace_, such as `tester`,
+`linter`, and so on.
+You can execute those services manually by using the corresponding commands (e.g, `bit test`),
+or automatically when running Bit's development server (`bit start`).
+
+Build tasks, on the other hand, run _in a [capsule](reference/build-pipeline/capsule)_, a directory
+isolated from the workspace. They are executed when a component is built/snapped/tagged (`bit build`, `bit snap` or `bit tag`).
+
+Most development tools provide an env service and a corresponding build task. For example,
+`Jest` provides the tester env service and the test build task.
+
+<JestTabs />
+
+:::info Preview service
+An exception to the service/build-task pattern above is the `preview` service.
+It is part of Bit's core build tasks and runs for every component when you build/snap/tag it.
+To learn more see [Component previews](docs/angular-env/components-preview).
+:::
+
+## Modify a pipeline
+
+### Replace a task
+
+Instead of replacing the entire build pipeline, you can just replace a task in it.
+The following example replaces the default `Jest` build task with the same task, but with a different configuration.
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+// ...
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { JestTask } from '@teambit/defender.jest-tester';
+
+export class MyAngularEnv extends AngularV18Env {
+  build() {
+    /* replace the default Jest build task with a new one, that uses a different config */
+    return super.build().replace([
+      JestTask.from({
+        jest: require.resolve('jest'),
+        config: require.resolve('./configs/new.jest.config')
+      })
+    ]);
+  }
+}
+
+export default new MyAngularEnv();
+```
+
+Verify that your pipelines were modified properly by [reviewing the component's pipelines](#review-a-component's-pipelines).
+
+### Add a task
+
+By default, the Angular env only registers tasks for the build pipeline.
+However, you can add your own tasks to a new snap and tag pipelines as well.
+
+<AddBuildTabs />
+
+To learn how to create a custom task, see [Create a build task](reference/build-pipeline/implement-build-task).
+
+### Remove a task
+
+To remove a task from a pipeline, use the `remove()` method in the relevant pipeline(`build`, `snap` or `tag`).
+Get the task name from [the component's list of build tasks](#review-a-component's-pipelines).
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+// ...
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+
+export class MyAngularEnv extends AngularV18Env {
+  build() {
+    return super.build().remove('JestTask');
+  }
+}
+
+export default new MyAngularEnv();
+```

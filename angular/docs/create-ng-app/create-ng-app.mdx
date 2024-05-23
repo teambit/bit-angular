@@ -1,0 +1,60 @@
+import {
+  ListApps,
+  ListAppsOutput,
+  RunApp,
+  RunAppOutput,
+  CreateApp,
+  CreateNgAppOutput,
+  InstallDeps,
+} from './commands';
+import { NgAppDir } from './explore-my-angular-app';
+import { AppGraph } from './bubble-graphs';
+
+# Create apps
+
+An app is a component that can be served, built and deployed. Naturally, apps have dependencies
+(components and packages) but no dependents. For example, the React `bit-dev` component is an app.
+It uses `ui/community-docs`, a standard Bit React component, as a dependency:
+
+<AppGraph />
+
+## Run an app locally
+
+Run the following command to list all available apps in your workspace:
+
+<ListApps />
+
+The output lists the IDs of the available app components and their corresponding app names:
+
+<ListAppsOutput />
+
+Run the following to run an app locally, independent of Bit's dev server:
+
+<RunApp />
+
+After building the app bundle, the dev server will list the path and port of your app:
+
+<RunAppOutput />
+
+## Create a new app component
+
+Run the following command to create an app using the `ng-app` template of your env:
+
+<CreateApp />
+
+The output displays the ID of the generated app (component):
+
+<CreateNgAppOutput />
+
+The generated app component includes an [app plugin file](reference/apps/application-plugins), `my-app.ng-app.ts`,
+with a file pattern that is detected by its corresponding [application-type](reference/apps/application-types),
+in this case the Angular app-type.
+Use a different plugin file pattern to switch from Bit's official Angular app-type, to a different app-type.
+This will affect how your app is being served, built and deployed.
+
+<NgAppDir />
+
+<br />
+
+Install the app's dependencies with the following command:
+<InstallDeps/>

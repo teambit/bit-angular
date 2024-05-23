@@ -1,0 +1,144 @@
+import {
+  BitTemplates,
+  BitTemplatesOutput,
+  CreateComponent,
+  GeneratedFiles,
+  BitShow,
+  ShowComponentOutput,
+  InstallGenerator,
+  ForkGenerator,
+} from './commands';
+
+# Angular Component Generators
+
+Component generators are pre-configured templates. They simplify the creation of new components as
+they can include their boilerplate code and their configuration.
+
+Run the following command to list the available templates:
+
+<BitTemplates />
+
+The output lists component generators that are provided by different sources. One of these sources is your env.
+
+<BitTemplatesOutput />
+
+:::info Don't see your env listed?
+If your don't see your env listed then you probably need to configure it in your `workspace.jsonc`
+file:
+
+```json
+{
+  "teambit.generator/generator": {
+    "envs": ["bitdev.angular/angular-env"]
+  }
+}
+```
+
+Replace the env id `bitdev.angular/angular-env` with the one that you are using.
+
+:::
+
+Run the following to create a new component using one of the available generators:
+
+<CreateComponent />
+
+The generator should create the following files:
+
+<GeneratedFiles />
+
+The generator should also set your component with pre-made configuration.
+Run the following to inspect it:
+
+<BitShow />
+
+Notice how your component is already set to use your env:
+
+<ShowComponentOutput />
+
+## Change your generators' properties
+
+Depending on which generator you use, you can change its properties. Here are the list of properties
+used in some of the default component generators:
+
+- `name`: the generator's name
+- `description`: the generators description
+- `hidden`: display the generator only when running `bit templates --show-all`
+- `envName`: name of the class that implements the env (e.g. `AngularV15Env`)
+- `packageName`: name of the package that provides the env (e.g. `@bitdev/angular.envs.angular-v15-env`)
+- `angularVersion`: the Angular major version that the generator will use (e.g. `15`)
+
+Install the component that provides the generators to customize its properties:
+
+<InstallGenerator />
+
+Implement the `generator` env handler in your env, and provide the generators with the properties to override:
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+import { AngularV18Env } from '@bitdev/angular.angular-v18-env';
+import { TemplateList } from '@teambit/generator';
+import { NgModuleTemplate } from '@bitdev/angular.templates.generators';
+
+export class MyAngularEnv extends AngularV18Env {
+  generators() {
+    return TemplateList.from([
+      NgModuleTemplate.from({
+        name: 'new-name',
+        description: 'standardize and speed up development with this Angular template',
+        angularVersion: this.angularVersion,
+      }),
+    ]);
+  }
+}
+
+export default new MyAngularEnv();
+```
+
+## Extend or customize your generators
+
+To extend or customize your generators, fork the generator component and set your env with you own custom component, instead.
+
+Run the following to fork the default Angular generator component:
+
+<ForkGenerator />
+
+Customize the various templates provided by that generator component.
+Replace the default templates with your own custom ones:
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+// ...
+import { TemplateList } from '@teambit/generator';
+import { MyAngularGenerator } from '@my-org/my-scope.generators.my-angular-generators';
+
+export class MyAngularEnv extends AngularEnv implements AngularEnvInterface {
+  generators() {
+    return TemplateList.from([MyAngularGenerator.from()]);
+  }
+}
+
+export default new MyAngularEnv();
+```
+
+You can also add generators to the existing ones, by adding the forked component to the array of generators:
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+// ...
+import { TemplateList } from '@teambit/generator';
+import { AngularComponentTemplate } from '@bitdev/angular.templates.generators';
+import { MyAngularGenerator } from '@my-org/my-scope.generators.my-angular-generators';
+
+export class MyAngularEnv extends AngularEnv implements AngularEnvInterface {
+  generators() {
+    return TemplateList.from([
+      AngularComponentTemplate.from(),
+      MyAngularGenerator.from(),
+    ]);
+  }
+}
+
+export default new MyAngularEnv();
+```
+
+> Make sure that there are no naming conflicts between the existing generators and the generators that were added by you.

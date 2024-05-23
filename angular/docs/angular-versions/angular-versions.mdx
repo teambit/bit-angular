@@ -1,0 +1,25 @@
+import { ReplaceEnv, ShowComponent, ShowComponentOutput } from './commands';
+
+## Angular Versions
+
+The Angular team releases a new major version every 6 months.
+The [default Angular env (`bitdev.angular/angular-env`)](https://bit.cloud/bitdev/angular/angular) always uses the latest stable version of Angular and its dependencies.
+
+Bit will still support old versions of Angular when possible, if you want to use a specific version you can use one those env versions instead of `bitdev.angular/angular-env`:
+
+- [v18: `bitdev.angular/envs/angular-v18-env`](https://bit.cloud/bitdev/angular/envs/angular-v18-env) _(latest)_
+- [v17: `bitdev.angular/envs/angular-v17-env`](https://bit.cloud/bitdev/angular/envs/angular-v17-env) _(LTS)_
+- [v16: `bitdev.angular/envs/angular-v16-env`](https://bit.cloud/bitdev/angular/envs/angular-v16-env) _(LTS)_
+- [v15: `bitdev.angular/envs/angular-v15-env`](https://bit.cloud/bitdev/angular/envs/angular-v15-env) _(deprecated)_
+- [v14: `bitdev.angular/envs/angular-v14-env`](https://bit.cloud/bitdev/angular/envs/angular-v14-env) _(deprecated)_
+- [v13: `bitdev.angular/envs/angular-v13-env`](https://bit.cloud/bitdev/angular/envs/angular-v13-env) _(deprecated)_
+
+You can quickly switch between these versions with the `bit env replace` command. For example, to use v16 instead of the default, you would use the following command:
+
+<ReplaceEnv />
+
+:::tip Use the latest Angular version
+We recommend using the latest version of Angular whenever possible.
+Keep in mind that the Angular team will support each version for 18 months after its release date.
+See the [Angular versioning and releases](https://angular.io/guide/releases#support-policy-and-schedule) page for more information.
+:::

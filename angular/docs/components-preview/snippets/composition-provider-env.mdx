@@ -1,0 +1,17 @@
+```tsx
+// @filename: my-angular-env.bit-env.ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { Preview } from '@teambit/preview';
+import { EnvHandler } from '@teambit/envs';
+import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
+
+export class MyAngularEnv extends AngularV18Env {
+  preview(): EnvHandler<Preview> {
+    return AngularPreview.from({
+      mounterPath: require.resolve('./preview/mounter')
+    });
+  }
+}
+
+export default new MyAngularEnv();
+```

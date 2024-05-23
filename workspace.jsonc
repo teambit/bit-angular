@@ -35,17 +35,35 @@
     "packageManager": "teambit.dependencies/pnpm",
     "policy": {
       "dependencies": {
-        "@bitdev/general.envs.bit-env": "1.0.1",
+        "@bitdev/general.envs.bit-env": "^1.0.2",
         "@bitdev/node.node-env": "2.0.2",
         "@clack/prompts": "^0.7.0",
+        "@teambit/community.ui.bit-cli.command-example": "0.0.8",
+        "@teambit/community.ui.bit-cli.terminal": "0.0.30",
+        "@teambit/community.ui.file-explorer": "1.1.9",
+        "@teambit/components.blocks.component-card-display": "0.0.36",
+        "@teambit/defender.eslint-linter": "1.0.25",
+        "@teambit/defender.jest-tester": "2.0.1",
+        "@teambit/defender.prettier-formatter": "1.0.14",
+        "@teambit/docs.entities.docs-routes": "1.95.17",
+        "@teambit/envs.docs.create-env": "1.0.10",
+        "@teambit/envs.docs.env-overview-template": "0.0.3",
+        "@teambit/envs.docs.envs-build-pipeline": "1.0.8",
+        "@teambit/envs.docs.envs-component-generators": "1.0.8",
+        "@teambit/envs.docs.envs-dependency-policy": "1.0.8",
+        "@teambit/envs.docs.envs-workspace-starters": "0.1.8",
+        "@teambit/graph.cleargraph": "0.0.9",
+        "@teambit/harmony.content.cli-reference": "2.0.285",
+        "@teambit/react.ui.docs-app": "1.0.21",
+        "@teambit/typescript.typescript-compiler": "2.0.30",
         "@types/fs-extra": "~9.0.7",
-        "@types/lodash": "4.14.165",
+        "@types/lodash-es": "^4.17.12",
         "@types/node": "20.12.7",
         "@types/object-hash": "~2.1.0",
         "events": "^3.3.0",
         "fs-extra": "^11.2.0",
         "json5": "^2.2.3",
-        "lodash": "4.17.21",
+        "lodash-es": "^4.17.21",
         "object-hash": "~2.1.1",
         "prettier": "2.3.2",
         "react-dev-utils": "10.2.1",
@@ -70,15 +88,17 @@
   },
   "teambit.generator/generator": {
     "envs": [
-      "bitdev.angular/angular-env",
-      "bitdev.angular/envs/angular-v17-env",
-      "bitdev.angular/envs/angular-v16-env",
-      "bitdev.angular/envs/angular-v15-env",
-      "bitdev.angular/envs/angular-v14-env",
-      "bitdev.angular/envs/angular-v13-env"
+      //            "bitdev.angular/angular-env",
+      "bitdev.angular/envs/angular-v18-env"
+      //      "bitdev.angular/envs/angular-v17-env"
+      //      "bitdev.angular/envs/angular-v16-env",
+      //      "bitdev.angular/envs/angular-v15-env",
+      //      "bitdev.angular/envs/angular-v14-env",
+      //      "bitdev.angular/envs/angular-v13-env"
     ]
   },
   "bitdev.angular/angular-env": {},
+  "bitdev.angular/envs/angular-v18-env": {},
   "bitdev.angular/envs/angular-v17-env": {},
   "bitdev.angular/envs/angular-v16-env": {},
   "bitdev.angular/envs/angular-v15-env": {},
@@ -92,6 +112,14 @@
    * new set of dependencies.
    **/
   "teambit.workspace/variants": {
+    // Special rules for all aspect envs
+    "angular/envs, angular/examples": {
+      // Set the env env for all core envs
+      "bitdev.general/envs/bit-env": {},
+      "teambit.envs/envs": {
+        "env": "bitdev.general/envs/bit-env"
+      }
+    },
     "angular/readme": {
       "teambit.community/envs/community-mdx@4.0.1": {},
       "teambit.envs/envs": {
@@ -102,11 +130,14 @@
       "teambit.envs/env": {}
     },
     "integration/demo-app": {
-      "bitdev.angular/angular-env": {}
-//      "bitdev.angular/envs/angular-v17-env": {}
+      //            "bitdev.angular/angular-env": {}
+      "bitdev.angular/envs/angular-v18-env": {}
     },
     "integration/demo-lib": {
       "bitdev.angular/angular-env": {}
+    },
+    "integration/demo-lib-v18": {
+      "bitdev.angular/envs/angular-v18-env": {}
     },
     "integration/demo-lib-v17": {
       "bitdev.angular/envs/angular-v17-env": {}

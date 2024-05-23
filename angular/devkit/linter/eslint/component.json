@@ -1,7 +1,8 @@
 {
   "componentId": {
     "scope": "bitdev.angular",
-    "name": "dev-services/linter/eslint"
+    "name": "dev-services/linter/eslint",
+    "version": "3.0.1"
   },
   "propagate": true,
   "extensions": {

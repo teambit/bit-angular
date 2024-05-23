@@ -1,0 +1,164 @@
+import { CreateComponent } from './commands';
+
+# Overview
+
+In some sense, [a Bit component](reference/components/component-anatomy) can be thought of as an Angular library. It is a collection of files that work together
+to implement a feature (although, of course, a component is more than a collection of files). A component can include any type of Angular files, like components, directives,
+services and pipes, as well as style files (CSS or SCSS) and test files.
+
+A component has a single entry point, which is the main file that is used to import the component
+into other components or applications. The entry point is a file named `public-api.ts` and
+everything that is exported from this file will be available publicly.
+
+A component in Bit also comes with a documentation file (.md) and a composition file that you can use
+to render your components in different contexts and variations, allowing you to create showcases and
+documentation for your components, similarly to what you would find in a component library.
+
+The documentation file and the compositions are not part of the public api of the component, and are
+not exported from the entry point.
+
+## Create a component
+
+There are different templates that you can use to create a component (see [Angular Component Generators](docs/angular-env/component-generators)).
+The default template is the `ng-module` template, which creates a component with a single Angular module.
+
+Run the following to create a component using your env's 'Angular' template:
+
+<CreateComponent />
+
+:::info Component compilation
+Run Bit's development server (`bit start`) or watch mode (`bit watch`) to [compile](reference/compiling/compiler-overview)
+modified components.
+:::
+
+## Implementation file
+
+Make your component as extensible as possible by using inputs and outputs. Extensibility is key to
+maximizing component reuse.
+
+```tsx
+/* @filename: my-button.component.ts */
+
+import { Component, Input } from '@angular/core';
+
+@Component({
+  selector: 'my-button',
+  template: `
+    <button [ngClass]="cls">
+      <ng-content></ng-content>
+    </button>
+  `,
+  styleUrls: ['./my-button.component.scss'],
+})
+export class MyButtonComponent {
+  @Input() cls: string;
+}
+```
+
+## Main file
+
+Expose your component's public API in the [component's main file](reference/components/component-main-file) (`public-api.ts`, by default):
+
+```ts
+/* @filename: public-api.ts */
+
+/**
+ * Entry point for this Angular library, do not move or rename this file.
+ */
+export * from './button.component';
+export * from './button.module';
+```
+
+## Compositions
+
+Verify that your component behaves as expected by rendering it in various relevant contexts and variations.
+
+Since a composition is a mini-application that renders a component in a specific context and variation,
+you can create a composition by exporting either a component, a module or a standalone component.
+
+Exporting modules allows you to display multiple components on the same page by adding each component
+to the `bootstrap` array of the module, and it is the recommended solution for Angular v13 and below.
+
+Exporting a standalone component is more versatile, more aligned with how compositions behave, and
+it contains less boilerplate, which is why it is the recommended solution for Angular v14 and above.
+
+For example, the following basic composition displays the `ui/my-button` component with the text
+`hello world!` and a custom class.
+
+```ts
+/* @filename: ui/my-button.composition.ts */
+import { Component } from '@angular/core';
+import { MyButtonModule } from './my-button.module';
+
+@Component({
+  standalone: true,
+  selector: 'my-button-composition-cmp',
+  imports: [MyButtonModule],
+  template: `MyButton composition:
+    <my-button cls="my-style">hello world!</my-button>`,
+})
+export class MyButtonCompositionComponent {}
+```
+
+You can add other compositions by exporting additional components, from the same file or other
+`*.composition.*` files.
+
+Head to the component's 'Compositions' tab, to see your rendered compositions (run `bit start` if
+you don't already have the workspace UI running).
+
+## Tests
+
+Head over to your component's `.spec.ts` file to add automated testing.
+We recommend using unit test to test for your component files, and use your compositions in your
+e2e tests. For example:
+
+```tsx
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+
+import { MyButtonComponent } from './my-button.component';
+import { MyButtonModule } from './my-button.module';
+
+describe('MyButtonComponent', () => {
+  let component: MyButtonComponent;
+  let fixture: ComponentFixture<MyButtonComponent>;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [MyButtonModule],
+    }).compileComponents();
+  });
+
+  beforeEach(() => {
+    fixture = TestBed.createComponent(MyButtonComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
+```
+
+See the [Testing](reference/testing/tester-overview) docs for more information.
+
+## Use a dependency
+
+To use a dependency, whether it is a component or a package, install it in your workspace, and
+import it into your component's files (components maintained in the same workspace do not need to be
+installed, but are consumed via their package name, nonetheless).
+
+To use a component as a dependency of another component, run `bit show ui/my-component` to see
+its package name and use that to import it into other components.
+
+## Documentation
+
+A basic documentation file is automatically generated for your component when you use the one of
+the templates. To add your own custom documentation, edit the existing `.md` documentation file in
+your component directory.
+
+## Collaborate
+
+[Snap](/getting-started/collaborate/snap-component-changes) your component and
+[export](/getting-started/collaborate/exporting-components) it to its remote scope to enable others
+to consume it and collaborate on it.

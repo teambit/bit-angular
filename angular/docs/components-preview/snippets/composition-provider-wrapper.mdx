@@ -1,0 +1,17 @@
+```tsx
+import { Component, ViewEncapsulation } from '@angular/core';
+import { ThemeModule } from '@my-scope/my-theme.provider';
+
+@Component({
+  selector: 'bit-wrapper',
+  standalone: true,
+  imports: [ThemeModule],
+  encapsulation: ViewEncapsulation.None,
+  template: `
+    <my-theme>
+      <ng-content></ng-content>
+    </my-theme>
+  `,
+}) export class WrapperComponent {
+}
+```

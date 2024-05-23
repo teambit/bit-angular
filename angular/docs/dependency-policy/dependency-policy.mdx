@@ -1,0 +1,347 @@
+import {
+  ShowComponent,
+  BitInstall,
+  ShowEnv,
+  ShowEnvOutput,
+  ShowComponentPeerOutput,
+  BitShowDevOutput,
+  DepsSet,
+} from './commands';
+import { DepManagementAlternatives } from '@teambit/dependencies.docs.dep-management-alternatives';
+
+# Dependency Policy
+
+The env dependency policy standardizes your component dependencies. That includes the dependencies
+that you use for your component development, previewing, and runtime production.
+
+See the section below to learn about alternative dependency configurations:
+
+<DepManagementAlternatives isOutsideReferencePath />
+
+The env dependency policy is great for standardizing your components' dependencies, but to set a
+specific dependency configuration on a component or a group of components, use the
+[dependency configuration](reference/dependencies/configuring-dependencies).
+
+For example:
+
+<DepsSet />
+
+## Modifying the env dependency policy
+
+You can modify your env dependencies by updating the `env.jsonc` file of your custom environment.
+This will affect all components that use this environment.
+
+For example, the following configuration sets `@angular/forms` version `^15.0.0`, as a peer dependency of your components:
+
+```jsonc
+// @filename: env.jsonc
+{
+  "policy": {
+    "peers": [
+      {
+        "name": "@angular/forms",
+        "version": "^15.0.0",
+        "supportedRange": "^13.0.0 || ^14.0.0 || 15.0.0"
+      }
+    ]
+  }
+}
+```
+
+When you set a dependency for an Angular **component**, you almost always want to use a peer dependency.
+Your components will be used by other components or other applications, and you don't want to automatically install the dependency
+with the component. Instead, you want to let the host application decide which version of the dependency to use.
+Unlike regular dependency managers, Bit will automatically install peer dependencies using the version specified in the policy
+if there is no other compatible version installed.
+This is done to ensure that the component will work correctly locally (for preview, tests, ...).
+
+When you set a dependency for an Angular **application**, you almost always want to use a runtime (regular) dependency.
+
+The dev dependencies are used for development only. They are not used in the production code.
+They can be used for testing, linting, building, etc.
+
+Install the dependencies that you specified in your policy by running the following:
+
+<BitInstall />
+
+Verify that the installation was successful by inspecting your components' dependencies. For example:
+
+<ShowComponent />
+
+The output lists `@angular/forms` with the proper dependency type and version, [assuming this component uses it](#add-dependencies-forcefully):
+
+<ShowComponentPeerOutput />
+
+:::info Adding dependencies forcefully
+By default, the dependency policy only affects components that use the dependencies listed in that policy.
+To forcefully add a dependency, see the [Add dependencies forcefully](#add-dependencies-forcefully) section.
+:::
+
+### Add dependencies forcefully
+
+By default, env dependencies only affect [components detected using the dependencies listed in the policy](reference/dependencies/dependency-policies#add-a-dependency-to-a-component).
+For example, if the `ui/my-button` component does not include any `import ... from "@angular/forms"` statement , `@angular/forms` will not be added to its dependency graph.
+The `force` property allows you to override this default behavior, and add a dependency to components that are not detected as using that dependency.
+
+```jsonc
+// @filename: env.jsonc
+{
+  "policy": {
+    "peers": [
+      {
+        "name": "@angular/forms",
+        "version": "^15.0.0",
+        "force": true
+      }
+    ]
+  }
+}
+```
+
+### Remove dependencies forcefully
+
+Use the `"-"` notation in combination with the `"force"` property, to remove dependencies from components.
+
+For example, the following components uses the `themes/my-theme` component in its compositions file:
+
+```tsx
+// @filename: my-button.composition.ts
+
+import { Component, NgModule } from '@angular/core';
+import { MyThemeModule } from '@my-org.design/themes/my-theme';
+import { MyButtonModule } from '../my-button.module';
+
+@Component({
+  selector: 'composition-cmp',
+  template: `<theme>...</theme>`,
+})
+class MyButtonCompositionComponent {}
+
+@NgModule({
+  declarations: [MyButtonCompositionComponent],
+  imports: [MyButtonModule, MyThemeModule],
+  bootstrap: [MyButtonCompositionComponent],
+})
+export class MyButtonCompositionModule {}
+```
+
+Bit automatically detects this dependency and resolves it as a dev dependency, since it is only used by a composition.
+
+To forcefully remove this dependency as a dev dependency and configure it, instead, as a peer dependency, use the following config:
+
+```jsonc
+// @filename: env.jsonc
+{
+  "policy": {
+    "dev": [
+      {
+        "name": "@my-org.design/themes/my-theme",
+        "version": "-",
+        "force": true
+      }
+    ],
+    "peers": [
+      {
+        "name": "@my-org.design/themes/my-theme",
+        "version": "0.0.2",
+        "supportedRange": "0.0.2"
+      }
+    ]
+  }
+}
+```
+
+## Peers
+
+Peer dependencies are dependencies that are expected to be included in a component's host application.
+They exist in just a single version.
+
+When previewing components (docs and compositions) your env serves as your components' host application.
+That makes every peer dependency of your component, a regular ("runtime") dependency of your env.
+
+For example, the following configures `@angular/forms` as a peer dependency:
+
+```jsonc
+// @filename: env.jsonc
+{
+  "policy": {
+    "peers": [
+      {
+        "name": "@angular/forms",
+        /* the version to be used by the env */
+        "version": "^15.0.0",
+        /* the versions of @angular/forms your components are compatible with */
+        "supportedRange": "^13.0.0 || ^14.0.0 || ^15.0.0"
+      }
+    ]
+  }
+}
+```
+
+Run the following to inspect the dependencies of your env:
+
+<ShowEnv />
+
+The output lists `@angular/forms` as a regular dependency, with version `^15.0.0`:
+
+<ShowEnvOutput />
+
+Run the following to inspect one of your components' dependencies:
+
+<ShowComponent />
+
+The output lists `@angular/forms` as a peer dependency, with a wide range of possible versions:
+
+<ShowComponentPeerOutput />
+
+## Dev
+
+Dev dependencies are dependencies that are used by components solely for development.
+Since they are not used at runtime, they are excluded from the production code of your components.
+
+Dev dependencies such as type declaration packages (under the `@types` organization) aren't detected
+by Bit as there are no corresponding `require`/`import` statements in the component files.
+[To forcefully add them to the components' graph](#add-dependencies-forcefully), set their `"force"` property to `true`.
+
+```jsonc
+//  @filename: env.jsonc
+{
+  "policy": {
+    "dev": [
+      {
+        "name": "@types/jest",
+        "version": "^29.2.4",
+        "hidden": true,
+        "force": true
+      }
+    ]
+  }
+}
+```
+
+:::info Hiding dev dependencies
+We recommend to set the dev dependencies' `"hidden"` property to `true` to hide them from Bit's dependency inspection tools,
+unless you want to explicitly expose them to your users.
+The standardized dev dependencies (such as `@types/...` deps) can be seen as superfluous information
+for the maintainers of your components.
+:::
+
+### Configure files as dev files
+
+Bit infers the type of dependency as a dev dependency when a component _only_ uses that dependency
+in its [dev files](reference/components/dev-files).
+
+You can configure a file as a dev file by adding its glob pattern to the `"patterns"` property in
+your `env.jsonc` file.
+This can be done by extending an existing array of glob patterns or by adding a new array.
+
+```jsonc
+// @filename: env.jsonc
+{
+  "patterns": {
+    "compositions": ["**/*.composition.*", "**/*.preview.*"],
+    "docs": ["**/*.docs.*"],
+    "tests": ["**/*.spec.*", "**/*.test.*"],
+    /* a custom array of dev file glob pattern */
+    "my-dev-files": ["**/*.dev.*"]
+  }
+}
+```
+
+> Extending an array will not only set the file as a dev file but also as a file that is loaded by that specific dev service.
+
+In the following example `lodash` is considered as a dev dependency as it is only consumed via this custom dev file:
+
+```ts
+// @filename: welcome.dev.ts
+
+import _ from 'lodash';
+
+export const isString = _.isString('hello');
+```
+
+Run the following command to inspect the dependencies of your component:
+
+<ShowComponent />
+
+The output includes `welcome.dev.ts` as a dev file, and its dependency, `lodash`, as a dev dependency:
+
+<BitShowDevOutput />
+
+## Runtime
+
+Runtime dependencies (regular/production dependencies) are dependencies that are part of your production code.
+In the Angular ecosystem, only apps have runtime dependencies (the exception is [the `tslib` package](https://angular.io/guide/migration-update-libraries-tslib)
+which is always marked as a runtime dependency).
+Components (also known as libraries in the Angular ecosystem) should always have peer dependencies.
+As a safeguard, when you compile a component for production during build, `ng-packagr` will automatically
+move your runtime dependencies to the `peerDependencies` section of your `package.json` file.
+
+## Dependency resolver configuration
+
+The devtools from Angular assume that you use `npm` or `yarn` as your dependency resolver.
+They specifically do not support `pnpm`, which is the default dependency resolver for Bit.
+The main issue is that `pnpm` uses a different structure for the `node_modules` folder, with a lot
+of symlinks, which causes issues with `ngcc` (Angular's compatibility compiler).
+If you use Angular v13 or above, you do not need to use `ngcc` and can use `pnpm` as your dependency manager.
+
+If you are using Angular v12 or below, you can still use `pnpm` as your dependency manager by configuring
+your `workspace.jsonc` file with the `nodeLinker` property set to `hoisted`:
+
+```jsonc
+  "teambit.dependencies/dependency-resolver": {
+    "packageManager": "teambit.dependencies/pnpm",
+    "nodeLinker": "hoisted",
+    "policy": {
+      // ...
+    }
+  },
+```
+
+In this case, `pnpm` will not use symlinks and will default to yarn's structure for the `node_modules`
+folder, which is compatible with `ngcc`. However, it will be significantly slower than usual.
+
+## Choose the correct version for your dependencies
+
+Angular libraries are generally released for a specific version of Angular. It is important that
+you choose the correct version for the external libraries that you install. For example, if you
+install `@angular/forms` v15, it will not work with Angular v13. And that is the same for
+community libraries. For example, if you install `@ng-bootstrap/ng-bootstrap`, you must refer to
+the compatibility table to see which version is compatible with your version of Angular
+(for a project using Angular v15, you should install `@ng-bootstrap/ng-bootstrap` version 14.x.x).
+
+This doesn't mean that your Angular components are limited to a specific version of Angular. If you
+know that your code doesn't use any Angular v15-specific APIs, you can set the `supportedRange`
+property to `^13.0.0 || ^14.0.0 || ^15.0.0` to allow your components to be used with any of these
+Angular versions.
+
+In general, there are very few major Angular versions that have major breaking changes that affect
+the components. For example, Angular v13 introduced a new module format based on ESM and dropped
+commonjs support. Because of this, we made the choice to drop ngcc (Angular's compatibility compiler)
+in Angular v13 and above. Ngcc was used to make libraries that have not been compiled with Ivy compatible
+with Ivy, but it has a significant performance impact and is causing issues with pnpm.
+This means that if you use Angular v13, you should probably restrict your components
+to be used only with Angular v13 packages and above.
+
+## Configuring your env to use external libraries
+
+Some libraries (mostly theme libraries) require you to configure your Angular app to use them.
+For example, if you use `@angular/material`, you need to configure your app to use the
+`@angular/material` styles. Outside of Bit, this is done by adding the `@angular/material` package
+to the `styles` array in your `angular.json` file, but Bit doesn't use this file. Instead, you have
+different options depending on what you are trying to achieve:
+
+- For composition styles, we usually recommend creating a _theme component_ that will be used to wrap
+  your compositions and simplify maintenance and reusability. See [Theming](docs/angular-design/theming)
+  for more information.
+
+- Another possibility is to configure your custom environment and change the Angular options directly
+  into the `getDevServer` method for the local preview, or in the `getBundler` method for the remote
+  artefacts that will be visible on bit.cloud. This will allow you to use styles and scripts that will
+  be available for all of your components that use this custom env. See [Development Tools](docs/angular-env/development-tools)
+  for more information on how to configure the dev server and the bundler.
+
+- Finally, If you are trying to use the library for your applications, you can configure those options
+  directly in the config file of your application by changing the `angularServeOptions` and
+  `angularBuildOptions` properties. See [App dev server](docs/angular-apps/create-ng-app) for more
+  information.

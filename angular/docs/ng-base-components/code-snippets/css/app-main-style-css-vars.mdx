@@ -1,0 +1,9 @@
+```scss
+@use "@my-org/my-scope.theme.my-base-theme/my-base-theme.module" as bt;
+
+body {
+  @include bt.setBaseTheme();
+
+  font-size: var(--myFontSize, 14px);
+}
+```

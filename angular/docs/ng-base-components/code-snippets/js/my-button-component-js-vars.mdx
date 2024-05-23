@@ -1,0 +1,16 @@
+```ts
+import { Component, Inject } from '@angular/core';
+import { MY_THEME_TOKEN, Theme } from "@my-org/my-scope.theme.my-theme-provider";
+
+@Component({
+  selector: 'my-button',
+  styleUrls: ['./my-button.component.scss'],
+  template: `
+    <button class="my-button" [style.border-radius]="myTheme.myBorderRadius">
+      <ng-content></ng-content>
+    </button>`,
+})
+export class MyButtonComponent {
+  constructor(@Inject(MY_THEME_TOKEN) public myTheme: Theme) {}
+}
+```

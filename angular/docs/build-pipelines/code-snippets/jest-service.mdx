@@ -1,0 +1,19 @@
+```ts
+// @filename: my-angular-env.bit-env.ts
+// ...
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { EnvHandler } from '@teambit/envs';
+import { Tester } from '@teambit/tester';
+import { JestTester } from '@teambit/defender.jest-tester';
+
+export class MyAngularEnv extends AngularV18Env {
+  tester(): EnvHandler<Tester> {
+    return JestTester.from({
+      jest: require.resolve('jest'),
+      config: require.resolve('./configs/jest.config')
+    });
+  }
+}
+
+export default new MyAngularEnv();
+```

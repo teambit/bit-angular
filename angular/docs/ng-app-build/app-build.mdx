@@ -1,0 +1,84 @@
+import {
+  BitBuild,
+  ListCapsule,
+  ListCapsuleOutput,
+  BitTag,
+  ServeArtifacts,
+} from './commands';
+
+# App Build
+
+The build pipeline of an app component includes an additional build task which generates the app's artifacts.
+
+To test your app's build without snapping and deploying you app, run its build pipeline:
+
+<BitBuild />
+
+Alternatively, snap your app component to build, version and deploy it (if a deployer is set):
+
+<BitTag />
+
+## Debugging
+
+The app's build pipeline generates its artifacts in your workspace capsule directory.
+Run the following command to get the path to your workspace [capsule directory](reference/build-pipeline/capsule):
+
+<ListCapsule />
+
+The output is similar to the following:
+
+<ListCapsuleOutput />
+
+The artifacts of your app are located inside the `artifacts/apps` directory of your app component.
+
+You can use a node app such as [serve](https://www.npmjs.com/package/serve) to serve the build
+bundle directly from its capsule:
+
+<ServeArtifacts />
+
+## Modify webpack configuration
+
+You can change how bit builds your application by changing the `angularBuildOptions` property in the
+app plugin file. Those options are similar to the [Angular CLI build options](https://angular.io/cli/build)
+that could be found in a regular angular.json file.
+
+The full list of the Angular build options and their default values can be found in the JSON schemas
+of the `@angular-devkit/build-angular` package: [browser options](https://github.com/angular/angular-cli/blob/main/packages/angular_devkit/build_angular/src/builders/browser/schema.json)
+
+Bit's Angular [app-type](reference/apps/application-types) uses Webpack for bundling, just like
+Angular CLI does. This means that you can also change the bundle strategy by passing [Webpack transformers](reference/webpack/webpack-config#webpack-transformers)
+with the `webpackBuildTransformers` option.
+
+For example, the following snippet will generate a sitemap:
+
+```ts
+import { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
+import type { WebpackConfigTransformer } from '@teambit/webpack';
+import SiteMapPlugin from 'sitemap-webpack-plugin';
+import { myRoutes } from './src/my-routes';
+
+export const addSitemap: WebpackConfigTransformer = (
+  configMutator,
+  context
+) => {
+  configMutator.addPlugin(
+    new SiteMapPlugin({
+      base: 'https://my-domain.dev/',
+      paths: [...myRoutes],
+    })
+  );
+  return configMutator;
+};
+
+export const MyAngularAppOptions: AngularAppOptions = {
+  // ...
+  webpackTransformers: [addSitemap],
+};
+
+export default MyAngularAppOptions;
+```
+
+> Note that an app's configuration overwrite the preview configuration set by its env.
+An Angular app component may also have one set of bundle configurations for its component
+previews and a different one for its deployment. That means, among other things, that a working
+composition does not guarantee a working app (and vice-versa).

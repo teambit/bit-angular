@@ -1,0 +1,21 @@
+```ts
+import { Component, ViewEncapsulation } from '@angular/core';
+
+@Component({
+  selector: 'bit-wrapper',
+  standalone: true,
+  encapsulation: ViewEncapsulation.None,
+  template: `
+    <ng-content></ng-content>
+  `,
+ styles: [`
+    @use "@my-org/my-scope.theme.my-base-theme/my-base-theme.module" as bt;
+
+    body {
+      @include bt.myBaseTheme();
+      font-size: var(--myFontSize, 16px);
+    }
+  `]
+}) export class WrapperComponent {
+}
+```

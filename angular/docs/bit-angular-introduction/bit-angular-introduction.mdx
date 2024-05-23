@@ -1,0 +1,38 @@
+import { BitNew, BitNewEmpty } from './commands';
+import { EnvWorkflowCommands } from '@teambit/envs.docs.env-workflow-commands'
+
+# Bit with Angular
+
+Create a new Angular workspace:
+
+<BitNew />
+
+- An [Angular application](/angular-apps/create-ng-app) with SSR that lazy loads a simple Angular component and does an API call.
+- An [Angular component](/angular-components/components-overview) that will be lazy loaded by the app.
+- A [Custom Angular Environment](/angular-env/use-custom-env) to control tools and configurations.
+
+Start without pre-built components:
+
+<BitNewEmpty />
+
+## Using Bit as an Angular developer
+
+When you build a [ng-modules](https://angular.dev/guide/ngmodules) or [standalone components](https://angular.dev/guide/components) as a Bit Component, you are essentially creating an [Angular Library](https://angular.dev/tools/libraries/creating-libraries). A Bit component may hold any number of components, services, directives and stylesheets and used in many apps or projects.  
+Bit Components have their own "previews" for them, so you have a runnable environment for your module or component. Use it to render it in different contexts and variations, outside an app.
+
+Bit Component can be a complete Angular Application, with as many internal components and modules as needed.  
+
+In A Bit Workspace does not require `angular.json` or many configuration files. Control your apps and libs are using **Development Environments**. You can use the default Angular Development Environment, or customize it to fit your requirements.
+
+:::info In this documentation, we will use the word "component" to refer to a Bit component, and the words "Angular component" to refer to an Angular component.
+:::
+
+<EnvWorkflowCommands />
+
+## What's next
+
+> [► Set up your own Angular development environment ('env')](docs/angular-env/use-custom-env)
+
+> [► Create an Angular component](docs/angular-components/components-overview)
+
+> [► Create an Angular app](docs/angular-apps/create-ng-app)

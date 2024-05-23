@@ -1,0 +1,9 @@
+```tsx
+import { createMounter } from '@my-org/my-scope.my-custom-mounter';
+
+export function MyReactProvider({ children }) {
+  return <>{children}</>;
+}
+
+export default createMounter(MyReactProvider) as any;
+```

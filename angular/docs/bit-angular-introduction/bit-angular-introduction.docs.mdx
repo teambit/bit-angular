@@ -1,0 +1,25 @@
+---
+description: 'An MDX component.'
+labels: ['content', 'mdx']
+---
+
+import { BitAngularIntroduction } from './index';
+
+### Component usage
+```js
+<BitAngularIntroduction />
+```
+
+### Render with theme and MDX providers
+
+```js
+import { ThemeCompositions } from '@teambit/documenter.theme.theme-compositions';
+import { MDXLayout } from '@teambit/mdx.ui.mdx-layout';
+import { BitAngularIntroduction } from './index';
+
+<ThemeCompositions>
+  <MDXLayout>
+    <BitAngularIntroduction />
+  </MDXLayout>
+</ThemeCompositions>
+```

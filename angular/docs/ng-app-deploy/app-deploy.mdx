@@ -1,0 +1,41 @@
+import { GetArtifacts, SnapApp, TagApp, CiDeploy } from './commands';
+import { DeployerExample } from './deploy-examples';
+
+# App Deployment
+
+The tag and snap pipelines of an app component include an additional build task that deploys the app's artifacts.
+
+To snap and deploy your app, run the following:
+
+<SnapApp />
+
+To snap with a release version, and deploy your app, run the following:
+
+<TagApp />
+
+## Use a deployer
+
+The Angular app plugin does not provide a default deployer.
+Search [bit.cloud](https://bit.cloud) for a deployer, and set it in your app's plugin file.
+
+For example:
+
+<DeployerExample />
+
+:::info Create a custom deployer
+To create your own deployer, fork an existing deployer component or start from scratch.
+:::
+
+## Deploy using your CI
+
+You can choose to not use the deployment function and instead to deploy your app's artifacts using
+your existing CI. For this, make sure to first disable you deployment function. After that you can
+build your app component and look for the artifacts in the workspace capsule, or snap your app
+component and extract the artifacts with this command:
+
+<GetArtifacts />
+
+The artifacts are now available in the new `build` directory at the root of your project.
+Use this directory to deploy with your existing tools and workflows. For example:
+
+<CiDeploy />

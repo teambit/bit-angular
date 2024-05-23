@@ -1,0 +1,16 @@
+```ts
+import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { MY_THEME_TOKEN } from "@my-org/my-scope.theme.my-theme-provider";
+import { myBaseTheme } from "@my-org/my-scope.theme.my-base-theme";
+import { AppComponent } from './app.component';
+
+@NgModule({
+  declarations: [ AppComponent ],
+  imports: [ BrowserModule ],
+  // Provide the theme through an InjectionToken, which decouples the theme itself from a specific implementation
+  providers: [ {provide: MY_THEME_TOKEN, useValue: myBaseTheme} ],
+  bootstrap: [ AppComponent ]
+})
+export class AppModule {}
+```

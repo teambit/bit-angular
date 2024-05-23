@@ -1,0 +1,25 @@
+---
+description: 'An MDX component.'
+labels: ['content', 'mdx']
+---
+
+import { AppDeploy } from './index';
+
+### Component usage
+```js
+<AppDeploy />
+```
+
+### Render with theme and MDX providers
+
+```js
+import { ThemeCompositions } from '@teambit/documenter.theme.theme-compositions';
+import { MDXLayout } from '@teambit/mdx.ui.mdx-layout';
+import { AppDeploy } from './index';
+
+<ThemeCompositions>
+  <MDXLayout>
+    <AppDeploy />
+  </MDXLayout>
+</ThemeCompositions>
+```

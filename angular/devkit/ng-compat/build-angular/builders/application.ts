@@ -22,6 +22,8 @@ export let buildApplicationInternal = (
   }[];
 }>;
 
-if (Number(VERSION.major) >= 16) {
+if(Number(VERSION.major) >= 18) {
+  buildApplicationInternal = require('@angular/build').buildApplication;
+} else if (Number(VERSION.major) >= 16) {
   buildApplicationInternal = require('@angular-devkit/build-angular/src/builders/application').buildApplicationInternal;
 }

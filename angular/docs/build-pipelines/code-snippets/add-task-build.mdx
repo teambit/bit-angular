@@ -1,0 +1,16 @@
+The following code snippet adds a task to the default build pipeline of the Angular env.
+
+```ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+/* import the task you want to add */
+import { ComponentNameTask } from '@learnbit/extending-bit.build-tasks.component-name';
+
+export class MyAngularEnv extends AngularV18Env {
+  build() {
+    /* add your task to the build pipeline */
+    return super.build().add([ComponentNameTask.from({})]);
+  }
+}
+
+export default new MyAngularEnv();
+```

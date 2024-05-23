@@ -1,0 +1,178 @@
+import { MyBaseThemeTabs, MyDarkThemeTabs, CompositionProviderExample } from './code-snippet-tabs';
+import {
+  CreateBaseThemeComponent,
+  CreateCustomThemeComponent
+} from './commands';
+
+# Theming
+
+A theme is a coherent style applied to UI components.
+Themes make it easier to customize your app's design for a specific brand or app state (for example, 'light mode' and 'dark mode').
+
+To create a theming system with Bit and Angular, we will follow these steps:
+1. create a base theme component
+2. create a custom theme component
+3. lazy load themes
+4. load your themes in your compositions
+
+If you are not interested in the details, you can check out the [full version of the base theme component](https://bit.cloud/learnbit-angular/design-system/theme/my-base-theme).
+
+## Create a base theme component
+
+A theme requires a base theme component to apply the same style values on multiple UI components.
+For that, we will use the `scss` template provided by the HTML environment.
+Run the following command to create a new base theme component:
+
+<CreateBaseThemeComponent />
+
+
+### Create your design tokens
+
+Usually, designers create design tokens with specialized design software, such as Figma, and export them to different formats, depending on the needs. For simplicity, we will start with a scss file in our base component.
+
+> Design tokens are usually maintained in a JSON format due to its broad support in many programming languages.
+
+We will store the design tokens as scss variables in your base theme component's file named `my-base-theme.module.scss`.
+
+```scss
+$myFontSize: 16px;
+$myFontFamily: "Roboto, sans-serif";
+$myBorderRadius: 3px;
+```
+
+:::tip Use a prefix
+All of your design tokens should use a prefix for better separation between similarly named variables.
+:::
+
+There are multiple ways to export and use your design tokens:
+- You can import the scss file and use the scss variables directly.
+- You can create a mixin that will output the tokens as css variables.
+- You can export the tokens to js and use them in your code.
+
+We will use the second option as it is similar to what Angular Material uses, but you can choose the one that fits your needs.
+
+:::tip Use camel-case
+If you export your variables to js, make sure that you use camel-case.
+:::
+
+Here is your base theme component with the design tokens:
+
+<MyBaseThemeTabs />
+
+### Use the base theme component
+Since we chose to use css variables, the theme should be global and applied to your application's body element to ensure that all your components get access to the variables.
+In your application's root `styles.scss` file, import your base theme and include the mixin to apply the theme to the body element. You can now use the base theme variables in your application:
+```scss
+@use "@my-org/my-scope.theme.my-base-theme/my-base-theme.module" as bt;
+
+body {
+  @include bt.myBaseTheme();
+  font-size: var(--myFontSize, 16px);
+}
+```
+
+### Check out the full version
+
+To reuse this base theme, check out [the full version](https://bit.cloud/learnbit-angular/design-system/theme/my-base-theme) on Bit Cloud.
+
+## Create a custom theme component
+
+Create a new component to set a dark theme for your apps:
+
+<CreateCustomThemeComponent />
+
+Similarly to the base theme, we can create the new design tokens for the dark theme and export them as css variables:
+
+<MyDarkThemeTabs />
+
+### Use the custom theme
+You can apply the mixin of your custom dark theme directly to your application's body element like we just did for the base theme.
+But since the dark theme is a custom theme, it is better to apply it to a specific class:
+
+```scss
+@use "@my-org/my-scope.theme.my-dark-theme/my-dark-theme.module" as dt;
+
+body {
+  &.dark-theme {
+    @include dt.myDarkTheme();
+  }
+
+  background: var(--myBgColor, 16px);
+}
+```
+
+### Check out the full version
+
+To reuse this dark theme, check out [the full version](https://bit.cloud/learnbit-angular/design-system/theme/my-dark-theme) on Bit Cloud.
+
+## Lazy load themes
+Once you have multiple custom themes, you can lazy load them to reduce the initial bundle size of your application.
+The first step is to create a new entry point for each theme. Create a new file for each theme in your' src' folder, for example, `themes/light-theme.scss` and `themes/dark-theme.scss`.
+In each file, import the custom theme and apply the custom theme to the body element:
+```scss
+@use "@my-org/my-scope.theme.my-dark-theme/my-dark-theme.module" as dt;
+
+body {
+  @include dt.setDarkTheme();
+}
+```
+
+Angular provides options to generate multiple external style files that won't be bundled with your application.
+In your application, open the root config file of your application (`my-angular-app.ng-app.ts`) and change the styles option to the following array:
+
+```ts
+styles: [
+  './src/styles.scss',
+  {
+    input: './src/themes/light-theme.scss',
+    inject: false,
+    bundleName: 'light-theme',
+  },
+  {
+    input: './src/themes/dark-theme.scss',
+    inject: false,
+    bundleName: 'dark-theme',
+  },
+]
+```
+
+Usually, a theme switcher component will load the theme based on the user's preference. For simplicity, we will use a button to load the dark theme.
+In your `app.component.html` file, add a button to load the dark theme:
+
+```html
+<button (click)="loadDarkTheme()">Load dark theme</button>
+```
+
+In your `app.component.ts` file, add the `loadDarkTheme` method to load the dark theme:
+
+```ts
+import { Component, Inject, Renderer2 } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
+
+@Component({
+  selector: 'app-root',
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss'],
+})
+export class AppComponent {
+  constructor(private renderer: Renderer2, @Inject(DOCUMENT) private document: Document) {}
+
+  loadDarkTheme() {
+    const link = this.renderer.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = './dark-theme.css';
+    this.renderer.appendChild(this.document.head, link);
+  }
+}
+```
+
+You can now load the dark theme by clicking the button.
+
+## Load your themes in your compositions
+The simplest way to load your themes for all your compositions is to configure your custom environment mount file with a wrapper component.
+Setting ViewEncapsulation.None on the wrapper component removes the scope of your wrapper styles and lets your composition inherit the wrapper's styles.
+You can also use `:host ::ng-deep` in your theme styles to affect all descendant elements.
+
+The following example wraps every composition with your base theme:
+
+<CompositionProviderExample />

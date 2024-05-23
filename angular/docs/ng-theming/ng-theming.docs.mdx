@@ -1,0 +1,25 @@
+---
+description: 'An MDX component.'
+labels: ['content', 'mdx']
+---
+
+import { NgTheming } from './index';
+
+### Component usage
+```js
+<NgTheming />
+```
+
+### Render with theme and MDX providers
+
+```js
+import { ThemeCompositions } from '@teambit/documenter.theme.theme-compositions';
+import { MDXLayout } from '@teambit/mdx.ui.mdx-layout';
+import { NgTheming } from './index';
+
+<ThemeCompositions>
+  <MDXLayout>
+    <NgTheming />
+  </MDXLayout>
+</ThemeCompositions>
+```

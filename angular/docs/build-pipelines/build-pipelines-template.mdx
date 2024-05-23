@@ -1,0 +1,21 @@
+```ts
+// my-env.bit-env.ts
+import { AngularEnv } from '@bitdev/angular.angular-env';
+
+class MyEnv extends AngularEnv {
+  build() {
+    return Pipeline.from([
+      NgMultiCompiler.from({}),
+      EslintTask.from({
+        tsconfig: this.tsconfigPath,
+        configPath: this.eslintConfigPath,
+        pluginsPath: __dirname,
+        extensions: this.eslintExtensions,
+      }),
+      JestTask.from({
+        config: this.jestConfigPath,
+      }),
+    ]);
+  }
+}
+```

@@ -1,0 +1,12 @@
+```ts
+import { InjectionToken } from '@angular/core';
+
+export interface Theme {
+  myFontSize: string,
+  myFontFamily: string,
+  myBorderRadius: string
+}
+
+// Theme injection token
+export const MY_THEME_TOKEN = new InjectionToken<Theme>('ThemeToken');
+```

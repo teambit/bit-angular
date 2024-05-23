@@ -1,0 +1,151 @@
+import {
+  CompositionProviderExample,
+  CompositionProviderExample2,
+} from './code-examples';
+
+# Components Preview
+
+The preview is a way to display the documentation and the compositions of a component.
+You can override the preview method of your [custom env](docs/angular-env/use-custom-env#create-a-custom-angular-env)
+to customize how your docs and compositions are bundled and rendered:
+
+```ts
+// @filename: my-angular-env.bit-env.ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { Preview } from '@teambit/preview';
+import { EnvHandler } from '@teambit/envs';
+import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
+
+export class MyAngularEnv extends AngularV18Env {
+  preview(): EnvHandler<Preview> {
+    return AngularPreview.from({
+      /* preview config goes here */
+    });
+  }
+}
+
+export default new MyAngularEnv();
+```
+
+> A component's preview configuration does not affect production code.
+
+## Configuration
+
+The preview handles both the dev server and the bundler.
+You can configure both of them independently, see
+[Development Tools - Dev server](docs/angular-env/development-tools#dev-server---angular-dev-server-(webpack))
+and [Development Tools - Bundler](docs/angular-env/development-tools#bundler---webpack) for more information.
+
+## Compositions
+
+You can render your components in different contexts and variations with _compositions_,
+which are displayed in the `Compositions` tab.
+
+### Composition files glob pattern
+
+Update the glob patterns listed in the `env.jsonc` file of your custom env to determine which files,
+in a component's directory, should be loaded as compositions.
+
+```json
+{
+  "patterns": {
+    "compositions": [
+      "**/*.composition.*",
+      "**/*.preview.*",
+      "**/*.my-custom-pattern.*"
+    ]
+  }
+}
+```
+
+> Since compositions are only used for development, every composition file is considered as a _dev file_.
+> A single component can have multiple composition files.
+
+### Compositions providers
+
+Your components might require a certain context to function properly, or to better simulate their
+behavior in possible host applications.
+
+We recommend using "wrapper" components in your compositions to avoid repeating the same code and to
+standardize your compositions' "playground".
+
+#### Angular v14 and above
+
+The simplest solution to build a wrapper is to use a standalone component to project the composition
+in an `<ng-content>` element. Setting `ViewEncapsulation.None` on the wrapper component removes the
+scope of your wrapper styles and lets your composition inherit the wrapper's styles.
+You can also use `:host ::ng-deep` in your theme styles to affect all descendant elements.
+
+The following example wraps every composition with a theme provider:
+
+<CompositionProviderExample />
+
+
+#### Angular v13 and below
+If you are using an old version of Angular that doesn't have standalone components, you can use
+a regular component. It will automatically be transformed into a web component that dynamically embeds
+your content into its shadow dom:
+
+<CompositionProviderExample2 />
+
+#### Host dependencies
+Just like other peer dependencies used for component previewing, you should include composition
+providers only once in the bundle of your env and exclude them from the preview bundle of your components.
+You can do that by configuring the `hostDependencies` property of your preview. For example:
+
+```ts
+import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { Preview } from '@teambit/preview';
+import { EnvHandler } from '@teambit/envs';
+import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
+
+export class MyAngularEnv extends AngularV18Env {
+  preview(): EnvHandler<Preview> {
+    return AngularPreview.from({
+      mounterPath: require.resolve('./preview/mounter'),
+      hostDependencies: [
+        /* your composition provider */
+        '@my-scope/my-theme.provider',
+        /* make sure to include the following dependencies that are used for the preview, as well */
+        '@teambit/mdx.ui.mdx-scope-context',
+        '@mdx-js/react',
+        'react',
+        'react-dom',
+      ],
+    });
+  }
+}
+```
+
+#### Other options
+
+The mounter component has a few other options that you can use to customize the way your compositions
+ are rendered.
+
+You can pass the `hostElement` property to the `createMounter` function to specify the element that
+will be used to mount your compositions in your index.html file. For example:
+
+```ts
+import { createMounter } from '@bitdev/angular.dev-services.preview.mounter';
+import { WrapperModule } from './wrapper';
+
+const ngApp = document.getElementById('ng-app');
+export default createMounter(WrapperModule, {hostElement: ngApp});
+```
+
+Finally, the `appConfig` property of the `createMounter` function lets you define some providers that
+will be available in your compositions (see [the Angular documentation](https://angular.io/api/platform-browser/ApplicationConfig)). For example:
+
+```ts
+import { ApplicationConfig } from '@angular/platform-browser';
+import { createMounter } from '@bitdev/angular.dev-services.preview.mounter';
+import { WrapperModule } from './wrapper';
+
+const appConfig: ApplicationConfig = {
+  providers: [
+    {provide: BACKEND_URL, useValue: 'https://yourdomain.com/api'}
+  ]
+};
+export default createMounter(WrapperModule, {appConfig});
+```
+

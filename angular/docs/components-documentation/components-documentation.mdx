@@ -1,0 +1,27 @@
+# Components Docs
+
+The components' 'Overview' tab displays the documentation of your components.
+A component's documentation describes the function and purpose of the component and instructs on how to use it.
+
+### Doc files glob pattern
+
+Update the glob patterns listed in the `env.jsonc` file of your custom env to determine which files,
+in a component's directory, should be loaded as docs.
+
+```json
+{
+  "patterns": {
+    "docs": ["**/*.docs.*", "**/*.readme.*"]
+  }
+}
+```
+
+> Since docs are only used for development, every docs file is considered as a _dev file_.
+> A single component cannot have more than a single docs file.
+
+### Docs App & mdx files
+Since mdx files only support React components, Bit uses a custom Angular app to render your docs
+and load them as regular md files. The specificities of mdx files cannot be supported in the Angular app.
+Unfortunately, this means that you cannot use Angular components in your documentation.
+
+For the moment, there is no simple way to replace the Angular app that renders documentation.

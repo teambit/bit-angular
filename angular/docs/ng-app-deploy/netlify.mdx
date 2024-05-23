@@ -1,0 +1,37 @@
+import { InstallNetlify } from './commands';
+
+Run the following to install the Netlify deployer:
+
+<InstallNetlify />
+
+Set the Netlify deployer in your app plugin file (`.ng-app.ts`):
+
+```ts
+import {
+  NetlifyOptions,
+  Netlify,
+} from '@teambit/cloud-providers.deployers.netlify';
+import { AngularAppOptions } from '@bitdev/angular.app-types.angular-app-type';
+
+const netlify: NetlifyOptions = {
+  /*
+   * your Netlify authentication token. it's recommended to store the token it an env variable.
+   * https://docs.netlify.com/cli/get-started/#obtain-a-token-in-the-netlify-ui
+   */
+  accessToken: process.env.NETLIFY_AUTH_TOKEN as string,
+  productionSiteName: 'my-awesome-site',
+  stagingSiteName: 'my-awesome-staging-site',
+  /**
+   * your Netlify team slug
+   */
+  team: 'a-team',
+};
+
+export const MyAngularAppOptions: AngularAppOptions = {
+  name: 'my-angular-app',
+  // ...
+  deploy: Netlify.deploy(netlify),
+};
+
+export default MyAngularAppOptions;
+```

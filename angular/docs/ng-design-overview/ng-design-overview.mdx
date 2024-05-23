@@ -1,0 +1,72 @@
+import { Image } from '@teambit/docs.ui.zoomable-image';
+import ExampleModes from './images/example-modes.jpg';
+
+# Design Overview
+
+## Design in your applications
+
+Design is a critical part of the success of any application, and as such, it should also be an essential part of your development process.
+Establishing clear guidelines early on is crucial to avoid unnecessary modifications and revisions later on. Thus, a well-planned and well-executed design system is essential.
+
+## What is a design system?
+
+A design system is a collection of reusable components, patterns, and guidelines that help developers build consistent and user-friendly interfaces.
+Creating a design system for a web app ensures a consistent user experience. It helps teams work together better, saves time, and avoids repetition.
+The system also strengthens the brand's identity and builds user trust by offering a familiar
+and intuitive interface. Ultimately, it leads to a smoother and more enjoyable user experience.
+
+Its major benefits are:
+
+- **Increased consistency and efficiency**: A design system helps developers create interfaces consistent with each other and with the overall brand identity of the product. It saves time and effort, as developers don't have to start from scratch each time they need to create a new component or pattern.
+- **Improved collaboration**: A design system can help developers and designers collaborate more effectively. By using a common set of components and patterns, everyone on the team can ensure they work with the same elements.
+- **Enhanced scalability**: A design system can be scaled up or down. It can be used to create small, simple interfaces or large and complex ones.
+- **Simplified maintenance**: A design system can be easily updated and maintained because all applications share the same components and patterns. It becomes easy to make changes and propagate them to all existing products.
+
+Head over to [component libraries](docs/angular-design/component-libs) to see different examples of design systems.
+
+## Creating a design system
+
+### Design tokens (variables)
+
+Design tokens are the atomic units of a design system. They are named entities representing design primitive values, such as colors, spacing, and font sizes.
+Designers and developers use design tokens to ensure that all interfaces within a design system are consistent. They share the same values between the mockups and their implementations.
+
+Read more about design tokens [here](https://design-tokens.github.io/community-group/format/).
+
+### Theming
+
+When creating a design system, it is essential to establish a set of common design tokens that represent your brand. These tokens may include things such as fonts, size, and spacing. However, it is also important to consider the need for variations of these tokens. Use themes to extend the base design system by defining variations of a subset of the design tokens, such as light and dark modes. This allows for greater flexibility while still maintaining consistency throughout your brand.
+
+<br />
+
+<Image src={ExampleModes} />
+
+<br />
+
+The [theming](docs/angular-design/theming) section explains how to implement, use and test themes with different component libraries.
+
+### Components
+
+Components are the basic building blocks of a design system. They are small, reusable pieces of code that you can combine to create more complex interfaces. Components define the visual appearance of an interface, while design tokens define their underlying values.
+
+See the [Base Components](docs/angular-design/base-components) section to learn more about creating Angular components for your design system.
+
+### API
+
+When you create a new design system, it is imperative to define your API style. Your API is used to expose the components and design tokens of the system to other applications. It needs to be simple and consistent:
+
+- Use a common short prefix for components but also for inputs, outputs, and directives. It will distinguish your design system from other parts of your code and avoid collisions with similar elements, attributes, and properties.
+- Use descriptive and unique terms (e.g., use `myDialogOptions` instead of `options` as an input).
+- Leverage Angular type checking (use property bindings, avoid option objects if possible, and never type as any).
+- Focus on observables and reactivity.
+
+### Recommendations
+
+- Limit the number of external dependencies as much as possible. They can easily break your apps if they are no longer or incorrectly maintained. Always use peer dependencies with loose semver requirements to ensure that you do not bring 15 different instances of Lodash into your application.
+- Refrain from overcomplicating things. Do not add an option that you do not need for now. The requirements might change later, and you will have to maintain it.
+- If you need to manipulate the DOM, always use the renderer, bindings, or other solutions integrated into Angular.
+- Type everything. Only use `any` if you really need it. Typings are important for your APIs and the Angular language service. They are also an essential tool for refactoring.
+- Always do a platform check before using native elements; otherwise, using SSR will be impossible.
+- Inputs should be primitives or observables. Avoid functions and complex objects that are hard to type and use.
+- Keep accessibility and internationalization (i18n) in mind, even if you do not need it for now, because it is hard to add later.
+- Create your own templates with Bit to make it easier to use your design system or write new components.
