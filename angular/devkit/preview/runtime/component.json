@@ -4,7 +4,7 @@
     "name": "dev-services/preview/runtime",
     "version": "3.0.1"
   },
-  "propagate": true,
+  "propagate": false,
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
@@ -21,8 +21,13 @@
       }
     },
     "bitdev.node/node-env@2.0.2": {},
-    "teambit.envs/envs": {
-      "env": "bitdev.node/node-env"
-    }
+    "teambit.envs/envs": {},
+    "teambit.component/dev-files": {},
+    "teambit.pkg/pkg": {},
+    "teambit.preview/preview": {},
+    "teambit.compositions/compositions": {},
+    "teambit.docs/docs": {},
+    "teambit.pipelines/builder": {},
+    "teambit.semantics/schema": {}
   }
 }

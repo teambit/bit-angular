@@ -2,9 +2,9 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v16-env",
-    "version": "6.0.0"
+    "version": "6.0.1"
   },
-  "propagate": true,
+  "propagate": false,
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
@@ -70,6 +70,13 @@
     "bitdev.general/envs/bit-env@1.0.1": {},
     "teambit.envs/envs": {
       "env": "bitdev.general/envs/bit-env"
+    },
+    "teambit.component/renaming": {
+      "renamedFrom": {
+        "scope": "bitdev.angular",
+        "name": "envs/v16",
+        "version": "277a7758ede161c02a2f2d01b02f056782c45d67"
+      }
     }
   }
 }

@@ -4,7 +4,7 @@
     "name": "dev-services/compiler/elements",
     "version": "6.0.0"
   },
-  "propagate": true,
+  "propagate": false,
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
@@ -49,8 +49,13 @@
       }
     },
     "teambit.node/node@1.0.54": {},
-    "teambit.envs/envs": {
-      "env": "teambit.node/node"
-    }
+    "teambit.envs/envs": {},
+    "teambit.component/dev-files": {},
+    "teambit.pkg/pkg": {},
+    "teambit.preview/preview": {},
+    "teambit.compositions/compositions": {},
+    "teambit.docs/docs": {},
+    "teambit.pipelines/builder": {},
+    "teambit.semantics/schema": {}
   }
 }

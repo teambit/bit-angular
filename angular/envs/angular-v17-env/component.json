@@ -2,9 +2,9 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v17-env",
-    "version": "5.0.0"
+    "version": "5.0.1"
   },
-  "propagate": true,
+  "propagate": false,
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {

@@ -2,9 +2,9 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "app-types/angular-app-type",
-    "version": "6.0.0"
+    "version": "6.0.1"
   },
-  "propagate": true,
+  "propagate": false,
   "extensions": {
     "teambit.dependencies/dependency-resolver": {
       "policy": {
@@ -27,6 +27,13 @@
     "bitdev.node/node-env@2.0.2": {},
     "teambit.envs/envs": {
       "env": "bitdev.node/node-env"
+    },
+    "teambit.component/renaming": {
+      "renamedFrom": {
+        "scope": "bitdev.angular",
+        "name": "dev-services/apps",
+        "version": "02f8cd3d639894dea416cc38674a6887e11e939b"
+      }
     }
   }
 }

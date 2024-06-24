@@ -14,7 +14,7 @@ export const ngEnvOptions: AngularEnvOptions = {
   // angularElementsModulePath: require.resolve('@angular/elements'),
   jestConfigPath: require.resolve('./jest/jest.config.cjs'),
   jestModulePath: require.resolve('jest'),
-  ngPackagrModulePath: require.resolve('ng-packagr'),
+  ngPackagrModulePath: import.meta.resolve('ng-packagr'),
   webpackConfigFactory,
   webpackDevServerModulePath: require.resolve('webpack-dev-server'),
   // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
