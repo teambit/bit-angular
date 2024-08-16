@@ -4,7 +4,6 @@ import { EnvContext, EnvHandler } from '@teambit/envs';
 import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { Logger } from '@teambit/logger';
 import { isCI } from 'std-env';
-import { indexFile } from './template-files';
 import { ngAppFile } from './template-files/bit-app';
 import { docsFile } from './template-files/docs';
 import { appComponentFile } from './template-files/src/app/app.component';
@@ -100,7 +99,6 @@ export class NgAppTemplate implements ComponentTemplate {
 
     const files = [
       docsFile(context),
-      indexFile(context),
       ngAppFile(context, params.styleSheet, params.ssr, envPkgName),
       tsconfigFile(this.angularVersion, params.ssr),
       indexHtmlFile(context),

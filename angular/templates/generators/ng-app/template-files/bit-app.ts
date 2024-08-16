@@ -4,6 +4,7 @@ export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: bo
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `${name}.bit-app.ts`,
+    isMain: true,
     content: `import { type AngularAppOptions, AngularApp } from '@bitdev/angular.app-types.angular-app-type';
 import { ${ssr ? `ApplicationOptions`: `BrowserOptions` }, DevServerOptions } from '@bitdev/angular.dev-services.common';
 import { ngEnvOptions } from '${envPkgName}';

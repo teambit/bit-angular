@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/ng-compat",
-    "version": "3.0.0"
+    "version": "3.0.1"
   },
   "propagate": false,
   "extensions": {

@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "examples/my-angular-v13-env",
-    "version": "5.0.1"
+    "version": "5.0.2"
   },
   "propagate": false,
   "extensions": {
