@@ -4,7 +4,6 @@ import { VERSION } from '@angular/cli';
 import {
   dedupPaths,
   getLoggerApi,
-  loadEsmModule,
   normalizePath
 } from '@bitdev/angular.dev-services.common';
 import {
@@ -90,7 +89,9 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): Applic
     port,
     browserTarget: BUILDER_NAME,
     // @ts-ignore Angular 17+
-    buildTarget: BUILDER_NAME
+    buildTarget: BUILDER_NAME,
+    // support for bit.cloud workspaces
+    host: "0.0.0.0"
   };
 }
 

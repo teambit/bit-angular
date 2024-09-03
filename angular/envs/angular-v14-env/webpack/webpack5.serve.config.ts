@@ -90,6 +90,8 @@ export function webpack5ServeConfigFactory(
 
     // @ts-ignore until types are updated with new options from webpack-dev-server v4
     devServer: {
+      // support for bit.cloud workspaces
+      allowedHosts: ['.bit.cloud', 'localhost'],
       static: [
         {
           directory: resolveWorkspacePath(publicDirectory),

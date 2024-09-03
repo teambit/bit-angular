@@ -54,9 +54,7 @@
         }
       }
     },
-    "teambit.envs/envs": {
-      "env": "bitdev.node/node-env"
-    },
+    "teambit.envs/envs": {},
     "bitdev.node/node-env@2.0.2": {},
     "teambit.component/renaming": {
       "renamedFrom": {

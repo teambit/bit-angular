@@ -22,7 +22,7 @@
     /**
      * default scope for all components in workspace.
      **/
-    "defaultScope": "integration.examples",
+    "defaultScope": "bitdev.angular",
     "resolveEnvsFromRoots": true
   },
   /**

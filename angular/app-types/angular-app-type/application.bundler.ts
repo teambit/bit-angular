@@ -34,7 +34,6 @@ export type BuildApplicationOptions = {
 
 // TODO allow customizing this
 const BUILDER_NAME = '@angular-devkit/build-angular:application';
-const CACHE_PATH = 'angular/cache';
 
 export async function buildApplication(options: BuildApplicationOptions): Promise<void> {
   const { angularOptions: { tsConfig, ssr, define }, envVars } = options;

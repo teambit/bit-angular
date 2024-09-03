@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v17-env",
-    "version": "5.0.2"
+    "version": "5.0.3"
   },
   "propagate": false,
   "extensions": {
