@@ -1,4 +1,4 @@
-import { normalizePath } from '@bitdev/angular.dev-services.common';
+import { getWebpackAngularAliases, normalizePath } from '@bitdev/angular.dev-services.common';
 import {
   BitDedupeModuleResolvePlugin,
   StatsLoggerPlugin
@@ -124,6 +124,7 @@ export function webpack5ServeConfigFactory(
       },
 
       client: {
+        webSocketURL: 'ws://0.0.0.0:0/ws',
         overlay: false
       },
 
@@ -163,7 +164,10 @@ export function webpack5ServeConfigFactory(
 
     resolve: {
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
-      alias: fallbacksAliases,
+      alias: {
+        ...fallbacksAliases,
+        ...getWebpackAngularAliases()
+      },
       fallback: { ...fallbacks, events: fileURLToPath(import.meta.resolve('events/')) } as any,
       modules: nodeModulesPaths
     },

@@ -16,6 +16,7 @@ import { AsyncEnvHandler, EnvContext } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { PkgAspect, PkgMain } from '@teambit/pkg';
+import { ScopeAspect, ScopeMain } from '@teambit/scope';
 import {
   GlobalWebpackConfigTransformContext,
   WebpackAspect,
@@ -80,6 +81,7 @@ export class NgWebpackBundler {
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
+      const scope = context.getAspect<ScopeMain>(ScopeAspect.id);
       const webpackMain = context.getAspect<WebpackMain>(WebpackAspect.id);
       const devFilesMain = context.getAspect<DevFilesMain>(DevFilesAspect.id);
 
@@ -120,7 +122,7 @@ export class NgWebpackBundler {
           entryFiles: target.entries as string[],
           logger,
           // keep first argument to be false, to avoid issues when building apps
-          nodeModulesPaths: getNodeModulesPaths(false, isolator, workspace),
+          nodeModulesPaths: getNodeModulesPaths(false, isolator, context.envId, scope, workspace),
           plugins,
           rootPath: options.appRootPath,
           setup: BundlerSetup.Build,

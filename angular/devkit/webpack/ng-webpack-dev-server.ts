@@ -18,6 +18,7 @@ import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
 import { PkgAspect, PkgMain } from '@teambit/pkg';
 import { PubsubMain } from '@teambit/pubsub';
+import { ScopeAspect, ScopeMain } from '@teambit/scope';
 import {
   WebpackAspect,
   WebpackConfigDevServerTransformContext,
@@ -81,6 +82,7 @@ export class NgWebpackDevServer {
       const pkg = context.getAspect<PkgMain>(PkgAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
+      const scope = context.getAspect<ScopeMain>(ScopeAspect.id);
       const devFilesMain = context.getAspect<DevFilesMain>(DevFilesAspect.id);
 
       let tempFolder: string;
@@ -130,7 +132,7 @@ export class NgWebpackDevServer {
         entryFiles: devServerContext.entry,
         isApp,
         logger,
-        nodeModulesPaths: getNodeModulesPaths(false, isolator, workspace),
+        nodeModulesPaths: getNodeModulesPaths(false, isolator, context.envId, scope, workspace),
         plugins: [],
         publicPath: devServerContext.publicPath,
         publicRoot: devServerContext.rootPath,

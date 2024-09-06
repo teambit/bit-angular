@@ -2,6 +2,7 @@ import { BitDedupeModuleResolvePlugin, WebpackConfig } from '@bitdev/angular.dev
 import { fallbacks, fallbacksAliases, fallbacksProvidePluginConfig } from '@teambit/webpack';
 import { sep } from 'path';
 import webpack from 'webpack';
+import { getWebpackAngularAliases } from '@bitdev/angular.dev-services.common';
 import { getModuleRulesConfig } from './module-rules.config.js';
 
 export function webpack5BuildConfigFactory(
@@ -38,7 +39,10 @@ export function webpack5BuildConfigFactory(
     },
 
     resolve: {
-      alias: fallbacksAliases,
+      alias: {
+        ...fallbacksAliases,
+        ...getWebpackAngularAliases()
+      },
       fallback: fallbacks,
       modules: nodeModulesPaths
     },

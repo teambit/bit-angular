@@ -8,6 +8,8 @@ import { Logger } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
 import TesterAspect from '@teambit/tester';
 import WorkspaceAspect, { Workspace } from '@teambit/workspace';
+import { ScopeMain } from '@teambit/scope';
+import { getRootComponentDir } from '@teambit/workspace.root-components';
 import { outputFileSync } from 'fs-extra';
 // @ts-ignore
 import normalize from 'normalize-path';
@@ -51,13 +53,30 @@ export function getWorkspace(context: EnvContext | AppContext): Workspace | unde
   return undefined;
 }
 
-export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, workspace?: Workspace, capsuleOnly = false): string[] {
+function getRootComponentDirByRootId(rootComponentsPath: string, rootComponentId: ComponentID, workspace: Workspace): string {
+  // Root directories for local envs and apps are created without their version number.
+  // This is done to avoid changes to the lockfile after such components are tagged.
+  const id = workspace.hasId(rootComponentId)
+    ? rootComponentId.toStringWithoutVersion()
+    : rootComponentId.toString();
+  return getRootComponentDir(rootComponentsPath, id);
+}
+
+export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, envId: ComponentID, scope: ScopeMain, workspace?: Workspace, capsuleOnly = false): string[] {
   const nodeModulesPaths: string[] = [];
+
+  const aspectsLoader = scope.getScopeAspectsLoader();
+  const aspectsOpts = aspectsLoader.getIsolateOpts();
 
   if (workspace) {
     const workspaceDir = workspace.path;
-    const scopeAspectsRootDir = isolator.getCapsulesRootDir({ baseDir: workspace.scope.getAspectCapsulePath() });
+    const scopeAspectsRootDir = isolator.getCapsulesRootDir({ baseDir: scope.getAspectCapsulePath() });
     const workspaceCapsulesRootDir = build ? isolator.getCapsulesRootDir({ baseDir: workspace.path }) : undefined;
+
+    // Add the root components node modules (.bit_roots/env)
+    const rootCmpDir = workspace.rootComponentsPath;
+    const rootCmpEnvDir = getRootComponentDirByRootId(rootCmpDir, envId, workspace);
+    nodeModulesPaths.push(resolve(rootCmpEnvDir, 'node_modules'));
 
     const workspaceNodeModules = resolve(workspaceDir, 'node_modules');
 
@@ -78,6 +97,14 @@ export function getNodeModulesPaths(build: boolean, isolator: IsolatorMain, work
     if (!capsuleOnly) {
       nodeModulesPaths.push(workspaceNodeModules, 'node_modules');
     }
+  } else { // ripple, bit sign, ...
+    const baseDir = scope.getAspectCapsulePath();
+    // check dated-dirs (ripple only)
+    const capsulesDatedDir = isolator.getCapsulesRootDir({  baseDir, useDatedDirs: true, datedDirId: aspectsOpts.datedDirId });
+    nodeModulesPaths.push(resolve(capsulesDatedDir, 'node_modules'));
+
+    const capsulesDefaultDir = isolator.getCapsulesRootDir({  baseDir });
+    nodeModulesPaths.push(resolve(capsulesDefaultDir, 'node_modules'));
   }
 
   if (!nodeModulesPaths.includes('node_modules')) {
@@ -267,4 +294,40 @@ export function getLoggerApi(logger: Logger) {
     colorMessage: (m: string) => console.log(m),
     createChild: () => logger
   } as any;
+}
+
+export function addSafeResolve(path: string): string | undefined {
+  try {
+    return require.resolve(path);
+  } catch(_e) {
+    return undefined;
+  }
+}
+
+export function getWebpackAngularAliases() {
+  const aliases: { [key: string]: string } = {};
+
+  [
+    '@angular/core/primitives/signals',
+    '@angular/core/primitives/event-dispatch',
+    '@angular/core',
+    '@angular/common/http',
+    '@angular/common',
+    '@angular/animations/browser',
+    '@angular/animations',
+    '@angular/cli',
+    '@angular/compiler',
+    '@angular/compiler-cli',
+    '@angular/platform-browser/animations',
+    '@angular/platform-browser',
+    '@angular/platform-browser-dynamic',
+    '@angular/router'
+  ].forEach((pkg) => {
+    const resolved = addSafeResolve(pkg);
+    if (resolved) {
+      aliases[pkg] = resolved;
+    }
+  });
+
+  return aliases;
 }

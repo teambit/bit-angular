@@ -12,91 +12,91 @@
     "angular-env": {
         "name": "angular-env",
         "scope": "bitdev.angular",
-        "version": "b82d566c26cec2544054e84bb883724986691962",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-env"
     },
     "app-types/angular-app-type": {
         "name": "app-types/angular-app-type",
         "scope": "bitdev.angular",
-        "version": "6.0.3",
+        "version": "6.0.4",
         "mainFile": "index.ts",
         "rootDir": "angular/app-types/angular-app-type"
     },
     "dev-services/common": {
         "name": "dev-services/common",
         "scope": "bitdev.angular",
-        "version": "6.0.1",
+        "version": "6.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/common"
     },
     "dev-services/compiler/elements": {
         "name": "dev-services/compiler/elements",
         "scope": "bitdev.angular",
-        "version": "6.0.1",
+        "version": "6.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/compiler/elements"
     },
     "dev-services/compiler/multi-compiler": {
         "name": "dev-services/compiler/multi-compiler",
         "scope": "bitdev.angular",
-        "version": "6.0.1",
+        "version": "6.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/compiler/multi-compiler"
     },
     "dev-services/compiler/ng-packagr": {
         "name": "dev-services/compiler/ng-packagr",
         "scope": "bitdev.angular",
-        "version": "6.0.1",
+        "version": "6.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/compiler/ng-packagr"
     },
     "dev-services/linter/eslint": {
         "name": "dev-services/linter/eslint",
         "scope": "bitdev.angular",
-        "version": "3.0.2",
+        "version": "3.0.3",
         "mainFile": "index.js",
         "rootDir": "angular/devkit/linter/eslint"
     },
     "dev-services/ng-compat": {
         "name": "dev-services/ng-compat",
         "scope": "bitdev.angular",
-        "version": "3.0.1",
+        "version": "3.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/ng-compat"
     },
     "dev-services/preview/mounter": {
         "name": "dev-services/preview/mounter",
         "scope": "bitdev.angular",
-        "version": "3.0.2",
+        "version": "3.0.3",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/mounter"
     },
     "dev-services/preview/preview": {
         "name": "dev-services/preview/preview",
         "scope": "bitdev.angular",
-        "version": "6.0.1",
+        "version": "6.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/preview"
     },
     "dev-services/preview/preview-app": {
         "name": "dev-services/preview/preview-app",
         "scope": "bitdev.angular",
-        "version": "1.0.1",
+        "version": "1.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/preview-app"
     },
     "dev-services/preview/runtime": {
         "name": "dev-services/preview/runtime",
         "scope": "bitdev.angular",
-        "version": "3.0.2",
+        "version": "3.0.3",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/preview/runtime"
     },
     "dev-services/webpack": {
         "name": "dev-services/webpack",
         "scope": "bitdev.angular",
-        "version": "6.0.1",
+        "version": "6.0.2",
         "mainFile": "index.ts",
         "rootDir": "angular/devkit/webpack"
     },
@@ -250,166 +250,135 @@
     "envs/angular-v13-env": {
         "name": "envs/angular-v13-env",
         "scope": "bitdev.angular",
-        "version": "48cd2655863d31a4664712f252ad1dbae704976e",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v13-env"
     },
     "envs/angular-v14-env": {
         "name": "envs/angular-v14-env",
         "scope": "bitdev.angular",
-        "version": "b7ef8ad1cae4245d069e5763075b013959d65a3b",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v14-env"
     },
     "envs/angular-v15-env": {
         "name": "envs/angular-v15-env",
         "scope": "bitdev.angular",
-        "version": "9eeb2c20c29b6836bf853ee25f98a2c4d913c230",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v15-env"
     },
     "envs/angular-v16-env": {
         "name": "envs/angular-v16-env",
         "scope": "bitdev.angular",
-        "version": "ca6d375d809b84264aa196728716bedce960117f",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v16-env"
     },
     "envs/angular-v17-env": {
         "name": "envs/angular-v17-env",
         "scope": "bitdev.angular",
-        "version": "24bed6ff7072f1bc1378c8d722c45e7738024a18",
+        "version": "5.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v17-env"
     },
     "envs/angular-v18-env": {
         "name": "envs/angular-v18-env",
         "scope": "bitdev.angular",
-        "version": "a764eff839148d06eb1f2e0037255bca5626783a",
+        "version": "1.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v18-env"
     },
     "envs/base-env": {
         "name": "envs/base-env",
         "scope": "bitdev.angular",
-        "version": "1f85bffa7cab3a5db9891da9b315926f90381381",
+        "version": "6.0.4",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/base-env"
     },
     "examples/my-angular-env": {
         "name": "examples/my-angular-env",
         "scope": "bitdev.angular",
-        "version": "859b7a7ef6276d42ac43383608e67eedf937dc64",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-env"
     },
     "examples/my-angular-v13-env": {
         "name": "examples/my-angular-v13-env",
         "scope": "bitdev.angular",
-        "version": "55f0f0e622bffdaf9ab4345c5f68294101a4609b",
+        "version": "5.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v13-env"
     },
     "examples/my-angular-v14-env": {
         "name": "examples/my-angular-v14-env",
         "scope": "bitdev.angular",
-        "version": "e89f16b83171e24a6a3bc81586cb6b1ef3c92efb",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v14-env"
     },
     "examples/my-angular-v15-env": {
         "name": "examples/my-angular-v15-env",
         "scope": "bitdev.angular",
-        "version": "4433dcf95dc89c223ee37569da04f4aa100c91e3",
+        "version": "6.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v15-env"
     },
     "examples/my-angular-v16-env": {
         "name": "examples/my-angular-v16-env",
         "scope": "bitdev.angular",
-        "version": "709ece37b4de6da8b8352be45a3fef44ef4de6ad",
+        "version": "5.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v16-env"
     },
     "examples/my-angular-v17-env": {
         "name": "examples/my-angular-v17-env",
         "scope": "bitdev.angular",
-        "version": "f0c73d62b7e1e92a26216e1d6e045ae9af977efc",
+        "version": "5.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v17-env"
     },
     "examples/my-angular-v18-env": {
         "name": "examples/my-angular-v18-env",
         "scope": "bitdev.angular",
-        "version": "ba67b840b87042b4fb6c748df9cc7dab1292fa39",
+        "version": "1.0.5",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v18-env"
     },
     "integration/demo-lib": {
         "name": "integration/demo-lib",
         "scope": "bitdev.angular",
-        "version": "56cf7ba13dff1b0be0d4c04e8b995019b82e0ccf",
+        "version": "0.0.2",
         "mainFile": "public-api.ts",
-        "rootDir": "angular/integration/demo-lib",
-        "onLanesOnly": true,
-        "isAvailableOnCurrentLane": true
+        "rootDir": "angular/integration/demo-lib"
     },
     "integration/demo-lib-v15": {
         "name": "integration/demo-lib-v15",
         "scope": "bitdev.angular",
-        "version": "3e44b7e7a187a24708afefeededa7d62ae722d01",
+        "version": "0.0.2",
         "mainFile": "public-api.ts",
-        "rootDir": "angular/integration/demo-lib-v15",
-        "onLanesOnly": true,
-        "isAvailableOnCurrentLane": true
+        "rootDir": "angular/integration/demo-lib-v15"
     },
     "integration/demo-lib-v16": {
         "name": "integration/demo-lib-v16",
         "scope": "bitdev.angular",
-        "version": "220758d582bbbceb2dd8c6a2baa436cee2d93ac2",
+        "version": "0.0.2",
         "mainFile": "public-api.ts",
-        "rootDir": "angular/integration/demo-lib-v16",
-        "onLanesOnly": true,
-        "isAvailableOnCurrentLane": true
+        "rootDir": "angular/integration/demo-lib-v16"
     },
     "integration/demo-lib-v17": {
         "name": "integration/demo-lib-v17",
         "scope": "bitdev.angular",
-        "version": "7da8a7d418f5e34905a462b08bb013016eddd99c",
+        "version": "0.0.2",
         "mainFile": "public-api.ts",
-        "rootDir": "angular/integration/demo-lib-v17",
-        "onLanesOnly": true,
-        "isAvailableOnCurrentLane": true
+        "rootDir": "angular/integration/demo-lib-v17"
     },
     "integration/demo-lib-v18": {
         "name": "integration/demo-lib-v18",
         "scope": "bitdev.angular",
-        "version": "59088ec1991ecbb1f217271ee0855d9b26169860",
+        "version": "0.0.2",
         "mainFile": "public-api.ts",
-        "rootDir": "angular/integration/demo-lib-v18",
-        "onLanesOnly": true,
-        "isAvailableOnCurrentLane": true
+        "rootDir": "angular/integration/demo-lib-v18"
     },
-    "templates/generators": {
-        "name": "templates/generators",
-        "scope": "bitdev.angular",
-        "version": "6.0.1",
-        "mainFile": "index.ts",
-        "rootDir": "angular/templates/generators"
-    },
-    "templates/starters": {
-        "name": "templates/starters",
-        "scope": "bitdev.angular",
-        "version": "6.0.1",
-        "mainFile": "index.ts",
-        "rootDir": "angular/templates/starters"
-    },
-    "$schema-version": "17.0.0",
-    "_bit_lane": {
-        "id": {
-            "name": "fix-build-ts",
-            "scope": "bitdev.angular"
-        },
-        "exported": true
-    }
+    "$schema-version": "17.0.0"
 }

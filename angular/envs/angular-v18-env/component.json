@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v18-env",
-    "version": "1.0.3"
+    "version": "1.0.5"
   },
   "propagate": false,
   "extensions": {

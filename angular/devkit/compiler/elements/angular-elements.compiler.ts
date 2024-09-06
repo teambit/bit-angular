@@ -20,6 +20,7 @@ import { EnvContext, EnvHandler } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { Timer } from '@teambit/legacy/dist/toolbox/timer';
 import { Logger } from '@teambit/logger';
+import { ScopeAspect, ScopeMain } from '@teambit/scope';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
 import { extname, join } from 'path';
@@ -187,7 +188,8 @@ Built Angular Compositions
       const compositions = context.getAspect<CompositionsMain>(CompositionsAspect.id);
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
-      const nodeModulesPaths = getNodeModulesPaths(true, isolator, workspace);
+      const scope = context.getAspect<ScopeMain>(ScopeAspect.id);
+      const nodeModulesPaths = getNodeModulesPaths(true, isolator, context.envId, scope, workspace);
 
       return new AngularElementsCompiler(
         logger,

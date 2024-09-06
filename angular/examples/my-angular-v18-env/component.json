@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "examples/my-angular-v18-env",
-    "version": "1.0.3"
+    "version": "1.0.5"
   },
   "propagate": false,
   "extensions": {
@@ -19,8 +19,6 @@
       }
     },
     "bitdev.general/envs/bit-env@1.0.1": {},
-    "teambit.envs/envs": {
-      "env": "bitdev.general/envs/bit-env"
-    }
+    "teambit.envs/envs": {}
   }
 }

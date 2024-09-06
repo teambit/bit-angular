@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "examples/my-angular-v13-env",
-    "version": "5.0.3"
+    "version": "5.0.5"
   },
   "propagate": false,
   "extensions": {
@@ -17,9 +17,7 @@
       }
     },
     "bitdev.general/envs/bit-env@1.0.1": {},
-    "teambit.envs/envs": {
-      "env": "bitdev.general/envs/bit-env"
-    },
+    "teambit.envs/envs": {},
     "teambit.component/renaming": {
       "renamedFrom": {
         "scope": "bitdev.angular",

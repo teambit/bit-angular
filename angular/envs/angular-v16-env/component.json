@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v16-env",
-    "version": "6.0.3"
+    "version": "6.0.5"
   },
   "propagate": false,
   "extensions": {
@@ -68,9 +68,7 @@
       }
     },
     "bitdev.general/envs/bit-env@1.0.1": {},
-    "teambit.envs/envs": {
-      "env": "bitdev.general/envs/bit-env"
-    },
+    "teambit.envs/envs": {},
     "teambit.component/renaming": {
       "renamedFrom": {
         "scope": "bitdev.angular",

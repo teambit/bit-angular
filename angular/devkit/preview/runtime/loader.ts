@@ -132,7 +132,6 @@ async function getComponentsToLoad<C>(modulesOrComponents: Type<any>[], renderSt
       console.error(`Unknown type of composition for ${moduleOrComponent.name || moduleOrComponent}, the Angular env can only load modules or components`);
     }
   }
-
   return { componentsToLoad, parentModule };
 }
 

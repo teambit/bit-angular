@@ -1,5 +1,5 @@
 // @ts-ignore
-import type { AngularCompilerOptions, CompilerOptions, ParsedConfiguration} from '@angular/compiler-cli';
+import type { AngularCompilerOptions, CompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
 import {
   AngularEnvOptions,
   componentIsApp,
@@ -13,7 +13,7 @@ import {
   BuiltTaskResult,
   ComponentResult
 } from '@teambit/builder';
-import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
+import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
@@ -22,6 +22,7 @@ import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
 import { PACKAGE_JSON } from '@teambit/legacy/dist/constants.js';
 import PackageJsonFile from '@teambit/legacy/dist/consumer/component/package-json-file.js';
 import { Logger } from '@teambit/logger';
+import { ScopeAspect, ScopeMain } from '@teambit/scope';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
 // @ts-ignore
@@ -29,8 +30,8 @@ import { mkdirsSync, outputFileSync, removeSync } from 'fs-extra/esm';
 import type { NgPackageConfig } from 'ng-packagr/ng-package.schema.js';
 import { createRequire } from 'node:module';
 import { join, posix, resolve } from 'node:path';
-import ts from 'typescript';
 import type { Diagnostic, DiagnosticWithLocation } from 'typescript';
+import ts from 'typescript';
 
 const ViewEngineTemplateError = `Cannot read property 'type' of null`;
 const NG_PACKAGE_JSON = 'ng-package.json';
@@ -424,7 +425,8 @@ export class NgPackagrCompiler implements Compiler {
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
       const depResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
       const isolator = context.getAspect<IsolatorMain>(IsolatorAspect.id);
-      const nodeModulesPaths = getNodeModulesPaths(true, isolator, workspace, true);
+      const scope = context.getAspect<ScopeMain>(ScopeAspect.id);
+      const nodeModulesPaths = getNodeModulesPaths(true, isolator, context.envId, scope, workspace, true);
 
       return new NgPackagrCompiler(
         ngPackagrModulePath,

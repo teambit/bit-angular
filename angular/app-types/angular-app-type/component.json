@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "app-types/angular-app-type",
-    "version": "6.0.3"
+    "version": "6.0.4"
   },
   "propagate": false,
   "extensions": {
@@ -25,9 +25,7 @@
       }
     },
     "bitdev.node/node-env@2.0.2": {},
-    "teambit.envs/envs": {
-      "env": "bitdev.node/node-env"
-    },
+    "teambit.envs/envs": {},
     "teambit.component/renaming": {
       "renamedFrom": {
         "scope": "bitdev.angular",
