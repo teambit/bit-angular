@@ -66,11 +66,11 @@ export class AngularApp implements Application {
     return join(artifactsDir, this.name);
   }
 
-  private getDevServerContext(context: AppContext, appRootPath: string): DevServerContext {
+  private getDevServerContext(context: AppContext, _appRootPath: string): DevServerContext {
     // const ngEnvOptions = this.angularEnv.getNgEnvOptions();
     return Object.assign(cloneDeep(context), {
       entry: [],
-      rootPath: /*ngEnvOptions.devServer === 'vite' ? appRootPath : */'',
+      rootPath: /*ngEnvOptions.devServer === 'vite' ? _appRootPath : */'',
       publicPath: `${ this.publicDir }/${ this.options.name }`,
       title: this.options.name
     });

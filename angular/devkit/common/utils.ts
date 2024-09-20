@@ -296,34 +296,58 @@ export function getLoggerApi(logger: Logger) {
   } as any;
 }
 
-export function addSafeResolve(path: string): string | undefined {
+export function addSafeResolve(path: string, nodeModulesPaths?: string[]): string | undefined {
   try {
-    return require.resolve(path);
-  } catch(_e) {
+    return require.resolve(path, { paths: nodeModulesPaths });
+  } catch (_e) {
+    if (nodeModulesPaths) {
+      try {
+        return addSafeResolve(path);
+      } catch (_e2) {
+        return undefined;
+      }
+    }
     return undefined;
   }
 }
 
-export function getWebpackAngularAliases() {
+export function getWebpackAngularAliases(nodeModulesPaths?: string[]): { [key: string]: string } {
   const aliases: { [key: string]: string } = {};
 
   [
+    '@angular/build',
+    '@angular/core/schematics',
+    '@angular/core/rxjs-interop',
     '@angular/core/primitives/signals',
     '@angular/core/primitives/event-dispatch',
+    '@angular/core/testing',
     '@angular/core',
     '@angular/common/http',
+    '@angular/common/locales',
+    '@angular/common/testing',
     '@angular/common',
     '@angular/animations/browser',
     '@angular/animations',
     '@angular/cli',
     '@angular/compiler',
     '@angular/compiler-cli',
+    '@angular/forms',
+    '@angular/platform-browser/animations/async',
     '@angular/platform-browser/animations',
+    '@angular/platform-browser/testing',
     '@angular/platform-browser',
+    '@angular/platform-browser-dynamic/testing',
     '@angular/platform-browser-dynamic',
-    '@angular/router'
+    '@angular/platform-server/init',
+    '@angular/platform-server/testing',
+    '@angular/platform-server',
+    '@angular/router/upgrade',
+    '@angular/router/testing',
+    '@angular/router',
+    '@angular/ssr/schematics',
+    '@angular/ssr'
   ].forEach((pkg) => {
-    const resolved = addSafeResolve(pkg);
+    const resolved = addSafeResolve(pkg, nodeModulesPaths);
     if (resolved) {
       aliases[pkg] = resolved;
     }

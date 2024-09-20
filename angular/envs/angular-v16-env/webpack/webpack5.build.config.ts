@@ -41,10 +41,9 @@ export function webpack5BuildConfigFactory(
     resolve: {
       alias: {
         ...fallbacksAliases,
-        ...getWebpackAngularAliases()
+        ...getWebpackAngularAliases(nodeModulesPaths)
       },
-      fallback: fallbacks,
-      modules: nodeModulesPaths
+      fallback: fallbacks
     },
 
     module: {

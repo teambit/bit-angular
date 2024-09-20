@@ -153,7 +153,7 @@ export class NgPackagrCompiler implements Compiler {
     const updatePackageJson: any = {
       sideEffects: packageJson.sideEffects === 'true'
     };
-    const props = ['main', 'metadata', 'module', 'es2015', 'es2020', 'es2022', 'esm2015', 'esm2020', 'esm2022', 'fesm2015', 'fesm2020', 'fesm2022', 'typings', 'types', 'node', 'default'];
+    const props = ['main', 'metadata', 'module', 'es2015', 'es2020', 'es2022', 'esm', 'esm2015', 'esm2020', 'esm2022', 'fesm2015', 'fesm2020', 'fesm2022', 'typings', 'types', 'node', 'default'];
     props.forEach(prop => {
       // Angular v13+ doesn't generate umd bundles anymore, so we don't want to update the main entry point
       // as it will cause the component to fail to load with jest
@@ -219,7 +219,7 @@ export class NgPackagrCompiler implements Compiler {
 
     if (allowedNonPeerDependencies.length) {
       // eslint-disable-next-line no-console
-      console.warn(chalk.yellow(`\nWARNING: You have dependencies declared as "runtime dependencies" ("${ allowedNonPeerDependencies.join('", "') }"). In most cases Angular recommends using peer dependencies instead (see: https://github.com/ng-packagr/ng-packagr/blob/main/docs/dependencies.md).\n`));
+      console.warn(chalk.yellow(`\nWARNING: You have dependencies declared as "runtime dependencies" ("${ allowedNonPeerDependencies.join('", "') }"). In most cases Angular recommends using peer dependencies instead (see: https://github.com/ng-packagr/ng-packagr/blob/main/docs/dependencies.md).\nYou can change those to peer dependencies with "bit deps set <comp-id> --peer" (see: https://bit.dev/reference/dependencies/configuring-dependencies#peer-dependencies).\n`));
     }
 
     outputFileSync(ngPackageJsonPath, JSON.stringify(ngPackageJson, null, 2));

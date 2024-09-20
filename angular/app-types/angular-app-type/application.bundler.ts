@@ -177,7 +177,7 @@ async function getNitroConfig(options: BuildApplicationOptions): Promise<NitroCo
   const nitroDir = normalizePath(resolve(outputDir, 'ssr'));
   const indexPath = getIndexInputFile(index!);
 
-  const prerenderedRoutes = prerender ? (await import(`${ outputDir }/prerendered-routes.json`)).default : undefined;
+  const prerenderedRoutes = prerender ? (await import(`${ outputDir }/prerendered-routes.json`, { assert: { type: 'json' }})).default : undefined;
 
   return {
     rootDir: workspaceRoot,

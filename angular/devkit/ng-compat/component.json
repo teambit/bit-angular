@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/ng-compat",
-    "version": "3.0.2"
+    "version": "3.0.3"
   },
   "propagate": false,
   "extensions": {
@@ -14,6 +14,7 @@
           "@angular-devkit/build-webpack": ">= 0.0.1",
           "@angular-devkit/build-angular": ">= 0.0.1",
           "@angular-devkit/architect": ">= 0.0.1",
+          "@angular/build": ">= 13.0.0",
           "@angular/core": ">= 13.0.0",
           "@angular/cli": ">= 13.0.0",
           "esbuild": ">= 0.14.0",

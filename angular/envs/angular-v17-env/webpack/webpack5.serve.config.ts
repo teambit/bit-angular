@@ -166,7 +166,7 @@ export function webpack5ServeConfigFactory(
       extensions: ['.ts', '.tsx', '.js', '.mdx', '.md'],
       alias: {
         ...fallbacksAliases,
-        ...getWebpackAngularAliases()
+        ...getWebpackAngularAliases(nodeModulesPaths)
       },
       fallback: { ...fallbacks, events: fileURLToPath(import.meta.resolve('events/')) } as any,
       modules: nodeModulesPaths
