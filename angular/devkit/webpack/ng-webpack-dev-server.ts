@@ -99,7 +99,7 @@ export class NgWebpackDevServer {
         tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(options.appRootPath, 'tsconfig.app.json');
         isApp = true;
       } else { // When you use `bit start`
-        tsconfigPath = writeTsconfig(devServerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        tsconfigPath = await writeTsconfig(devServerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
         // eslint-disable-next-line no-param-reassign
         options.angularOptions = options.angularOptions || {};
         if (options?.angularOptions?.tsConfig) {

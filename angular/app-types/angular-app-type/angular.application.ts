@@ -171,7 +171,7 @@ export class AngularApp implements Application {
       ignoreVersion: true
     });
     const appTsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
-    const workspaceCmpsIDs = await workspace.listIds();
+    const workspaceCmpsIDs = workspace.listIds();
     const bitCmps = await workspace.getMany(workspaceCmpsIDs);
     const tempFolder = this.getTempFolder(workspace);
     const tsconfigPath = this.getTsconfigPath(tempFolder);

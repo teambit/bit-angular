@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/elements",
-    "version": "6.0.5"
+    "version": "6.0.6"
   },
   "propagate": false,
   "extensions": {

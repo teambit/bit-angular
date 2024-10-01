@@ -99,7 +99,7 @@ export class NgWebpackBundler {
         tsconfigPath = options?.angularOptions?.tsConfig ?? posix.join(options.appRootPath, 'tsconfig.app.json');
         plugins = [new StatsLoggerPlugin()];
       } else { // When you use `bit build` for the preview app
-        tsconfigPath = writeTsconfig(bundlerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
+        tsconfigPath = await writeTsconfig(bundlerContext, options.appRootPath, tempFolder, application, pkg, devFilesMain, options?.angularOptions?.tsConfig, workspace);
         if (options?.angularOptions?.tsConfig) {
           // eslint-disable-next-line no-param-reassign
           options.angularOptions.tsConfig = tsconfigPath;
