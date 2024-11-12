@@ -231,41 +231,43 @@ export async function writeTsconfig(
   }
 
   // get the list of files for existing component compositions to include in the compilation
-  components.forEach((component: Component) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const component of components) {
     // we only want angular components
     if (component.config.main === 'public-api.ts') {
       let outputPath: string;
-
       const isApp = componentIsApp(component, application);
-      if (isApp) {
-        return;
-      }
-      if (isBuildContext(context)) {
-        const capsules = context.capsuleNetwork.graphCapsules;
-        const capsule = capsules.getCapsule(component.id);
-        if (!capsule) {
-          throw new Error(`No capsule found for ${component.id} in network graph`);
+      if (!isApp) {
+        if (isBuildContext(context)) {
+          // eslint-disable-next-line no-await-in-loop
+          const capsule = context.capsuleNetwork.graphCapsules.getCapsule(component.id);
+          if (!capsule) {
+            // eslint-disable-next-line no-console
+            console.warn(`No capsule found for ${component.id} in the network graph`);
+            // eslint-disable-next-line no-continue
+            continue;
+          }
+          outputPath = normalizePath(capsule.path);
+        } else {
+          outputPath = normalizePath(workspace?.componentDir(component.id, {
+            ignoreVersion: true
+          }) || '');
         }
-        outputPath = normalizePath(capsule.path);
-      } else {
-        outputPath = normalizePath(workspace?.componentDir(component.id, {
-          ignoreVersion: true
-        }) || '');
+        // map the package names to the workspace component paths for typescript in case a package references another local package
+        const pkgName = pkg.getPackageName(component);
+        tsPaths[pkgName] = [`${outputPath}/public-api.ts`];
+        tsPaths[`${pkgName}/*`] = [`${outputPath}/*`];
+
+        includePaths.add(outputPath);
+
+        // get the list of spec patterns
+        const devPatterns: string[] = devFilesMain.getDevPatterns(component, TesterAspect.id);
+        devPatterns.forEach(specPattern => {
+          excludePaths.add(posix.join(outputPath, specPattern));
+        });
       }
-      // map the package names to the workspace component paths for typescript in case a package references another local package
-      const pkgName = pkg.getPackageName(component);
-      tsPaths[pkgName] = [`${outputPath}/public-api.ts`];
-      tsPaths[`${pkgName}/*`] = [`${outputPath}/*`];
-
-      includePaths.add(outputPath);
-
-      // get the list of spec patterns
-      const devPatterns: string[] = devFilesMain.getDevPatterns(component, TesterAspect.id);
-      devPatterns.forEach(specPattern => {
-        excludePaths.add(posix.join(outputPath, specPattern));
-      });
     }
-  });
+  }
 
   const pAppPath = normalizePath(rootPath);
   const tsConfigAppPath = tsConfigPath ?? join(rootPath, 'tsconfig.app.json');
