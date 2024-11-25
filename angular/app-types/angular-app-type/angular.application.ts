@@ -1,10 +1,6 @@
 import { VERSION } from '@angular/cli';
-import {
-  ApplicationOptions,
-  getWorkspace,
-  NG_APP_NAME,
-  normalizePath
-} from '@bitdev/angular.dev-services.common';
+import { getWorkspace, NG_APP_NAME, normalizePath } from '@bitdev/angular.dev-services.common';
+import { ApplicationBuilderOptions, SsrClass } from '@bitdev/angular.dev-services.ng-compat';
 import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 import {
   AppBuildContext,
@@ -44,7 +40,7 @@ export class AngularApp implements Application {
     readonly options: AngularAppOptions
   ) {
     this.name = options.name || NG_APP_NAME;
-    this.idName = `bitdev.angular/${ this.name }`;
+    this.idName = `bitdev.angular/${this.name}`;
     this.deploy = options.deploy;
   }
 
@@ -59,19 +55,19 @@ export class AngularApp implements Application {
   }
 
   private getTsconfigPath(tempFolder: string): string {
-    return normalizePath(join(tempFolder, `tsconfig/tsconfig-${ Date.now() }.json`));
+    return normalizePath(join(tempFolder, `tsconfig/tsconfig-${Date.now()}.json`));
   }
 
   private getPublicDir(artifactsDir: string) {
     return join(artifactsDir, this.name);
   }
 
-  private getDevServerContext(context: AppContext, _appRootPath: string): DevServerContext {
+  private getDevServerContext(context: AppContext): DevServerContext {
     // const ngEnvOptions = this.angularEnv.getNgEnvOptions();
     return Object.assign(cloneDeep(context), {
       entry: [],
       rootPath: /*ngEnvOptions.devServer === 'vite' ? _appRootPath : */'',
-      publicPath: `${ this.publicDir }/${ this.options.name }`,
+      publicPath: `${this.publicDir}/${this.options.name}`,
       title: this.options.name
     });
   }
@@ -122,9 +118,9 @@ export class AngularApp implements Application {
         const pkgName = depsResolver.getPackageName(dep);
         // TODO we should find a way to use the real entry file based on the component config because people can change it
         if (fs.existsSync(join(componentDir, 'public-api.ts'))) {
-          tsconfigJSON.compilerOptions.paths[pkgName] = [`${ componentDir }/public-api.ts`, `${ componentDir }`];
+          tsconfigJSON.compilerOptions.paths[pkgName] = [`${componentDir}/public-api.ts`, `${componentDir}`];
         }
-        tsconfigJSON.compilerOptions.paths[`${ pkgName }/*`] = [`${ componentDir }/*`];
+        tsconfigJSON.compilerOptions.paths[`${pkgName}/*`] = [`${componentDir}/*`];
       }
     });
 
@@ -181,7 +177,7 @@ export class AngularApp implements Application {
       const envVars = await this.getEnvFile('development', appRootPath, context.envVariables as any);
       await serveApplication({
         angularOptions: {
-          ...this.options.angularBuildOptions as ApplicationOptions,
+          ...this.options.angularBuildOptions as ApplicationBuilderOptions,
           tsConfig: tsconfigPath
         },
         sourceRoot: this.options.sourceRoot || 'src',
@@ -194,7 +190,7 @@ export class AngularApp implements Application {
         }
       });
     } else {
-      const devServerContext = this.getDevServerContext(context, appRootPath);
+      const devServerContext = this.getDevServerContext(context);
       const envContext = this.getEnvContext(context);
       const preview = this.getPreview(tsconfigPath)(envContext);
 
@@ -216,8 +212,13 @@ export class AngularApp implements Application {
     const outputPath = this.getPublicDir(context.artifactsDir);
     const appRootPath = capsule.path;
     const appTsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
-    const appOptions = this.options.angularBuildOptions as ApplicationOptions;
-    const entryServer = appOptions.ssr && Number(VERSION.major) >= 17 ? './entry.server.ts' : undefined;
+    const appOptions = this.options.angularBuildOptions as ApplicationBuilderOptions;
+    let entryServer: string | undefined;
+    if ((appOptions.ssr as SsrClass)?.entry) {
+      entryServer = (appOptions.ssr as SsrClass).entry;
+    } else if (appOptions.ssr && Number(VERSION.major) >= 17 && Number(VERSION.major) < 19) {
+      entryServer = './entry.server.ts';
+    }
     const tempFolder = this.getTempFolder();
     const tsconfigPath = this.getTsconfigPath(tempFolder);
     this.generateTsConfig([capsule.component], appRootPath, appTsconfigPath, tsconfigPath, depsResolver, undefined, entryServer);
@@ -239,6 +240,7 @@ export class AngularApp implements Application {
           'process.env': envVars
         }
       });
+      console.log('build done');
     } else {
       let bundler: Bundler;
       if (this.options.bundler) {
@@ -260,7 +262,7 @@ export class AngularApp implements Application {
       metadata: {
         outputPath,
         publicDir: join(outputPath, 'browser'),
-        ssrPublicDir: appOptions.ssr ? join(outputPath, 'ssr') : undefined
+        ssrPublicDir: appOptions.ssr ? join(outputPath, Number(VERSION.major) >= 19 ? 'server' : 'ssr') : undefined
       }
     };
   }

@@ -1,6 +1,6 @@
 import { type AngularAppOptions, AngularApp } from '@bitdev/angular.app-types.angular-app-type';
 import type { ApplicationOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { ngEnvOptions } from '@bitdev/angular.envs.angular-v17-env';
+import { ngEnvOptions } from '@bitdev/angular.angular-env';
 
 const angularOptions: ApplicationOptions & DevServerOptions = {
   browser: './src/main.ts',
@@ -11,7 +11,10 @@ const angularOptions: ApplicationOptions & DevServerOptions = {
   styles: ['./src/styles.scss'],
   inlineStyleLanguage: "scss",
   prerender: true,
-  ssr: true
+  outputMode: "server",
+  ssr: {
+    "entry": "./src/server.ts"
+  }
 };
 
 export const DemoAppOptions: AngularAppOptions = {

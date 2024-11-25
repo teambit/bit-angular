@@ -1,15 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { executeDevServerBuilder, OutputHashing } from '@angular-devkit/build-angular';
 import { VERSION } from '@angular/cli';
-import {
-  dedupPaths,
-  getLoggerApi,
-  normalizePath
-} from '@bitdev/angular.dev-services.common';
-import {
-  type ApplicationBuilderOptions,
-  type DevServerBuilderOptions
-} from '@bitdev/angular.dev-services.ng-compat';
+import { dedupPaths, getLoggerApi, normalizePath } from '@bitdev/angular.dev-services.common';
+import { type ApplicationBuilderOptions, type DevServerBuilderOptions, } from '@bitdev/angular.dev-services.ng-compat';
 import { Logger } from '@teambit/logger';
 import assert from 'assert';
 import { createEvent } from 'h3';
@@ -45,10 +38,18 @@ export async function serveApplication(options: ServeApplicationOptions): Promis
   const isSsr = !!server && Number(VERSION.major) >= 17;
   const appOptions = getAppOptions(options, isSsr);
   const builderContext = getBuilderContext(options, appOptions);
-  const devServerOptions = isSsr ? {
-    buildPlugins: [definePlugin({ ...envVars, ...define })],
-    middleware: [await createNitroApiMiddleware(options)]
-  } : undefined;
+  const devServerOptions: any = {
+    buildPlugins: [],
+    middleware: []
+  };
+  if (isSsr) {
+    devServerOptions.buildPlugins = [definePlugin({ ...envVars, ...define })];
+
+    // Versions of Angular <19 require a nitro middleware to support SSR API endpoints
+    if (Number(VERSION.major) < 19) {
+      devServerOptions.middleware = [await createNitroApiMiddleware(options)];
+    }
+  }
 
   // @ts-ignore only v17+ has 4 arguments, previous versions only have 3
   await executeDevServerBuilder(appOptions, builderContext as any, undefined, devServerOptions).toPromise();
@@ -57,16 +58,16 @@ export async function serveApplication(options: ServeApplicationOptions): Promis
 function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): ApplicationBuilderOptions & DevServerBuilderOptions {
   const { angularOptions, port, sourceRoot, workspaceRoot } = options;
   // declare constants for all reusable values here
-  const normalizedIndex = `./${ join(sourceRoot, 'index.html') }`;
-  const normalizedBrowser = `./${ join(sourceRoot, 'main.ts') }`;
-  const serverPath = `./${ join(sourceRoot, 'main.server.ts') }`;
+  const normalizedIndex = `./${join(sourceRoot, 'index.html')}`;
+  const normalizedBrowser = `./${join(sourceRoot, 'main.ts')}`;
+  const serverPath = `./${join(sourceRoot, 'main.server.ts')}`;
 
   const dedupedAssets = dedupPaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]);
-  const dedupedStyles = dedupPaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage }`), ...(angularOptions.styles ?? [])]);
+  const dedupedStyles = dedupPaths([posix.join(sourceRoot, `styles.${angularOptions.inlineStyleLanguage}`), ...(angularOptions.styles ?? [])]);
 
   return {
     ...angularOptions,
-    baseHref: angularOptions.baseHref,
+    baseHref: angularOptions.baseHref ?? '/',
     preserveSymlinks: false,
     outputPath: OUTPUT_PATH,
     index: angularOptions.index ?? normalizedIndex,
@@ -82,7 +83,9 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): Applic
     sourceMap: angularOptions.sourceMap ?? true,
     outputHashing: angularOptions.outputHashing ?? OutputHashing.All,
     watch: true,
-    liveReload: true,
+    liveReload: angularOptions.liveReload ?? true,
+    hmr: angularOptions.hmr ?? false,
+    outputMode: angularOptions.outputMode ?? (isSsr ? 'server' : 'static'),
     server: isSsr ? angularOptions.server ?? serverPath : undefined,
     prerender: isSsr ? angularOptions.prerender ?? !!angularOptions.server : false,
     ssr: isSsr ? (angularOptions.ssr ?? !!angularOptions.server) : false,
@@ -115,7 +118,8 @@ function getBuilderContext(options: ServeApplicationOptions, appOptions: Applica
       target: 'development'
     },
     getProjectMetadata: getProjectMetadata(options),
-    addTeardown: () => {},
+    addTeardown: () => {
+    },
     getBuilderNameForTarget: () => Promise.resolve(BUILDER_NAME),
     getTargetOptions: () => Promise.resolve(appOptions as any),
     validateOptions: () => Promise.resolve(appOptions as any)
@@ -124,7 +128,7 @@ function getBuilderContext(options: ServeApplicationOptions, appOptions: Applica
 
 function getProjectMetadata(options: ServeApplicationOptions) {
   const { sourceRoot, tempFolder } = options;
-  return function(projectName: string): Promise<any> {
+  return function (): Promise<any> {
     return Promise.resolve({
       root: '',
       sourceRoot,
@@ -144,8 +148,8 @@ function getNitroConfig(options: ServeApplicationOptions): NitroConfig {
   return {
     rootDir,
     logLevel: 2,
-    srcDir: normalizePath(`${ rootDir }/src/server`),
-    scanDirs: [normalizePath(`${ rootDir }/src/server`)],
+    srcDir: normalizePath(`${rootDir}/src/server`),
+    scanDirs: [normalizePath(`${rootDir}/src/server`)],
     buildDir: resolve(tempFolder, 'nitro')
   };
 }
@@ -164,7 +168,7 @@ async function createNitroApiMiddleware(options: ServeApplicationOptions): Promi
   const server = createDevServer(nitro);
   await build(nitro);
 
-  return async(
+  return async (
     req: any,
     res: any,
     next: any

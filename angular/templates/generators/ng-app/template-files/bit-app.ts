@@ -1,6 +1,6 @@
 import { ComponentContext, ComponentFile } from '@teambit/generator';
 
-export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: boolean, envPkgName: string): ComponentFile => {
+export const ngAppFile = (context: ComponentContext, styleSheet: string, ssr: boolean, envPkgName: string, angularVersion: number): ComponentFile => {
   const { name, namePascalCase: Name } = context;
   return {
     relativePath: `${name}.bit-app.ts`,
@@ -13,7 +13,8 @@ const angularOptions: ${ssr ? `ApplicationOptions`: `BrowserOptions` } & DevServ
   ${ssr ? `browser: './src/main.ts',
   server: './src/main.server.ts',
   prerender: true,
-  ssr: true,` : `main: './src/main.ts',`}
+  ${angularVersion >= 19 ? `outputMode: "static",
+  ssr: {"entry": "./src/server.ts"}` : 'ssr: true'}` : `main: './src/main.ts'`},
   index: './src/index.html',
   tsConfig: './tsconfig.app.json',
   inlineStyleLanguage: '${styleSheet}',

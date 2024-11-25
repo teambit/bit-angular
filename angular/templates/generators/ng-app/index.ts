@@ -18,6 +18,7 @@ import { gitKeepFile } from './template-files/src/assets/gitkeep';
 import { indexHtmlFile } from './template-files/src/index-html';
 import { mainNgAppFile } from './template-files/src/main';
 import { mainServerFile } from './template-files/src/main.server';
+import { serverFile } from './template-files/src/server';
 import { polyfillsFile } from './template-files/src/polyfills';
 import { helloApiFile } from './template-files/src/server/api/hello';
 import { stylesFile } from './template-files/src/styles';
@@ -94,12 +95,12 @@ export class NgAppTemplate implements ComponentTemplate {
     if (envId === 'bitdev.angular/angular-env') {
       envPkgName = '@bitdev/angular.angular-env';
     } else {
-      envPkgName = `@bitdev/angular.envs.angular-v${ this.angularVersion }-env`;
+      envPkgName = `@bitdev/angular.envs.angular-v${this.angularVersion}-env`;
     }
 
     const files = [
       docsFile(context),
-      ngAppFile(context, params.styleSheet, params.ssr, envPkgName),
+      ngAppFile(context, params.styleSheet, params.ssr, envPkgName, this.angularVersion),
       tsconfigFile(this.angularVersion, params.ssr),
       indexHtmlFile(context),
       mainNgAppFile(params.standalone),
@@ -117,6 +118,10 @@ export class NgAppTemplate implements ComponentTemplate {
         mainServerFile(params.standalone),
         helloApiFile()
       );
+
+      if (this.angularVersion >= 19) {
+        files.push(serverFile());
+      }
 
       if (params.standalone) {
         files.push(serverConfigFile());

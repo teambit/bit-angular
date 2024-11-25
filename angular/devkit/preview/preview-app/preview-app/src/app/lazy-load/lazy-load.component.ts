@@ -14,6 +14,7 @@ import {
 import { DocsComponent } from '../docs/docs.component';
 
 @Component({
+  standalone: false,
   selector: 'app-lazy-load',
   template: ``
 })
