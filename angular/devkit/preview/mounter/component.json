@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/preview/mounter",
-    "version": "3.0.3"
+    "version": "4.0.0"
   },
   "propagate": false,
   "extensions": {

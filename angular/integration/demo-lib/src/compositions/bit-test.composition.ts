@@ -3,6 +3,7 @@ import { BitTestModule } from '../bit-test.module';
 
 @Component({
   selector: 'composition-cmp',
+  standalone: false,
   template: `Composition: <bit-test></bit-test>`
 })
 class CompositionComponent {}

@@ -15,15 +15,14 @@ You can list all available templates with the following command:
 bit templates
 ```
 
-Generate a component using the ng-module template with the bit create command:
+Generate a component using the ng-standalone template with the bit create command:
 ```
-bit create ng-module ui/my-button
+bit create ng-standalone ui/my-button
 ```
 
-Run the following commands to create and set up an application using the ng-app template:
+Run the following command to create and set up an application using the ng-app template:
 ```
 bit create ng-app apps/my-angular-app
-bit use apps/my-angular-app
 ```
 
 
@@ -43,6 +42,7 @@ The following dev services are supported by default:
 - ESLint
 - Prettier
 - Webpack dev server & bundler
+- ESBuild / Vite dev server for apps, with SSR support
 - Ng-packagr for libraries
 - Angular elements
 
@@ -53,9 +53,11 @@ The [default Angular env](https://bit.cloud/bitdev/angular/angular-env) always u
 
 Bit will still support old versions of Angular when possible,
 if you want to use a specific version, you can use one of those env versions instead:
-- v17: bitdev.angular/envs/angular-v17-env (latest)
+- v19: bitdev.angular/envs/angular-v19-env (latest)
+- v18: bitdev.angular/envs/angular-v18-env (LTS)
+- v17: bitdev.angular/envs/angular-v17-env (LTS)
 - v16: bitdev.angular/envs/angular-v16-env (LTS)
-- v15: bitdev.angular/envs/angular-v15-env (LTS)
+- v15: bitdev.angular/envs/angular-v15-env (deprecated)
 - v14: bitdev.angular/envs/angular-v14-env (deprecated)
 - v13: bitdev.angular/envs/angular-v13-env (deprecated)
 

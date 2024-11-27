@@ -8,6 +8,7 @@ import { ${Name}Module } from './${name}.module';
 
 @Component({
   selector: '${name}-composition-cmp',
+  standalone: false,
   template: \`${Name} composition: <${name}></${name}>\`
 })
 class ${Name}CompositionComponent {}

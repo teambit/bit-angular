@@ -8,6 +8,7 @@ export const componentFile = (context: ComponentContext): ComponentFile => {
 
 @Component({
   selector: '${name}',
+  standalone: false,
   template: \`
     <p>
     ${name} works!

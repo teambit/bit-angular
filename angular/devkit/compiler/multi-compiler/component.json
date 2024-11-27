@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/multi-compiler",
-    "version": "6.0.9"
+    "version": "7.0.0"
   },
   "propagate": false,
   "extensions": {

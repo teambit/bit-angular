@@ -3,7 +3,8 @@
  */
 export interface ApplicationBuilderOptions {
   /**
-   * A list of CommonJS packages that are allowed to be used without a build time warning.
+   * A list of CommonJS or AMD packages that are allowed to be used without a build time
+   * warning. Use `'*'` to allow all.
    */
   allowedCommonJsDependencies?: string[];
   /**
@@ -33,19 +34,32 @@ export interface ApplicationBuilderOptions {
    */
   budgets?: Budget[];
   /**
+   * Automatically clear the terminal screen during rebuilds.
+   */
+  clearScreen?: boolean;
+  /**
    * Define the crossorigin attribute setting of elements that provide CORS support.
    */
   crossOrigin?: CrossOrigin;
+  /**
+   * Defines global identifiers that will be replaced with a specified constant value when
+   * found in any JavaScript or TypeScript code including libraries. The value will be used
+   * directly. String values must be put in quotes. Identifiers within Angular metadata such
+   * as Component Decorators will not be replaced.
+   */
+  define?: {
+    [key: string]: string;
+  };
   /**
    * Delete the output path before building.
    */
   deleteOutputPath?: boolean;
   /**
-   * Defines global identifiers that will be replaced with a specified constant value when found in any JavaScript or TypeScript code including libraries.
-   * The value will be used directly.
-   * String values must be put in quotes. Identifiers within Angular metadata such as Component Decorators will not be replaced.
+   * Customize the base path for the URLs of resources in 'index.html' and component
+   * stylesheets. This option is only necessary for specific deployment scenarios, such as
+   * with Angular Elements or when utilizing different CDN locations.
    */
-  define?: any;
+  deployUrl?: string;
   /**
    * Exclude the listed external dependencies from being bundled into the bundle. Instead, the
    * created bundle relies on these dependencies to be available during runtime.
@@ -74,7 +88,16 @@ export interface ApplicationBuilderOptions {
   /**
    * The stylesheet language to use for the application's inline component styles.
    */
-  inlineStyleLanguage?: "css" | "less" | "sass" | "scss";
+  inlineStyleLanguage?: InlineStyleLanguage;
+  /**
+   * Defines the type of loader to use with a specified file extension when used with a
+   * JavaScript `import`. `text` inlines the content as a string; `binary` inlines the content
+   * as a Uint8Array; `file` emits the file and provides the runtime location of the file;
+   * `empty` considers the content to be empty and not include it in bundles.
+   */
+  loader?: {
+    [key: string]: any;
+  };
   /**
    * Translate the bundles in one or more locales.
    */
@@ -87,7 +110,7 @@ export interface ApplicationBuilderOptions {
    * Enables optimization of the build output. Including minification of scripts and styles,
    * tree-shaking, dead-code elimination, inlining of critical CSS and fonts inlining. For
    * more information, see
-   * https://angular.io/guide/workspace-config#optimization-configuration.
+   * https://angular.dev/reference/configs/workspace-config#optimization-configuration.
    */
   optimization?: OptimizationUnion;
   /**
@@ -95,9 +118,15 @@ export interface ApplicationBuilderOptions {
    */
   outputHashing?: OutputHashing;
   /**
-   * The full path for the new output directory, relative to the current workspace.
+   * Defines the build output target. 'static': Generates a static site for deployment on any
+   * static hosting service. 'server': Produces an application designed for deployment on a
+   * server that supports server-side rendering (SSR).
    */
-  outputPath: string;
+  outputMode?: OutputMode | 'static' | 'server';
+  /**
+   * Specify the output path relative to workspace root.
+   */
+  outputPath: OutputPathUnion;
   /**
    * Enable and define the file watching poll time period in milliseconds.
    */
@@ -125,6 +154,10 @@ export interface ApplicationBuilderOptions {
    */
   scripts?: ScriptElement[];
   /**
+   * Security features to protect against XSS and other common attacks
+   */
+  security?: Security;
+  /**
    * The full path for the server entry point to the application, relative to the current
    * workspace.
    */
@@ -135,13 +168,13 @@ export interface ApplicationBuilderOptions {
   serviceWorker?: ServiceWorker;
   /**
    * Output source maps for scripts and styles. For more information, see
-   * https://angular.io/guide/workspace-config#source-map-configuration.
+   * https://angular.dev/reference/configs/workspace-config#source-map-configuration.
    */
   sourceMap?: SourceMapUnion;
   /**
    * Server side render (SSR) pages of your application during runtime.
    */
-  ssr?: boolean;
+  ssr?: SsrUnion;
   /**
    * Generates a 'stats.json' file which can be analyzed with
    * https://esbuild.github.io/analyze/.
@@ -198,7 +231,7 @@ export interface AssetPatternClass {
   /**
    * Absolute path within the output.
    */
-  output: string;
+  output?: string;
 }
 export interface Budget {
   /**
@@ -286,7 +319,21 @@ export interface IndexObject {
    * will be used and will be considered relative to the application's configured output path.
    */
   output?: string;
+  /**
+   * Generates 'preload', 'modulepreload', and 'preconnect' link elements for initial
+   * application files and resources.
+   */
+  preloadInitial?: boolean;
   [property: string]: any;
+}
+/**
+ * The stylesheet language to use for the application's inline component styles.
+ */
+export declare enum InlineStyleLanguage {
+  Css = "css",
+  Less = "less",
+  Sass = "sass",
+  Scss = "scss"
 }
 /**
  * Translate the bundles in one or more locales.
@@ -296,7 +343,7 @@ export type Localize = string[] | boolean;
  * Enables optimization of the build output. Including minification of scripts and styles,
  * tree-shaking, dead-code elimination, inlining of critical CSS and fonts inlining. For
  * more information, see
- * https://angular.io/guide/workspace-config#optimization-configuration.
+ * https://angular.dev/reference/configs/workspace-config#optimization-configuration.
  */
 export type OptimizationUnion = boolean | OptimizationClass;
 export interface OptimizationClass {
@@ -341,6 +388,11 @@ export interface StylesClass {
    * identifiers and minimizing values.
    */
   minify?: boolean;
+  /**
+   * Remove comments in global CSS that contains '@license' or '@preserve' or that starts with
+   * '//!' or '/*!'.
+   */
+  removeSpecialComments?: boolean;
 }
 /**
  * Define the output filename cache-busting hashing mode.
@@ -350,6 +402,40 @@ export declare enum OutputHashing {
   Bundles = "bundles",
   Media = "media",
   None = "none"
+}
+/**
+ * Defines the build output target. 'static': Generates a static site for deployment on any
+ * static hosting service. 'server': Produces an application designed for deployment on a
+ * server that supports server-side rendering (SSR).
+ */
+export declare enum OutputMode {
+  Server = "server",
+  Static = "static"
+}
+/**
+ * Specify the output path relative to workspace root.
+ */
+export type OutputPathUnion = OutputPathClass | string;
+export interface OutputPathClass {
+  /**
+   * Specify the output path relative to workspace root.
+   */
+  base: string;
+  /**
+   * The output directory name of your browser build within the output path base. Defaults to
+   * 'browser'.
+   */
+  browser?: string;
+  /**
+   * The output directory name of your media files within the output browser directory.
+   * Defaults to 'media'.
+   */
+  media?: string;
+  /**
+   * The output directory name of your server build within the output path base. Defaults to
+   * 'server'.
+   */
+  server?: string;
 }
 /**
  * Prerender (SSG) pages of your application during build time.
@@ -383,12 +469,37 @@ export interface ScriptClass {
   input: string;
 }
 /**
+ * Security features to protect against XSS and other common attacks
+ */
+export interface Security {
+  /**
+   * Enables automatic generation of a hash-based Strict Content Security Policy
+   * (https://web.dev/articles/strict-csp#choose-hash) based on scripts in index.html. Will
+   * default to true once we are out of experimental/preview phases.
+   */
+  autoCsp?: AutoCspUnion;
+}
+/**
+ * Enables automatic generation of a hash-based Strict Content Security Policy
+ * (https://web.dev/articles/strict-csp#choose-hash) based on scripts in index.html. Will
+ * default to true once we are out of experimental/preview phases.
+ */
+export type AutoCspUnion = boolean | AutoCspClass;
+export interface AutoCspClass {
+  /**
+   * Include the `unsafe-eval` directive (https://web.dev/articles/strict-csp#remove-eval) in
+   * the auto-CSP. Please only enable this if you are absolutely sure that you need to, as
+   * allowing calls to eval will weaken the XSS defenses provided by the auto-CSP.
+   */
+  unsafeEval?: boolean;
+}
+/**
  * Generates a service worker configuration.
  */
 export type ServiceWorker = boolean | string;
 /**
  * Output source maps for scripts and styles. For more information, see
- * https://angular.io/guide/workspace-config#source-map-configuration.
+ * https://angular.dev/reference/configs/workspace-config#source-map-configuration.
  */
 export type SourceMapUnion = boolean | SourceMapClass;
 export interface SourceMapClass {
@@ -410,6 +521,47 @@ export interface SourceMapClass {
   vendor?: boolean;
 }
 /**
+ * Server side render (SSR) pages of your application during runtime.
+ */
+export type SsrUnion = boolean | SsrClass;
+export interface SsrClass {
+  /**
+   * The server entry-point that when executed will spawn the web server.
+   */
+  entry?: string;
+  /**
+   * Specifies the platform for which the server bundle is generated. This affects the APIs
+   * and modules available in the server-side code.
+   *
+   * - `node`:  (Default) Generates a bundle optimized for Node.js environments.
+   * - `neutral`: Generates a platform-neutral bundle suitable for environments like edge
+   * workers, and other serverless platforms. This option avoids using Node.js-specific APIs,
+   * making the bundle more portable.
+   *
+   * Please note that this feature does not provide polyfills for Node.js modules.
+   * Additionally, it is experimental, and the schematics may undergo changes in future
+   * versions.
+   */
+  experimentalPlatform?: ExperimentalPlatform;
+}
+/**
+ * Specifies the platform for which the server bundle is generated. This affects the APIs
+ * and modules available in the server-side code.
+ *
+ * - `node`:  (Default) Generates a bundle optimized for Node.js environments.
+ * - `neutral`: Generates a platform-neutral bundle suitable for environments like edge
+ * workers, and other serverless platforms. This option avoids using Node.js-specific APIs,
+ * making the bundle more portable.
+ *
+ * Please note that this feature does not provide polyfills for Node.js modules.
+ * Additionally, it is experimental, and the schematics may undergo changes in future
+ * versions.
+ */
+export declare enum ExperimentalPlatform {
+  Neutral = "neutral",
+  Node = "node"
+}
+/**
  * Options to pass to style preprocessors.
  */
 export interface StylePreprocessorOptions {
@@ -417,6 +569,32 @@ export interface StylePreprocessorOptions {
    * Paths to include. Paths will be resolved to workspace root.
    */
   includePaths?: string[];
+  /**
+   * Options to pass to the sass preprocessor.
+   */
+  sass?: Sass;
+}
+/**
+ * Options to pass to the sass preprocessor.
+ */
+export interface Sass {
+  /**
+   * A set of deprecations to treat as fatal. If a deprecation warning of any provided type is
+   * encountered during compilation, the compiler will error instead. If a Version is
+   * provided, then all deprecations that were active in that compiler version will be treated
+   * as fatal.
+   */
+  fatalDeprecations?: string[];
+  /**
+   * A set of future deprecations to opt into early. Future deprecations passed here will be
+   * treated as active by the compiler, emitting warnings as necessary.
+   */
+  futureDeprecations?: string[];
+  /**
+   * A set of active deprecations to ignore. If a deprecation warning of any provided type is
+   * encountered during compilation, the compiler will ignore it instead.
+   */
+  silenceDeprecations?: string[];
 }
 export type StyleElement = StyleClass | string;
 export interface StyleClass {

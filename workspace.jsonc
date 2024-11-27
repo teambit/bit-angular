@@ -54,6 +54,8 @@
         "@teambit/harmony.content.cli-reference": "2.0.285",
         "@teambit/react.ui.docs-app": "1.0.21",
         "@teambit/typescript.typescript-compiler": "2.0.44",
+        "@teambit/webpack.modules.generate-style-loaders": "^1.0.11",
+        "@teambit/webpack.modules.style-regexps": "^1.0.6",
         "@teambit/workspace.root-components": "^1.0.0",
         "@types/fs-extra": "~9.0.7",
         "@types/lodash-es": "^4.17.12",
@@ -64,8 +66,11 @@
         "json5": "^2.2.3",
         "lodash-es": "^4.17.21",
         "object-hash": "~2.1.1",
+        "postcss-flexbugs-fixes": "^5.0.2",
+        "postcss-preset-env": "^10.1.0",
         "prettier": "2.3.2",
         "react-dev-utils": "10.2.1",
+        "react-dev-utils-esm": "^11.0.3",
         "remark-frontmatter": "~3.0.0",
         "remark-html": "13.0.1",
         "remark-prism": "~1.3.6",
@@ -87,22 +92,18 @@
   },
   "teambit.generator/generator": {
     "envs": [
-//                  "bitdev.angular/angular-env",
-      "bitdev.angular/envs/angular-v18-env"
-//            "bitdev.angular/envs/angular-v17-env"
-//            "bitdev.angular/envs/angular-v16-env",
-      //      "bitdev.angular/envs/angular-v15-env",
-      //      "bitdev.angular/envs/angular-v14-env",
-      //      "bitdev.angular/envs/angular-v13-env"
+//      "bitdev.angular/angular-env",
+      "bitdev.angular/envs/angular-v19-env"
+      // "bitdev.angular/envs/angular-v18-env"
+      // "bitdev.angular/envs/angular-v17-env"
+      // "bitdev.angular/envs/angular-v16-env",
     ]
   },
-  "bitdev.angular/angular-env": {},
-  "bitdev.angular/envs/angular-v18-env": {},
-  "bitdev.angular/envs/angular-v17-env": {},
-  "bitdev.angular/envs/angular-v16-env": {},
-//  "bitdev.angular/envs/angular-v15-env": {},
-//  "bitdev.angular/envs/angular-v14-env": {},
-//  "bitdev.angular/envs/angular-v13-env": {},
+//  "bitdev.angular/angular-env": {},
+  "bitdev.angular/envs/angular-v19-env": {},
+  //  "bitdev.angular/envs/angular-v18-env": {},
+  //  "bitdev.angular/envs/angular-v17-env": {},
+  //  "bitdev.angular/envs/angular-v16-env": {},
   // Add angular apps (until this is no longer necessary)
   //  "integration.examples/demo-app": {},
   /**
@@ -129,11 +130,14 @@
       "teambit.envs/env": {}
     },
     "angular/integration/demo-app": {
-      //            "bitdev.angular/angular-env": {}
-      "bitdev.angular/envs/angular-v18-env": {}
+      //      "bitdev.angular/angular-env": {}
+      "bitdev.angular/envs/angular-v19-env": {}
     },
     "angular/integration/demo-lib": {
       "bitdev.angular/angular-env": {}
+    },
+    "angular/integration/demo-lib-v19": {
+      "bitdev.angular/envs/angular-v19-env": {}
     },
     "angular/integration/demo-lib-v18": {
       "bitdev.angular/envs/angular-v18-env": {}
@@ -144,6 +148,6 @@
     "angular/integration/demo-lib-v16": {
       "bitdev.angular/envs/angular-v16-env": {}
     }
+    //  "integration.examples/demo-app": {}
   }
-  //  "integration.examples/demo-app": {}
 }

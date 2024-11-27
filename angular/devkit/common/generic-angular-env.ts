@@ -1,7 +1,8 @@
 import type {
   ApplicationBuilderOptions,
   BrowserBuilderOptions,
-  DevServerBuilderOptions
+  DevServerBuilderOptions,
+  OutputMode
 } from '@bitdev/angular.dev-services.ng-compat';
 import { AppsEnv } from '@teambit/application';
 import { BuilderEnv } from '@teambit/builder';
@@ -11,7 +12,7 @@ import { AngularEnvOptions } from './env-options';
 
 export type BrowserOptions = Omit<BrowserBuilderOptions, "outputPath" | "deleteOutputPath" | "preserveSymlinks" | "inlineStyleLanguage"> & {inlineStyleLanguage?: "css" | "less" | "sass" | "scss"};
 export type DevServerOptions = Omit<DevServerBuilderOptions, "aot" | "baseHref" | "browserTarget" | "commonChunk" | "deployUrl" | "hmrWarning" | "open" | "progress" | "servePathDefaultWarning" | "vendorChunk">;
-export type ApplicationOptions = Omit<ApplicationBuilderOptions, "outputPath" | "deleteOutputPath" | "preserveSymlinks" | "aot">
+export type ApplicationOptions = Omit<ApplicationBuilderOptions, "outputPath" | "deleteOutputPath" | "preserveSymlinks" | "aot" | "inlineStyleLanguage" | "outputMode"> & {inlineStyleLanguage?: "css" | "less" | "sass" | "scss", outputMode?: "static" | "server" | OutputMode};
 
 export interface GenericAngularEnv
   extends AppsEnv,

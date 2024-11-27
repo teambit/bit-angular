@@ -1,16 +1,8 @@
 /* eslint-disable no-param-reassign */
 import { OutputHashing } from '@angular-devkit/build-angular';
 import { VERSION } from '@angular/cli';
-import {
-  ApplicationOptions,
-  dedupPaths,
-  getLoggerApi,
-  normalizePath
-} from '@bitdev/angular.dev-services.common';
-import {
-  type ApplicationBuilderOptions,
-  buildApplicationInternal
-} from '@bitdev/angular.dev-services.ng-compat';
+import { dedupPaths, getLoggerApi, normalizePath } from '@bitdev/angular.dev-services.common';
+import { type ApplicationBuilderOptions, buildApplicationInternal } from '@bitdev/angular.dev-services.ng-compat';
 import { Logger } from '@teambit/logger';
 import assert from 'assert';
 import fs from 'fs-extra';
@@ -22,7 +14,7 @@ import definePlugin from './plugins/define.plugin.js';
 import { getIndexInputFile } from './utils.js';
 
 export type BuildApplicationOptions = {
-  angularOptions: Partial<ApplicationOptions>;
+  angularOptions: Partial<ApplicationBuilderOptions>;
   outputPath: string;
   sourceRoot: string;
   workspaceRoot: string;
@@ -36,10 +28,10 @@ export type BuildApplicationOptions = {
 const BUILDER_NAME = '@angular-devkit/build-angular:application';
 
 export async function buildApplication(options: BuildApplicationOptions): Promise<void> {
-  const { angularOptions: { tsConfig, ssr, define }, envVars } = options;
+  const { angularOptions: { tsConfig, server, define }, envVars } = options;
   assert(tsConfig, 'tsConfig option is required');
-  const isSsr = !!ssr && Number(VERSION.major) >= 17;
-  if (isSsr) {
+  const isSsr = !!server && Number(VERSION.major) >= 17;
+  if (isSsr && Number(VERSION.major) < 19) {
     addEntryServer(options);
   }
   const appOptions = getAppOptions(options, isSsr);
@@ -58,7 +50,8 @@ export async function buildApplication(options: BuildApplicationOptions): Promis
     }
   }
 
-  if (isSsr) {
+  // Versions of Angular <19 require a nitro middleware to support SSR API endpoints
+  if (isSsr && Number(VERSION.major) < 19) {
     await buildNitro(options);
   }
 }
@@ -68,7 +61,7 @@ function addEntryServer(options: BuildApplicationOptions): void {
   if (ssr && entryServer) {
     const fileContent = `import type { ApplicationRef } from '@angular/core';
 import { renderApplication, renderModule } from '@angular/platform-server';
-import bootstrap from '${ server?.replace(extname(server), '') }';
+import bootstrap from '${server?.replace(extname(server), '')}';
 
 function isBootstrapFn(value: unknown): value is () => Promise<ApplicationRef> {
   // We can differentiate between a module and a bootstrap function by reading compiler-generated "ɵmod" static property:
@@ -95,19 +88,20 @@ export default async function render(url: string, document: string) {
   }
 }
 
-function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): any {
+function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): ApplicationBuilderOptions {
   const { entryServer, angularOptions, outputPath, sourceRoot, workspaceRoot } = options;
 
   // declare constants for all reusable values here
-  const normalizedIndex = `./${ join(sourceRoot, 'index.html') }`;
-  const normalizedBrowser = `./${ join(sourceRoot, 'main.ts') }`;
+  const normalizedIndex = `./${join(sourceRoot, 'index.html')}`;
+  const normalizedBrowser = `./${join(sourceRoot, 'main.ts')}`;
+  const serverPath = `./${join(sourceRoot, 'main.server.ts')}`;
 
   const dedupedAssets = dedupPaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]);
-  const dedupedStyles = dedupPaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage }`), ...(angularOptions.styles ?? [])]);
+  const dedupedStyles = dedupPaths([posix.join(sourceRoot, `styles.${angularOptions.inlineStyleLanguage}`), ...(angularOptions.styles ?? [])]);
 
   return {
     ...angularOptions,
-    baseHref: angularOptions.baseHref ?? './',
+    baseHref: angularOptions.baseHref ?? '/',
     preserveSymlinks: false,
     outputPath,
     index: angularOptions.index ?? normalizedIndex,
@@ -117,13 +111,14 @@ function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): any {
     styles: dedupedStyles,
     scripts: angularOptions.scripts,
     namedChunks: angularOptions.namedChunks ?? true,
-    optimization: angularOptions.optimization ?? true,
+    optimization: false,//angularOptions.optimization ?? true,
     aot: true,
     deleteOutputPath: true,
     sourceMap: angularOptions.sourceMap ?? true,
-    outputHashing: angularOptions.outputHashing ?? OutputHashing.All,
+    outputHashing: OutputHashing.None,//angularOptions.outputHashing ?? OutputHashing.All,
     watch: false,
-    server: isSsr ? angularOptions.server : undefined,
+    outputMode: angularOptions.outputMode ?? (isSsr ? 'server' : 'static'),
+    server: isSsr ? angularOptions.server ?? serverPath : undefined,
     prerender: isSsr ? (angularOptions.prerender ?? !!angularOptions.server) : undefined,
     ssr: isSsr ? {
       entry: entryServer
@@ -149,14 +144,15 @@ function getBuilderContext(options: BuildApplicationOptions, appOptions: Applica
       project: 'bit-ng-app-builder',
       target: 'build'
     },
-    getProjectMetadata: function(projectName: string): Promise<any> {
+    getProjectMetadata: function (): Promise<any> {
       return Promise.resolve({
         root: '',
         sourceRoot,
         cli: { cache: { enabled: true, path: resolve(tempFolder, 'angular/cache') } }
       });
     },
-    addTeardown: () => {},
+    addTeardown: () => {
+    },
     getBuilderNameForTarget: () => Promise.resolve(BUILDER_NAME),
     getTargetOptions: () => Promise.resolve(appOptions as any),
     validateOptions: () => Promise.resolve(appOptions as any)
@@ -177,18 +173,18 @@ async function getNitroConfig(options: BuildApplicationOptions): Promise<NitroCo
   const nitroDir = normalizePath(resolve(outputDir, 'ssr'));
   const indexPath = getIndexInputFile(index!);
 
-  const prerenderedRoutes = prerender ? (await import(`${ outputDir }/prerendered-routes.json`, { assert: { type: 'json' }})).default : undefined;
+  const prerenderedRoutes = prerender ? (await import(`${outputDir}/prerendered-routes.json`, { assert: { type: 'json' } })).default : undefined;
 
   return {
     rootDir: workspaceRoot,
     logLevel: 1, // TODO reset this to 3 or 2 https://github.com/unjs/consola/#log-level
-    srcDir: normalizePath(`${ workspaceRoot }/src/server`),
-    scanDirs: [normalizePath(`${ workspaceRoot }/src/server`)],
+    srcDir: normalizePath(`${workspaceRoot}/src/server`),
+    scanDirs: [normalizePath(`${workspaceRoot}/src/server`)],
     buildDir: resolve(tempFolder, 'nitro'),
 
     alias: ssr ? {
       '#alias/entry.server': normalizePath(join(serverDir, 'server.mjs')),
-      '#alias/index': normalizePath(join(serverDir, `${ basename(indexPath, extname(indexPath)) }.server.html`))
+      '#alias/index': normalizePath(join(serverDir, `${basename(indexPath, extname(indexPath))}.server.html`))
     } : {},
     serverAssets: ssr ? [{
       baseName: 'public',
