@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { BitTestService } from './bit-test.service';
 
 @Component({
-  selector: 'bit-test',
+  selector: 'bit-test-v19',
   standalone: false,
   template: `
       <p>bit-test component works!</p>

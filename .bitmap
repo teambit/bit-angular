@@ -12,7 +12,7 @@
     "angular-env": {
         "name": "angular-env",
         "scope": "bitdev.angular",
-        "version": "7.0.1",
+        "version": "7.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-env"
     },
@@ -250,112 +250,112 @@
     "envs/angular-v16-env": {
         "name": "envs/angular-v16-env",
         "scope": "bitdev.angular",
-        "version": "7.0.0",
+        "version": "7.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v16-env"
     },
     "envs/angular-v17-env": {
         "name": "envs/angular-v17-env",
         "scope": "bitdev.angular",
-        "version": "6.0.0",
+        "version": "6.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v17-env"
     },
     "envs/angular-v18-env": {
         "name": "envs/angular-v18-env",
         "scope": "bitdev.angular",
-        "version": "2.0.0",
+        "version": "2.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v18-env"
     },
     "envs/angular-v19-env": {
         "name": "envs/angular-v19-env",
         "scope": "bitdev.angular",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/angular-v19-env"
     },
     "envs/base-env": {
         "name": "envs/base-env",
         "scope": "bitdev.angular",
-        "version": "7.0.0",
+        "version": "7.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/envs/base-env"
     },
     "examples/my-angular-env": {
         "name": "examples/my-angular-env",
         "scope": "bitdev.angular",
-        "version": "7.0.3",
+        "version": "7.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-env"
     },
     "examples/my-angular-v16-env": {
         "name": "examples/my-angular-v16-env",
         "scope": "bitdev.angular",
-        "version": "6.0.2",
+        "version": "6.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v16-env"
     },
     "examples/my-angular-v17-env": {
         "name": "examples/my-angular-v17-env",
         "scope": "bitdev.angular",
-        "version": "6.0.2",
+        "version": "6.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v17-env"
     },
     "examples/my-angular-v18-env": {
         "name": "examples/my-angular-v18-env",
         "scope": "bitdev.angular",
-        "version": "2.0.2",
+        "version": "2.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v18-env"
     },
     "examples/my-angular-v19-env": {
         "name": "examples/my-angular-v19-env",
         "scope": "bitdev.angular",
-        "version": "1.0.3",
+        "version": "1.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/examples/my-angular-v19-env"
     },
     "integration/demo-app": {
         "name": "integration/demo-app",
         "scope": "bitdev.angular",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/integration/demo-app"
     },
     "integration/demo-lib": {
         "name": "integration/demo-lib",
         "scope": "bitdev.angular",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "mainFile": "public-api.ts",
         "rootDir": "angular/integration/demo-lib"
     },
     "integration/demo-lib-v16": {
         "name": "integration/demo-lib-v16",
         "scope": "bitdev.angular",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "mainFile": "public-api.ts",
         "rootDir": "angular/integration/demo-lib-v16"
     },
     "integration/demo-lib-v17": {
         "name": "integration/demo-lib-v17",
         "scope": "bitdev.angular",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "mainFile": "public-api.ts",
         "rootDir": "angular/integration/demo-lib-v17"
     },
     "integration/demo-lib-v18": {
         "name": "integration/demo-lib-v18",
         "scope": "bitdev.angular",
-        "version": "1.0.0",
+        "version": "1.1.0",
         "mainFile": "public-api.ts",
         "rootDir": "angular/integration/demo-lib-v18"
     },
     "integration/demo-lib-v19": {
         "name": "integration/demo-lib-v19",
         "scope": "bitdev.angular",
-        "version": "1.0.1",
+        "version": "1.1.0",
         "mainFile": "public-api.ts",
         "rootDir": "angular/integration/demo-lib-v19"
     },
@@ -369,7 +369,7 @@
     "templates/generators": {
         "name": "templates/generators",
         "scope": "bitdev.angular",
-        "version": "7.0.0",
+        "version": "7.1.0",
         "mainFile": "index.ts",
         "rootDir": "angular/templates/generators"
     },

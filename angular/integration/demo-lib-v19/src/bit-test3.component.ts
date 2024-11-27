@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-  selector: 'bit-test3',
+  selector: 'bit-test3-v19',
   standalone: true,
   template: `
       <p>

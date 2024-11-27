@@ -92,24 +92,18 @@
   },
   "teambit.generator/generator": {
     "envs": [
-      "bitdev.angular/angular-env",
+//      "bitdev.angular/angular-env",
       "bitdev.angular/envs/angular-v19-env"
       // "bitdev.angular/envs/angular-v18-env"
       // "bitdev.angular/envs/angular-v17-env"
       // "bitdev.angular/envs/angular-v16-env",
-      // "bitdev.angular/envs/angular-v15-env",
-      // "bitdev.angular/envs/angular-v14-env",
-      // "bitdev.angular/envs/angular-v13-env"
     ]
   },
-  "bitdev.angular/angular-env": {},
+//  "bitdev.angular/angular-env": {},
   "bitdev.angular/envs/angular-v19-env": {},
   //  "bitdev.angular/envs/angular-v18-env": {},
   //  "bitdev.angular/envs/angular-v17-env": {},
   //  "bitdev.angular/envs/angular-v16-env": {},
-  //  "bitdev.angular/envs/angular-v15-env": {},
-  //  "bitdev.angular/envs/angular-v14-env": {},
-  //  "bitdev.angular/envs/angular-v13-env": {},
   // Add angular apps (until this is no longer necessary)
   //  "integration.examples/demo-app": {},
   /**

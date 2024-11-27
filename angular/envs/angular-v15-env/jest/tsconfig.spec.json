@@ -1,5 +1,0 @@
-/* To learn more about this file see: https://angular.io/config/tsconfig. */
-{
-  "extends": "@bitdev/angular.envs.base-env/config/tsconfig.json",
-  "include": ["**/*.spec.+(js|ts)", "**/*.test.+(js|ts)", "**/*.d.ts"]
-}

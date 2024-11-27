@@ -2,9 +2,9 @@ import { Component, NgModule } from '@angular/core';
 import { BitTestModule } from '../bit-test.module';
 
 @Component({
-  selector: 'composition-cmp',
+  selector: 'composition-cmp-v19',
   standalone: false,
-  template: `Composition: <bit-test></bit-test>`
+  template: `Composition: <bit-test-v19></bit-test-v19>`
 })
 class CompositionComponent {}
 
