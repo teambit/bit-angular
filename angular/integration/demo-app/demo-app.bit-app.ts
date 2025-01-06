@@ -1,6 +1,5 @@
 import { type AngularAppOptions, AngularApp } from '@bitdev/angular.app-types.angular-app-type';
 import type { ApplicationOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { ngEnvOptions } from '@bitdev/angular.angular-env';
 
 const angularOptions: ApplicationOptions & DevServerOptions = {
   browser: './src/main.ts',
@@ -10,7 +9,6 @@ const angularOptions: ApplicationOptions & DevServerOptions = {
   assets: ['./src/favicon.ico', './src/assets'],
   styles: ['./src/styles.scss'],
   inlineStyleLanguage: "scss",
-  prerender: true,
   outputMode: "server",
   ssr: {
     "entry": "./src/server.ts"
@@ -36,12 +34,7 @@ export const DemoAppOptions: AngularAppOptions = {
   /**
    * Angular options for `bit run`
    */
-  angularServeOptions: angularOptions,
-
-  /**
-   * Env-specific options depending on the version of Angular used.
-   */
-  ngEnvOptions
+  angularServeOptions: angularOptions
 };
 
 export default AngularApp.from(DemoAppOptions);

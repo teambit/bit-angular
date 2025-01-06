@@ -1,7 +1,8 @@
 import { generateStyleLoaders } from '@teambit/webpack.modules.generate-style-loaders';
 import * as stylesRegexps from '@teambit/webpack.modules.style-regexps';
 import { merge } from 'lodash-es';
-import { createRequire } from 'node:module';
+// @ts-ignore
+import postCssPresetEnv from 'postcss-preset-env';
 // @ts-ignore
 import getLocalIdent from 'react-dev-utils-esm/getCSSModuleLocalIdent.js';
 import RemarkFrontmatter from 'remark-frontmatter';
@@ -9,17 +10,13 @@ import RemarkHTML from 'remark-html';
 import RemarkPrism from 'remark-prism';
 import { RuleSetRule } from 'webpack';
 
-const require = createRequire(import.meta.url);
-
 const postCssConfig = {
   // Necessary for external CSS imports to work
   // https://github.com/facebook/create-react-app/issues/2677
   ident: 'postcss',
   plugins: [
-    // eslint-disable-next-line global-require
-    require.resolve('postcss-flexbugs-fixes'),
-    // eslint-disable-next-line global-require
-    require('postcss-preset-env')({
+    import.meta.resolve('postcss-flexbugs-fixes'),
+    postCssPresetEnv({
       autoprefixer: {
         flexbox: 'no-2009',
       },
@@ -28,11 +25,11 @@ const postCssConfig = {
     // Adds PostCSS Normalize as the reset css with default options,
     // so that it honors browserslist config in package.json
     // which in turn lets users customize the target behavior as per their needs.
-    // require.resolve('postcss-normalize'),
+    // import.meta.resolve('postcss-normalize'),
   ],
 };
 
-const styleLoaderPath = require.resolve('style-loader');
+const styleLoaderPath = import.meta.resolve('style-loader');
 
 // Source maps are resource heavy and can cause out of memory issue for large source files.
 const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
@@ -40,8 +37,8 @@ const shouldUseSourceMap = process.env.GENERATE_SOURCEMAP !== 'false';
 export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
   const baseStyleLoadersOptions = {
     injectingLoader: styleLoaderPath,
-    cssLoaderPath: require.resolve('css-loader'),
-    postCssLoaderPath: require.resolve('postcss-loader'),
+    cssLoaderPath: import.meta.resolve('css-loader'),
+    postCssLoaderPath: import.meta.resolve('postcss-loader'),
     postCssConfig
   };
 
@@ -130,8 +127,8 @@ export function getModuleRulesConfig(isEnvProduction: boolean): RuleSetRule[] {
               },
               shouldUseSourceMap: isEnvProduction || shouldUseSourceMap,
               preProcessOptions: {
-                resolveUrlLoaderPath: require.resolve('resolve-url-loader'),
-                preProcessorPath: require.resolve('sass-loader')
+                resolveUrlLoaderPath: import.meta.resolve('resolve-url-loader'),
+                preProcessorPath: import.meta.resolve('sass-loader')
               }
             })
           )

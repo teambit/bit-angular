@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/elements",
-    "version": "7.0.0"
+    "version": "ced8dc9e4b51671f124d90b0bde8541dce8d84bc"
   },
   "propagate": false,
   "extensions": {
@@ -48,7 +48,6 @@
         }
       }
     },
-    "teambit.node/node@1.0.54": {},
     "teambit.envs/envs": {},
     "teambit.component/dev-files": {},
     "teambit.pkg/pkg": {},
@@ -56,6 +55,7 @@
     "teambit.compositions/compositions": {},
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
-    "teambit.semantics/schema": {}
+    "teambit.semantics/schema": {},
+    "teambit.node/node@1.0.103": {}
   }
 }

@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/base-env",
-    "version": "7.1.0"
+    "version": "8.0.1"
   },
   "propagate": false,
   "extensions": {
@@ -52,14 +52,16 @@
         }
       }
     },
-    "teambit.envs/envs": {},
-    "bitdev.node/node-env@2.0.2": {},
     "teambit.component/renaming": {
       "renamedFrom": {
         "scope": "bitdev.angular",
         "name": "envs/base",
         "version": "547117b9b87b26959751781746560193ca3af410"
       }
+    },
+    "bitdev.node/node-env@2.0.40": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
     }
   }
 }

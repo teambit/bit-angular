@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/preview/mounter",
-    "version": "4.0.0"
+    "version": "1aec2c8c2f5de9f231eca1e3eda587b7973477b2"
   },
   "propagate": false,
   "extensions": {
@@ -21,14 +21,16 @@
         }
       }
     },
-    "bitdev.node/node-env@2.0.2": {},
-    "teambit.envs/envs": {},
     "teambit.component/dev-files": {},
     "teambit.pkg/pkg": {},
     "teambit.preview/preview": {},
     "teambit.compositions/compositions": {},
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
-    "teambit.semantics/schema": {}
+    "teambit.semantics/schema": {},
+    "bitdev.node/node-env@2.0.40": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
+    }
   }
 }

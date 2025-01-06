@@ -24,7 +24,7 @@ export const MyDarkThemeTabs = () => <ContentTabs tabsContent={myDarkTheme} />;
 
 const compositionProviderContent = [
   { title: 'my-angular-env.bit-env.ts', body: <CompositionProviderEnv /> },
-  { title: 'preview/mounter.ts', body: <CompositionProviderMounter /> },
+  { title: 'config/mounter.ts', body: <CompositionProviderMounter /> },
   { title: 'wrapper.component.ts', body: <CompositionProviderWrapper /> },
 ];
 

@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/ng-packagr",
-    "version": "7.0.0"
+    "version": "f2f08c62f796c69586c399178142c69fcdebd557"
   },
   "propagate": false,
   "extensions": {
@@ -19,14 +19,16 @@
         }
       }
     },
-    "bitdev.node/node-env@2.0.2": {},
-    "teambit.envs/envs": {},
     "teambit.component/dev-files": {},
     "teambit.pkg/pkg": {},
     "teambit.preview/preview": {},
     "teambit.compositions/compositions": {},
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
-    "teambit.semantics/schema": {}
+    "teambit.semantics/schema": {},
+    "bitdev.node/node-env@2.0.40": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
+    }
   }
 }

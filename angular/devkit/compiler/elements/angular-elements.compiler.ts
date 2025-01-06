@@ -1,26 +1,16 @@
 // @ts-ignore
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-import type { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
-import {
-  componentIsApp,
-  getNodeModulesPaths,
-  getWorkspace
-} from '@bitdev/angular.dev-services.common';
+import { componentIsApp, getNodeModulesPaths, getWorkspace } from '@bitdev/angular.dev-services.common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
-import {
-  ArtifactDefinition,
-  BuildContext,
-  BuiltTaskResult,
-  ComponentResult
-} from '@teambit/builder';
+import { ArtifactDefinition, BuildContext, BuiltTaskResult, ComponentResult } from '@teambit/builder';
 import { Compiler, TranspileComponentParams } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { CompositionsAspect, CompositionsMain } from '@teambit/compositions';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
-import { Timer } from '@teambit/legacy/dist/toolbox/timer';
 import { Logger } from '@teambit/logger';
 import { ScopeAspect, ScopeMain } from '@teambit/scope';
+import { Timer } from '@teambit/toolbox.time.timer';
 import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
 import { extname, join } from 'path';
@@ -28,7 +18,6 @@ import { RollupCompiler } from './rollup/rollup.compiler';
 
 interface AngularElementsCompilerOptions {
   ngPackagrModulePath?: string;
-  ngEnvOptions: AngularEnvOptions;
   tsCompilerOptions?: AngularCompilerOptions;
   name?: string;
   distDir: string;
@@ -55,7 +44,6 @@ export class AngularElementsCompiler implements Compiler {
     public artifactName: string,
     private tsCompilerOptions: AngularCompilerOptions = {},
     private nodeModulesPaths: string[] = [],
-    private ngEnvOptions: AngularEnvOptions
   ) {
     this.rollupCompiler = new RollupCompiler(this.tsCompilerOptions, this.logger);
   }
@@ -201,8 +189,7 @@ Built Angular Compositions
         options.shouldCopyNonSupportedFiles,
         options.artifactName,
         options.tsCompilerOptions,
-        nodeModulesPaths,
-        options.ngEnvOptions
+        nodeModulesPaths
       );
     };
   }

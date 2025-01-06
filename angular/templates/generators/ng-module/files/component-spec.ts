@@ -6,7 +6,6 @@ export const componentSpecFile = (context: ComponentContext): ComponentFile => {
   return {
     relativePath: `${name}.spec.ts`,
     content: `import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { ${Name}Component } from './${name}.component';
 import { ${Name}Module } from './${name}.module';
 

@@ -4,6 +4,7 @@
   "compilerOptions": {
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
     "declaration": false,
     "downlevelIteration": true,
     "esModuleInterop": true,

@@ -59,12 +59,12 @@ Implement the `starter`` env handler in your env, and provide the starters with 
 
 ```ts
 // @filename: my-angular-env.bit-env.ts
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { EnvHandler } from '@teambit/envs';
 import { StarterList } from '@teambit/generator';
 import { NgWorkspaceTemplate } from '@bitdev/angular.templates.starters';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   packageName = '@my-org/my-scope.my-angular-env';
 
   starters(): EnvHandler<StarterList> {
@@ -93,13 +93,13 @@ Replace the default starter with your own custom one:
 
 ```ts
 // @filename: my-angular-env.bit-env.ts
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { EnvHandler } from '@teambit/envs';
 import { StarterList } from '@teambit/generator';
 /* a custom starter */
 import { AngularWorkspaceStarter } from '@my-org/my-scope.templates.my-custom-starter';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   packageName = '@my-org/my-scope.my-angular-env';
 
   starters(): EnvHandler<StarterList> {

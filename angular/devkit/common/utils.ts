@@ -6,7 +6,7 @@ import { EnvContext } from '@teambit/envs';
 import { IsolatorMain } from '@teambit/isolator';
 import { Logger } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
-import TesterAspect from '@teambit/tester';
+import { TesterAspect } from '@teambit/tester';
 import WorkspaceAspect, { Workspace } from '@teambit/workspace';
 import { ScopeMain } from '@teambit/scope';
 import { getRootComponentDir } from '@teambit/workspace.root-components';
@@ -190,7 +190,8 @@ export function generateTsConfig(
     compilerOptions: {
       paths: tsPaths
     },
-    files: ["./src/main.ts", "./src/polyfills.ts"].map((file: string) => posix.join(pAppPath, file)),
+    // eslint-disable-next-line
+    files: ["./src/main.ts" /*, "./src/polyfills.ts"*/ ].map((file: string) => posix.join(pAppPath, file)),
     include: [
       ...["./src/app/**/*.ts"].map((file: string) => posix.join(pAppPath, file)),
       ...includePaths.map((path) => posix.join(path, '**/*.ts'))
@@ -284,7 +285,7 @@ export async function writeTsconfig(
   return normalizePath(targetPath);
 }
 
-export function dedupPaths(paths: (string | any)[]): string[] {
+export function dedupePaths(paths: (string | any)[]): string[] {
   return Array.from(new Set(paths.map(p => typeof p === 'string' ? posix.normalize(p) : p)));
 }
 
@@ -299,27 +300,28 @@ export function packagePath(packageName: string, path = ''): string {
   return join(dirname(require.resolve(`${packageName}/package.json`)), path);
 }
 
-export function getLoggerApi(logger: Logger) {
+export function getLoggerApi(logger: Logger, isPreview = false) {
   return {
     // eslint-disable-next-line no-console
     error: (m: string) => console.error(m),
-    log: (m: string) => logger.console(m),
+    log: (m: string) => !isPreview ? logger.console(m) : null,
+    // ignoring the warning about the server to use only for testing
     // eslint-disable-next-line no-console
-    warn: (m: string) => console.warn(m),
-    info: (m: string) => logger.console(m),
+    warn: (m: string) => !m.match('This is a simple server') ? console.warn(m) : null,
+    info: (m: string) => !isPreview ? logger.console(m) : null,
     // eslint-disable-next-line no-console
     colorMessage: (m: string) => console.log(m),
     createChild: () => logger
   } as any;
 }
 
-export function addSafeResolve(path: string, nodeModulesPaths?: string[]): string | undefined {
+export function getSafeResolve(path: string, nodeModulesPaths?: string[]): string | undefined {
   try {
     return require.resolve(path, { paths: nodeModulesPaths });
   } catch (_e) {
     if (nodeModulesPaths) {
       try {
-        return addSafeResolve(path);
+        return getSafeResolve(path);
       } catch (_e2) {
         return undefined;
       }
@@ -333,6 +335,7 @@ export function getWebpackAngularAliases(nodeModulesPaths?: string[]): { [key: s
 
   [
     '@angular/build',
+    '@angular/cdk',
     '@angular/core/schematics',
     '@angular/core/rxjs-interop',
     '@angular/core/primitives/signals',
@@ -364,7 +367,7 @@ export function getWebpackAngularAliases(nodeModulesPaths?: string[]): { [key: s
     '@angular/ssr/schematics',
     '@angular/ssr'
   ].forEach((pkg) => {
-    const resolved = addSafeResolve(pkg, nodeModulesPaths);
+    const resolved = getSafeResolve(pkg, nodeModulesPaths);
     if (resolved) {
       aliases[pkg] = resolved;
     }

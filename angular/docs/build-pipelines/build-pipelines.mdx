@@ -73,10 +73,10 @@ The following example replaces the default `Jest` build task with the same task,
 ```ts
 // @filename: my-angular-env.bit-env.ts
 // ...
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { JestTask } from '@teambit/defender.jest-tester';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   build() {
     /* replace the default Jest build task with a new one, that uses a different config */
     return super.build().replace([
@@ -110,9 +110,9 @@ Get the task name from [the component's list of build tasks](#review-a-component
 ```ts
 // @filename: my-angular-env.bit-env.ts
 // ...
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   build() {
     return super.build().remove('JestTask');
   }

@@ -75,11 +75,11 @@ Implement the `generator` env handler in your env, and provide the generators wi
 
 ```ts
 // @filename: my-angular-env.bit-env.ts
-import { AngularV18Env } from '@bitdev/angular.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.angular-v19-env';
 import { TemplateList } from '@teambit/generator';
 import { NgModuleTemplate } from '@bitdev/angular.templates.generators';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   generators() {
     return TemplateList.from([
       NgModuleTemplate.from({

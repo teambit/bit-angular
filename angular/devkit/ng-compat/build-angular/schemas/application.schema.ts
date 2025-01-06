@@ -27,7 +27,7 @@ export interface ApplicationBuilderOptions {
    * The full path for the browser entry point to the application, relative to the current
    * workspace.
    */
-  browser: string;
+  browser?: string;
   /**
    * Budget thresholds to ensure parts of your application stay within boundaries which you
    * set.

@@ -12,10 +12,9 @@
     "importHelpers": true,
     "lib": [
       "es2018",
-      "dom",
-      "esnext.asynciterable"
+      "dom"
     ],
-    "module": "esnext",
+    "module": "ES2022",
     "moduleResolution": "node",
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
@@ -24,7 +23,10 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es5"
+    "target": "ES2022",
+    "types": [],
+    "useDefineForClassFields": true,
+    "esModuleInterop": true
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,
@@ -34,13 +36,12 @@
     "enableIvy": true
   },
   "files": [
-    "./src/main.ts",
-    "./src/polyfills.ts"
+    "./src/main.ts"
   ],
   "include": [
-    "./src/app/**/*.ts",
+    "./src/**/*.ts"
   ],
   "exclude": [
-    "./src/app/**/*.spec.ts"
+    "./src/**/*.spec.ts"
   ]
 }

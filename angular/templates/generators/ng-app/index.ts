@@ -19,7 +19,6 @@ import { indexHtmlFile } from './template-files/src/index-html';
 import { mainNgAppFile } from './template-files/src/main';
 import { mainServerFile } from './template-files/src/main.server';
 import { serverFile } from './template-files/src/server';
-import { polyfillsFile } from './template-files/src/polyfills';
 import { helloApiFile } from './template-files/src/server/api/hello';
 import { stylesFile } from './template-files/src/styles';
 import { tsconfigFile } from './template-files/tsconfig.app';
@@ -59,17 +58,13 @@ export class NgAppTemplate implements ComponentTemplate {
       }) as Promise<string>
     };
 
-    if (this.angularVersion > 13) {
-      prompts.standalone = () => confirm({
-        message: 'Do you want to use standalone components?'
-      }) as Promise<boolean>;
-    }
+    prompts.standalone = () => confirm({
+      message: 'Do you want to use standalone components?'
+    }) as Promise<boolean>;
 
-    if (this.angularVersion >= 16) {
-      prompts.ssr = () => confirm({
-        message: 'Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)?'
-      }) as Promise<boolean>;
-    }
+    prompts.ssr = () => confirm({
+      message: 'Do you want to enable Server-Side Rendering (SSR) and Static Site Generation (SSG/Prerendering)?'
+    }) as Promise<boolean>;
 
     const params = await group(prompts);
 
@@ -81,7 +76,7 @@ export class NgAppTemplate implements ComponentTemplate {
   async generateFiles(context: ComponentContext) {
     let params: { [id: string]: any } = {
       styleSheet: 'scss',
-      standalone: this.angularVersion > 13,
+      standalone: true,
       ssr: this.angularVersion >= 17
     };
 
@@ -114,13 +109,12 @@ export class NgAppTemplate implements ComponentTemplate {
     ];
 
     if (params.ssr) {
-      files.push(
-        mainServerFile(params.standalone),
-        helloApiFile()
-      );
+      files.push(mainServerFile(params.standalone));
 
       if (this.angularVersion >= 19) {
         files.push(serverFile());
+      } else {
+        files.push(helloApiFile());
       }
 
       if (params.standalone) {
@@ -128,16 +122,8 @@ export class NgAppTemplate implements ComponentTemplate {
       }
     }
 
-    if (this.angularVersion < 15) {
-      files.push(
-        // starting from Angular 15, the `polyfills` option accept an array of module specifiers.
-        // https://github.com/angular/angular-cli/commit/597bfea1b29cc7b25d1f466eb313cbeeb6dffc98
-        polyfillsFile()
-      );
-    }
-
     if (params.standalone) {
-      files.push(appConfigFile(this.angularVersion, params.ssr));
+      files.push(appConfigFile(params.ssr));
     }
     if (!params.standalone) {
       files.push(appModuleFile(params.ssr));
