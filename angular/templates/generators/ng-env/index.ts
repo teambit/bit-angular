@@ -13,8 +13,7 @@ import { docFile } from './files/doc';
 import { envFile } from './files/env';
 import { envJsoncFile } from './files/env-jsonc';
 import { indexFile } from './files/index';
-import { hostDependenciesFile } from './files/preview/host-dependencies';
-import { mounterFile } from './files/preview/mounter';
+import { mounterFile } from './files/config/mounter';
 
 export class NgEnvTemplate implements ComponentTemplate {
   installMissingDependencies = true;
@@ -66,8 +65,7 @@ export class NgEnvTemplate implements ComponentTemplate {
       prettierConfigFile(),
       tsConfigFile(),
       tsConfigSpecFile(),
-      mounterFile(this.angularVersion),
-      hostDependenciesFile()
+      mounterFile()
     ];
   }
 

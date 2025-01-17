@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/preview/runtime",
-    "version": "4.0.0"
+    "version": "dea3ae30f4ba75f535e40a4931c416655909316c"
   },
   "propagate": false,
   "extensions": {
@@ -20,14 +20,16 @@
         }
       }
     },
-    "bitdev.node/node-env@2.0.2": {},
-    "teambit.envs/envs": {},
     "teambit.component/dev-files": {},
     "teambit.pkg/pkg": {},
     "teambit.preview/preview": {},
     "teambit.compositions/compositions": {},
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
-    "teambit.semantics/schema": {}
+    "teambit.semantics/schema": {},
+    "bitdev.node/node-env@2.0.40": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
+    }
   }
 }

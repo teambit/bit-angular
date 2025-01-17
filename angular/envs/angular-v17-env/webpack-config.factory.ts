@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import { OutputHashing } from '@angular-devkit/build-angular';
 import { getSystemPath, normalize, tags } from '@angular-devkit/core';
-import { BundlerSetup, dedupPaths, getLoggerApi } from '@bitdev/angular.dev-services.common';
+import { BundlerSetup, dedupePaths, getLoggerApi } from '@bitdev/angular.dev-services.common';
 import type { BrowserBuilderOptions} from '@bitdev/angular.dev-services.ng-compat';
 import {
   generateEntryPoints,
@@ -108,8 +108,8 @@ async function getWebpackConfig(
     main: angularOptions.browser ?? `./${join(sourceRoot, `main.ts`)}`,
     polyfills: angularOptions.polyfills,
     tsConfig: angularOptions.tsConfig ?? tsconfigPath,
-    assets: dedupPaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
-    styles: dedupPaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage ?? 'scss' }`), ...(angularOptions.styles ?? [])]),
+    assets: dedupePaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]),
+    styles: dedupePaths([posix.join(sourceRoot, `styles.${ angularOptions.inlineStyleLanguage ?? 'scss' }`), ...(angularOptions.styles ?? [])]),
     scripts: angularOptions.scripts,
     vendorChunk: angularOptions.vendorChunk ?? true,
     namedChunks: angularOptions.namedChunks ?? true,

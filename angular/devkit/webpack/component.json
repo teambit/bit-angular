@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/webpack",
-    "version": "7.0.0"
+    "version": "2ef44a3d81b791be618aec5ccb179aea5f1b6953"
   },
   "propagate": false,
   "extensions": {
@@ -21,7 +21,6 @@
         }
       }
     },
-    "teambit.node/node@1.0.54": {},
     "teambit.envs/envs": {},
     "teambit.component/dev-files": {},
     "teambit.pkg/pkg": {},
@@ -29,6 +28,7 @@
     "teambit.compositions/compositions": {},
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
-    "teambit.semantics/schema": {}
+    "teambit.semantics/schema": {},
+    "teambit.node/node@1.0.103": {}
   }
 }

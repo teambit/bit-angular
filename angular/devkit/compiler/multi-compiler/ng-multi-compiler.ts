@@ -189,7 +189,6 @@ export class NgMultiCompiler implements Compiler {
         artifactName,
         distDir,
         distGlobPatterns,
-        ngEnvOptions: options.ngEnvOptions,
         ngPackagrModulePath,
         shouldCopyNonSupportedFiles,
         tsCompilerOptions: options.tsCompilerOptions,
@@ -203,7 +202,6 @@ export class NgMultiCompiler implements Compiler {
           artifactName,
           distDir,
           distGlobPatterns,
-          ngEnvOptions: options.ngEnvOptions,
           shouldCopyNonSupportedFiles,
           tsCompilerOptions: options.tsCompilerOptions
         })(context);

@@ -1,0 +1,28 @@
+{
+  "componentId": {
+    "scope": "bitdev.angular",
+    "name": "dev-services/preview/vite-preview",
+    "version": "1.0.1"
+  },
+  "propagate": false,
+  "extensions": {
+    "teambit.dependencies/dependency-resolver": {
+      "policy": {
+        "peerDependencies": {
+          "@angular/core": ">= 16.0.0"
+        }
+      }
+    },
+    "teambit.component/dev-files": {},
+    "teambit.pkg/pkg": {},
+    "teambit.preview/preview": {},
+    "teambit.compositions/compositions": {},
+    "teambit.docs/docs": {},
+    "teambit.pipelines/builder": {},
+    "teambit.semantics/schema": {},
+    "bitdev.node/node-env@2.0.40": {},
+    "teambit.envs/envs": {
+      "env": "bitdev.node/node-env"
+    }
+  }
+}

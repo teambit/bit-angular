@@ -1,4 +1,5 @@
 /* eslint-disable */
+// @ts-ignore
 import './native-shim.cjs';
 import { Injector, NgModuleRef, Type } from '@angular/core';
 import { createCustomElement } from '@angular/elements';

@@ -2,7 +2,7 @@ import { ComponentFile } from '@teambit/generator';
 
 export const serverFile = (): ComponentFile => {
   return {
-    relativePath: `src/main.server.ts`,
+    relativePath: `src/server.ts`,
     content: `import {
   AngularNodeAppEngine,
   createNodeRequestHandler,

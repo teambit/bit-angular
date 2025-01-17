@@ -14,7 +14,7 @@ import { BundlerContext } from '@teambit/bundler';
 import { DevFilesAspect, DevFilesMain } from '@teambit/dev-files';
 import { AsyncEnvHandler, EnvContext } from '@teambit/envs';
 import { IsolatorAspect, IsolatorMain } from '@teambit/isolator';
-import { CACHE_ROOT } from '@teambit/legacy/dist/constants';
+import { CACHE_ROOT } from '@teambit/legacy.constants';
 import { PkgAspect, PkgMain } from '@teambit/pkg';
 import { ScopeAspect, ScopeMain } from '@teambit/scope';
 import {

@@ -1,7 +1,8 @@
 import { VERSION } from '@angular/cli';
 import { getWorkspace, NG_APP_NAME, normalizePath } from '@bitdev/angular.dev-services.common';
 import { ApplicationBuilderOptions, SsrClass } from '@bitdev/angular.dev-services.ng-compat';
-import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
+import { AngularVitePreview } from '@bitdev/angular.dev-services.preview.vite-preview';
+import { buildApplication, generateAppTsConfig, getEnvFile, serveApplication } from '@bitdev/angular.dev-services.vite';
 import {
   AppBuildContext,
   AppBuildResult,
@@ -11,25 +12,17 @@ import {
   DeployFn
 } from '@teambit/application';
 import { Bundler, BundlerContext, DevServerContext } from '@teambit/bundler';
-import { Component } from '@teambit/component';
 import { DependencyResolverAspect, DependencyResolverMain } from '@teambit/dependency-resolver';
 import { EnvContext, EnvHandler } from '@teambit/envs';
-import { CACHE_ROOT } from '@teambit/legacy/dist/constants.js';
+import { CACHE_ROOT } from '@teambit/legacy.constants';
 import { Preview } from '@teambit/preview';
 import { Port } from '@teambit/toolbox.network.get-port';
 import { Workspace } from '@teambit/workspace';
 import assert from 'assert';
 import fs from 'fs-extra';
 import { cloneDeep } from 'lodash-es';
-import objectHash from 'object-hash';
 import { join } from 'path';
-import ts from 'typescript';
 import { AngularAppOptions } from './angular-app-options.js';
-import { buildApplication } from './application.bundler.js';
-import { serveApplication } from './application.dev-server.js';
-import { expandIncludeExclude, JsonObject } from './utils.js';
-
-const writeHash = new Map<string, string>();
 
 export class AngularApp implements Application {
   readonly name: string;
@@ -63,10 +56,9 @@ export class AngularApp implements Application {
   }
 
   private getDevServerContext(context: AppContext): DevServerContext {
-    // const ngEnvOptions = this.angularEnv.getNgEnvOptions();
     return Object.assign(cloneDeep(context), {
       entry: [],
-      rootPath: /*ngEnvOptions.devServer === 'vite' ? _appRootPath : */'',
+      rootPath: '',
       publicPath: `${this.publicDir}/${this.options.name}`,
       title: this.options.name
     });
@@ -93,48 +85,11 @@ export class AngularApp implements Application {
     const angularServeOptions: any = Object.assign(cloneDeep(this.options.angularServeOptions), { tsConfig: tsconfigPath });
     const angularBuildOptions: any = Object.assign(cloneDeep(this.options.angularBuildOptions), { tsConfig: tsconfigPath });
 
-    return AngularPreview.from({
-      webpackServeTransformers: this.options.webpackServeTransformers,
-      webpackBuildTransformers: this.options.webpackBuildTransformers,
+    return AngularVitePreview.from({
       angularServeOptions,
       angularBuildOptions,
-      ngEnvOptions: this.options.ngEnvOptions,
       sourceRoot: this.options.sourceRoot
     });
-
-  }
-
-  private generateTsConfig(bitCmps: Component[], appRootPath: string, appTsconfigPath: string, tsconfigPath: string, depsResolver: DependencyResolverMain, workspace?: Workspace, serverEntry?: string): void {
-    const tsconfigJSON: JsonObject = ts.readConfigFile(appTsconfigPath, ts.sys.readFile).config;
-
-    // Add the paths to tsconfig to remap bit components to local folders
-    tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
-    bitCmps.forEach((dep: Component) => {
-      let componentDir = workspace?.componentDir(dep.id, {
-        ignoreVersion: true
-      });
-      if (componentDir) {
-        componentDir = normalizePath(componentDir);
-        const pkgName = depsResolver.getPackageName(dep);
-        // TODO we should find a way to use the real entry file based on the component config because people can change it
-        if (fs.existsSync(join(componentDir, 'public-api.ts'))) {
-          tsconfigJSON.compilerOptions.paths[pkgName] = [`${componentDir}/public-api.ts`, `${componentDir}`];
-        }
-        tsconfigJSON.compilerOptions.paths[`${pkgName}/*`] = [`${componentDir}/*`];
-      }
-    });
-
-    if (serverEntry) {
-      tsconfigJSON.files.push(serverEntry);
-    }
-
-    const tsconfigContent = expandIncludeExclude(tsconfigJSON, tsconfigPath, [appRootPath]);
-    const hash = objectHash(tsconfigContent);
-    // write only if link has changed (prevents triggering fs watches)
-    if (writeHash.get(tsconfigPath) !== hash) {
-      fs.outputJsonSync(tsconfigPath, tsconfigContent, { spaces: 2 });
-      writeHash.set(tsconfigPath, hash);
-    }
   }
 
   /**
@@ -143,16 +98,6 @@ export class AngularApp implements Application {
    */
   private getEnvContext(context: AppContext | AppBuildContext): EnvContext {
     return context as any as EnvContext;
-  }
-
-  private async getEnvFile(mode: string, rootDir: string, overrides?: Record<string, string>) {
-    // TODO: enable this one we have ESM envs, otherwise we get a warning message about loading the deprecated CJS build of Vite
-    // const vite = await import('vite');
-    // const dotenv = vite.loadEnv(mode, rootDir);
-    return {
-      ...overrides
-      // ...dotenv
-    };
   }
 
   // TODO: fix return type once bit has a new stable version
@@ -171,32 +116,23 @@ export class AngularApp implements Application {
     const bitCmps = await workspace.getMany(workspaceCmpsIDs);
     const tempFolder = this.getTempFolder(workspace);
     const tsconfigPath = this.getTsconfigPath(tempFolder);
-    this.generateTsConfig(bitCmps, appRootPath, appTsconfigPath, tsconfigPath, depsResolver, workspace);
+    generateAppTsConfig(bitCmps, appRootPath, appTsconfigPath, tsconfigPath, depsResolver, workspace);
 
-    if (Number(VERSION.major) >= 16) {
-      const envVars = await this.getEnvFile('development', appRootPath, context.envVariables as any);
-      await serveApplication({
-        angularOptions: {
-          ...this.options.angularBuildOptions as ApplicationBuilderOptions,
-          tsConfig: tsconfigPath
-        },
-        sourceRoot: this.options.sourceRoot || 'src',
-        workspaceRoot: appRootPath,
-        port,
-        logger: logger,
-        tempFolder: tempFolder,
-        envVars: {
-          process: { env: envVars }
-        }
-      });
-    } else {
-      const devServerContext = this.getDevServerContext(context);
-      const envContext = this.getEnvContext(context);
-      const preview = this.getPreview(tsconfigPath)(envContext);
-
-      const devServer = await preview.getDevServer(devServerContext)(envContext);
-      await devServer.listen(port);
-    }
+    const envVars = await getEnvFile('development', appRootPath, context.envVariables as any);
+    await serveApplication({
+      angularOptions: {
+        ...this.options.angularBuildOptions as ApplicationBuilderOptions,
+        tsConfig: tsconfigPath
+      },
+      sourceRoot: this.options.sourceRoot || 'src',
+      workspaceRoot: appRootPath,
+      port,
+      logger: logger,
+      tempFolder: tempFolder,
+      envVars: {
+        process: { env: envVars }
+      }
+    });
 
     return {
       appName: this.name,
@@ -221,11 +157,12 @@ export class AngularApp implements Application {
     }
     const tempFolder = this.getTempFolder();
     const tsconfigPath = this.getTsconfigPath(tempFolder);
-    this.generateTsConfig([capsule.component], appRootPath, appTsconfigPath, tsconfigPath, depsResolver, undefined, entryServer);
+    generateAppTsConfig([capsule.component], appRootPath, appTsconfigPath, tsconfigPath, depsResolver, undefined, entryServer ? [entryServer] : undefined);
 
-    if (!this.options.bundler && Number(VERSION.major) >= 16) {
-      const envVars = await this.getEnvFile('production', appRootPath, context.envVariables as any);
-      await buildApplication({
+    const errors: Error[] = [];
+    if (!this.options.bundler) {
+      const envVars = await getEnvFile('production', appRootPath, context.envVariables);
+      const results = await buildApplication({
         angularOptions: {
           ...appOptions,
           tsConfig: tsconfigPath
@@ -240,7 +177,11 @@ export class AngularApp implements Application {
           'process.env': envVars
         }
       });
-      console.log('build done');
+      for (const result of results) {
+        if (result.error) {
+          errors.push(new Error(result.error));
+        }
+      }
     } else {
       let bundler: Bundler;
       if (this.options.bundler) {
@@ -252,9 +193,15 @@ export class AngularApp implements Application {
 
         bundler = await preview.getBundler(bundlerContext)(envContext);
       }
-      await bundler.run();
+      const results = await bundler.run();
+      for (const result of results) {
+        if (result.errors) {
+          errors.push(...result.errors);
+        }
+      }
     }
     return {
+      errors,
       artifacts: [{
         name: this.name,
         globPatterns: [outputPath],

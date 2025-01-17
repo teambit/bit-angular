@@ -10,7 +10,7 @@ import CompositionMounterEnv from './snippets/composition-mounter-env.mdx';
 
 const compositionProviderContent = [
   { title: 'my-angular-env.bit-env.ts', body: <CompositionProviderEnv /> },
-  { title: 'preview/mounter.ts', body: <CompositionProviderMounter /> },
+  { title: 'config/mounter.ts', body: <CompositionProviderMounter /> },
   { title: 'wrapper.component.ts', body: <CompositionProviderWrapper /> },
 ];
 
@@ -20,7 +20,7 @@ export const CompositionProviderExample = () => (
 
 const compositionProviderContent2 = [
   { title: 'my-angular-env.bit-env.ts', body: <CompositionProviderEnv /> },
-  { title: 'preview/mounter.ts', body: <CompositionProviderMounter2 /> },
+  { title: 'config/mounter.ts', body: <CompositionProviderMounter2 /> },
   { title: 'wrapper.ts', body: <CompositionProviderWrapper2 /> },
 ];
 
@@ -30,7 +30,7 @@ export const CompositionProviderExample2 = () => (
 
 const compositionMounterContent = [
   { title: 'my-angular-env.bit-env.ts', body: <CompositionMounterEnv /> },
-  { title: 'preview/docs.tsx', body: <CompositionMounterMounter /> },
+  { title: 'config/docs.tsx', body: <CompositionMounterMounter /> },
 ];
 
 export const CompositionMounterExample = () => (

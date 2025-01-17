@@ -1,20 +1,13 @@
 import { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
-import {
-  NgMultiCompiler,
-  NgMultiCompilerTask
-} from '@bitdev/angular.dev-services.compiler.multi-compiler';
-import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
+import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
+import { AngularVitePreview } from "@bitdev/angular.dev-services.preview.vite-preview";
 import {
   NgAppTemplate,
   NgEnvTemplate,
   NgModuleTemplate,
   NgStandaloneTemplate
 } from '@bitdev/angular.templates.generators';
-import {
-  AngularStarter,
-  DesignSystemStarter,
-  MaterialDesignSystemStarter
-} from '@bitdev/angular.templates.starters';
+import { AngularStarter, DesignSystemStarter, MaterialDesignSystemStarter } from '@bitdev/angular.templates.starters';
 import { CAPSULE_ARTIFACTS_DIR, Pipeline } from '@teambit/builder';
 import { Compiler } from '@teambit/compiler';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
@@ -35,7 +28,6 @@ import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash-es';
 import { createRequire } from 'node:module';
 import { AngularEnvInterface } from './angular-env.interface.js';
-import hostDependencies from './preview/host-dependencies.js';
 
 let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
@@ -55,6 +47,23 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   abstract readonly angularVersion: number;
 
   [key: string]: any;
+
+  /*** Default functions & properties that custom envs will override ***/
+  /* Typescript config used for linter, schema extractor and config writer */
+  protected tsconfigPath = require.resolve('./config/tsconfig.json');
+
+  /* ESLint config. Learn how to replace linter - https://bit.dev/reference/linting/set-up-linter */
+  protected eslintConfigPath = require.resolve('./config/eslintrc.cjs');
+
+  /* Prettier config. Learn how to replace formatter - https://bit.dev/reference/formatting/set-up-formatter */
+  protected prettierConfigPath = require.resolve('./config/prettier.config.cjs');
+
+  /* Component mounting and dev-server config. Learn how to replace dev-server - https://bit.dev/reference/preview/setup-preview */
+  protected previewMounterPath = require.resolve('./config/mounter.js');
+
+  /* Jest config. Learn how to replace tester - https://bit.dev/reference/testing/set-up-tester */
+  protected abstract jestConfigPath: string;
+  /*** End of default functions & properties ***/
 
   public getNgEnvOptions(): AngularEnvOptions {
     return { ...this.ngEnvOptions };
@@ -98,15 +107,15 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
 
   formatter(): EnvHandler<Formatter> {
     return PrettierFormatter.from({
-      configPath: require.resolve('./config/prettier.config.cjs')
+      configPath: this.prettierConfigPath
     });
   }
 
   getLinterConfig(): any {
     return {
-      tsconfig: require.resolve('./config/tsconfig.json'),
+      tsconfig: this.tsconfigPath,
       eslint: ESLintLib,
-      configPath: require.resolve('./config/eslintrc.cjs'),
+      configPath: this.eslintConfigPath,
       // resolve all plugins from the angular environment.
       pluginsPath: import.meta.dirname,
       extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs']
@@ -149,12 +158,22 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   }
 
   preview(): EnvHandler<Preview> {
+    return AngularVitePreview.from({
+      mounterPath: this.previewMounterPath
+    });
+
+    /*const hostDependencies = [
+      '@teambit/mdx.ui.mdx-scope-context',
+      '@mdx-js/react',
+      'react',
+      'react-dom',
+    ];
     const ngEnvOptions = this.getNgEnvOptions();
     return AngularPreview.from({
       ngEnvOptions,
       hostDependencies,
-      mounterPath: require.resolve('./preview/mounter.js'),
-    });
+      mounterPath: this.previewMounterPath
+    });*/
   }
 
   /**
@@ -163,7 +182,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   schemaExtractor(): EnvHandler<SchemaExtractor> {
     return TypeScriptExtractor.from({
-      tsconfig: require.resolve('./config/tsconfig.json')
+      tsconfig: this.tsconfigPath
     });
   }
 
@@ -213,23 +232,22 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   workspaceConfig(): ConfigWriterList {
     return ConfigWriterList.from([
       TypescriptConfigWriter.from({
-        tsconfig: require.resolve('./config/tsconfig.json')
+        tsconfig: this.tsconfigPath
       }),
       EslintConfigWriter.from({
-        configPath: require.resolve('./config/eslintrc.cjs'),
-        tsconfig: require.resolve('./config/tsconfig.json')
+        configPath: this.eslintConfigPath,
+        tsconfig: this.tsconfigPath
       }),
       PrettierConfigWriter.from({
-        configPath: require.resolve('./config/prettier.config.cjs')
+        configPath: this.prettierConfigPath
       })
     ]);
   }
 
   getTesterConfig() {
-    const ngEnvOptions = this.getNgEnvOptions();
     return {
-      jest: ngEnvOptions.jestModulePath,
-      config: ngEnvOptions.jestConfigPath
+      jest: this.jestModulePath,
+      config: this.jestConfigPath
     };
     // return VitestTester.from({
     //   config: require.resolve(ngEnvOptions.vitestConfigPath)

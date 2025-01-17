@@ -1,20 +1,15 @@
 import { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
 import { AngularBaseEnv } from '@bitdev/angular.envs.base-env';
-import { NativeCompileCache } from '@teambit/toolbox.performance.v8-cache';
 import { createRequire } from 'node:module';
 import { webpackConfigFactory } from './webpack-config.factory.js';
-
-// Disable v8-caching because it breaks ESM loaders
-NativeCompileCache.uninstall();
 
 const require = createRequire(import.meta.url);
 
 export const ngEnvOptions: AngularEnvOptions = {
   useAngularElementsPreview: false,
-  // angularElementsModulePath: require.resolve('@angular/elements'),
-  jestConfigPath: require.resolve('./jest/jest.config.cjs'),
+  // angularElementsModulePath: req.resolve('@angular/elements'),
   jestModulePath: require.resolve('jest'),
-  ngPackagrModulePath: import.meta.resolve('ng-packagr'),
+  ngPackagrModulePath: require.resolve('ng-packagr'),
   webpackConfigFactory,
   webpackDevServerModulePath: require.resolve('webpack-dev-server'),
   // resolving to the webpack used by angular devkit to avoid multiple instances of webpack
@@ -32,6 +27,9 @@ export class AngularV19Env extends AngularBaseEnv {
   angularVersion = 19;
 
   ngEnvOptions: AngularEnvOptions = ngEnvOptions;
+
+  /* Jest config. Learn how to replace tester - https://bit.dev/reference/testing/set-up-tester */
+  protected jestConfigPath = require.resolve('./jest/jest.config.cjs');
 }
 
 export default new AngularV19Env();

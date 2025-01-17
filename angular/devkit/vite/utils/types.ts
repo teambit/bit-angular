@@ -1,13 +1,4 @@
-import { ApplicationOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
-import { Logger } from '@teambit/logger';
-import type { ViteDevServerOptions } from '@teambit/vite.vite-dev-server';
-import { Workspace } from '@teambit/workspace';
-
-
-export type ViteAspectsContext = {
-  logger: Logger;
-  workspace: Workspace;
-};
+import { ApplicationOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 
 export enum BuildMode {
   Development = 'development',
@@ -15,17 +6,12 @@ export enum BuildMode {
 }
 
 export type NgViteOptions = {
-  angularOptions: Partial<ApplicationOptions & DevServerOptions>;
+  angularOptions: any;//Partial<(BrowserOptions | ApplicationOptions) & DevServerOptions>;
 
   /** name of the dev server */
   name?: string;
 
-  // TODO: fix type once we can support preview with vite
-  /** list of transformers to modify Vite config in an advanced way */
-  transformers?: ViteDevServerOptions['transformers'];
-
-  /** optimize entries before passing them to Vite */
-  optimizeEntries?: (entries: string[], context: ViteAspectsContext) => string[];
+  appRootPath: string;
 
   /** Output folder path for build files */
   outputPath?: string;

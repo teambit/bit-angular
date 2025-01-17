@@ -24,7 +24,7 @@ export class NgModuleTemplate implements ComponentTemplate {
       moduleFile(context),
       docsFile(context),
       componentSpecFile(context),
-      compositionFile(context, this.angularVersion),
+      compositionFile(context),
     ];
   }
 

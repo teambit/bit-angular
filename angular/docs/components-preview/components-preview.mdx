@@ -11,12 +11,12 @@ to customize how your docs and compositions are bundled and rendered:
 
 ```ts
 // @filename: my-angular-env.bit-env.ts
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { Preview } from '@teambit/preview';
 import { EnvHandler } from '@teambit/envs';
 import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   preview(): EnvHandler<Preview> {
     return AngularPreview.from({
       /* preview config goes here */
@@ -94,15 +94,15 @@ providers only once in the bundle of your env and exclude them from the preview 
 You can do that by configuring the `hostDependencies` property of your preview. For example:
 
 ```ts
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { Preview } from '@teambit/preview';
 import { EnvHandler } from '@teambit/envs';
 import { AngularPreview } from '@bitdev/angular.dev-services.preview.preview';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   preview(): EnvHandler<Preview> {
     return AngularPreview.from({
-      mounterPath: require.resolve('./preview/mounter'),
+      mounterPath: require.resolve('./config/mounter'),
       hostDependencies: [
         /* your composition provider */
         '@my-scope/my-theme.provider',

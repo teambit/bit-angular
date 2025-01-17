@@ -9,9 +9,9 @@ export let buildApplicationInternal = (
   context: BuilderContext & {
     signal?: AbortSignal;
   },
-  infrastructureSettings?: {
-    write?: boolean;
-  },
+  // infrastructureSettings?: {
+  //   write?: boolean;
+  // },
   plugins?: Plugin[] | { codePlugins: Plugin[], indexHtmlTransformer: any }
   // @ts-ignore
 ) => AsyncIterable<BuilderOutput & {

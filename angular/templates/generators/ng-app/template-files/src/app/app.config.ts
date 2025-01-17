@@ -1,13 +1,12 @@
 import { ComponentFile } from '@teambit/generator';
 
-export const appConfigFile = (angularVersion: number, ssr: boolean): ComponentFile => {
+export const appConfigFile = (ssr: boolean): ComponentFile => {
   return {
     relativePath: `src/app/app.config.ts`,
-    content: `import { ApplicationConfig } from '${angularVersion >= 16 ? '@angular/core' : '@angular/platform-browser'}';
-import { provideRouter } from '@angular/router';
-
-import { routes } from './app.routes';${ssr ? `
+    content: `import { ApplicationConfig } from '@angular/core';
+import { provideRouter } from '@angular/router';${ssr ? `
 import { provideClientHydration } from '@angular/platform-browser';` : ''}
+import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes)${ssr ? ', provideClientHydration()' : ''}]

@@ -7,7 +7,7 @@ The compilation of the source files is done by the Angular compiler (ngc) throug
 
 If you use a custom env, you can configure both webpack and the Angular compiler by overriding the `getDevServer` method:
 ```ts
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 import { NgWebpackDevServer } from '@bitdev/angular.dev-services.webpack';
 import { Configuration } from 'webpack';
@@ -15,7 +15,7 @@ import { DevServer, DevServerContext } from '@teambit/bundler';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { AsyncEnvHandler } from '@teambit/envs';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   // ...
 
   override getDevServer(
@@ -75,7 +75,7 @@ but the options are optimized for production builds.
 
 If you use a custom env, you can configure both webpack and the Angular compiler by overriding the `getBundler` method:
 ```ts
-import { AngularV18Env } from '@bitdev/angular.envs.angular-v18-env';
+import { AngularV19Env } from '@bitdev/angular.envs.angular-v19-env';
 import { AngularEnvOptions, BrowserOptions, DevServerOptions } from '@bitdev/angular.dev-services.common';
 import { NgWebpackBundler } from '@bitdev/angular.dev-services.webpack';
 import { Configuration } from 'webpack';
@@ -83,7 +83,7 @@ import { Bundler, BundlerContext } from '@teambit/bundler';
 import { WebpackConfigTransformer, WebpackConfigWithDevServer } from '@teambit/webpack';
 import { AsyncEnvHandler } from '@teambit/envs';
 
-export class MyAngularEnv extends AngularV18Env {
+export class MyAngularEnv extends AngularV19Env {
   // ...
 
   override getBundler(
