@@ -26,8 +26,8 @@
           "cacache": "^15.3.0",
           "chalk": "^4.1.2",
           "esbuild": "^0.14.9",
-          "react": "^17.0.2",
-          "react-dom": "^17.0.2",
+          "react": "^19.0.0",
+          "react-dom": "^19.0.0",
           "rollup": "^2.79.1",
           "terser": "^5.8.0",
           "typescript": "-"

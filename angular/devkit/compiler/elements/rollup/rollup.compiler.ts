@@ -108,6 +108,7 @@ export class RollupCompiler {
             '@angular/compiler',
             '@angular/compiler-cli',
             '@angular/forms',
+            '@angular/material',
             '@angular/platform-browser/animations/async',
             '@angular/platform-browser/animations',
             '@angular/platform-browser/testing',

@@ -9,8 +9,8 @@ import { webpackConfigFactory } from './webpack-config.factory.js';
 const require = createRequire(import.meta.url);
 
 export const ngEnvOptions: AngularEnvOptions = {
-  useAngularElementsPreview: false,
-  // angularElementsModulePath: require.resolve('@angular/elements'),
+  useAngularElements: false,
+  angularElementsModulePath: require.resolve('@angular/elements'),
   jestModulePath: require.resolve('jest'),
   ngPackagrModulePath: require.resolve('ng-packagr'),
   webpackConfigFactory,

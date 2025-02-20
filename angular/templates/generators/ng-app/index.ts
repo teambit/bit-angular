@@ -1,5 +1,4 @@
 import { AngularComponentTemplateOptions } from '@bitdev/angular.dev-services.common';
-import { ComponentID } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
 import { ComponentContext, ComponentTemplate } from '@teambit/generator';
 import { Logger } from '@teambit/logger';
@@ -14,6 +13,7 @@ import { appConfigFile } from './template-files/src/app/app.config';
 import { serverConfigFile } from './template-files/src/app/app.config.server';
 import { appModuleFile } from './template-files/src/app/app.module';
 import { appRoutesFile } from './template-files/src/app/app.routes';
+import { appRoutesServerFile } from "./template-files/src/app/app.routes.server";
 import { gitKeepFile } from './template-files/src/assets/gitkeep';
 import { indexHtmlFile } from './template-files/src/index-html';
 import { mainNgAppFile } from './template-files/src/main';
@@ -84,18 +84,18 @@ export class NgAppTemplate implements ComponentTemplate {
       params = await this.prompt();
     }
 
-    const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
-    const envId = aspectId.toStringWithoutVersion();
-    let envPkgName: string;
-    if (envId === 'bitdev.angular/angular-env') {
-      envPkgName = '@bitdev/angular.angular-env';
-    } else {
-      envPkgName = `@bitdev/angular.envs.angular-v${this.angularVersion}-env`;
-    }
+    // const aspectId: ComponentID = typeof context.aspectId === 'string' ? ComponentID.fromString(context.aspectId) : context.aspectId;
+    // const envId = aspectId.toStringWithoutVersion();
+    // let envPkgName: string;
+    // if (envId === 'bitdev.angular/angular-env') {
+    //   envPkgName = '@bitdev/angular.angular-env';
+    // } else {
+    //   envPkgName = `@bitdev/angular.envs.angular-v${this.angularVersion}-env`;
+    // }
 
     const files = [
       docsFile(context),
-      ngAppFile(context, params.styleSheet, params.ssr, envPkgName, this.angularVersion),
+      ngAppFile(context, params.styleSheet, params.ssr, this.angularVersion),
       tsconfigFile(this.angularVersion, params.ssr),
       indexHtmlFile(context),
       mainNgAppFile(params.standalone),
@@ -113,6 +113,7 @@ export class NgAppTemplate implements ComponentTemplate {
 
       if (this.angularVersion >= 19) {
         files.push(serverFile());
+        files.push(appRoutesServerFile());
       } else {
         files.push(helloApiFile());
       }

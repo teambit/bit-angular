@@ -80,7 +80,7 @@ export class NgViteDevServer implements DevServer {
         ...angularOptions,
         tsConfig: tsconfigPath
       },
-      sourceRoot: 'src',
+      sourceRoot: this.options.sourceRoot || 'src',
       workspaceRoot: this.options.appRootPath,
       port: port || (await Port.getPortFromRange([3000, 4000])),
       logger: this.logger,

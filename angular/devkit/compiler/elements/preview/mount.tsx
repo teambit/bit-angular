@@ -1,12 +1,13 @@
 /* eslint-disable */
 // @ts-nocheck
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 // required here to make sure that this is loaded before the compositions file
 import '@angular/compiler';
 import { ngToReact } from '@bitdev/angular.dev-services.preview.runtime';
 
-const root = document.getElementById('root') as HTMLElement;
+const container = document.getElementById('root') as HTMLElement;
+const root = createRoot(container!);
 
 /**
  * this mounts compositions into the DOM in the component preview.
@@ -14,8 +15,5 @@ const root = document.getElementById('root') as HTMLElement;
  * to apply custom logic for component DOM mounting.
  */
 export default async (composition: any/* , previewContext: RenderingContext */) => {
-  ReactDOM.render(
-    <div>{await ngToReact([composition])}</div>,
-    root
-  );
+  root.render(<div>{await ngToReact([composition])}</div>);
 };

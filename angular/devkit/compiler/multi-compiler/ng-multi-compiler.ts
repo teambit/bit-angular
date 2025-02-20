@@ -52,7 +52,7 @@ export class NgMultiCompiler implements Compiler {
     public distGlobPatterns: string[],
     public distDir = 'dist'
   ) {
-    if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
+    if (this.ngEnvOptions.useAngularElements && this.angularElementsCompiler) {
       this.mainCompiler = this.angularElementsCompiler;
     } else {
       this.mainCompiler = this.ngPackagrCompiler;
@@ -76,11 +76,22 @@ export class NgMultiCompiler implements Compiler {
     if (isApp) {
       return;
     }
-    if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
-      await this.mainCompiler.transpileComponent(params);
-      return;
+
+    // Create dist if it doesn't exist to avoid a warning with `bit status`
+    const dist = join(params.outputDir, this.distDir);
+    fs.mkdirsSync(dist);
+
+    // When using Angular elements, we need to compile components locally, not just for build
+    if (this.ngEnvOptions.useAngularElements) {
+      // If we are running `bit start`, we only need to compile the compositions
+      if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
+        await this.angularElementsCompiler!.transpileComponent(params);
+      } else {
+        // for any other command than bit start, we need to compile the full components into the node modules dist
+        // so that we can use them in another framework (like react) that isn't able to directly use the source files
+        await this.ngPackagrCompiler.transpileComponent(params);
+      }
     }
-    await this.ngPackagrCompiler.transpileComponent(params);
   }
 
   transpileFile(fileContent: string, params: TranspileFileParams): TranspileFileOutput | Promise<TranspileFileOutput> {
@@ -92,7 +103,10 @@ export class NgMultiCompiler implements Compiler {
 
   async compileAppEntryFile(appComponent: Component, appComponentDir: string): Promise<TranspileFileOutput> {
     const appEntryFile = appComponent.state.filesystem.files.find(file => minimatch(file.relative, NG_APP_PATTERN))!;
-    const transpileFileOutput = await this.transpileFile(appEntryFile.contents.toString(), { filePath: appEntryFile.relative, componentDir: appComponentDir });
+    const transpileFileOutput = await this.transpileFile(appEntryFile.contents.toString(), {
+      filePath: appEntryFile.relative,
+      componentDir: appComponentDir
+    });
     const distPath = join(appComponentDir, this.distDir);
     transpileFileOutput?.forEach((fileOutput: TranspileFileOutputOneFile) => {
       fs.outputFileSync(join(distPath, fileOutput.outputPath), fileOutput.outputText);
@@ -108,7 +122,7 @@ export class NgMultiCompiler implements Compiler {
     const capsules = context.capsuleNetwork.seedersCapsules;
     // compile all app entry files with babel
     const appComponentCapsules = capsules.filter(capsule => componentIsApp(capsule.component, this.application));
-    for(const capsule of appComponentCapsules) {
+    for (const capsule of appComponentCapsules) {
       const appComponent = capsule.component;
       await this.compileAppEntryFile(appComponent, capsule.path);
       componentsResults.push({ component: appComponent });
@@ -119,7 +133,7 @@ export class NgMultiCompiler implements Compiler {
     componentsResults.push(...ngPackagrResult.componentsResults);
 
     // and eventually with angular elements too
-    if (this.ngEnvOptions.useAngularElementsPreview && this.angularElementsCompiler) {
+    if (this.ngEnvOptions.useAngularElements && this.angularElementsCompiler) {
       const angularElementsResult = await this.angularElementsCompiler.build(context);
       componentsResults.push(...angularElementsResult.componentsResults);
     }
@@ -197,7 +211,7 @@ export class NgMultiCompiler implements Compiler {
 
       let angularElementsCompiler: AngularElementsCompiler | undefined;
 
-      if (options.ngEnvOptions.useAngularElementsPreview) {
+      if (options.ngEnvOptions.useAngularElements) {
         angularElementsCompiler = AngularElementsCompiler.from({
           artifactName,
           distDir,

@@ -9,9 +9,9 @@
     "teambit.dependencies/dependency-resolver": {
       "policy": {
         "dependencies": {
-          "@angular-devkit/architect": "0.1800.0",
+          "@angular-devkit/architect": ">=0.1800.0 <0.1900.0",
           "@angular-devkit/build-angular": "^18.0.0",
-          "@angular-devkit/build-webpack": "0.1800.0",
+          "@angular-devkit/build-webpack": ">=0.1800.0 <0.1900.0",
           "@angular-devkit/core": "^18.0.0",
           "@angular-devkit/schematics": "^18.0.0",
           "@angular-eslint/eslint-plugin": "~17.4.1",

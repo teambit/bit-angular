@@ -10,6 +10,7 @@ import {
 import { AngularStarter, DesignSystemStarter, MaterialDesignSystemStarter } from '@bitdev/angular.templates.starters';
 import { CAPSULE_ARTIFACTS_DIR, Pipeline } from '@teambit/builder';
 import { Compiler } from '@teambit/compiler';
+import { Component } from '@teambit/component';
 import { EslintConfigWriter, ESLintLinter, EslintTask } from '@teambit/defender.eslint-linter';
 import { JestTask, JestTester } from '@teambit/defender.jest-tester';
 import { PrettierConfigWriter, PrettierFormatter } from '@teambit/defender.prettier-formatter';
@@ -26,7 +27,10 @@ import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler'
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash-es';
+import { existsSync, rmSync } from 'node:fs';
 import { createRequire } from 'node:module';
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 import { AngularEnvInterface } from './angular-env.interface.js';
 
 let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
@@ -38,6 +42,8 @@ const require = createRequire(import.meta.url);
  */
 export abstract class AngularBaseEnv implements AngularEnvInterface {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
+
+  distDir = 'dist';
 
   /** Abstract functions & properties specific to the adapter * */
   abstract ngEnvOptions: AngularEnvOptions;
@@ -63,6 +69,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
 
   /* Jest config. Learn how to replace tester - https://bit.dev/reference/testing/set-up-tester */
   protected abstract jestConfigPath: string;
+
   /*** End of default functions & properties ***/
 
   public getNgEnvOptions(): AngularEnvOptions {
@@ -99,7 +106,10 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   compiler(): EnvHandler<Compiler> {
     if (!ngMultiCompiler) {
       ngMultiCompiler = NgMultiCompiler.from({
-        ngEnvOptions: this.getNgEnvOptions()
+        ngEnvOptions: this.getNgEnvOptions(),
+        bitCompilerOptions: {
+          distDir: this.distDir,
+        }
       });
     }
     return ngMultiCompiler;
@@ -143,7 +153,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   packageJson = {
     type: 'module',
-    main: 'dist/{main}.js',
+    main: `${this.distDir}/{main}.js`,
     types: '{main}.ts',
   };
 
@@ -154,6 +164,19 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     return PackageGenerator.from({
       packageJson: this.packageJson,
       npmIgnore: this.npmIgnore,
+      // @ts-ignore missing property from type ?
+      modifyPackageJson: async (_component: Component, packageJsonObject: PackageJsonProps): Promise<PackageJsonProps> => {
+        if (this.getNgEnvOptions().useAngularElements) {
+          const cmpOutDir = dirname(fileURLToPath(import.meta.resolve(`${packageJsonObject.name}/package.json`)));
+          const ngPackagePath = join(cmpOutDir, this.distDir, 'ng-package.json');
+          if (existsSync(ngPackagePath)) {
+            const ngPackage = require(ngPackagePath);
+            rmSync(ngPackagePath);
+            packageJsonObject = Object.assign(packageJsonObject, ngPackage);
+          }
+        }
+        return packageJsonObject;
+      }
     });
   }
 
