@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/common",
-    "version": "33b27185d4339685b5106095d560648a1e296ae7"
+    "version": "8.1.1"
   },
   "propagate": false,
   "extensions": {

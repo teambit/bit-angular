@@ -4,13 +4,15 @@ import { Component, ComponentID } from '@teambit/component';
 import { DevFilesMain } from '@teambit/dev-files';
 import { EnvContext } from '@teambit/envs';
 import { IsolatorMain } from '@teambit/isolator';
+import { CACHE_ROOT } from '@teambit/legacy.constants';
 import { Logger } from '@teambit/logger';
 import { PkgMain } from '@teambit/pkg';
+import { ScopeMain } from '@teambit/scope';
+import { findScopePath } from '@teambit/scope.modules.find-scope-path';
 import { TesterAspect } from '@teambit/tester';
 import WorkspaceAspect, { Workspace } from '@teambit/workspace';
-import { ScopeMain } from '@teambit/scope';
 import { getRootComponentDir } from '@teambit/workspace.root-components';
-import { outputFileSync } from 'fs-extra';
+import { existsSync, mkdirSync, outputFileSync } from 'fs-extra';
 // @ts-ignore
 import normalize from 'normalize-path';
 import objectHash from 'object-hash';
@@ -375,4 +377,16 @@ export function getWebpackAngularAliases(nodeModulesPaths?: string[]): { [key: s
   });
 
   return aliases;
+}
+
+/**
+ * Returns the path to the temp folder for the given path.
+ */
+export function getTempFolder(idName: string = '', workspace?: Workspace): string {
+  const tempFolder = workspace?.getTempDir(idName) ?? join(findScopePath(process.cwd()) || CACHE_ROOT, idName);
+
+  if (!existsSync(tempFolder)) {
+    mkdirSync(tempFolder, { recursive: true });
+  }
+  return tempFolder;
 }

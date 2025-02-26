@@ -1,5 +1,6 @@
-import { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
+import { AngularEnvOptions, getTempFolder } from '@bitdev/angular.dev-services.common';
 import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
+import { NG_PACKAGE_JSON } from "@bitdev/angular.dev-services.compiler.ng-packagr";
 import { AngularVitePreview } from "@bitdev/angular.dev-services.preview.vite-preview";
 import {
   NgAppTemplate,
@@ -24,18 +25,16 @@ import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
 import { TypeScriptExtractor } from '@teambit/typescript';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
+import type { Workspace } from "@teambit/workspace";
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash-es';
-import { existsSync, rmSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { join } from "node:path";
 import { AngularEnvInterface } from './angular-env.interface.js';
 
-let ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
-
-const require = createRequire(import.meta.url);
+const req = createRequire(import.meta.url);
 
 /**
  * a component environment built for [Angular](https://angular.io).
@@ -44,6 +43,8 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   icon = 'https://static.bit.dev/extensions-icons/angular.svg';
 
   distDir = 'dist';
+
+  ngMultiCompiler: EnvHandler<NgMultiCompiler> | undefined;
 
   /** Abstract functions & properties specific to the adapter * */
   abstract ngEnvOptions: AngularEnvOptions;
@@ -56,16 +57,16 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
 
   /*** Default functions & properties that custom envs will override ***/
   /* Typescript config used for linter, schema extractor and config writer */
-  protected tsconfigPath = require.resolve('./config/tsconfig.json');
+  protected tsconfigPath = req.resolve('./config/tsconfig.json');
 
   /* ESLint config. Learn how to replace linter - https://bit.dev/reference/linting/set-up-linter */
-  protected eslintConfigPath = require.resolve('./config/eslintrc.cjs');
+  protected eslintConfigPath = req.resolve('./config/eslintrc.cjs');
 
   /* Prettier config. Learn how to replace formatter - https://bit.dev/reference/formatting/set-up-formatter */
-  protected prettierConfigPath = require.resolve('./config/prettier.config.cjs');
+  protected prettierConfigPath = req.resolve('./config/prettier.config.cjs');
 
   /* Component mounting and dev-server config. Learn how to replace dev-server - https://bit.dev/reference/preview/setup-preview */
-  protected previewMounterPath = require.resolve('./config/mounter.js');
+  protected previewMounterPath = req.resolve('./config/mounter.js');
 
   /* Jest config. Learn how to replace tester - https://bit.dev/reference/testing/set-up-tester */
   protected abstract jestConfigPath: string;
@@ -104,15 +105,15 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    * Required for making and reading dists, especially for `bit compile`
    */
   compiler(): EnvHandler<Compiler> {
-    if (!ngMultiCompiler) {
-      ngMultiCompiler = NgMultiCompiler.from({
+    if (!this.ngMultiCompiler) {
+      this.ngMultiCompiler = NgMultiCompiler.from({
         ngEnvOptions: this.getNgEnvOptions(),
         bitCompilerOptions: {
           distDir: this.distDir,
         }
       });
     }
-    return ngMultiCompiler;
+    return this.ngMultiCompiler;
   }
 
   formatter(): EnvHandler<Formatter> {
@@ -165,13 +166,13 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       packageJson: this.packageJson,
       npmIgnore: this.npmIgnore,
       // @ts-ignore missing property from type ?
-      modifyPackageJson: async (_component: Component, packageJsonObject: PackageJsonProps): Promise<PackageJsonProps> => {
+      modifyPackageJson: async (cmp: Component, packageJsonObject: PackageJsonProps): Promise<PackageJsonProps> => {
         if (this.getNgEnvOptions().useAngularElements) {
-          const cmpOutDir = dirname(fileURLToPath(import.meta.resolve(`${packageJsonObject.name}/package.json`)));
-          const ngPackagePath = join(cmpOutDir, this.distDir, 'ng-package.json');
+          const workspace = (cmp as any).workspace as Workspace;
+          const tempFolder = getTempFolder(join('ng-packagr', cmp.id.toString()), workspace);
+          const ngPackagePath = join(tempFolder, NG_PACKAGE_JSON);
           if (existsSync(ngPackagePath)) {
-            const ngPackage = require(ngPackagePath);
-            rmSync(ngPackagePath);
+            const ngPackage = req(ngPackagePath);
             packageJsonObject = Object.assign(packageJsonObject, ngPackage);
           }
         }

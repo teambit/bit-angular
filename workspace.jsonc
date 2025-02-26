@@ -59,8 +59,8 @@
         "@teambit/toolbox.time.timer": "^0.0.1",
         "@teambit/typescript.typescript-compiler": "2.0.46",
         "@teambit/vite.vite-utils": "^0.1.14",
-        "@teambit/webpack.modules.generate-style-loaders": "^1.0.12",
-        "@teambit/webpack.modules.style-regexps": "^1.0.7",
+        "@teambit/webpack.modules.generate-style-loaders": "^1.0.13",
+        "@teambit/webpack.modules.style-regexps": "^1.0.8",
         "@teambit/webpack.webpack-bundler": "1.0.13",
         "@teambit/workspace.root-components": "^1.0.0",
         "@types/fs-extra": "~9.0.7",
@@ -89,9 +89,6 @@
       "peerDependencies": {}
     },
     "linkCoreAspects": true,
-    /**
-     * choose the package manager for Bit to use. you can choose between 'yarn', 'pnpm'
-     */
     "packageManager": "teambit.dependencies/pnpm",
     "rootComponents": true,
     "packageImportMethod": "copy",
@@ -113,7 +110,8 @@
     ]
   },
   //  "bitdev.angular/angular-env": {},
-  "bitdev.angular/envs/angular-v19-env": {},
+//  "bitdev.angular/envs/angular-v19-env": {},
+  "bitdev.angular/integration/ng-elements-env": {},
   //  "bitdev.angular/envs/angular-v18-env": {},
   //  "bitdev.angular/envs/angular-v17-env": {},
   //  "bitdev.angular/envs/angular-v16-env": {},

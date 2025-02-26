@@ -20,7 +20,7 @@ export interface JsonObject {
 
 export function generateMainEntryFile(appRootPath: string, tempFolder: string, entryPoints: string[]): string {
   const entryFileContent = entryPoints.map(entry => `import './${normalizePath(relative(tempFolder, entry.endsWith('.ts') ? entry.replace(/\.ts$/, '') : entry))}';`).join('\n');
-  const entryFile = join(tempFolder, `main-${Date.now()}.ts`);
+  const entryFile = join(tempFolder, `main-${objectHash.MD5(entryFileContent)}.ts`);
   fs.outputFileSync(entryFile, entryFileContent);
   return normalizePath(relative(appRootPath, entryFile));
 }
@@ -32,7 +32,7 @@ export function generateMainEntryFile(appRootPath: string, tempFolder: string, e
 export function fixEntries(tempFolder: string, entries: string[]) {
   return entries.filter(entry => !!entry.match(/(compositions-\d*\.js|overview-\d*\.js|preview\.root.*\.js|preview\.entry.*\.js)/))
     .map(entry => {
-      const name = basename(entry);
+      const name = `${objectHash.MD5(entry)}-${basename(entry)}`;
       const newEntry = join(tempFolder, name);
       let content = fs.readFileSync(entry, 'utf8');
       content = content.replaceAll(ENTRY_REGEXP, '$1$3').replaceAll(/\\\\/gm, '/');

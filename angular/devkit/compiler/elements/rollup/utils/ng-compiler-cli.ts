@@ -20,10 +20,10 @@ export async function ngCompilerCli(): Promise<typeof import('@angular/compiler-
 export async function ngBabelLinker(): Promise<any> {
   try {
     // Angular v13+
-    return loadEsmModule(`@angular/compiler-cli/linker/babel`);
+    return await loadEsmModule(`@angular/compiler-cli/linker/babel`);
   } catch (e) {
     // Angular v12
-    return loadEsmModule(`@angular/compiler-cli/linker/babel/index.js`);
+    return await loadEsmModule(`@angular/compiler-cli/linker/babel/index.js`);
   }
 }
 

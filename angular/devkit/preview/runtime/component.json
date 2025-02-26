@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/preview/runtime",
-    "version": "dea3ae30f4ba75f535e40a4931c416655909316c"
+    "version": "5.1.0"
   },
   "propagate": false,
   "extensions": {

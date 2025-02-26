@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/ng-packagr",
-    "version": "f2f08c62f796c69586c399178142c69fcdebd557"
+    "version": "8.1.1"
   },
   "propagate": false,
   "extensions": {

@@ -88,7 +88,7 @@ export class RollupCompiler {
       plugins: [
         commonjs(),
         nodeResolve({
-          moduleDirectories: opts.nodeModulesPaths ?? ['node_modules'],
+          modulePaths: opts.nodeModulesPaths ?? ['node_modules'],
           dedupe: [
             '@angular/build',
             '@angular/cdk',

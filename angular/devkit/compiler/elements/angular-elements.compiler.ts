@@ -141,9 +141,9 @@ Built Angular Compositions
    * used by `bit build` & `bit start` for compositions & doc files
    */
   getDistPathBySrcPath(srcPath: string): string {
-    if (this.isFileSupported(srcPath) && this.compositions.isCompositionFile(srcPath)) {
-      return join('dist', srcPath.replace(extname(srcPath), '.js'));
-    }
+    // if (this.isFileSupported(srcPath) && this.compositions.isCompositionFile(srcPath)) {
+    //   return join('dist', srcPath.replace(extname(srcPath), '.js'));
+    // }
     return srcPath;
   }
 
@@ -153,7 +153,10 @@ Built Angular Compositions
    * used by `bit start`
    */
   getPreviewComponentRootPath(component: Component): string {
-    return this.workspace!.componentPackageDir(component, { relative: true });
+    // return this.workspace!.componentPackageDir(component, { relative: true });
+    return this.workspace!.componentDir(component.id, {
+      ignoreVersion: true
+    }, { relative: true });
   }
 
   /**

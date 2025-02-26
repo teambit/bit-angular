@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v16-env",
-    "version": "8.0.1"
+    "version": "8.1.1"
   },
   "propagate": false,
   "extensions": {

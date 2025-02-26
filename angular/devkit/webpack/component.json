@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/webpack",
-    "version": "2ef44a3d81b791be618aec5ccb179aea5f1b6953"
+    "version": "8.1.1"
   },
   "propagate": false,
   "extensions": {

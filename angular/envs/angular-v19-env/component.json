@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "envs/angular-v19-env",
-    "version": "2.0.1"
+    "version": "2.1.1"
   },
   "propagate": false,
   "extensions": {

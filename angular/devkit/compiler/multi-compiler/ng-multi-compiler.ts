@@ -85,7 +85,7 @@ export class NgMultiCompiler implements Compiler {
     if (this.ngEnvOptions.useAngularElements) {
       // If we are running `bit start`, we only need to compile the compositions
       if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
-        await this.angularElementsCompiler!.transpileComponent(params);
+        // await this.angularElementsCompiler!.transpileComponent(params);
       } else {
         // for any other command than bit start, we need to compile the full components into the node modules dist
         // so that we can use them in another framework (like react) that isn't able to directly use the source files
