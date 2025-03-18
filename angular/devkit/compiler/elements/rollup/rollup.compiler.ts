@@ -181,8 +181,9 @@ export class RollupCompiler {
     };
   }
 
-  async compile(opts: RollupOptions, watch = false, compilationMode: CompilationMode = 'partial') {
+  async compile(opts: RollupOptions, watch = false) {
     const { fileCache = new Map() } = opts;
+    const compilationMode = opts.compilationMode || 'partial';
 
     const bundle = await this.bundleFiles({
       sourceRoot: opts.sourceRoot,

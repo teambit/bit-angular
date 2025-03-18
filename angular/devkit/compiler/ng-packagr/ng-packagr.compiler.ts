@@ -1,6 +1,12 @@
 // @ts-ignore
 import type { AngularCompilerOptions, CompilerOptions, ParsedConfiguration } from '@angular/compiler-cli';
-import { componentIsApp, getNodeModulesPaths, getTempFolder, getWorkspace } from '@bitdev/angular.dev-services.common';
+import {
+  componentIsApp,
+  getNodeModulesPaths,
+  getTempFolder,
+  getWorkspace,
+  NG_ELEMENTS_PATTERN
+} from '@bitdev/angular.dev-services.common';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
 import { ArtifactDefinition, BuildContext, BuiltTaskResult, ComponentResult } from '@teambit/builder';
 import { CompilationInitiator, Compiler, TranspileComponentParams } from '@teambit/compiler';
@@ -17,6 +23,8 @@ import { Workspace } from '@teambit/workspace';
 import chalk from 'chalk';
 // @ts-ignore
 import { outputFileSync, removeSync, outputJsonSync } from 'fs-extra/esm';
+// @ts-ignore
+import minimatch from "minimatch";
 import type { NgPackageConfig } from 'ng-packagr/ng-package.schema.js';
 import { createRequire } from 'node:module';
 import { join, posix, resolve } from 'node:path';
@@ -175,6 +183,10 @@ export class NgPackagrCompiler implements Compiler {
         }
       });
     }
+    // When compiling with 'full' mode, ngPackagr adds a prepublish script to prevent publishing it to npm
+    if (packageJson.scripts) {
+      updatePackageJson.scripts = packageJson.scripts;
+    }
     return updatePackageJson;
   }
 
@@ -217,7 +229,7 @@ export class NgPackagrCompiler implements Compiler {
       assets: ['src/assets'],
       lib: {
         cssUrl: 'inline',
-        entryFile: posix.join(params.componentDir, 'public-api.ts')
+        entryFile: posix.join(params.componentDir, params.component.config.main)
       },
       allowedNonPeerDependencies
     };
@@ -242,7 +254,7 @@ export class NgPackagrCompiler implements Compiler {
 
     const isCompile = params.initiator === CompilationInitiator.PreWatch || params.initiator === CompilationInitiator.ComponentChanged || params.initiator === CompilationInitiator.CmdReport
     // replace ng-packagr logs by our own logger for better output during bit compile/watch
-    if(isCompile) {
+    if (isCompile) {
       // @ts-ignore
       process.stderr.write = diagnosticsReporter;
       // eslint-disable-next-line no-console
@@ -268,6 +280,12 @@ export class NgPackagrCompiler implements Compiler {
         removeSync(resolve(ngPackageJsonPath));
         // eslint-disable-next-line consistent-return
       }, async (err: Error) => {
+        // restore logs
+        if (isCompile) {
+          // eslint-disable-next-line no-console
+          console.log = log;
+          process.stderr.write = stderr;
+        }
         if (err.message === ViewEngineTemplateError && !tsCompilerOptions.fullTemplateTypeCheck) {
           // eslint-disable-next-line no-console
           console.warn(chalk.yellow(`\nError "${err.message}" triggered by the Angular compiler, retrying compilation without "fullTemplateTypeCheck" (you should probably create a custom environment using "bit create ng-env my-custom-angular-env" to set this option by default and avoid this error message)\n`));
@@ -280,7 +298,7 @@ export class NgPackagrCompiler implements Compiler {
         diagnosticsReporter(err as any);
       }).finally(() => {
         // restore logs
-        if(isCompile) {
+        if (isCompile) {
           // eslint-disable-next-line no-console
           console.log = log;
           process.stderr.write = stderr;
@@ -291,7 +309,7 @@ export class NgPackagrCompiler implements Compiler {
   /**
    * used by `bit compile`
    */
-  async transpileComponent(params: TranspileComponentParams): Promise<void> {
+  async transpileComponent(params: TranspileComponentParams, compilerOptions: AngularCompilerOptions = {}): Promise<void> {
     const isApp = componentIsApp(params.component, this.application);
     // No need to compile an app
     if (isApp) {
@@ -309,7 +327,7 @@ export class NgPackagrCompiler implements Compiler {
     this.logger.off();
     // Build component package
     const diagnosticsReporter = await createDiagnosticsReporter(this.logger);
-    const tsCompilerOptions = await this.getCompilerOptions();
+    const tsCompilerOptions = { ...(await this.getCompilerOptions()), ...compilerOptions };
     const componentIds = [params.component.id.toString()];
     await this.ngPackagrCompilation(params, tsCompilerOptions, diagnosticsReporter, componentIds, false);
     this.logger.on();
@@ -379,7 +397,8 @@ export class NgPackagrCompiler implements Compiler {
         component
       };
       const isApp = componentIsApp(component, this.application);
-      if (!isApp) { // No need to compile an app
+      const isElements = minimatch(component.config.main, NG_ELEMENTS_PATTERN);
+      if (!isApp && !isElements) { // No need to compile an app or an angular elements component
         try {
           // disable logger temporarily so that it doesn't mess up with ngPackagr logs
           this.logger.off();

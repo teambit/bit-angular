@@ -1,9 +1,8 @@
-import { AngularEnvOptions, getTempFolder } from '@bitdev/angular.dev-services.common';
+import { AngularEnvOptions, NG_ELEMENTS_PATTERN } from '@bitdev/angular.dev-services.common';
 import { NgMultiCompiler, NgMultiCompilerTask } from '@bitdev/angular.dev-services.compiler.multi-compiler';
-import { NG_PACKAGE_JSON } from "@bitdev/angular.dev-services.compiler.ng-packagr";
 import { AngularVitePreview } from "@bitdev/angular.dev-services.preview.vite-preview";
 import {
-  NgAppTemplate,
+  NgAppTemplate, NgElementsTemplate,
   NgEnvTemplate,
   NgModuleTemplate,
   NgStandaloneTemplate
@@ -25,13 +24,12 @@ import { SchemaExtractor } from '@teambit/schema';
 import { Tester } from '@teambit/tester';
 import { TypeScriptExtractor } from '@teambit/typescript';
 import { TypescriptConfigWriter } from '@teambit/typescript.typescript-compiler';
-import type { Workspace } from "@teambit/workspace";
 import { ConfigWriterList } from '@teambit/workspace-config-files';
 import { ESLint as ESLintLib } from 'eslint';
 import { merge } from 'lodash-es';
-import { existsSync } from 'node:fs';
+// @ts-ignore
+import minimatch from "minimatch";
 import { createRequire } from 'node:module';
-import { join } from "node:path";
 import { AngularEnvInterface } from './angular-env.interface.js';
 
 const req = createRequire(import.meta.url);
@@ -82,9 +80,6 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   public setNgEnvOptions(...ngEnvOptions: Partial<AngularEnvOptions>[]): void {
     this.ngEnvOptions = merge(this.ngEnvOptions || {}, ...ngEnvOptions);
-    /*if (this.ngEnvOptions.devServer === 'vite' && this.angularVersion < 16) {
-      throw new Error(`Vite dev server is only supported for Angular 16+`);
-    }*/
   }
 
   /**
@@ -107,6 +102,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
   compiler(): EnvHandler<Compiler> {
     if (!this.ngMultiCompiler) {
       this.ngMultiCompiler = NgMultiCompiler.from({
+        tsconfigPath: this.tsconfigPath,
         ngEnvOptions: this.getNgEnvOptions(),
         bitCompilerOptions: {
           distDir: this.distDir,
@@ -154,7 +150,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
    */
   packageJson = {
     type: 'module',
-    main: `${this.distDir}/{main}.js`,
+    main: `${this.distDir}/browser/main.js`,
     types: '{main}.ts',
   };
 
@@ -167,14 +163,19 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
       npmIgnore: this.npmIgnore,
       // @ts-ignore missing property from type ?
       modifyPackageJson: async (cmp: Component, packageJsonObject: PackageJsonProps): Promise<PackageJsonProps> => {
-        if (this.getNgEnvOptions().useAngularElements) {
-          const workspace = (cmp as any).workspace as Workspace;
-          const tempFolder = getTempFolder(join('ng-packagr', cmp.id.toString()), workspace);
-          const ngPackagePath = join(tempFolder, NG_PACKAGE_JSON);
-          if (existsSync(ngPackagePath)) {
-            const ngPackage = req(ngPackagePath);
-            packageJsonObject = Object.assign(packageJsonObject, ngPackage);
-          }
+        if (minimatch(cmp.config.main, NG_ELEMENTS_PATTERN)) {
+          const main = "./dist/browser/main.js";
+          const ngPackage = {
+            "exports": {
+              "./package.json": {
+                "default": "./package.json"
+              },
+              ".": {
+                "default": main
+              },
+            },
+          };
+          packageJsonObject = Object.assign(packageJsonObject, ngPackage);
         }
         return packageJsonObject;
       }
@@ -185,19 +186,6 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     return AngularVitePreview.from({
       mounterPath: this.previewMounterPath
     });
-
-    /*const hostDependencies = [
-      '@teambit/mdx.ui.mdx-scope-context',
-      '@mdx-js/react',
-      'react',
-      'react-dom',
-    ];
-    const ngEnvOptions = this.getNgEnvOptions();
-    return AngularPreview.from({
-      ngEnvOptions,
-      hostDependencies,
-      mounterPath: this.previewMounterPath
-    });*/
   }
 
   /**
@@ -227,6 +215,7 @@ export abstract class AngularBaseEnv implements AngularEnvInterface {
     return TemplateList.from([
       NgModuleTemplate.from({ envName, angularVersion: this.angularVersion }),
       NgStandaloneTemplate.from({ envName, angularVersion: this.angularVersion }),
+      NgElementsTemplate.from({ envName, angularVersion: this.angularVersion }),
       NgEnvTemplate.from({ envName, angularVersion: this.angularVersion }),
       NgAppTemplate.from({ envName, angularVersion: this.angularVersion })
     ]);

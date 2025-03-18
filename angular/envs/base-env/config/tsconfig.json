@@ -1,7 +1,11 @@
 {
-  "extends": "@teambit/react/typescript/tsconfig.json",
   "compilerOptions": {
     /* Visit https://aka.ms/tsconfig.json to read more about this file */
+    "module": "es2020",
+    "declaration": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "outDir": "./dist",
     "allowJs": true,                                /* Allow javascript files to be compiled. */
     "emitDecoratorMetadata": true,                  /* Enables experimental support for emitting type metadata for decorators. */
     "esModuleInterop": true,                        /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */

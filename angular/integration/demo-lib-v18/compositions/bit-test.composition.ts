@@ -2,6 +2,7 @@ import { Component, NgModule } from '@angular/core';
 import { BitTestModule } from '../bit-test.module';
 
 @Component({
+  standalone: false,
   selector: 'composition-cmp-v18',
   template: `Composition: <bit-test-v18></bit-test-v18>`
 })

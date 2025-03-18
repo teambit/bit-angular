@@ -19,7 +19,7 @@ import assert from "node:assert";
 import { join, resolve } from "path";
 import { serveApplication } from "./application.dev-server.js";
 import { NgViteOptions } from './utils/types.js';
-import { fixEntries, generateAppTsConfig, generateMainEntryFile, getEnvFile } from "./utils/utils.js";
+import { fixEntries, generateAppTsConfig, generateMainEntryFile, getEnvFile, readTsConfig } from "./utils/utils.js";
 
 const DEFAULT_SERVER_NAME = 'ng-vite-dev-server';
 
@@ -68,11 +68,12 @@ export class NgViteDevServer implements DevServer {
       progress: false
     };
     const envVars = await getEnvFile('development', this.options.appRootPath);
-    const appTsconfigPath = join(this.options.appRootPath, angularOptions.tsConfig);
+    const appTsConfigPath = join(this.options.appRootPath, angularOptions.tsConfig);
+    const appTsConfig = readTsConfig(appTsConfigPath);
     const tsconfigPath = normalizePath(join(tempFolder, `tsconfig/tsconfig-${Date.now()}.json`));
     const workspaceCmpsIDs = this.workspace.listIds();
     const components = await this.workspace.getMany(workspaceCmpsIDs);
-    generateAppTsConfig(components, this.options.appRootPath, appTsconfigPath, tsconfigPath, this.depsResolver, this.workspace, [mainEntryFile], this.devFilesMain);
+    generateAppTsConfig(components, this.options.appRootPath, appTsConfig, tsconfigPath, this.depsResolver, this.workspace, [mainEntryFile], this.devFilesMain);
 
     // The returned Server is never used, so we can safely ignore the return type
     return await serveApplication({

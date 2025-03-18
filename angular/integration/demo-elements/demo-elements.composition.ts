@@ -5,6 +5,6 @@ import { DemoElementsComponent } from './demo-elements.component';
   standalone: true,
   selector: 'demo-elements-composition-cmp',
   imports: [DemoElementsComponent],
-  template: `DemoElements composition: <demo-elements></demo-elements>`
+  template: `DemoElements composition: <demo-elements name="Bit"></demo-elements>`
 })
 export class DemoElementsCompositionComponent {}

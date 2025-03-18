@@ -1,5 +1,3 @@
-/* eslint-disable */
-import 'zone.js';
 import { ViewEncapsulation, ɵɵdefineComponent } from '@angular/core';
 
 // The injector used to create custom elements from Angular components

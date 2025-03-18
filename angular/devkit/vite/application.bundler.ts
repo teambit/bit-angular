@@ -26,6 +26,8 @@ export type BuildApplicationOptions = {
   entryServer?: string;
   envVars?: any;
   isPreview?: boolean;
+  fastReturn?: boolean;
+  consoleLogs?: boolean;
 }
 
 export type BuildOutput = {
@@ -37,8 +39,8 @@ export type BuildOutput = {
 const BUILDER_NAME = '@angular-devkit/build-angular:application';
 const CACHE_PATH = 'angular/cache';
 
-export async function buildApplication(options: BuildApplicationOptions): Promise<BuildOutput[]> {
-  const { angularOptions: { tsConfig, server, define }, envVars, isPreview } = options;
+export async function buildApplication(options: BuildApplicationOptions): Promise<BuildOutput[] | AsyncIterable<any>> {
+  const { angularOptions: { tsConfig, server, define }, envVars, isPreview, fastReturn } = options;
   assert(tsConfig, 'tsConfig option is required');
   const isSsr = !!server && Number(VERSION.major) >= 17;
   if (isSsr && Number(VERSION.major) < 19) {
@@ -72,6 +74,9 @@ export async function buildApplication(options: BuildApplicationOptions): Promis
   }
 
   const res: BuildOutput[] = [];
+  if (fastReturn) {
+    return results;
+  }
   for await (const result of results) {
     res.push(result);
     if (result.error) {
@@ -127,8 +132,8 @@ function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): Applic
   const normalizedBrowser = `./${join(sourceRoot, 'main.ts')}`;
   const serverPath = `./${join(sourceRoot, 'main.server.ts')}`;
 
-  const dedupedAssets = dedupePaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]);
-  const dedupedStyles = dedupePaths([posix.join(sourceRoot, `styles.${angularOptions.inlineStyleLanguage}`), ...(angularOptions.styles ?? [])]);
+  const dedupedAssets = (angularOptions.assets as any) !== false ? dedupePaths([posix.join(sourceRoot, `assets/**/*`), ...(angularOptions.assets ?? [])]) : [];
+  const dedupedStyles = (angularOptions.styles as any) !== false ? dedupePaths([posix.join(sourceRoot, `styles.${angularOptions.inlineStyleLanguage}`), ...(angularOptions.styles ?? [])]) : [];
 
   return {
     ...angularOptions,
@@ -147,7 +152,7 @@ function getAppOptions(options: BuildApplicationOptions, isSsr: boolean): Applic
     deleteOutputPath: true,
     sourceMap: angularOptions.sourceMap ?? true,
     outputHashing: angularOptions.outputHashing ?? OutputHashing.All,
-    watch: false,
+    watch: angularOptions.watch ?? false,
     outputMode: angularOptions.outputMode ?? (isSsr ? 'server' : 'static'),
     server: isSsr ? angularOptions.server ?? serverPath : undefined,
     prerender: isSsr ? (angularOptions.prerender ?? !!angularOptions.server) : undefined,
@@ -174,7 +179,7 @@ function getBuilderContext(options: BuildApplicationOptions, appOptions: Applica
       description: 'Bit Angular Application Builder',
       optionSchema: {}
     },
-    logger: getLoggerApi(options.logger),
+    logger: getLoggerApi(options.logger, options.consoleLogs),
     signal: builderAbort.signal,
     workspaceRoot: workspaceRoot,
     currentDirectory: '',
@@ -257,6 +262,7 @@ async function getNitroConfig(options: BuildApplicationOptions): Promise<NitroCo
       'zone.js/node',
       'zone.js/fesm2015/zone-node'
     ],
+    // @ts-ignore
     renderer: ssr ? normalizePath(fileURLToPath(import.meta.resolve('./runtime/renderer.js'))) : undefined,
     // handlers: ssr ? [{
     //   handler: normalizePath(import.meta.resolve('./runtime/api-middleware')),

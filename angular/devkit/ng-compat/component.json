@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/ng-compat",
-    "version": "85ce3b597c81384a3d96b07ce7a2c9b789155116"
+    "version": "5.1.0"
   },
   "propagate": false,
   "extensions": {
@@ -30,6 +30,6 @@
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
     "teambit.semantics/schema": {},
-    "teambit.node/node@1.0.103": {}
+    "teambit.node/node@1.0.110": {}
   }
 }

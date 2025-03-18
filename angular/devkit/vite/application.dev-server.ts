@@ -109,6 +109,7 @@ function getAppOptions(options: ServeApplicationOptions, isSsr: boolean): /*Appl
     outputMode: angularOptions.outputMode ?? (isSsr ? 'server' : 'static'),
     server: isSsr ? angularOptions.server ?? serverPath : undefined,
     prerender: isSsr && !angularOptions.outputMode ? angularOptions.prerender ?? !!angularOptions.server : undefined,
+    partialSSRBuild: isSsr ? angularOptions.partialSSRBuild ?? true : undefined,
     ssr: isSsr ? (angularOptions.ssr ?? !!angularOptions.server) : false,
     port,
     // @ts-ignore Angular 17-18
@@ -130,7 +131,7 @@ function getBuilderContext(options: ServeApplicationOptions, appOptions: Applica
       description: 'Bit Angular Application Builder',
       optionSchema: {}
     },
-    logger: getLoggerApi(options.logger, options.isPreview),
+    logger: getLoggerApi(options.logger, !options.isPreview),
     signal: builderAbort.signal,
     workspaceRoot: workspaceRoot,
     currentDirectory: '',

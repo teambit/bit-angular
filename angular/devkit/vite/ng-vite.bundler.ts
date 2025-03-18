@@ -11,9 +11,9 @@ import assert from "assert";
 import fs from "fs-extra";
 import { findScopePath } from '@teambit/scope.modules.find-scope-path';
 import { join, posix, resolve } from "path";
-import { buildApplication } from "./application.bundler.js";
+import { buildApplication, BuildOutput } from "./application.bundler.js";
 import { NgViteOptions } from "./utils/types.js";
-import { fixEntries, generateAppTsConfig, generateMainEntryFile } from "./utils/utils.js";
+import { fixEntries, generateAppTsConfig, generateMainEntryFile, readTsConfig } from "./utils/utils.js";
 
 const DEFAULT_SERVER_NAME = 'ng-vite-dev-server';
 
@@ -93,9 +93,10 @@ export class NgViteBundler implements Bundler {
         progress: false
       };
 
-      const appTsconfigPath = join(this.options.appRootPath, angularOptions.tsConfig);
+      const appTsConfigPath = join(this.options.appRootPath, angularOptions.tsConfig);
+      const appTsConfig = readTsConfig(appTsConfigPath);
       const tsconfigPath = normalizePath(join(tempFolder, `tsconfig/tsconfig-${Date.now()}.json`));
-      generateAppTsConfig(components, this.options.appRootPath, appTsconfigPath, tsconfigPath, this.depsResolver, this.workspace, [mainEntryFile], this.devFilesMain);
+      generateAppTsConfig(components, this.options.appRootPath, appTsConfig, tsconfigPath, this.depsResolver, this.workspace, [mainEntryFile], this.devFilesMain);
 
       const publicPath = join(target.outputPath, 'public');
       const results = await buildApplication({
@@ -109,7 +110,7 @@ export class NgViteBundler implements Bundler {
         logger: this.logger,
         tempFolder: tempFolder,
         isPreview: true
-      });
+      }) as BuildOutput[];
 
       // Angular outputs the files into the public/browser folder, we need to move them to the root of the public folder
       for(const file of fs.readdirSync(join(publicPath, 'browser'))) {
@@ -142,7 +143,6 @@ export class NgViteBundler implements Bundler {
       const logger = context.createLogger(name);
       const depsResolver = context.getAspect<DependencyResolverMain>(DependencyResolverAspect.id);
       const devFilesMain = context.getAspect<DevFilesMain>(DevFilesAspect.id);
-      const preview = context.getAspect<DevFilesMain>(DevFilesAspect.id);
       const workspace = getWorkspace(context);
 
       return new NgViteBundler(name, options, logger, depsResolver, devFilesMain, workspace);

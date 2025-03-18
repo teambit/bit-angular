@@ -2,7 +2,14 @@ import { VERSION } from '@angular/cli';
 import { getWorkspace, NG_APP_NAME, normalizePath } from '@bitdev/angular.dev-services.common';
 import { ApplicationBuilderOptions, SsrClass } from '@bitdev/angular.dev-services.ng-compat';
 import { AngularVitePreview } from '@bitdev/angular.dev-services.preview.vite-preview';
-import { buildApplication, generateAppTsConfig, getEnvFile, serveApplication } from '@bitdev/angular.dev-services.vite';
+import {
+  buildApplication,
+  BuildOutput,
+  generateAppTsConfig,
+  getEnvFile,
+  readTsConfig,
+  serveApplication
+} from '@bitdev/angular.dev-services.vite';
 import {
   AppBuildContext,
   AppBuildResult,
@@ -111,12 +118,13 @@ export class AngularApp implements Application {
     const appRootPath = workspace.componentDir(context.appComponent.id, {
       ignoreVersion: true
     });
-    const appTsconfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
+    const appTsConfigPath = join(appRootPath, this.options.angularServeOptions.tsConfig);
+    const appTsConfig = readTsConfig(appTsConfigPath);
     const workspaceCmpsIDs = workspace.listIds();
     const bitCmps = await workspace.getMany(workspaceCmpsIDs);
     const tempFolder = this.getTempFolder(workspace);
     const tsconfigPath = this.getTsconfigPath(tempFolder);
-    generateAppTsConfig(bitCmps, appRootPath, appTsconfigPath, tsconfigPath, depsResolver, workspace);
+    generateAppTsConfig(bitCmps, appRootPath, appTsConfig, tsconfigPath, depsResolver, workspace);
 
     const envVars = await getEnvFile('development', appRootPath, context.envVariables as any);
     await serveApplication({
@@ -147,7 +155,8 @@ export class AngularApp implements Application {
     const logger = context.createLogger(this.name);
     const outputPath = this.getPublicDir(context.artifactsDir);
     const appRootPath = capsule.path;
-    const appTsconfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
+    const appTsConfigPath = join(appRootPath, this.options.angularBuildOptions.tsConfig);
+    const appTsConfig = readTsConfig(appTsConfigPath);
     const appOptions = this.options.angularBuildOptions as ApplicationBuilderOptions;
     let entryServer: string | undefined;
     if ((appOptions.ssr as SsrClass)?.entry) {
@@ -157,7 +166,7 @@ export class AngularApp implements Application {
     }
     const tempFolder = this.getTempFolder();
     const tsconfigPath = this.getTsconfigPath(tempFolder);
-    generateAppTsConfig([capsule.component], appRootPath, appTsconfigPath, tsconfigPath, depsResolver, undefined, entryServer ? [entryServer] : undefined);
+    generateAppTsConfig([capsule.component], appRootPath, appTsConfig, tsconfigPath, depsResolver, undefined, entryServer ? [entryServer] : undefined);
 
     const errors: Error[] = [];
     if (!this.options.bundler) {
@@ -176,7 +185,7 @@ export class AngularApp implements Application {
         envVars: {
           'process.env': envVars
         }
-      });
+      }) as BuildOutput[];
       for (const result of results) {
         if (result.error) {
           errors.push(new Error(result.error));

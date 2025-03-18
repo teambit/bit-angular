@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/elements",
-    "version": "8.1.1"
+    "version": "8.2.1"
   },
   "propagate": false,
   "extensions": {
@@ -56,6 +56,6 @@
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
     "teambit.semantics/schema": {},
-    "teambit.node/node@1.0.103": {}
+    "teambit.node/node@1.0.110": {}
   }
 }

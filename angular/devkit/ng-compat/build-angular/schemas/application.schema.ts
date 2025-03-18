@@ -38,6 +38,10 @@ export interface ApplicationBuilderOptions {
    */
   clearScreen?: boolean;
   /**
+   * Generate a seperate bundle containing code used across multiple bundles.
+   */
+  commonChunk?: boolean;
+  /**
    * Define the crossorigin attribute setting of elements that provide CORS support.
    */
   crossOrigin?: CrossOrigin;
@@ -200,6 +204,10 @@ export interface ApplicationBuilderOptions {
    * Adds more details to output logging.
    */
   verbose?: boolean;
+  /**
+   * Generate a separate bundle containing only vendor libraries. This option should only be used for development to reduce the incremental compilation time.
+   */
+  vendorChunk?: boolean;
   /**
    * Run build when files change.
    */

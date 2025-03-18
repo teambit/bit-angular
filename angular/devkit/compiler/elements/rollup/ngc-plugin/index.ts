@@ -44,7 +44,7 @@ export async function ngcPlugin(options: Options, logger: Logger): Promise<Plugi
     rootDir: resolve(rootDir),
     moduleResolution: ModuleResolutionKind.NodeJs,
     esModuleInterop: true,
-    declaration: false,
+    declaration: true,
     experimentalDecorators: true,
     emitDecoratorMetadata: true,
     enableIvy: true,

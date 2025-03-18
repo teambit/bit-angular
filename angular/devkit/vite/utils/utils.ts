@@ -98,24 +98,30 @@ export function getIndexInputFile(index: ApplicationOptions['index']): string {
   return (index as any).input;
 }
 
+export function readTsConfig(tsconfigPath: string): JsonObject {
+  const configFile = ts.readConfigFile(tsconfigPath, ts.sys.readFile);
+  if (configFile.error) {
+    throw configFile.error;
+  }
+  return configFile.config;
+}
+
 export function generateAppTsConfig(
   bitCmps: Component[],
   appRootPath: string,
-  appTsconfigPath: string,
+  tsconfigJSON: JsonObject,
   tsconfigPath: string,
   depsResolver: DependencyResolverMain,
   workspace?: Workspace,
   additionalEntries?: string[],
   devFilesMain?: DevFilesMain
 ): void {
-  const configFile = ts.readConfigFile(appTsconfigPath, ts.sys.readFile);
-  if (configFile.error) {
-    throw configFile.error;
-  }
-  const tsconfigJSON: JsonObject = configFile.config;
   // Add the paths to tsconfig to remap bit components to local folders
   tsconfigJSON.compilerOptions = tsconfigJSON.compilerOptions || {};
   tsconfigJSON.compilerOptions.paths = tsconfigJSON.compilerOptions.paths || {};
+  tsconfigJSON.files = tsconfigJSON.files || [];
+  tsconfigJSON.include = tsconfigJSON.include || [];
+  tsconfigJSON.exclude = tsconfigJSON.exclude || [];
   bitCmps.forEach((dep: Component) => {
     let componentDir = workspace?.componentDir(dep.id, {
       ignoreVersion: true

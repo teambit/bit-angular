@@ -44,6 +44,14 @@ export interface InternalOptions {
    * This is only used by the development server which currently only supports a single locale per build.
    */
   forceI18nFlatOutput?: boolean;
+
+  /**
+   * When set to `true`, enables fast SSR in development mode by disabling the full manifest generation and prerendering.
+   *
+   * This option is intended to optimize performance during development by skipping prerendering and route extraction when not required.
+   * @default false
+   */
+  partialSSRBuild?: boolean;
 }
 
 export type ApplicationInternalOptions = Omit<

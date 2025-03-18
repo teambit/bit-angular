@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/linter/eslint",
-    "version": "ebdc47a8803c9e11a951e7f528004c1ea985f5f4"
+    "version": "5.1.0"
   },
   "propagate": false,
   "extensions": {
@@ -30,6 +30,6 @@
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
     "teambit.semantics/schema": {},
-    "teambit.node/node@1.0.103": {}
+    "teambit.node/node@1.0.110": {}
   }
 }

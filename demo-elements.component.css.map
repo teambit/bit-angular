@@ -1,0 +1,7 @@
+{
+  "version": 3,
+  "sources": ["demo-elements.component.scss"],
+  "sourcesContent": [":host {\r\n  font-size: inherit;\r\n}"],
+  "mappings": ";AAAA;AACE,aAAA;;",
+  "names": []
+}

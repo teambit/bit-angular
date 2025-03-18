@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/compiler/ng-packagr",
-    "version": "8.1.1"
+    "version": "8.2.0"
   },
   "propagate": false,
   "extensions": {
@@ -26,9 +26,9 @@
     "teambit.docs/docs": {},
     "teambit.pipelines/builder": {},
     "teambit.semantics/schema": {},
-    "bitdev.node/node-env@2.0.40": {},
     "teambit.envs/envs": {
       "env": "bitdev.node/node-env"
-    }
+    },
+    "bitdev.node/node-env@4.0.3": {}
   }
 }

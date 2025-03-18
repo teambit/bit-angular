@@ -3,24 +3,27 @@ labels: ['angular', 'typescript', 'demo-elements']
 description: 'A `demo-elements` component.'
 ---
 
-Import `DemoElementsComponent` into your application:
+Import `DemoElementsComponent` into your application and use the returned selector to create a component
+in the framework of your choice. For example with react:
 
 ```ts
-import { DemoElementsComponent } from './demo-elements.component';
+import { DemoElementsComponent } from '@my-scope/demo-elements';
+import type { ReactNode } from 'react';
 
-// add it to your component imports
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [
-    DemoElementsComponent
-  ]
-})
-export class AppComponent {}
-```
+export type DemoElementsProps = {
+  /**
+   * sets the component children.
+   */
+  children?: ReactNode;
+};
 
-Use `DemoElementsComponent` in your generators:
+// Use the component:
+export function DemoElements({ children }: DemoElementsProps) {
+  return (
+    <DemoElementsComponent>
+      {children}
+    </DemoElementsComponent>
+  );
+}
 
-```html
-<demo-elements></demo-elements>
 ```

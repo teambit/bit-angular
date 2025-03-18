@@ -11,7 +11,10 @@ import {
   ViewContainerRef,
   NgZone
 } from '@angular/core';
+import { ReplaySubject } from 'rxjs';
 import { DocsComponent } from '../docs/docs.component';
+
+window.onDocsLoad$ = window.onDocsLoad$ || new ReplaySubject<string>();
 
 @Component({
   standalone: false,

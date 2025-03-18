@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -8,10 +8,12 @@ import { CommonModule } from '@angular/common';
   template: `
     <p>
     demo-elements works!!
+    Made by {{ name() }}.
     </p>
 `,
   styleUrls: ['./demo-elements.component.scss']
 })
 export class DemoElementsComponent {
+  name = input<string>('Bit');
   constructor() {}
 }

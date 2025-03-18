@@ -162,7 +162,7 @@ export class NodeJSReadonlyFileSystem extends NodeJSPathManipulation implements 
   }
 
   readFileBuffer(path: AbsoluteFsPath): Uint8Array {
-    return fs.readFileSync(path);
+    return fs.readFileSync(path) as any as Uint8Array;
   }
 
   readdir(path: AbsoluteFsPath): PathSegment[] {

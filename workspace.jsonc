@@ -31,6 +31,7 @@
   "teambit.dependencies/dependency-resolver": {
     "policy": {
       "dependencies": {
+        "@bitdev/react.app-types.vite-react": "^2.1.3",
         "@clack/prompts": "^0.7.0",
         "@markdoc/markdoc": "^0.4.0",
         "@teambit/community.ui.bit-cli.command-example": "0.0.8",
@@ -53,9 +54,11 @@
         "@teambit/harmony.content.cli-reference": "2.0.492",
         "@teambit/legacy.constants": "^0.0.1",
         "@teambit/legacy.utils": "^0.0.8",
+        "@teambit/pkg.modules.component-package-name": "^0.0.50",
         "@teambit/preview.modules.preview-modules": "^1.0.3",
         "@teambit/react.ui.docs-app": "1.0.21",
         "@teambit/scope.modules.find-scope-path": "^0.0.2",
+        "@teambit/toolbox.path.path": "^0.0.8",
         "@teambit/toolbox.time.timer": "^0.0.1",
         "@teambit/typescript.typescript-compiler": "2.0.46",
         "@teambit/vite.vite-utils": "^0.1.14",
@@ -68,6 +71,7 @@
         "@types/node": "20.12.7",
         "@types/object-hash": "~2.1.0",
         "@types/prismjs": "^1.26.4",
+        "@vitejs/plugin-react": "^4.3.4",
         "esbuild-plugins-node-modules-polyfill": "^1.6.7",
         "events": "^3.3.0",
         "fs-extra": "^11.2.0",
@@ -103,15 +107,15 @@
   "teambit.generator/generator": {
     "envs": [
       //      "bitdev.angular/angular-env",
-      "bitdev.angular/envs/angular-v19-env"
+      "bitdev.angular/envs/angular-v19-env",
+      "bitdev.react/react-env"
       // "bitdev.angular/envs/angular-v18-env"
       // "bitdev.angular/envs/angular-v17-env"
       // "bitdev.angular/envs/angular-v16-env",
     ]
   },
   //  "bitdev.angular/angular-env": {},
-//  "bitdev.angular/envs/angular-v19-env": {},
-  "bitdev.angular/integration/ng-elements-env": {},
+  //  "bitdev.angular/envs/angular-v19-env": {},
   //  "bitdev.angular/envs/angular-v18-env": {},
   //  "bitdev.angular/envs/angular-v17-env": {},
   //  "bitdev.angular/envs/angular-v16-env": {},

@@ -23,7 +23,7 @@ export async function ngBabelLinker(): Promise<any> {
     return await loadEsmModule(`@angular/compiler-cli/linker/babel`);
   } catch (e) {
     // Angular v12
-    return await loadEsmModule(`@angular/compiler-cli/linker/babel/index.js`);
+    return loadEsmModule(`@angular/compiler-cli/linker/babel/index.js`);
   }
 }
 

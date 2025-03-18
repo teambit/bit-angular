@@ -21,6 +21,8 @@ import { dirname, join, posix, resolve } from 'path';
 export const NG_APP_NAME = 'bit-app';
 export const NG_APP_PATTERN = `*.${NG_APP_NAME}.*`;
 
+export const NG_ELEMENTS_PATTERN = '*.ng-elements.*';
+
 export enum BundlerSetup {
   Serve = 'serve',
   Build = 'build',
@@ -302,15 +304,15 @@ export function packagePath(packageName: string, path = ''): string {
   return join(dirname(require.resolve(`${packageName}/package.json`)), path);
 }
 
-export function getLoggerApi(logger: Logger, isPreview = false) {
+export function getLoggerApi(logger: Logger, consoleLogs = true) {
   return {
     // eslint-disable-next-line no-console
     error: (m: string) => console.error(m),
-    log: (m: string) => !isPreview ? logger.console(m) : null,
+    log: (m: string) => consoleLogs ? logger.console(m) : null,
     // ignoring the warning about the server to use only for testing
     // eslint-disable-next-line no-console
     warn: (m: string) => !m.match('This is a simple server') ? console.warn(m) : null,
-    info: (m: string) => !isPreview ? logger.console(m) : null,
+    info: (m: string) => consoleLogs ? logger.console(m) : null,
     // eslint-disable-next-line no-console
     colorMessage: (m: string) => console.log(m),
     createChild: () => logger

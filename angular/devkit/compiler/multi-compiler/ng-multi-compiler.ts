@@ -1,18 +1,17 @@
 // @ts-ignore
 import type { AngularCompilerOptions } from '@angular/compiler-cli';
-import type { AngularEnvOptions } from '@bitdev/angular.dev-services.common';
-import { componentIsApp, NG_APP_PATTERN } from '@bitdev/angular.dev-services.common';
+import {
+  AngularEnvOptions,
+  componentIsApp,
+  getWorkspace,
+  NG_APP_PATTERN,
+  NG_ELEMENTS_PATTERN
+} from '@bitdev/angular.dev-services.common';
 import { AngularElementsCompiler } from '@bitdev/angular.dev-services.compiler.elements';
 import { NgPackagrCompiler } from '@bitdev/angular.dev-services.compiler.ng-packagr';
 import { ApplicationAspect, ApplicationMain } from '@teambit/application';
+import { ArtifactDefinition, BuildContext, BuiltTaskResult, ComponentResult } from '@teambit/builder';
 import {
-  ArtifactDefinition,
-  BuildContext,
-  BuiltTaskResult,
-  ComponentResult
-} from '@teambit/builder';
-import {
-  CompilationInitiator,
   Compiler,
   CompilerOptions,
   TranspileComponentParams,
@@ -22,11 +21,17 @@ import {
 } from '@teambit/compiler';
 import { Component } from '@teambit/component';
 import { EnvContext, EnvHandler } from '@teambit/envs';
+import pkgModules from '@teambit/pkg.modules.component-package-name';
+import { PathOsBasedRelative } from '@teambit/toolbox.path.path';
 import { TypescriptCompiler } from '@teambit/typescript.typescript-compiler';
+import { Workspace } from '@teambit/workspace';
+import { readRootComponentsDir } from '@teambit/workspace.root-components';
 import fs from 'fs-extra';
 import minimatch from 'minimatch';
+import { createRequire } from "node:module";
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import path from "path";
 
 export interface NgMultiCompilerOptions {
   bitCompilerOptions?: Partial<CompilerOptions>;
@@ -36,27 +41,22 @@ export interface NgMultiCompilerOptions {
   tsconfigPath?: string;
 }
 
+const require = createRequire(import.meta.url);
+
 export class NgMultiCompiler implements Compiler {
   readonly id = 'bitdev.angular/dev-services/compiler/multi-compiler';
-
-  mainCompiler: NgPackagrCompiler | AngularElementsCompiler;
 
   private constructor(
     public displayName = 'angular-multi-compiler',
     private tsCompiler: Compiler,
     private application: ApplicationMain,
-    private ngEnvOptions: AngularEnvOptions,
+    private workspace: Workspace,
     private ngPackagrCompiler: NgPackagrCompiler,
     private angularElementsCompiler: AngularElementsCompiler | undefined,
     public artifactName: string,
     public distGlobPatterns: string[],
     public distDir = 'dist'
   ) {
-    if (this.ngEnvOptions.useAngularElements && this.angularElementsCompiler) {
-      this.mainCompiler = this.angularElementsCompiler;
-    } else {
-      this.mainCompiler = this.ngPackagrCompiler;
-    }
   }
 
   private getArtifactDefinition(): ArtifactDefinition[] {
@@ -65,6 +65,23 @@ export class NgMultiCompiler implements Compiler {
       name: this.artifactName,
       globPatterns: this.distGlobPatterns
     }];
+  }
+
+  private async getInjectedDirs(packageName: string, component: Component): Promise<string[]> {
+    const injectedDirs = await this.workspace.getInjectedDirs(component);
+    if (injectedDirs.length > 0) {
+      return injectedDirs;
+    }
+
+    const rootDirs = await readRootComponentsDir(this.workspace.rootComponentsPath);
+    return rootDirs.map((rootDir) => path.relative(this.workspace.path, path.join(rootDir, packageName)));
+  }
+
+  private async distDirs(component: Component): Promise<PathOsBasedRelative[]> {
+    const packageName = pkgModules.componentIdToPackageName(component.state._consumer);
+    const packageDir = path.join('node_modules', packageName);
+    const injectedDirs = await this.getInjectedDirs(packageName, component);
+    return [packageDir, ...injectedDirs].map((dist) => path.join(this.workspace.path, dist, this.distDir));
   }
 
   /**
@@ -82,15 +99,9 @@ export class NgMultiCompiler implements Compiler {
     fs.mkdirsSync(dist);
 
     // When using Angular elements, we need to compile components locally, not just for build
-    if (this.ngEnvOptions.useAngularElements) {
-      // If we are running `bit start`, we only need to compile the compositions
-      if (params.initiator === CompilationInitiator.PreStart || params.initiator === CompilationInitiator.Start) {
-        // await this.angularElementsCompiler!.transpileComponent(params);
-      } else {
-        // for any other command than bit start, we need to compile the full components into the node modules dist
-        // so that we can use them in another framework (like react) that isn't able to directly use the source files
-        await this.ngPackagrCompiler.transpileComponent(params);
-      }
+    if (minimatch(params.component.config.main, NG_ELEMENTS_PATTERN)) {
+      const distDirs = await this.distDirs(params.component);
+      return this.angularElementsCompiler!.transpileComponent(params, distDirs);
     }
   }
 
@@ -128,15 +139,13 @@ export class NgMultiCompiler implements Compiler {
       componentsResults.push({ component: appComponent });
     }
 
+    // compile Angular elements components
+    const angularElementsResult = await this.angularElementsCompiler!.build(context);
+    componentsResults.push(...angularElementsResult.componentsResults);
+
     // compile all the other components with ng-packagr
     const ngPackagrResult = await this.ngPackagrCompiler.build(context);
     componentsResults.push(...ngPackagrResult.componentsResults);
-
-    // and eventually with angular elements too
-    if (this.ngEnvOptions.useAngularElements && this.angularElementsCompiler) {
-      const angularElementsResult = await this.angularElementsCompiler.build(context);
-      componentsResults.push(...angularElementsResult.componentsResults);
-    }
 
     return {
       artifacts: this.getArtifactDefinition(),
@@ -159,7 +168,7 @@ export class NgMultiCompiler implements Compiler {
     if (minimatch(srcPath, NG_APP_PATTERN)) {
       return this.tsCompiler.getDistPathBySrcPath(srcPath);
     }
-    return this.mainCompiler.getDistPathBySrcPath(srcPath);
+    return this.ngPackagrCompiler.getDistPathBySrcPath(srcPath);
   }
 
   /**
@@ -168,7 +177,7 @@ export class NgMultiCompiler implements Compiler {
    * used by `bit start`
    */
   getPreviewComponentRootPath(component: Component): string {
-    return this.mainCompiler.getPreviewComponentRootPath(component);
+    return this.ngPackagrCompiler.getPreviewComponentRootPath(component);
   }
 
   /**
@@ -178,11 +187,11 @@ export class NgMultiCompiler implements Compiler {
     if (minimatch(filePath, NG_APP_PATTERN)) {
       return this.tsCompiler.isFileSupported(filePath);
     }
-    return this.mainCompiler.isFileSupported(filePath);
+    return this.ngPackagrCompiler.isFileSupported(filePath);
   }
 
   version(): string {
-    return this.mainCompiler.version();
+    return this.ngPackagrCompiler.version();
   }
 
   static from(options: NgMultiCompilerOptions): EnvHandler<NgMultiCompiler> {
@@ -194,6 +203,7 @@ export class NgMultiCompiler implements Compiler {
       const shouldCopyNonSupportedFiles = options.bitCompilerOptions?.shouldCopyNonSupportedFiles ?? false;
       const artifactName = options.bitCompilerOptions?.artifactName ?? 'dist';
       const application = context.getAspect<ApplicationMain>(ApplicationAspect.id);
+      const workspace = getWorkspace(context);
       const tsCompiler: Compiler = TypescriptCompiler.from({
         esm: true,
         tsconfig: fileURLToPath(import.meta.resolve('./config/tsconfig.json'))
@@ -209,23 +219,20 @@ export class NgMultiCompiler implements Compiler {
         tsconfigPath: options.tsconfigPath
       })(context);
 
-      let angularElementsCompiler: AngularElementsCompiler | undefined;
-
-      if (options.ngEnvOptions.useAngularElements) {
-        angularElementsCompiler = AngularElementsCompiler.from({
-          artifactName,
-          distDir,
-          distGlobPatterns,
-          shouldCopyNonSupportedFiles,
-          tsCompilerOptions: options.tsCompilerOptions
-        })(context);
-      }
+      const angularElementsCompiler = AngularElementsCompiler.from({
+        artifactName,
+        distDir,
+        distGlobPatterns,
+        shouldCopyNonSupportedFiles,
+        tsCompilerOptions: options.tsCompilerOptions,
+        tsconfigPath: options.tsconfigPath || require.resolve('./config/tsconfig.json')
+      })(context);
 
       return new NgMultiCompiler(
         name,
         tsCompiler,
         application,
-        options.ngEnvOptions,
+        workspace,
         ngPackagrCompiler,
         angularElementsCompiler,
         artifactName,

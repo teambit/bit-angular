@@ -2,7 +2,7 @@
   "componentId": {
     "scope": "bitdev.angular",
     "name": "dev-services/vite",
-    "version": "2.1.1"
+    "version": "2.2.0"
   },
   "propagate": false,
   "extensions": {
@@ -24,9 +24,9 @@
         }
       }
     },
-    "bitdev.node/node-env@2.0.40": {},
     "teambit.envs/envs": {
       "env": "bitdev.node/node-env"
-    }
+    },
+    "bitdev.node/node-env@4.0.3": {}
   }
 }
